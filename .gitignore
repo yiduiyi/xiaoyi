@@ -1,0 +1,10 @@
+/workspace/.metadata/
+/workspace/RemoteSystemsTempFiles/
+/workspace/Servers/
+/workspace/manager/.settings/
+/workspace/manager/target/
+/workspace/manager/WebContent/
+
+*.classpath
+*.project
+*.jar
