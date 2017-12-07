@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.ma.dao.IAccountDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.ma.domain.Account" >
+    <id column="accountId" property="accountid" jdbcType="VARCHAR" />
+    <result column="accountType" property="accounttype" jdbcType="TINYINT" />
+    <result column="accountNumber" property="accountnumber" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    accountId, accountType, accountNumber, status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from account
+    where accountId = #{accountid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from account
+    where accountId = #{accountid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.ma.domain.Account" >
+    insert into account (accountId, accountType, accountNumber, 
+      status)
+    values (#{accountid,jdbcType=VARCHAR}, #{accounttype,jdbcType=TINYINT}, #{accountnumber,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.ma.domain.Account" >
+    insert into account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="accountid != null" >
+        accountId,
+      </if>
+      <if test="accounttype != null" >
+        accountType,
+      </if>
+      <if test="accountnumber != null" >
+        accountNumber,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="accountid != null" >
+        #{accountid,jdbcType=VARCHAR},
+      </if>
+      <if test="accounttype != null" >
+        #{accounttype,jdbcType=TINYINT},
+      </if>
+      <if test="accountnumber != null" >
+        #{accountnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.ma.domain.Account" >
+    update account
+    <set >
+      <if test="accounttype != null" >
+        accountType = #{accounttype,jdbcType=TINYINT},
+      </if>
+      <if test="accountnumber != null" >
+        accountNumber = #{accountnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where accountId = #{accountid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.ma.domain.Account" >
+    update account
+    set accountType = #{accounttype,jdbcType=TINYINT},
+      accountNumber = #{accountnumber,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT}
+    where accountId = #{accountid,jdbcType=VARCHAR}
+  </update>
+</mapper>

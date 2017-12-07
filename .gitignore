@@ -5,6 +5,7 @@
 /workspace/manager/target/
 /workspace/manager/WebContent/
 
-*.classpath
-*.project
+#*.classpath
+#*.project
 *.jar
+*.class
