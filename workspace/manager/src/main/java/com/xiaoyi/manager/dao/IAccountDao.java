@@ -1,6 +1,6 @@
-package com.xiaoyi.ma.dao;
+package com.xiaoyi.manager.dao;
 
-import com.xiaoyi.ma.domain.Account;
+import com.xiaoyi.manager.domain.Account;
 
 public interface IAccountDao {
     int deleteByPrimaryKey(String accountid);

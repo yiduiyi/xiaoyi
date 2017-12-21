@@ -1,12 +1,12 @@
-package com.xiaoyi.ma.service.impl;
+package com.xiaoyi.manager.service.impl;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import com.xiaoyi.ma.dao.IAccountDao;
-import com.xiaoyi.ma.domain.Account;
-import com.xiaoyi.ma.service.IAccountService;
+import com.xiaoyi.manager.dao.IAccountDao;
+import com.xiaoyi.manager.domain.Account;
+import com.xiaoyi.manager.service.IAccountService;
 
 @Service("accountService")
 public class AccountServiceImpl implements IAccountService{

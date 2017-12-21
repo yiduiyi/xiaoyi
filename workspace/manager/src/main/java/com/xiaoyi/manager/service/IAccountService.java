@@ -1,6 +1,6 @@
-package com.xiaoyi.ma.service;
+package com.xiaoyi.manager.service;
 
-import com.xiaoyi.ma.domain.Account;
+import com.xiaoyi.manager.domain.Account;
 
 public interface IAccountService {
 	Account getAccountById(String accountId);

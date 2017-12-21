@@ -6,8 +6,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.alibaba.fastjson.JSON;
-import com.xiaoyi.ma.domain.Account;
-import com.xiaoyi.ma.service.IAccountService;  
+import com.xiaoyi.manager.domain.Account;
+import com.xiaoyi.manager.service.IAccountService;  
 
 @RunWith(JUnit4ClassRunner.class)     //表示继承了SpringJUnit4ClassRunner类  
 @ContextConfiguration(locations = {"classpath:spring-mybatis.xml"})

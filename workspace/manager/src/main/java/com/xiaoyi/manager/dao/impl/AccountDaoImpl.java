@@ -1,7 +1,7 @@
-package com.xiaoyi.ma.dao.impl;
+package com.xiaoyi.manager.dao.impl;
 
-import com.xiaoyi.ma.dao.IAccountDao;
-import com.xiaoyi.ma.domain.Account;
+import com.xiaoyi.manager.dao.IAccountDao;
+import com.xiaoyi.manager.domain.Account;
 
 public class AccountDaoImpl implements IAccountDao {
 

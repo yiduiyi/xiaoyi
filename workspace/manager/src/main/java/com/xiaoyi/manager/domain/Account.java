@@ -1,4 +1,4 @@
-package com.xiaoyi.ma.domain;
+package com.xiaoyi.manager.domain;
 
 public class Account {
     private String accountid;

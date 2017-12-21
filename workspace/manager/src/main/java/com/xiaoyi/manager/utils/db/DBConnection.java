@@ -1,4 +1,4 @@
-package com.xiaoyi.ma.utils.db;
+package com.xiaoyi.manager.utils.db;
 
 import java.sql.*;
 

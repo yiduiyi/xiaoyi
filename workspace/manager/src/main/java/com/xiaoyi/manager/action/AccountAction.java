@@ -1,4 +1,4 @@
-package com.xiaoyi.ma.action;
+package com.xiaoyi.manager.action;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.ma.domain.Account;
-import com.xiaoyi.ma.service.IAccountService;
+import com.xiaoyi.manager.domain.Account;
+import com.xiaoyi.manager.service.IAccountService;
 
 @Controller
 @RequestMapping("/account")
