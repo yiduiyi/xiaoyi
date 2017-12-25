@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.ILessonTypeDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonType" >
+    <id column="lessonType" property="lessontype" jdbcType="INTEGER" />
+    <result column="lessonPrice" property="lessonprice" jdbcType="REAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lessonType, lessonPrice
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from lessontype
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from lessontype
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonType" >
+    insert into lessontype (lessonType, lessonPrice)
+    values (#{lessontype,jdbcType=INTEGER}, #{lessonprice,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonType" >
+    insert into lessontype
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lessontype != null" >
+        lessonType,
+      </if>
+      <if test="lessonprice != null" >
+        lessonPrice,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lessontype != null" >
+        #{lessontype,jdbcType=INTEGER},
+      </if>
+      <if test="lessonprice != null" >
+        #{lessonprice,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.LessonType" >
+    update lessontype
+    <set >
+      <if test="lessonprice != null" >
+        lessonPrice = #{lessonprice,jdbcType=REAL},
+      </if>
+    </set>
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonType" >
+    update lessontype
+    set lessonPrice = #{lessonprice,jdbcType=REAL}
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+  </update>
+</mapper>

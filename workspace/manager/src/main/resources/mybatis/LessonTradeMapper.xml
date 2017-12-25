@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.ILessonTradeDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonTrade" >
+    <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
+    <result column="lessonType" property="lessontype" jdbcType="INTEGER" />
+    <result column="parentId" property="parentid" jdbcType="VARCHAR" />
+    <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="applyLessons" property="applylessons" jdbcType="SMALLINT" />
+    <result column="feedback" property="feedback" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lessonTradeId, lessonType, parentId, teacherId, notes, status, applyLessons, feedback
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from lessontrade
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from lessontrade
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonTrade" >
+    insert into lessontrade (lessonTradeId, lessonType, parentId, 
+      teacherId, notes, status, 
+      applyLessons, feedback)
+    values (#{lessontradeid,jdbcType=VARCHAR}, #{lessontype,jdbcType=INTEGER}, #{parentid,jdbcType=VARCHAR}, 
+      #{teacherid,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{applylessons,jdbcType=SMALLINT}, #{feedback,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonTrade" >
+    insert into lessontrade
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lessontradeid != null" >
+        lessonTradeId,
+      </if>
+      <if test="lessontype != null" >
+        lessonType,
+      </if>
+      <if test="parentid != null" >
+        parentId,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="applylessons != null" >
+        applyLessons,
+      </if>
+      <if test="feedback != null" >
+        feedback,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lessontradeid != null" >
+        #{lessontradeid,jdbcType=VARCHAR},
+      </if>
+      <if test="lessontype != null" >
+        #{lessontype,jdbcType=INTEGER},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="applylessons != null" >
+        #{applylessons,jdbcType=SMALLINT},
+      </if>
+      <if test="feedback != null" >
+        #{feedback,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.LessonTrade" >
+    update lessontrade
+    <set >
+      <if test="lessontype != null" >
+        lessonType = #{lessontype,jdbcType=INTEGER},
+      </if>
+      <if test="parentid != null" >
+        parentId = #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        teacherId = #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="applylessons != null" >
+        applyLessons = #{applylessons,jdbcType=SMALLINT},
+      </if>
+      <if test="feedback != null" >
+        feedback = #{feedback,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonTrade" >
+    update lessontrade
+    set lessonType = #{lessontype,jdbcType=INTEGER},
+      parentId = #{parentid,jdbcType=VARCHAR},
+      teacherId = #{teacherid,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      applyLessons = #{applylessons,jdbcType=SMALLINT},
+      feedback = #{feedback,jdbcType=VARCHAR}
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+  </update>
+</mapper>

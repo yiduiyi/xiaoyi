@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IParentsDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Parents" >
+    <id column="parentId" property="parentid" jdbcType="VARCHAR" />
+    <result column="memberId" property="memberid" jdbcType="VARCHAR" />
+    <result column="parentName" property="parentname" jdbcType="VARCHAR" />
+    <result column="telNum" property="telnum" jdbcType="VARCHAR" />
+    <result column="weChatNum" property="wechatnum" jdbcType="VARCHAR" />
+    <result column="openId" property="openid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    parentId, memberId, parentName, telNum, weChatNum, openId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from parents
+    where parentId = #{parentid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from parents
+    where parentId = #{parentid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Parents" >
+    insert into parents (parentId, memberId, parentName, 
+      telNum, weChatNum, openId
+      )
+    values (#{parentid,jdbcType=VARCHAR}, #{memberid,jdbcType=VARCHAR}, #{parentname,jdbcType=VARCHAR}, 
+      #{telnum,jdbcType=VARCHAR}, #{wechatnum,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Parents" >
+    insert into parents
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="parentid != null" >
+        parentId,
+      </if>
+      <if test="memberid != null" >
+        memberId,
+      </if>
+      <if test="parentname != null" >
+        parentName,
+      </if>
+      <if test="telnum != null" >
+        telNum,
+      </if>
+      <if test="wechatnum != null" >
+        weChatNum,
+      </if>
+      <if test="openid != null" >
+        openId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="memberid != null" >
+        #{memberid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentname != null" >
+        #{parentname,jdbcType=VARCHAR},
+      </if>
+      <if test="telnum != null" >
+        #{telnum,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatnum != null" >
+        #{wechatnum,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null" >
+        #{openid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Parents" >
+    update parents
+    <set >
+      <if test="memberid != null" >
+        memberId = #{memberid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentname != null" >
+        parentName = #{parentname,jdbcType=VARCHAR},
+      </if>
+      <if test="telnum != null" >
+        telNum = #{telnum,jdbcType=VARCHAR},
+      </if>
+      <if test="wechatnum != null" >
+        weChatNum = #{wechatnum,jdbcType=VARCHAR},
+      </if>
+      <if test="openid != null" >
+        openId = #{openid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where parentId = #{parentid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Parents" >
+    update parents
+    set memberId = #{memberid,jdbcType=VARCHAR},
+      parentName = #{parentname,jdbcType=VARCHAR},
+      telNum = #{telnum,jdbcType=VARCHAR},
+      weChatNum = #{wechatnum,jdbcType=VARCHAR},
+      openId = #{openid,jdbcType=VARCHAR}
+    where parentId = #{parentid,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IUserDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.User" >
+    <id column="userAccountId" property="useraccountid" jdbcType="VARCHAR" />
+    <id column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="userName" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="userType" property="usertype" jdbcType="TINYINT" />
+    <result column="userPrivilege" property="userprivilege" jdbcType="TINYINT" />
+    <result column="loginStatus" property="loginstatus" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    userAccountId, userId, userName, password, userType, userPrivilege, loginStatus
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiaoyi.manager.domain.UserKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where userAccountId = #{useraccountid,jdbcType=VARCHAR}
+      and userId = #{userid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.UserKey" >
+    delete from user
+    where userAccountId = #{useraccountid,jdbcType=VARCHAR}
+      and userId = #{userid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.User" >
+    insert into user (userAccountId, userId, userName, 
+      password, userType, userPrivilege, 
+      loginStatus)
+    values (#{useraccountid,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{usertype,jdbcType=TINYINT}, #{userprivilege,jdbcType=TINYINT}, 
+      #{loginstatus,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="useraccountid != null" >
+        userAccountId,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="username != null" >
+        userName,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="usertype != null" >
+        userType,
+      </if>
+      <if test="userprivilege != null" >
+        userPrivilege,
+      </if>
+      <if test="loginstatus != null" >
+        loginStatus,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="useraccountid != null" >
+        #{useraccountid,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype != null" >
+        #{usertype,jdbcType=TINYINT},
+      </if>
+      <if test="userprivilege != null" >
+        #{userprivilege,jdbcType=TINYINT},
+      </if>
+      <if test="loginstatus != null" >
+        #{loginstatus,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.User" >
+    update user
+    <set >
+      <if test="username != null" >
+        userName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype != null" >
+        userType = #{usertype,jdbcType=TINYINT},
+      </if>
+      <if test="userprivilege != null" >
+        userPrivilege = #{userprivilege,jdbcType=TINYINT},
+      </if>
+      <if test="loginstatus != null" >
+        loginStatus = #{loginstatus,jdbcType=BIT},
+      </if>
+    </set>
+    where userAccountId = #{useraccountid,jdbcType=VARCHAR}
+      and userId = #{userid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.User" >
+    update user
+    set userName = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      userType = #{usertype,jdbcType=TINYINT},
+      userPrivilege = #{userprivilege,jdbcType=TINYINT},
+      loginStatus = #{loginstatus,jdbcType=BIT}
+    where userAccountId = #{useraccountid,jdbcType=VARCHAR}
+      and userId = #{userid,jdbcType=VARCHAR}
+  </update>
+</mapper>

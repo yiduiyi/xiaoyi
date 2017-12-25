@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.ILessonTradeSumDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonTradeSum" >
+    <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="checkedLessonNum" property="checkedlessonnum" jdbcType="SMALLINT" />
+    <result column="withDrawLessonNum" property="withdrawlessonnum" jdbcType="SMALLINT" />
+    <result column="frozenLessonNum" property="frozenlessonnum" jdbcType="SMALLINT" />
+    <result column="totalLessonNum" property="totallessonnum" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    teacherId, checkedLessonNum, withDrawLessonNum, frozenLessonNum, totalLessonNum
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from lessontradesum
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from lessontradesum
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonTradeSum" >
+    insert into lessontradesum (teacherId, checkedLessonNum, withDrawLessonNum, 
+      frozenLessonNum, totalLessonNum)
+    values (#{teacherid,jdbcType=VARCHAR}, #{checkedlessonnum,jdbcType=SMALLINT}, #{withdrawlessonnum,jdbcType=SMALLINT}, 
+      #{frozenlessonnum,jdbcType=SMALLINT}, #{totallessonnum,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonTradeSum" >
+    insert into lessontradesum
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="checkedlessonnum != null" >
+        checkedLessonNum,
+      </if>
+      <if test="withdrawlessonnum != null" >
+        withDrawLessonNum,
+      </if>
+      <if test="frozenlessonnum != null" >
+        frozenLessonNum,
+      </if>
+      <if test="totallessonnum != null" >
+        totalLessonNum,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="checkedlessonnum != null" >
+        #{checkedlessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="withdrawlessonnum != null" >
+        #{withdrawlessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="frozenlessonnum != null" >
+        #{frozenlessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="totallessonnum != null" >
+        #{totallessonnum,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.LessonTradeSum" >
+    update lessontradesum
+    <set >
+      <if test="checkedlessonnum != null" >
+        checkedLessonNum = #{checkedlessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="withdrawlessonnum != null" >
+        withDrawLessonNum = #{withdrawlessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="frozenlessonnum != null" >
+        frozenLessonNum = #{frozenlessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="totallessonnum != null" >
+        totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonTradeSum" >
+    update lessontradesum
+    set checkedLessonNum = #{checkedlessonnum,jdbcType=SMALLINT},
+      withDrawLessonNum = #{withdrawlessonnum,jdbcType=SMALLINT},
+      frozenLessonNum = #{frozenlessonnum,jdbcType=SMALLINT},
+      totalLessonNum = #{totallessonnum,jdbcType=SMALLINT}
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+</mapper>

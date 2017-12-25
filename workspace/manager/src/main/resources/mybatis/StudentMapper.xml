@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IStudentDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Student" >
+    <id column="memberId" property="memberid" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="classID" property="classid" jdbcType="VARCHAR" />
+    <result column="gradeId" property="gradeid" jdbcType="VARCHAR" />
+    <result column="schoolId" property="schoolid" jdbcType="VARCHAR" />
+    <result column="picId" property="picid" jdbcType="VARCHAR" />
+    <result column="isStarMember" property="isstarmember" jdbcType="BIT" />
+    <result column="gentle" property="gentle" jdbcType="BIT" />
+    <result column="telNum" property="telnum" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    memberId, name, classID, gradeId, schoolId, picId, isStarMember, gentle, telNum
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    where memberId = #{memberid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from student
+    where memberId = #{memberid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Student" >
+    insert into student (memberId, name, classID, 
+      gradeId, schoolId, picId, 
+      isStarMember, gentle, telNum
+      )
+    values (#{memberid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{classid,jdbcType=VARCHAR}, 
+      #{gradeid,jdbcType=VARCHAR}, #{schoolid,jdbcType=VARCHAR}, #{picid,jdbcType=VARCHAR}, 
+      #{isstarmember,jdbcType=BIT}, #{gentle,jdbcType=BIT}, #{telnum,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Student" >
+    insert into student
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="memberid != null" >
+        memberId,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="classid != null" >
+        classID,
+      </if>
+      <if test="gradeid != null" >
+        gradeId,
+      </if>
+      <if test="schoolid != null" >
+        schoolId,
+      </if>
+      <if test="picid != null" >
+        picId,
+      </if>
+      <if test="isstarmember != null" >
+        isStarMember,
+      </if>
+      <if test="gentle != null" >
+        gentle,
+      </if>
+      <if test="telnum != null" >
+        telNum,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="memberid != null" >
+        #{memberid,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="classid != null" >
+        #{classid,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeid != null" >
+        #{gradeid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolid != null" >
+        #{schoolid,jdbcType=VARCHAR},
+      </if>
+      <if test="picid != null" >
+        #{picid,jdbcType=VARCHAR},
+      </if>
+      <if test="isstarmember != null" >
+        #{isstarmember,jdbcType=BIT},
+      </if>
+      <if test="gentle != null" >
+        #{gentle,jdbcType=BIT},
+      </if>
+      <if test="telnum != null" >
+        #{telnum,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Student" >
+    update student
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="classid != null" >
+        classID = #{classid,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeid != null" >
+        gradeId = #{gradeid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolid != null" >
+        schoolId = #{schoolid,jdbcType=VARCHAR},
+      </if>
+      <if test="picid != null" >
+        picId = #{picid,jdbcType=VARCHAR},
+      </if>
+      <if test="isstarmember != null" >
+        isStarMember = #{isstarmember,jdbcType=BIT},
+      </if>
+      <if test="gentle != null" >
+        gentle = #{gentle,jdbcType=BIT},
+      </if>
+      <if test="telnum != null" >
+        telNum = #{telnum,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where memberId = #{memberid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Student" >
+    update student
+    set name = #{name,jdbcType=VARCHAR},
+      classID = #{classid,jdbcType=VARCHAR},
+      gradeId = #{gradeid,jdbcType=VARCHAR},
+      schoolId = #{schoolid,jdbcType=VARCHAR},
+      picId = #{picid,jdbcType=VARCHAR},
+      isStarMember = #{isstarmember,jdbcType=BIT},
+      gentle = #{gentle,jdbcType=BIT},
+      telNum = #{telnum,jdbcType=VARCHAR}
+    where memberId = #{memberid,jdbcType=VARCHAR}
+  </update>
+</mapper>

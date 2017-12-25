@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IPictureDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Picture" >
+    <id column="picId" property="picid" jdbcType="VARCHAR" />
+    <result column="picUrl" property="picurl" jdbcType="VARCHAR" />
+    <result column="picName" property="picname" jdbcType="VARCHAR" />
+    <result column="picType" property="pictype" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    picId, picUrl, picName, picType
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from picture
+    where picId = #{picid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from picture
+    where picId = #{picid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Picture" >
+    insert into picture (picId, picUrl, picName, 
+      picType)
+    values (#{picid,jdbcType=VARCHAR}, #{picurl,jdbcType=VARCHAR}, #{picname,jdbcType=VARCHAR}, 
+      #{pictype,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Picture" >
+    insert into picture
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="picid != null" >
+        picId,
+      </if>
+      <if test="picurl != null" >
+        picUrl,
+      </if>
+      <if test="picname != null" >
+        picName,
+      </if>
+      <if test="pictype != null" >
+        picType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="picid != null" >
+        #{picid,jdbcType=VARCHAR},
+      </if>
+      <if test="picurl != null" >
+        #{picurl,jdbcType=VARCHAR},
+      </if>
+      <if test="picname != null" >
+        #{picname,jdbcType=VARCHAR},
+      </if>
+      <if test="pictype != null" >
+        #{pictype,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Picture" >
+    update picture
+    <set >
+      <if test="picurl != null" >
+        picUrl = #{picurl,jdbcType=VARCHAR},
+      </if>
+      <if test="picname != null" >
+        picName = #{picname,jdbcType=VARCHAR},
+      </if>
+      <if test="pictype != null" >
+        picType = #{pictype,jdbcType=TINYINT},
+      </if>
+    </set>
+    where picId = #{picid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Picture" >
+    update picture
+    set picUrl = #{picurl,jdbcType=VARCHAR},
+      picName = #{picname,jdbcType=VARCHAR},
+      picType = #{pictype,jdbcType=TINYINT}
+    where picId = #{picid,jdbcType=VARCHAR}
+  </update>
+</mapper>

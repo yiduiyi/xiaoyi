@@ -241,7 +241,7 @@
                 </configuration>
             </plugin>
         </plugins>
-		<finalName>test-spring</finalName>
+		<finalName>xiaoyi</finalName>
 	</build>
 
 </project>

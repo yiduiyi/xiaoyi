@@ -17,11 +17,21 @@ public class TestAccount {
 	@Resource  
 	private IAccountService accountService;  
 	
-	@Test
+	//@Test
 	public void test() {
 		 Account account = accountService.getAccountById("testtesttest"); 
 		 logger.info("test logger");
 	     logger.info(JSON.toJSONString(account));  
 	}
 
+	@Test
+	public void testTransation(){
+		Account account = new Account();
+		account.setAccountid("testaccount");
+		account.setAccountnumber("15733932994");
+		account.setAccounttype(0);
+		account.setStatus(1);
+		
+		accountService.insertAccount(account);
+	}
 }

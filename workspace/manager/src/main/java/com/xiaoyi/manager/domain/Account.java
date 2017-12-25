@@ -3,11 +3,11 @@ package com.xiaoyi.manager.domain;
 public class Account {
     private String accountid;
 
-    private Byte accounttype;
+    private int accounttype;
 
     private String accountnumber;
 
-    private Byte status;
+    private int status;
 
     public String getAccountid() {
         return accountid;
@@ -17,12 +17,12 @@ public class Account {
         this.accountid = accountid == null ? null : accountid.trim();
     }
 
-    public Byte getAccounttype() {
+    public int getAccounttype() {
         return accounttype;
     }
 
-    public void setAccounttype(Byte accounttype) {
-        this.accounttype = accounttype;
+    public void setAccounttype(int i) {
+        this.accounttype = i;
     }
 
     public String getAccountnumber() {
@@ -33,11 +33,11 @@ public class Account {
         this.accountnumber = accountnumber == null ? null : accountnumber.trim();
     }
 
-    public Byte getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.ISchoolDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.School" >
+    <id column="schoolId" property="schoolid" jdbcType="VARCHAR" />
+    <result column="schoolName" property="schoolname" jdbcType="VARCHAR" />
+    <result column="schoolAddress" property="schooladdress" jdbcType="VARCHAR" />
+    <result column="termInfo" property="terminfo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    schoolId, schoolName, schoolAddress, termInfo
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from school
+    where schoolId = #{schoolid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from school
+    where schoolId = #{schoolid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.School" >
+    insert into school (schoolId, schoolName, schoolAddress, 
+      termInfo)
+    values (#{schoolid,jdbcType=VARCHAR}, #{schoolname,jdbcType=VARCHAR}, #{schooladdress,jdbcType=VARCHAR}, 
+      #{terminfo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.School" >
+    insert into school
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="schoolid != null" >
+        schoolId,
+      </if>
+      <if test="schoolname != null" >
+        schoolName,
+      </if>
+      <if test="schooladdress != null" >
+        schoolAddress,
+      </if>
+      <if test="terminfo != null" >
+        termInfo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="schoolid != null" >
+        #{schoolid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolname != null" >
+        #{schoolname,jdbcType=VARCHAR},
+      </if>
+      <if test="schooladdress != null" >
+        #{schooladdress,jdbcType=VARCHAR},
+      </if>
+      <if test="terminfo != null" >
+        #{terminfo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.School" >
+    update school
+    <set >
+      <if test="schoolname != null" >
+        schoolName = #{schoolname,jdbcType=VARCHAR},
+      </if>
+      <if test="schooladdress != null" >
+        schoolAddress = #{schooladdress,jdbcType=VARCHAR},
+      </if>
+      <if test="terminfo != null" >
+        termInfo = #{terminfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where schoolId = #{schoolid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.School" >
+    update school
+    set schoolName = #{schoolname,jdbcType=VARCHAR},
+      schoolAddress = #{schooladdress,jdbcType=VARCHAR},
+      termInfo = #{terminfo,jdbcType=VARCHAR}
+    where schoolId = #{schoolid,jdbcType=VARCHAR}
+  </update>
+</mapper>

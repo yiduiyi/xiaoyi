@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.ISuggestionsDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Suggestions" >
+    <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
+    <result column="situations" property="situations" jdbcType="VARCHAR" />
+    <result column="suggestions" property="suggestions" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lessonTradeId, situations, suggestions
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from suggestions
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from suggestions
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Suggestions" >
+    insert into suggestions (lessonTradeId, situations, suggestions
+      )
+    values (#{lessontradeid,jdbcType=VARCHAR}, #{situations,jdbcType=VARCHAR}, #{suggestions,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Suggestions" >
+    insert into suggestions
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lessontradeid != null" >
+        lessonTradeId,
+      </if>
+      <if test="situations != null" >
+        situations,
+      </if>
+      <if test="suggestions != null" >
+        suggestions,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lessontradeid != null" >
+        #{lessontradeid,jdbcType=VARCHAR},
+      </if>
+      <if test="situations != null" >
+        #{situations,jdbcType=VARCHAR},
+      </if>
+      <if test="suggestions != null" >
+        #{suggestions,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Suggestions" >
+    update suggestions
+    <set >
+      <if test="situations != null" >
+        situations = #{situations,jdbcType=VARCHAR},
+      </if>
+      <if test="suggestions != null" >
+        suggestions = #{suggestions,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Suggestions" >
+    update suggestions
+    set situations = #{situations,jdbcType=VARCHAR},
+      suggestions = #{suggestions,jdbcType=VARCHAR}
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+  </update>
+</mapper>

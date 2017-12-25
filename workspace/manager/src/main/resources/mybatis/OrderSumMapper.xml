@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IOrderSumDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.OrderSum" >
+    <id column="lessonType" property="lessontype" jdbcType="INTEGER" />
+    <id column="orderId" property="orderid" jdbcType="VARCHAR" />
+    <id column="parentId" property="parentid" jdbcType="VARCHAR" />
+    <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="purchaseTime" property="purchasetime" jdbcType="TIMESTAMP" />
+    <result column="totalLessonNum" property="totallessonnum" jdbcType="SMALLINT" />
+    <result column="lessonLeftNum" property="lessonleftnum" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lessonType, orderId, parentId, teacherId, purchaseTime, totalLessonNum, lessonLeftNum
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiaoyi.manager.domain.OrderSumKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from ordersum
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+      and orderId = #{orderid,jdbcType=VARCHAR}
+      and parentId = #{parentid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.OrderSumKey" >
+    delete from ordersum
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+      and orderId = #{orderid,jdbcType=VARCHAR}
+      and parentId = #{parentid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.OrderSum" >
+    insert into ordersum (lessonType, orderId, parentId, 
+      teacherId, purchaseTime, totalLessonNum, 
+      lessonLeftNum)
+    values (#{lessontype,jdbcType=INTEGER}, #{orderid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, 
+      #{teacherid,jdbcType=VARCHAR}, #{purchasetime,jdbcType=TIMESTAMP}, #{totallessonnum,jdbcType=SMALLINT}, 
+      #{lessonleftnum,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.OrderSum" >
+    insert into ordersum
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lessontype != null" >
+        lessonType,
+      </if>
+      <if test="orderid != null" >
+        orderId,
+      </if>
+      <if test="parentid != null" >
+        parentId,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="purchasetime != null" >
+        purchaseTime,
+      </if>
+      <if test="totallessonnum != null" >
+        totalLessonNum,
+      </if>
+      <if test="lessonleftnum != null" >
+        lessonLeftNum,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lessontype != null" >
+        #{lessontype,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasetime != null" >
+        #{purchasetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totallessonnum != null" >
+        #{totallessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="lessonleftnum != null" >
+        #{lessonleftnum,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.OrderSum" >
+    update ordersum
+    <set >
+      <if test="purchasetime != null" >
+        purchaseTime = #{purchasetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totallessonnum != null" >
+        totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="lessonleftnum != null" >
+        lessonLeftNum = #{lessonleftnum,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+      and orderId = #{orderid,jdbcType=VARCHAR}
+      and parentId = #{parentid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.OrderSum" >
+    update ordersum
+    set purchaseTime = #{purchasetime,jdbcType=TIMESTAMP},
+      totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
+      lessonLeftNum = #{lessonleftnum,jdbcType=SMALLINT}
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+      and orderId = #{orderid,jdbcType=VARCHAR}
+      and parentId = #{parentid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+</mapper>

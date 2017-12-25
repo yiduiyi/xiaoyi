@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IOrdersDao" >
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.OrdersKey" >
+    delete from orders
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+      and orderId = #{orderid,jdbcType=VARCHAR}
+      and parentId = #{parentid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Orders" >
+    insert into orders (lessonType, orderId, parentId, 
+      teacherId, createTime, purchaseNum
+      )
+    values (#{lessontype,jdbcType=INTEGER}, #{orderid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, 
+      #{teacherid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{purchasenum,jdbcType=SMALLINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Orders" >
+    insert into orders
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lessontype != null" >
+        lessonType,
+      </if>
+      <if test="orderid != null" >
+        orderId,
+      </if>
+      <if test="parentid != null" >
+        parentId,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="purchasenum != null" >
+        purchaseNum,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lessontype != null" >
+        #{lessontype,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchasenum != null" >
+        #{purchasenum,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Orders" >
+    update orders
+    <set >
+      <if test="createtime != null" >
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchasenum != null" >
+        purchaseNum = #{purchasenum,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+      and orderId = #{orderid,jdbcType=VARCHAR}
+      and parentId = #{parentid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Orders" >
+    update orders
+    set createTime = #{createtime,jdbcType=TIMESTAMP},
+      purchaseNum = #{purchasenum,jdbcType=SMALLINT}
+    where lessonType = #{lessontype,jdbcType=INTEGER}
+      and orderId = #{orderid,jdbcType=VARCHAR}
+      and parentId = #{parentid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+</mapper>

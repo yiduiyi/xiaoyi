@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IClassDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Class" >
+    <id column="classID" property="classid" jdbcType="VARCHAR" />
+    <id column="gradeId" property="gradeid" jdbcType="VARCHAR" />
+    <id column="schoolId" property="schoolid" jdbcType="VARCHAR" />
+    <result column="className" property="classname" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    classID, gradeId, schoolId, className
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiaoyi.manager.domain.ClassKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from class
+    where classID = #{classid,jdbcType=VARCHAR}
+      and gradeId = #{gradeid,jdbcType=VARCHAR}
+      and schoolId = #{schoolid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.ClassKey" >
+    delete from class
+    where classID = #{classid,jdbcType=VARCHAR}
+      and gradeId = #{gradeid,jdbcType=VARCHAR}
+      and schoolId = #{schoolid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Class" >
+    insert into class (classID, gradeId, schoolId, 
+      className)
+    values (#{classid,jdbcType=VARCHAR}, #{gradeid,jdbcType=VARCHAR}, #{schoolid,jdbcType=VARCHAR}, 
+      #{classname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Class" >
+    insert into class
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="classid != null" >
+        classID,
+      </if>
+      <if test="gradeid != null" >
+        gradeId,
+      </if>
+      <if test="schoolid != null" >
+        schoolId,
+      </if>
+      <if test="classname != null" >
+        className,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="classid != null" >
+        #{classid,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeid != null" >
+        #{gradeid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolid != null" >
+        #{schoolid,jdbcType=VARCHAR},
+      </if>
+      <if test="classname != null" >
+        #{classname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Class" >
+    update class
+    <set >
+      <if test="classname != null" >
+        className = #{classname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where classID = #{classid,jdbcType=VARCHAR}
+      and gradeId = #{gradeid,jdbcType=VARCHAR}
+      and schoolId = #{schoolid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Class" >
+    update class
+    set className = #{classname,jdbcType=VARCHAR}
+    where classID = #{classid,jdbcType=VARCHAR}
+      and gradeId = #{gradeid,jdbcType=VARCHAR}
+      and schoolId = #{schoolid,jdbcType=VARCHAR}
+  </update>
+</mapper>
