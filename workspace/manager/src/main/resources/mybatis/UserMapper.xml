@@ -13,14 +13,19 @@
   <sql id="Base_Column_List" >
     userAccountId, userId, userName, password, userType, userPrivilege, loginStatus
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiaoyi.manager.domain.UserKey" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiaoyi.manager.domain.User" >
     select 
     <include refid="Base_Column_List" />
     from user
-    where userAccountId = #{useraccountid,jdbcType=VARCHAR}
-      and userId = #{userid,jdbcType=VARCHAR}
+    where 
+    <if test="username!=null">
+    	userName = #{username}
+    </if>
+    <if test="useraccountid!=null">    
+      	userAccountId = #{useraccountid,jdbcType=VARCHAR}
+    </if>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.UserKey" >
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.User" >
     delete from user
     where userAccountId = #{useraccountid,jdbcType=VARCHAR}
       and userId = #{userid,jdbcType=VARCHAR}

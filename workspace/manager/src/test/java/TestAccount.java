@@ -23,8 +23,7 @@ public class TestAccount {
 		 logger.info("test logger");
 	     logger.info(JSON.toJSONString(account));  
 	}
-
-	@Test
+@Test
 	public void testTransation(){
 		Account account = new Account();
 		account.setAccountid("testaccount");
