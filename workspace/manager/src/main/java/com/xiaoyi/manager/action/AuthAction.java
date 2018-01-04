@@ -20,13 +20,13 @@ import com.xiaoyi.manager.service.ILoginService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 @Controller
-@RequestMapping("/login")
+@RequestMapping("/identify")
 public class AuthAction {
 	
 	@Resource
 	private ILoginService loginService;
 	
-	@RequestMapping(value="/identify",method=RequestMethod.POST)
+	@RequestMapping(value="/login",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject login(HttpServletRequest request
 			,HttpServletResponse response,
@@ -50,10 +50,41 @@ public class AuthAction {
 			request.getSession().setAttribute("userBean", loginUser); 			
 		}
 		
-		result.put("code", rtCode.getCode());
-		result.put("msg", rtCode.toString());
-		
+		setReturnMsg(result, rtCode);		
 		return result;
 	}
     
+	@RequestMapping(value="/logout",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject logout(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		HttpSession session = request.getSession();
+		//设置session回话过期，更新用户登录状态
+		if(null!=session){
+			User user = (User) session.getAttribute("userBean");
+			
+			if(null!=user){
+				user.setLoginstatus(false);
+				if(0<=loginService.userLogout(user)){
+					rtCode = RtConstants.SUCCESS;
+				}
+			}
+			
+			session.removeAttribute("userBean");
+			session.invalidate();
+		}
+		
+		setReturnMsg(result, rtCode);
+		return result;
+	}
+	
+	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
+		result.put("code", rtCode.getCode());
+		result.put("msg", rtCode.toString());
+		return result;
+	}
 }

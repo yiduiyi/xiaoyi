@@ -65,15 +65,21 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
         log.info("contextPath:"+contextPath);
         log.info("url:"+url);
 
-        User user =  (User) request.getSession().getAttribute("userbean");
-        if(user == null){
-            response.setCharacterEncoding("UTF-8");
-            log.info("Interceptor：跳转到login页面！");
-            response.sendRedirect("/xiaoyi");
-            //request.getd
-            return false;
-        }else
-            return true;
+        HttpSession session = request.getSession();
+        if(null!=session){
+        	User user =  (User) session.getAttribute("userBean");
+
+	        if(user == null){
+	            response.setCharacterEncoding("UTF-8");
+	            log.info("Interceptor：跳转到login页面！");
+	            response.sendRedirect("/xiaoyi");
+	            //request.getd
+	            return false;
+	        }else{
+	            return true;
+	        }
+        }
+        return false;
     }
 
     /**

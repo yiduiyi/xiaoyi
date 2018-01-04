@@ -41,4 +41,15 @@ public class LoginServiceImpl implements ILoginService {
 		return null;
 	}
 
+	@Override
+	public int userLogout(User user) {
+		try {
+			int count = userDao.updateByPrimaryKey(user);
+			return count;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}		
+	}
+
 }
