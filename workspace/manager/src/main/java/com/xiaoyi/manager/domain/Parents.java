@@ -3,8 +3,6 @@ package com.xiaoyi.manager.domain;
 public class Parents {
     private String parentid;
 
-    private String memberid;
-
     private String parentname;
 
     private String telnum;
@@ -19,14 +17,6 @@ public class Parents {
 
     public void setParentid(String parentid) {
         this.parentid = parentid == null ? null : parentid.trim();
-    }
-
-    public String getMemberid() {
-        return memberid;
-    }
-
-    public void setMemberid(String memberid) {
-        this.memberid = memberid == null ? null : memberid.trim();
     }
 
     public String getParentname() {

@@ -3,14 +3,16 @@
 <mapper namespace="com.xiaoyi.manager.dao.IScheduleDao" >
   <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Schedule" >
     <id column="scheduleId" property="scheduleid" jdbcType="VARCHAR" />
-    <result column="parentId" property="parentid" jdbcType="VARCHAR" />
     <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="memberId" property="memberid" jdbcType="VARCHAR" />
+    <result column="parentId" property="parentid" jdbcType="VARCHAR" />
+    <result column="lessonType" property="lessontype" jdbcType="INTEGER" />
     <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
     <result column="status" property="status" jdbcType="TINYINT" />
     <result column="notes" property="notes" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    scheduleId, parentId, teacherId, createTime, status, notes
+    scheduleId, teacherId, memberId, parentId, lessonType, createTime, status, notes
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -23,12 +25,12 @@
     where scheduleId = #{scheduleid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.Schedule" >
-    insert into schedule (scheduleId, parentId, teacherId, 
-      createTime, status, notes
-      )
-    values (#{scheduleid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, #{notes,jdbcType=VARCHAR}
-      )
+    insert into schedule (scheduleId, teacherId, memberId, 
+      parentId, lessonType, createTime, 
+      status, notes)
+    values (#{scheduleid,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{memberid,jdbcType=VARCHAR}, 
+      #{parentid,jdbcType=VARCHAR}, #{lessontype,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=TINYINT}, #{notes,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Schedule" >
     insert into schedule
@@ -36,11 +38,17 @@
       <if test="scheduleid != null" >
         scheduleId,
       </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="memberid != null" >
+        memberId,
+      </if>
       <if test="parentid != null" >
         parentId,
       </if>
-      <if test="teacherid != null" >
-        teacherId,
+      <if test="lessontype != null" >
+        lessonType,
       </if>
       <if test="createtime != null" >
         createTime,
@@ -56,11 +64,17 @@
       <if test="scheduleid != null" >
         #{scheduleid,jdbcType=VARCHAR},
       </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="memberid != null" >
+        #{memberid,jdbcType=VARCHAR},
+      </if>
       <if test="parentid != null" >
         #{parentid,jdbcType=VARCHAR},
       </if>
-      <if test="teacherid != null" >
-        #{teacherid,jdbcType=VARCHAR},
+      <if test="lessontype != null" >
+        #{lessontype,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -76,11 +90,17 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Schedule" >
     update schedule
     <set >
+      <if test="teacherid != null" >
+        teacherId = #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="memberid != null" >
+        memberId = #{memberid,jdbcType=VARCHAR},
+      </if>
       <if test="parentid != null" >
         parentId = #{parentid,jdbcType=VARCHAR},
       </if>
-      <if test="teacherid != null" >
-        teacherId = #{teacherid,jdbcType=VARCHAR},
+      <if test="lessontype != null" >
+        lessonType = #{lessontype,jdbcType=INTEGER},
       </if>
       <if test="createtime != null" >
         createTime = #{createtime,jdbcType=TIMESTAMP},
@@ -96,8 +116,10 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Schedule" >
     update schedule
-    set parentId = #{parentid,jdbcType=VARCHAR},
-      teacherId = #{teacherid,jdbcType=VARCHAR},
+    set teacherId = #{teacherid,jdbcType=VARCHAR},
+      memberId = #{memberid,jdbcType=VARCHAR},
+      parentId = #{parentid,jdbcType=VARCHAR},
+      lessonType = #{lessontype,jdbcType=INTEGER},
       createTime = #{createtime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=TINYINT},
       notes = #{notes,jdbcType=VARCHAR}

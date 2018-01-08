@@ -3,6 +3,7 @@ package com.xiaoyi.common.filter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -14,8 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.xiaoyi.manager.domain.User;
+import com.xiaoyi.manager.service.ILoginService;
 
 public class SessionFilter implements Filter {
+	@Resource
+	ILoginService loginService;
+	
 	public void destroy() {
         // TODO Auto-generated method stub
     }
@@ -24,6 +29,14 @@ public class SessionFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         HttpSession session = httpRequest.getSession();
+        
+        //更新用户登录状态
+        User user = (User) session.getAttribute("userBean");
+        if(null!=user){
+        	user.setLoginstatus(false);
+        	loginService.userLogout(user);
+        }
+        
         // 登陆url
         String loginUrl = httpRequest.getContextPath() + "/xiaoyi/index.jsp";
         String url = httpRequest.getRequestURI();

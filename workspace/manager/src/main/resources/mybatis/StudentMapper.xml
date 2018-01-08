@@ -21,6 +21,17 @@
     from student
     where memberId = #{memberid,jdbcType=VARCHAR}
   </select>
+  
+  <select id="selectByStuIds" parameterType="java.util.List" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from student
+  	where memberId in
+  	<foreach collection="list" open="(" close=")" item="item" separator=",">
+  		#{item}
+  	</foreach>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from student
     where memberId = #{memberid,jdbcType=VARCHAR}

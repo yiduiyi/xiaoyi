@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IParentStuRelationDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.ParentStuRelation" >
+    <id column="memberId" property="memberid" jdbcType="VARCHAR" />
+    <id column="parentId" property="parentid" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.ParentStuRelation" >
+    delete from parent_stu_r
+    where memberId = #{memberid,jdbcType=VARCHAR}
+      and parentId = #{parentid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.ParentStuRelation" >
+    insert into parent_stu_r (memberId, parentId)
+    values (#{memberid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.ParentStuRelation" >
+    insert into parent_stu_r
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="memberid != null" >
+        memberId,
+      </if>
+      <if test="parentid != null" >
+        parentId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="memberid != null" >
+        #{memberid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="selectRelationsByParentId" resultMap="BaseResultMap" parameterType="String">
+  	SELECT *
+  	FROM parent_stu_r
+  	WHERE
+		parentId = #{parentid,jdbcType=VARCHAR}
+  </select>
+</mapper>

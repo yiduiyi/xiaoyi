@@ -2,15 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaoyi.manager.dao.IParentsDao" >
   <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Parents" >
-    <id column="parentId" property="parentid" jdbcType="VARCHAR" />
-    <result column="memberId" property="memberid" jdbcType="VARCHAR" />
+    <id column="parentId" property="parentid" jdbcType="VARCHAR" />    
     <result column="parentName" property="parentname" jdbcType="VARCHAR" />
     <result column="telNum" property="telnum" jdbcType="VARCHAR" />
     <result column="weChatNum" property="wechatnum" jdbcType="VARCHAR" />
     <result column="openId" property="openid" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    parentId, memberId, parentName, telNum, weChatNum, openId
+    parentId, parentName, telNum, weChatNum, openId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -18,15 +17,21 @@
     from parents
     where parentId = #{parentid,jdbcType=VARCHAR}
   </select>
+  <select id="selectByOpenId" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	 select 
+    <include refid="Base_Column_List" />
+    from parents
+    where openId = #{openid,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from parents
     where parentId = #{parentid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.Parents" >
-    insert into parents (parentId, memberId, parentName, 
+    insert into parents (parentId, parentName, 
       telNum, weChatNum, openId
       )
-    values (#{parentid,jdbcType=VARCHAR}, #{memberid,jdbcType=VARCHAR}, #{parentname,jdbcType=VARCHAR}, 
+    values (#{parentid,jdbcType=VARCHAR}, #{parentname,jdbcType=VARCHAR}, 
       #{telnum,jdbcType=VARCHAR}, #{wechatnum,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}
       )
   </insert>
@@ -36,9 +41,7 @@
       <if test="parentid != null" >
         parentId,
       </if>
-      <if test="memberid != null" >
-        memberId,
-      </if>
+
       <if test="parentname != null" >
         parentName,
       </if>
@@ -55,9 +58,6 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="parentid != null" >
         #{parentid,jdbcType=VARCHAR},
-      </if>
-      <if test="memberid != null" >
-        #{memberid,jdbcType=VARCHAR},
       </if>
       <if test="parentname != null" >
         #{parentname,jdbcType=VARCHAR},
@@ -76,9 +76,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Parents" >
     update parents
     <set >
-      <if test="memberid != null" >
-        memberId = #{memberid,jdbcType=VARCHAR},
-      </if>
       <if test="parentname != null" >
         parentName = #{parentname,jdbcType=VARCHAR},
       </if>
@@ -96,7 +93,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Parents" >
     update parents
-    set memberId = #{memberid,jdbcType=VARCHAR},
+    set 
       parentName = #{parentname,jdbcType=VARCHAR},
       telNum = #{telnum,jdbcType=VARCHAR},
       weChatNum = #{wechatnum,jdbcType=VARCHAR},

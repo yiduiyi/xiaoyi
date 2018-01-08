@@ -10,7 +10,8 @@ public interface IParentsDao {
     int insertSelective(Parents record);
 
     Parents selectByPrimaryKey(String parentid);
-
+    Parents selectByOpenId(String openId);
+    
     int updateByPrimaryKeySelective(Parents record);
 
     int updateByPrimaryKey(Parents record);

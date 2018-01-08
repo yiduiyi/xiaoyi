@@ -6,6 +6,31 @@ package com.xiaoyi.manager.utils.constant;
  */
 public class ResponseConstants {
 	
+	public enum LoginConstants{
+		SUCCESS(0),	
+		FAILED(-1),	
+		INVALIDE_USERNAME(-2);
+		
+		private int rtCode;
+		private LoginConstants(int code){
+			this.rtCode = code;
+		}
+		
+		@Override
+		public String toString(){
+			switch(rtCode){
+			case 0:
+				return "登录成功！";
+			case -1:
+				return "登录失败！";
+			case -2:
+				return "【用户名】参数不正确！";
+			}
+			return null;
+		}
+	}
+	
+	
 	public enum RtConstants{
 		SUCCESS(0),			
 		FAILED(1),

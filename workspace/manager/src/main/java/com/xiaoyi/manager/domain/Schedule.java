@@ -5,9 +5,13 @@ import java.util.Date;
 public class Schedule {
     private String scheduleid;
 
+    private String teacherid;
+
+    private String memberid;
+
     private String parentid;
 
-    private String teacherid;
+    private Integer lessontype;
 
     private Date createtime;
 
@@ -23,6 +27,22 @@ public class Schedule {
         this.scheduleid = scheduleid == null ? null : scheduleid.trim();
     }
 
+    public String getTeacherid() {
+        return teacherid;
+    }
+
+    public void setTeacherid(String teacherid) {
+        this.teacherid = teacherid == null ? null : teacherid.trim();
+    }
+
+    public String getMemberid() {
+        return memberid;
+    }
+
+    public void setMemberid(String memberid) {
+        this.memberid = memberid == null ? null : memberid.trim();
+    }
+
     public String getParentid() {
         return parentid;
     }
@@ -31,12 +51,12 @@ public class Schedule {
         this.parentid = parentid == null ? null : parentid.trim();
     }
 
-    public String getTeacherid() {
-        return teacherid;
+    public Integer getLessontype() {
+        return lessontype;
     }
 
-    public void setTeacherid(String teacherid) {
-        this.teacherid = teacherid == null ? null : teacherid.trim();
+    public void setLessontype(Integer lessontype) {
+        this.lessontype = lessontype;
     }
 
     public Date getCreatetime() {

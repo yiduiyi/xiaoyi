@@ -17,8 +17,14 @@ import com.xiaoyi.manager.domain.Account;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.IAccountService;
 import com.xiaoyi.manager.service.ILoginService;
+import com.xiaoyi.manager.utils.constant.ResponseConstants.LoginConstants;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
+/**
+ * 1.	用户登录
+ * @author dengzhihua
+ *
+ */
 @Controller
 @RequestMapping("/identify")
 public class AuthAction {
@@ -61,12 +67,18 @@ public class AuthAction {
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
+		String userName = reqData.getString("userName");
 		
 		HttpSession session = request.getSession();
 		//设置session回话过期，更新用户登录状态
 		if(null!=session){
 			User user = (User) session.getAttribute("userBean");
 			
+			if(user.getUsername()==null 
+					|| !user.getUsername().equals(userName)){
+				LoginConstants loginStatus = LoginConstants.INVALIDE_USERNAME;
+				//setReturnMsg(result, LoginConstants)
+			}
 			if(null!=user){
 				user.setLoginstatus(false);
 				if(0<=loginService.userLogout(user)){
