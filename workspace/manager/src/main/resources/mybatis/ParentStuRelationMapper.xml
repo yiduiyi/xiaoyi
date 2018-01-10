@@ -38,6 +38,6 @@
   	SELECT *
   	FROM parent_stu_r
   	WHERE
-		parentId = #{parentid,jdbcType=VARCHAR}
+		parentId = #{parentId,jdbcType=VARCHAR}
   </select>
 </mapper>

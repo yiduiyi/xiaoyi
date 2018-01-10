@@ -1,5 +1,7 @@
 package com.xiaoyi.manager.action;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +35,7 @@ public class ScheduleAction {
 	@Resource
 	private IScheduleService scheduleService;
 	
-	@RequestMapping(value="/add",method=RequestMethod.POST)
+	@RequestMapping(value="/addSchedule",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject addSchedule(HttpServletRequest request
 			,HttpServletResponse response,
@@ -54,8 +56,71 @@ public class ScheduleAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
-    
 	
+	@RequestMapping(value="/deleteSchedule",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject deleteSchedule(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			int rt = scheduleService.deleteSchedule(reqData.getString("scheduleId"));
+			if(rt>=0){
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+
+	@RequestMapping(value="/updateSchedule",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject updateSchedule(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			int rt = scheduleService.updateSchedule(reqData);
+			if(rt>=0){
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
+	@RequestMapping(value="/getScheduleList",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getScheduleList(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			List<JSONObject> datas = scheduleService.getScheduleList(reqData);
+			result.put("data", datas);
+			rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	//
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());
 		result.put("msg", rtCode.toString());

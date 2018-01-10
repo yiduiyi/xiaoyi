@@ -1,5 +1,9 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.Schedule;
 
 public interface IScheduleDao {
@@ -10,7 +14,8 @@ public interface IScheduleDao {
     int insertSelective(Schedule record);
 
     Schedule selectByPrimaryKey(String scheduleid);
-
+    List<JSONObject> selectListByConditions(Map<String,Object> params);
+    
     int updateByPrimaryKeySelective(Schedule record);
 
     int updateByPrimaryKey(Schedule record);

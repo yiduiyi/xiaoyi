@@ -4,16 +4,16 @@
   <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.OrdersKey" >
     delete from orders
     where lessonType = #{lessontype,jdbcType=INTEGER}
+      and memberId = #{memberid,jdbcType=VARCHAR}
       and orderId = #{orderid,jdbcType=VARCHAR}
       and parentId = #{parentid,jdbcType=VARCHAR}
-      and teacherId = #{teacherid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.Orders" >
-    insert into orders (lessonType, orderId, parentId, 
-      teacherId, createTime, purchaseNum
+    insert into orders (lessonType, memberId, orderId, 
+      parentId, createTime, purchaseNum
       )
-    values (#{lessontype,jdbcType=INTEGER}, #{orderid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, 
-      #{teacherid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{purchasenum,jdbcType=SMALLINT}
+    values (#{lessontype,jdbcType=INTEGER}, #{memberid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
+      #{parentid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{purchasenum,jdbcType=SMALLINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Orders" >
@@ -22,14 +22,14 @@
       <if test="lessontype != null" >
         lessonType,
       </if>
+      <if test="memberid != null" >
+        memberId,
+      </if>
       <if test="orderid != null" >
         orderId,
       </if>
       <if test="parentid != null" >
         parentId,
-      </if>
-      <if test="teacherid != null" >
-        teacherId,
       </if>
       <if test="createtime != null" >
         createTime,
@@ -42,14 +42,14 @@
       <if test="lessontype != null" >
         #{lessontype,jdbcType=INTEGER},
       </if>
+      <if test="memberid != null" >
+        #{memberid,jdbcType=VARCHAR},
+      </if>
       <if test="orderid != null" >
         #{orderid,jdbcType=VARCHAR},
       </if>
       <if test="parentid != null" >
         #{parentid,jdbcType=VARCHAR},
-      </if>
-      <if test="teacherid != null" >
-        #{teacherid,jdbcType=VARCHAR},
       </if>
       <if test="createtime != null" >
         #{createtime,jdbcType=TIMESTAMP},
@@ -70,17 +70,17 @@
       </if>
     </set>
     where lessonType = #{lessontype,jdbcType=INTEGER}
+      and memberId = #{memberid,jdbcType=VARCHAR}
       and orderId = #{orderid,jdbcType=VARCHAR}
       and parentId = #{parentid,jdbcType=VARCHAR}
-      and teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Orders" >
     update orders
     set createTime = #{createtime,jdbcType=TIMESTAMP},
       purchaseNum = #{purchasenum,jdbcType=SMALLINT}
     where lessonType = #{lessontype,jdbcType=INTEGER}
+      and memberId = #{memberid,jdbcType=VARCHAR}
       and orderId = #{orderid,jdbcType=VARCHAR}
       and parentId = #{parentid,jdbcType=VARCHAR}
-      and teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
 </mapper>

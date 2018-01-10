@@ -3,11 +3,11 @@ package com.xiaoyi.manager.domain;
 public class OrdersKey {
     private Integer lessontype;
 
+    private String memberid;
+
     private String orderid;
 
     private String parentid;
-
-    private String teacherid;
 
     public Integer getLessontype() {
         return lessontype;
@@ -15,6 +15,14 @@ public class OrdersKey {
 
     public void setLessontype(Integer lessontype) {
         this.lessontype = lessontype;
+    }
+
+    public String getMemberid() {
+        return memberid;
+    }
+
+    public void setMemberid(String memberid) {
+        this.memberid = memberid == null ? null : memberid.trim();
     }
 
     public String getOrderid() {
@@ -31,13 +39,5 @@ public class OrdersKey {
 
     public void setParentid(String parentid) {
         this.parentid = parentid == null ? null : parentid.trim();
-    }
-
-    public String getTeacherid() {
-        return teacherid;
-    }
-
-    public void setTeacherid(String teacherid) {
-        this.teacherid = teacherid == null ? null : teacherid.trim();
     }
 }

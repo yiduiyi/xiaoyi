@@ -1,30 +1,21 @@
 package com.xiaoyi.manager.service.impl;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.junit.experimental.theories.Theory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mysql.jdbc.StringUtils;
-import com.xiaoyi.manager.dao.IParentsDao;
 import com.xiaoyi.manager.dao.IScheduleDao;
-import com.xiaoyi.manager.dao.IStudentDao;
-import com.xiaoyi.manager.dao.IParentStuRelationDao;
 import com.xiaoyi.manager.domain.ParentStuRelation;
-import com.xiaoyi.manager.domain.Parents;
 import com.xiaoyi.manager.domain.Schedule;
-import com.xiaoyi.manager.domain.Student;
+import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.manager.service.IScheduleService;
 
 @Service("scheduleService")
@@ -33,13 +24,7 @@ public class ScheduleServiceImpl implements IScheduleService {
     private IScheduleDao scheduleDao;  
 	
 	@Resource
-	private IStudentDao studentDao;
-	
-	@Resource
-	private IParentsDao parentsDao;
-	
-	@Resource 
-	private IParentStuRelationDao relationDao;
+	private ICommonService commonService;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -50,100 +35,19 @@ public class ScheduleServiceImpl implements IScheduleService {
 		try {			
 			//查询/生成家长ID、学生Id
 			String parentId = null;
-			String studentId = null;
-			String stuName = schedule.getString("studentName");
-			
-			boolean hasRelation = false;
+			String studentId = null;			
 			
 			try {
-				logger.info("query params:{openId+"+schedule.getString("openId")+"}");
-				try {
-					logger.info("根据openId查询家长角色【params】：{openId:"+schedule.get("openId")+"}");
-					Parents parents = parentsDao.selectByOpenId(schedule.getString("openId"));
-					if(null!=parents){
-						parentId = parents.getParentid();
-					}else{
-						parentId = UUID.randomUUID().toString();
-					}
-				} catch (Exception e) {
-					logger.info("查询家长出错！");
-					throw e;
-				}							
+				JSONObject relations = commonService.addOrGetPSR(schedule);
+				if(null==relations){
+					return -1;
+				}
 				
-				//查询家长-学生关系
-				try {
-					List<String> stuIds = new ArrayList<String>();
-					List<ParentStuRelation> relations = relationDao.selectRelationsByParentId(parentId);
-					//已存在该家长
-					if(!CollectionUtils.isEmpty(relations)){
-						for(ParentStuRelation r : relations){
-							stuIds.add(r.getMemberid());
-						}
-						if(!CollectionUtils.isEmpty(stuIds)){
-							try {
-								List<Student> stuList = studentDao.selectByStuIds(stuIds);
-								if(null!=stuList){
-									for(Student s : stuList){
-										if(s.getName().equals(stuName)){
-											hasRelation = true;
-											studentId = s.getMemberid();
-											break;
-										}
-									}
-								}
-							} catch (Exception e) {
-								throw e;							
-							}							
-						}
-					}else{						
-						Parents parent = new Parents();
-						parent.setParentid(UUID.randomUUID().toString());
-						parent.setOpenid(schedule.getString("openId"));
-						parent.setTelnum(schedule.getString("telNum"));
-						parent.setWechatnum(schedule.getString("weChatNum"));
-						
-						//新增家长
-						try {
-							parentsDao.insertSelective(parent);
-						} catch (Exception e) {
-							logger.info("插入家长失败！");
-							throw e;
-						}
-					}
-				} catch (Exception e) {
-					logger.info("内部错误！");
-					throw e;
-				}								
+				ParentStuRelation relation = (ParentStuRelation) relations.get("relation");
+				studentId = relation.getMemberid();
+				parentId = relation.getParentid();
 			} catch (Exception e) {
-				logger.info("查询家长角色出错！！");
-				throw e;
-			}
-			
-			//之前没有添加过该家长-学生的对应关系（添加关系）
-			if(!hasRelation){
-				studentId = UUID.randomUUID().toString();					
-				Student student = new Student();
-				student.setName(stuName);
-				student.setMemberid(studentId);
-				
-				//添加学生
-				try {
-					studentDao.insertSelective(student);					
-				} catch (Exception e) {
-					logger.info("插入学生失败！");
-				}
-				
-				//添加家长-学生关系
-				try {					
-					ParentStuRelation relation = new ParentStuRelation();
-					relation.setMemberid(studentId);
-					relation.setParentid(parentId);
-	
-					relationDao.insert(relation);
-				} catch (Exception e) {
-					logger.info("插入家长-学生关系出错！");
-					throw e;
-				}
+				logger.error("添加/获取家长-学生关系失败！");
 			}
 			
 			//添加预约条目
@@ -171,20 +75,37 @@ public class ScheduleServiceImpl implements IScheduleService {
 
 	@Override
 	public int deleteSchedule(String scheduleId) {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			return scheduleDao.deleteByPrimaryKey(scheduleId);
+		} catch (Exception e) {
+			logger.info("删除预约失败！");			
+			return -1;
+		}
 	}
 
 	@Override
 	public int updateSchedule(JSONObject schedule) {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			Schedule recode = new Schedule();
+			recode.setScheduleid(schedule.getString("scheduleId"));
+			recode.setNotes(schedule.getString("notes"));
+			recode.setStatus(schedule.getByte("status"));
+			
+			return scheduleDao.updateByPrimaryKeySelective(recode);
+		} catch (Exception e) {
+			return -1;
+		}		
 	}
 
 	@Override
-	public List<JSONObject> getScheduleList(JSONObject params) {
+	public List<JSONObject> getScheduleList(JSONObject params) throws Exception{
 		// TODO Auto-generated method stub
-		return null;
+		try {
+			return scheduleDao.selectListByConditions(params);
+		} catch (Exception e) {
+			logger.info("查询预约失败！");
+			throw e;
+		}		
 	}
 
 

@@ -9,6 +9,8 @@ public class OrderSum extends OrderSumKey {
 
     private Short lessonleftnum;
 
+    private String teacherids;
+
     public Date getPurchasetime() {
         return purchasetime;
     }
@@ -31,5 +33,13 @@ public class OrderSum extends OrderSumKey {
 
     public void setLessonleftnum(Short lessonleftnum) {
         this.lessonleftnum = lessonleftnum;
+    }
+
+    public String getTeacherids() {
+        return teacherids;
+    }
+
+    public void setTeacherids(String teacherids) {
+        this.teacherids = teacherids == null ? null : teacherids.trim();
     }
 }
