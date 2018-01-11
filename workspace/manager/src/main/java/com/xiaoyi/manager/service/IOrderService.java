@@ -24,4 +24,7 @@ public interface IOrderService {
 	int updateOrder(JSONObject params);
 	
 	List<JSONObject> getOrderList(JSONObject params) throws Exception;
+	
+	List<JSONObject> queryTeachingList(JSONObject params);
+	
 }

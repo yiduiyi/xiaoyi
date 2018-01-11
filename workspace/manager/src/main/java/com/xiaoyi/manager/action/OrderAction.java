@@ -59,6 +59,28 @@ public class OrderAction {
 	}
 	
 	
+	@RequestMapping(value="/teaching/getTeacher.do",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getTeacher(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			List<JSONObject> data = orderService.queryTeachingList(reqData);
+						
+			if(null!=data){
+				rtCode = RtConstants.SUCCESS;
+				result.put("data", data);
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+	
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
 	//
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());

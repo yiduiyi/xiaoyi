@@ -58,12 +58,12 @@
 
 	<!-- 设置回话时长 -->
 	<session-config>
-		<session-timeout>20</session-timeout>
+		<session-timeout>2</session-timeout>
 	</session-config>
 	    <!-- session过滤器配置相关 -->
     <filter>
         <filter-name>SessionFilter</filter-name>
-        <filter-class>om.xiaoyi.common.filter.SessionFilter</filter-class>
+        <filter-class>com.xiaoyi.common.filter.SessionFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>SessionFilter</filter-name>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.order.ITeachingDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher" >
+    <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="teacherName" property="teachername" jdbcType="VARCHAR" />
+    <result column="teachingId" property="teachingid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    teacherId, teacherName, teachingId
+  </sql>
+  <select id="selectTeachersByConditions" resultType="hashmap" parameterType="hashmap" >
+    SELECT a.teacherId,a.teachingId,b.teacherName
+	FROM teacher_les_r a LEFT JOIN teacher b ON a.teacherId=b.teacherId 
+	<if test="gradeId!=null">
+		WHERE a.lessonType DIV 100 = #{gradeId} 
+		<if test="teacherName!=null">
+			AND b.teacherName LIKE "%#{teacherName}%"
+		</if>
+		<if test="courseId!=null">
+			AND a.lessonType MOD 10 = #{courseId}
+		</if>
+	</if>
+  </select>
+  
+  
+</mapper>

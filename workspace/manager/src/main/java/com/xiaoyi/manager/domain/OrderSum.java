@@ -9,7 +9,7 @@ public class OrderSum extends OrderSumKey {
 
     private Short lessonleftnum;
 
-    private String teacherids;
+    private String teachingids;
 
     public Date getPurchasetime() {
         return purchasetime;
@@ -35,11 +35,11 @@ public class OrderSum extends OrderSumKey {
         this.lessonleftnum = lessonleftnum;
     }
 
-    public String getTeacherids() {
-        return teacherids;
+    public String getTeachingids() {
+        return teachingids;
     }
 
-    public void setTeacherids(String teacherids) {
-        this.teacherids = teacherids == null ? null : teacherids.trim();
+    public void setTeachingids(String teachingids) {
+        this.teachingids = teachingids == null ? null : teachingids.trim();
     }
 }
