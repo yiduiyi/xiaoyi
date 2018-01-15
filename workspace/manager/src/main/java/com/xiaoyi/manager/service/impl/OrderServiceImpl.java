@@ -159,5 +159,16 @@ public class OrderServiceImpl implements IOrderService {
 		return null;
 	}
 
+	@Override
+	public List<JSONObject> queryCoursesInGrade(String gradeId) {
+		try {
+			return teachingDao.selectCoursesInGrade(gradeId);			
+		} catch (Exception e) {
+			logger.info("查询年级下的科目列表出错！");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	
 }

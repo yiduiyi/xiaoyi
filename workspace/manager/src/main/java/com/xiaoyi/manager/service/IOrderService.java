@@ -27,4 +27,6 @@ public interface IOrderService {
 	
 	List<JSONObject> queryTeachingList(JSONObject params);
 	
+	List<JSONObject> queryCoursesInGrade(String gradeId);
+	
 }

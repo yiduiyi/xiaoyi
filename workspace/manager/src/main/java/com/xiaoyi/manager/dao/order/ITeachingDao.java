@@ -8,4 +8,6 @@ import com.alibaba.fastjson.JSONObject;
 public interface ITeachingDao {
 	//查找任教老师
     List<JSONObject> selectTeachersByConditions(Map<String,Object> params);
+    
+    List<JSONObject> selectCoursesInGrade(String gradeId);
 }

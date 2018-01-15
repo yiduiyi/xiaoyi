@@ -10,12 +10,12 @@
     teacherId, teacherName, teachingId
   </sql>
   <select id="selectTeachersByConditions" resultType="hashmap" parameterType="hashmap" >
-    SELECT a.teacherId,a.teachingId,b.teacherName
+    SELECT a.teacherId,a.teachingId,b.teacherName,a.lessonType
 	FROM teacher_les_r a LEFT JOIN teacher b ON a.teacherId=b.teacherId 
 	<if test="gradeId!=null">
 		WHERE a.lessonType DIV 100 = #{gradeId} 
 		<if test="teacherName!=null">
-			AND b.teacherName LIKE "%#{teacherName}%"
+			AND b.teacherName LIKE "%${teacherName}%"
 		</if>
 		<if test="courseId!=null">
 			AND a.lessonType MOD 10 = #{courseId}
@@ -23,5 +23,10 @@
 	</if>
   </select>
   
+  <select id="selectCoursesInGrade" resultType="hashmap" parameterType="java.lang.String" >
+    SELECT DISTINCT courseName, lessonType DIV 100 AS courseId
+	FROM lessontype
+	WHERE lessontype DIV 100 = #{gradeId,jdbcType=VARCHAR}
+  </select>
   
 </mapper>
