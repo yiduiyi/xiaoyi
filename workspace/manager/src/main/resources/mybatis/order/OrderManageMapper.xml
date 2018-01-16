@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.order.IOrderManageDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher">
+		<result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+		<result column="teacherName" property="teachername" jdbcType="VARCHAR" />
+		<result column="teachingId" property="teachingid" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		teacherId, teacherName, teachingId
+	</sql>
+
+	<!-- 根据任教关系查询老师列表 -->
+	<select id="selectTeachersByTeachingIds" resultType="hashmap" parameterType="java.util.List">
+		SELECT a.lessonType,b.teacherName
+		FROM teacher_les_r a 
+			INNER JOIN teacher b ON a.teacherId=b.teacherId
+		WHERE a.teachingId IN 
+		<foreach collection="list" open="(" close=")" item="item" separator=",">
+			#{item}
+		</foreach>	
+	</select>
+
+	<select id="selectTeachersByConditions" resultType="hashmap"
+		parameterType="hashmap">
+		SELECT a.teacherId,a.teachingId,b.teacherName,a.lessonType
+		FROM teacher_les_r a INNER JOIN teacher b ON a.teacherId=b.teacherId
+		<if test="gradeId!=null">
+			<!-- 年级 -->
+			WHERE a.lessonType DIV 100 = #{gradeId}
+			<!-- 名字 -->
+			<if test="teacherName!=null">
+				AND b.teacherName LIKE "%${teacherName}%"
+			</if>
+			<!-- 科目 -->
+			<if test="courseId!=null">
+				AND a.lessonType MOD 10 = #{courseId}
+			</if>
+		</if>
+	</select>
+
+	<!-- 获取年级下的科目 -->
+	<select id="selectCoursesByGradeId" resultType="hashmap" parameterType="java.lang.String">
+		SELECT lessonType,courseName
+		FROM lessontype
+		WHERE lessonType DIV 100 = #{gradeId}
+	</select>
+
+</mapper>
