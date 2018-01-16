@@ -1,7 +1,11 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -10,10 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
-import com.xiaoyi.manager.dao.order.ITeachingDao;
+import com.xiaoyi.manager.dao.order.IOrderManageDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
@@ -33,7 +40,7 @@ public class OrderServiceImpl implements IOrderService {
 	private ICommonService commonService;
 	
 	@Resource
-	private ITeachingDao teachingDao;
+	private IOrderManageDao orderManageDao;
 
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -143,15 +150,70 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
-	public List<JSONObject> getOrderList(JSONObject params) throws Exception {
-		// TODO Auto-generated method stub
+	public List<JSONObject> getOrderList(JSONObject params) {
+		List<JSONObject> result = null;
+		try {
+			try {
+				result = orderManageDao.selectOrderList(params);				
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			
+			//查询关联老师			
+			if(!CollectionUtils.isEmpty(result)){
+				List<String> tIds = new ArrayList<String>();
+				
+				for(JSONObject order : result){
+					String teachingIds = order.getString("teachingIds");
+					if(!StringUtils.isEmpty(teachingIds)){
+						tIds.addAll(Arrays.asList(teachingIds.split(",")));
+					}
+				}
+				
+				//增加任教关系字段
+				if(null!=tIds && tIds.size()>0){
+					try {
+						Map<String,JSONObject> teachingIdNameMap = new HashMap<String,JSONObject>();
+						List<JSONObject> teachers = orderManageDao.selectTeachersByTeachingIds(tIds);
+						for(JSONObject teacher : teachers){
+							teachingIdNameMap.put(teacher.getString("teachingId"), teacher);
+						}
+						
+						//匹配任教老师关系
+						for(JSONObject order : result){
+							String teachingIds = order.getString("teachingIds");
+							if(!StringUtils.isEmpty(teachingIds)){
+								List<String>curTeachingIds = Arrays.asList(teachingIds.split(","));
+								StringBuffer sb = new StringBuffer();
+								for(String curTeachingId : curTeachingIds){
+									JSONObject curTeacher = teachingIdNameMap.get(curTeachingId);
+									sb.append(curTeacher.getString("teacherName"));
+									sb.append("(");
+									sb.append(curTeacher.get("lessonType"));
+									sb.append(")");
+									sb.append(",");
+								}
+								order.put("bindTeachers", sb.substring(0, sb.length()-1));
+							}
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw e;
+					}
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		return null;
 	}
 
 	@Override
 	public List<JSONObject> queryTeachingList(JSONObject params) {
 		try {
-			return teachingDao.selectTeachersByConditions(params);
+			return orderManageDao.selectTeachersByConditions(params);
 		} catch (Exception e) {
 			logger.info("查询教学任务（老师列表）出错！");
 			e.printStackTrace();
@@ -160,12 +222,12 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
-	public List<JSONObject> queryCoursesInGrade(String gradeId) {
+	public List<JSONObject> queryCourseList(JSONObject params) {
 		try {
-			return teachingDao.selectCoursesInGrade(gradeId);			
+			return orderManageDao.selectCoursesByGradeId(params.getString("gradeId"));
 		} catch (Exception e) {
-			logger.info("查询年级下的科目列表出错！");
 			e.printStackTrace();
+			logger.error("查询年级下的课程名出错！");
 		}
 		return null;
 	}

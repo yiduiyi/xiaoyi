@@ -17,9 +17,10 @@ import javax.servlet.http.HttpSession;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.ILoginService;
 
+
 public class SessionFilter implements Filter {
-	@Resource
-	ILoginService loginService;
+	/*@Resource
+	ILoginService loginService;*/
 	
 	public void destroy() {
         // TODO Auto-generated method stub
@@ -34,7 +35,7 @@ public class SessionFilter implements Filter {
         User user = (User) session.getAttribute("userBean");
         if(null!=user){
         	user.setLoginstatus(false);
-        	loginService.userLogout(user);
+        	//loginService.userLogout(user);
         }
         
         // 登陆url

@@ -78,7 +78,7 @@ public class CommonServiceImpl implements ICommonService {
 					}else{
 						parentId = UUID.randomUUID().toString();
 						parents = new Parents();
-						parents.setParentid(UUID.randomUUID().toString());
+						parents.setParentid(parentId);
 						parents.setOpenid(params.getString("openId"));
 						parents.setTelnum(params.getString("telNum"));
 						parents.setWechatnum(params.getString("weChatNum"));
