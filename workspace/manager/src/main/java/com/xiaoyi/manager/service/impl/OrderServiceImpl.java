@@ -144,9 +144,16 @@ public class OrderServiceImpl implements IOrderService {
 	}
 
 	@Override
-	public int updateOrder(JSONObject schedule) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateOrder(JSONObject params) {
+		try {
+			OrderSum record = new OrderSum();
+			record.setTeachingids(params.getString("teachingIds"));
+			record.setOrderid(params.getString("orderId"));
+			return orderSumDao.updateByPrimaryKeySelective(record);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 
 	@Override
