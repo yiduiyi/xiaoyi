@@ -36,9 +36,31 @@ public class OrderAction {
 	@Resource
 	private IOrderService orderService;
 	
+	@RequestMapping(value="/queryOrders",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject queryOrders(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			List<JSONObject> data = orderService.getOrderList(reqData);
+			//int rt = orderService.addOrder(reqData);
+			result.put("data", data);
+			rtCode = RtConstants.SUCCESS;
+			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
 	@RequestMapping(value="/addOrder",method=RequestMethod.POST)
 	@ResponseBody
-	public  JSONObject addSchedule(HttpServletRequest request
+	public  JSONObject addOrder(HttpServletRequest request
 			,HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
@@ -81,7 +103,29 @@ public class OrderAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
-	//
+	
+	
+	@RequestMapping(value="/teaching/getCourses",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getCourses(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			List<JSONObject> data = orderService.queryCourseList(reqData);						
+			
+			rtCode = RtConstants.SUCCESS;
+			result.put("data", data);			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+	
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	///
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());
 		result.put("msg", rtCode.toString());
