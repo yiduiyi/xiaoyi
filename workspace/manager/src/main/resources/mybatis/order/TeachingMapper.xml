@@ -15,7 +15,7 @@
 	<if test="gradeId!=null">
 		WHERE a.lessonType DIV 100 = #{gradeId} 
 		<if test="teacherName!=null">
-			AND b.teacherName LIKE "%#{teacherName}%"
+			AND b.teacherName LIKE "%${teacherName}%"
 		</if>
 		<if test="courseId!=null">
 			AND a.lessonType MOD 10 = #{courseId}
