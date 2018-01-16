@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
-import com.xiaoyi.manager.dao.order.ITeachingDao;
+import com.xiaoyi.manager.dao.order.IOrderManageDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
@@ -33,7 +33,7 @@ public class OrderServiceImpl implements IOrderService {
 	private ICommonService commonService;
 	
 	@Resource
-	private ITeachingDao teachingDao;
+	private IOrderManageDao orderManageDao;
 
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -151,10 +151,21 @@ public class OrderServiceImpl implements IOrderService {
 	@Override
 	public List<JSONObject> queryTeachingList(JSONObject params) {
 		try {
-			return teachingDao.selectTeachersByConditions(params);
+			return orderManageDao.selectTeachersByConditions(params);
 		} catch (Exception e) {
 			logger.info("查询教学任务（老师列表）出错！");
 			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<JSONObject> queryCourseList(JSONObject params) {
+		try {
+			return orderManageDao.selectCoursesByGradeId(params.getString("gradeId"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("查询年级下的课程名出错！");
 		}
 		return null;
 	}

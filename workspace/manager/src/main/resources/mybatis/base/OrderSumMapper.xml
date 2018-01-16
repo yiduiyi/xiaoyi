@@ -9,7 +9,7 @@
     <result column="purchaseTime" property="purchasetime" jdbcType="TIMESTAMP" />
     <result column="totalLessonNum" property="totallessonnum" jdbcType="SMALLINT" />
     <result column="lessonLeftNum" property="lessonleftnum" jdbcType="SMALLINT" />
-    <result column="teachingIds" property="teacherids" jdbcType="VARCHAR" />
+    <result column="teachingIds" property="teachingids" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     lessonType, memberId, orderId, parentId, purchaseTime, totalLessonNum, lessonLeftNum, 
@@ -39,7 +39,7 @@
       lessonLeftNum, teachingIds)
     values (#{lessontype,jdbcType=INTEGER}, #{memberid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
       #{parentid,jdbcType=VARCHAR}, #{purchasetime,jdbcType=TIMESTAMP}, #{totallessonnum,jdbcType=SMALLINT}, 
-      #{lessonleftnum,jdbcType=SMALLINT}, #{teacherids,jdbcType=VARCHAR})
+      #{lessonleftnum,jdbcType=SMALLINT}, #{teachingids,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.OrderSum" >
     insert into ordersum
@@ -65,7 +65,7 @@
       <if test="lessonleftnum != null" >
         lessonLeftNum,
       </if>
-      <if test="teacherids != null" >
+      <if test="teachingids != null" >
         teachingIds,
       </if>
     </trim>
@@ -91,8 +91,8 @@
       <if test="lessonleftnum != null" >
         #{lessonleftnum,jdbcType=SMALLINT},
       </if>
-      <if test="teacherids != null" >
-        #{teacherids,jdbcType=VARCHAR},
+      <if test="teachingids != null" >
+        #{teachingids,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -108,8 +108,8 @@
       <if test="lessonleftnum != null" >
         lessonLeftNum = #{lessonleftnum,jdbcType=SMALLINT},
       </if>
-      <if test="teacherids != null" >
-        teachingIds = #{teacherids,jdbcType=VARCHAR},
+      <if test="teachingIds != null" >
+        teachingIds = #{teachingids,jdbcType=VARCHAR},
       </if>
     </set>
     where lessonType = #{lessontype,jdbcType=INTEGER}
@@ -124,7 +124,7 @@
     set purchaseTime = #{purchasetime,jdbcType=TIMESTAMP},
       totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
       lessonLeftNum = #{lessonleftnum,jdbcType=SMALLINT},
-      teachingIds = #{teacherids,jdbcType=VARCHAR}
+      teachingIds = #{teachingids,jdbcType=VARCHAR}
     where lessonType = #{lessontype,jdbcType=INTEGER}
       and memberId = #{memberid,jdbcType=VARCHAR}
       and orderId = #{orderid,jdbcType=VARCHAR}

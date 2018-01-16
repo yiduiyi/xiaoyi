@@ -26,5 +26,6 @@ public interface IOrderService {
 	List<JSONObject> getOrderList(JSONObject params) throws Exception;
 	
 	List<JSONObject> queryTeachingList(JSONObject params);
-	
+
+	List<JSONObject> queryCourseList(JSONObject params);
 }
