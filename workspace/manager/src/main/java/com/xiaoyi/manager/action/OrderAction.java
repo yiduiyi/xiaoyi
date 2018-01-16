@@ -59,7 +59,7 @@ public class OrderAction {
 	}
 	
 	
-	@RequestMapping(value="/teaching/getTeacher.do",method=RequestMethod.POST)
+	@RequestMapping(value="/teaching/getTeacher",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject getTeacher(HttpServletRequest request
 			,HttpServletResponse response,
