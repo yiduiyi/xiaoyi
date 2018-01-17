@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IOTRelationDao" >
+	
+	<!-- 删除订单-任教关系 -->
+	<delete id="deleteOTRelations" parameterType="java.lang.String">
+		DELETE FROM order_teaching_r 
+		WHERE orderId=#{orderId}	
+	</delete>
+	
+	<!-- 插入订单-任教关系 -->
+	<insert id="insertOTRelations" parameterType="java.util.List">
+		INSERT INTO order_teaching_r(teachingId,orderId,lessonType,parentId,memberId,teacherId)
+		VALUES
+		<foreach collection="list" item="item"  separator=",">
+			(#{item.teachingId},#{item.orderId},#{item.lessonType},#{item.parentId},#{item.memberId},#{item.teacherId})
+		</foreach>
+	</insert>
+	
+</mapper>

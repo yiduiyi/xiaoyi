@@ -19,12 +19,17 @@
     select 
     <include refid="Base_Column_List" />
     from ordersum
-    where lessonType = #{lessontype,jdbcType=INTEGER}
-      and memberId = #{memberid,jdbcType=VARCHAR}
-      <if test="orderid != null" >
-       		and orderId = #{orderid,jdbcType=VARCHAR}
-      </if>
-      and parentId = #{parentid,jdbcType=VARCHAR}
+    where
+    <choose>
+    	<when test="orderid != null">
+    		orderId = #{orderid,jdbcType=VARCHAR}
+    	</when>
+    	<otherwise>
+    		lessonType = #{lessontype,jdbcType=INTEGER}
+      			and memberId = #{memberid,jdbcType=VARCHAR}
+      			and parentId = #{parentid,jdbcType=VARCHAR}
+    	</otherwise>
+    </choose>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.OrderSumKey" >
     delete from ordersum

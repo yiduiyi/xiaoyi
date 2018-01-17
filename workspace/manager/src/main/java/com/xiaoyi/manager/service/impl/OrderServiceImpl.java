@@ -18,11 +18,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.manager.dao.IOTRelationDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.order.IOrderManageDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
+import com.xiaoyi.manager.domain.OrderTeachingRelation;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.ParentStuRelation;
 import com.xiaoyi.manager.service.ICommonService;
@@ -42,6 +44,8 @@ public class OrderServiceImpl implements IOrderService {
 	@Resource
 	private IOrderManageDao orderManageDao;
 
+	@Resource
+	private IOTRelationDao otRelationDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -143,17 +147,63 @@ public class OrderServiceImpl implements IOrderService {
 		return 0;
 	}
 
+	@Transactional
 	@Override
 	public int updateOrder(JSONObject params) {
 		try {
+			String teachingIds = params.getString("teachingIds");
 			OrderSum record = new OrderSum();
-			record.setTeachingids(params.getString("teachingIds"));
+			record.setTeachingids(teachingIds);
 			record.setOrderid(params.getString("orderId"));
-			return orderSumDao.updateByPrimaryKeySelective(record);
+			
+			//更新订单的任教关系
+			try {
+				orderSumDao.updateByPrimaryKeySelective(record);				
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			
+			//获取更新的订单
+			try {
+				record = orderSumDao.selectByPrimaryKey(record);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			
+			//生成订单-任教关系
+			if(null!=record && null!=teachingIds){
+				List<String> teachingIdList = Arrays.asList(teachingIds.split(","));
+				List<OrderTeachingRelation> relations = new ArrayList<OrderTeachingRelation>();
+				for(String teachingId : teachingIdList){
+					OrderTeachingRelation relation = new OrderTeachingRelation();
+					
+					relation.setMemberId(record.getMemberid());
+					relation.setLessonType(record.getLessontype());
+					relation.setOrderId(record.getOrderid());
+					relation.setParentId(record.getParentid());
+					relation.setTeachingId(teachingId);
+					relation.setTeacherId(null);	//不能得到
+					
+					relations.add(relation);
+				}
+				
+				//入库
+				try {
+					otRelationDao.deleteOTRelations(record.getOrderid());
+					otRelationDao.insertOTRelations(relations);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw e;
+				}
+			}
+			
+			return 0;
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException();
 		}
-		return -1;
 	}
 
 	@Override
