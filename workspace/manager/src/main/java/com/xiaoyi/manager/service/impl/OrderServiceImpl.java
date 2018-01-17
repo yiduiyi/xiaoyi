@@ -289,5 +289,33 @@ public class OrderServiceImpl implements IOrderService {
 		return null;
 	}
 
+	@Override
+	public int updateOrderSum(JSONObject params) {
+		try {
+			OrderSum record = new OrderSum();
+			record.setOrderid(params.getString("orderId"));
+			
+			int type = params.getIntValue("operateType");
+			int operateNum = params.getIntValue("operateNum");
+			
+			operateNum = (type==0)?-operateNum:operateNum;
+			
+			try {
+				record = orderSumDao.selectByPrimaryKey(record);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			record.setTotallessonnum((short) (record.getTotallessonnum()+operateNum));
+			record.setLessonleftnum((short)(record.getLessonleftnum()+operateNum));
+			
+			orderSumDao.updateByPrimaryKeySelective(record);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+		return 0;
+	}
+
 	
 }

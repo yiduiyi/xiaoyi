@@ -146,6 +146,28 @@ public class OrderAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
+	
+	@RequestMapping(value="/updateOrder",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject updateOrder(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			//List<JSONObject> data = orderService.queryCourseList(reqData);						
+			if(-1!=orderService.updateOrderSum(reqData)){
+				rtCode = RtConstants.SUCCESS;
+			}
+			//result.put("data", data);			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+	
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
 	///
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());

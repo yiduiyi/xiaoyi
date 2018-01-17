@@ -23,6 +23,8 @@ public interface IOrderService {
 	
 	int updateOrder(JSONObject params);
 	
+	int updateOrderSum(JSONObject params);
+	
 	List<JSONObject> getOrderList(JSONObject params) ;
 	
 	List<JSONObject> queryTeachingList(JSONObject params);
