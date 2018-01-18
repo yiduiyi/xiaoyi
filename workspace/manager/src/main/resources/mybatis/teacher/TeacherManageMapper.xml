@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.manager.dao.teacher.ITeachingRecordDao">
+<mapper namespace="com.xiaoyi.teacher.dao.ITeachingRecordDao">
 	<!-- 查询老师对应的订单 -->
 	<select id="selectRecordsByTid" resultType="com.alibaba.fastjson.JSONObject" parameterType="java.lang.String">  
-		SELECT a.purchaseTime, b.lessonType,a.totalLessonNum,a.lessonLeftNum,c.parentName,c.telNum,d.name
+		SELECT a.purchaseTime,a.orderId,a.parentId,b.teacherId, b.lessonType,a.totalLessonNum,a.lessonLeftNum,c.parentName,c.telNum,d.name as studentName
 		FROM  ordersum a 
 			INNER JOIN order_teaching_r b ON a.orderId = b.orderId
 			INNER JOIN parents c ON a.parentId=c.parentId
