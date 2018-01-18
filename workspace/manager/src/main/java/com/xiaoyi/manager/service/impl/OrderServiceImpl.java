@@ -21,12 +21,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IOTRelationDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
+import com.xiaoyi.manager.dao.ITeacherLesRelationDao;
 import com.xiaoyi.manager.dao.order.IOrderManageDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.OrderTeachingRelation;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.ParentStuRelation;
+import com.xiaoyi.manager.domain.TeacherLesRelationKey;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.manager.service.IOrderService;
 
@@ -46,6 +48,9 @@ public class OrderServiceImpl implements IOrderService {
 
 	@Resource
 	private IOTRelationDao otRelationDao;
+	
+	@Resource
+	private ITeacherLesRelationDao tlRelationDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -84,7 +89,9 @@ public class OrderServiceImpl implements IOrderService {
 				OrderSum orderSum = null;
 				try {
 					OrderSumKey orderSumKey = new OrderSumKey();
-					orderSumKey.setLessontype(lessonType);
+					//只存年级和上门类型
+					orderSumKey.setLessontype(lessonType/100);
+					
 					orderSumKey.setMemberid(studentId);
 					orderSumKey.setParentid(parentId);
 					
@@ -125,7 +132,7 @@ public class OrderServiceImpl implements IOrderService {
 					orderSum.setMemberid(studentId);
 					orderSum.setParentid(parentId);
 					orderSum.setPurchasetime(new Date());
-					orderSum.setLessontype(lessonType);
+					orderSum.setLessontype(lessonType/100);
 					orderSum.setLessonleftnum(isNewOrder?purchaseNum:(short)(orderSum.getLessonleftnum()+purchaseNum));
 					orderSum.setTotallessonnum(isNewOrder?purchaseNum:(short)(orderSum.getTotallessonnum()+purchaseNum));
 					
@@ -172,20 +179,42 @@ public class OrderServiceImpl implements IOrderService {
 				throw e;
 			}
 			
+			
+			
 			//生成订单-任教关系
 			if(null!=record && null!=teachingIds){
 				List<String> teachingIdList = Arrays.asList(teachingIds.split(","));
+				
+				//查询任教关系Id-老师对应关系
+				Map<String,TeacherLesRelationKey>ttMap = new HashMap<String,TeacherLesRelationKey>();
+				try {
+					List<TeacherLesRelationKey> tlRelations = tlRelationDao.selectTLRelationsById(teachingIdList);
+					if(!CollectionUtils.isEmpty(tlRelations)){
+						for(TeacherLesRelationKey tlRelation : tlRelations){
+							ttMap.put(tlRelation.getTeachingid(), tlRelation);
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				//设置订单-任教关系
 				List<OrderTeachingRelation> relations = new ArrayList<OrderTeachingRelation>();
 				for(String teachingId : teachingIdList){
 					OrderTeachingRelation relation = new OrderTeachingRelation();
+					TeacherLesRelationKey relationKey = ttMap.get(teachingId);
 					
 					relation.setMemberId(record.getMemberid());
-					relation.setLessonType(record.getLessontype());
 					relation.setOrderId(record.getOrderid());
 					relation.setParentId(record.getParentid());
 					relation.setTeachingId(teachingId);
-					relation.setTeacherId(null);	//不能得到
 					
+					//补全老师Id及科目
+					if(null!=relationKey){
+						relation.setTeacherId(relationKey.getTeacherid());
+						int type = Math.abs(record.getLessontype())/record.getLessontype();
+						relation.setLessonType(relationKey.getLessontype()*type);
+					}
 					relations.add(relation);
 				}
 				

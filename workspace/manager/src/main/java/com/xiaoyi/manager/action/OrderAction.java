@@ -89,7 +89,9 @@ public class OrderAction {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		
-		try {			
+		try {	
+			reqData.put("gradeId", reqData.getInteger("lessonType")/100);
+			reqData.put("courseId", reqData.getInteger("lessonType")%10);
 			List<JSONObject> data = orderService.queryTeachingList(reqData);
 						
 			if(null!=data){

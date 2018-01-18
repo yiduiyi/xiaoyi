@@ -43,7 +43,7 @@
 		</foreach>	
 	</select>
 
-	<select id="selectTeachersByConditions" resultType="hashmap"
+	<select id="selectTeachersByConditions" resultType="com.alibaba.fastjson.JSONObject"
 		parameterType="hashmap">
 		SELECT a.teacherId,a.teachingId,b.teacherName,a.lessonType
 		FROM teacher_les_r a INNER JOIN teacher b ON a.teacherId=b.teacherId

@@ -6,6 +6,17 @@
     <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
     <id column="teachingId" property="teachingid" jdbcType="VARCHAR" />
   </resultMap>
+  
+  <!-- 根据任教Id 查询老师 -->
+  <select id="selectTLRelationsById" parameterType="java.util.List" resultMap="BaseResultMap">
+  	SELECT *
+  	FROM teacher_les_r 
+  	WHERE teachingId IN 
+  	<foreach collection="list" open="(" close=")" separator="," item="item">
+  		#{item}
+  	</foreach>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.TeacherLesRelationKey" >
     delete from teacher_les_r
     where lessonType = #{lessontype,jdbcType=INTEGER}
