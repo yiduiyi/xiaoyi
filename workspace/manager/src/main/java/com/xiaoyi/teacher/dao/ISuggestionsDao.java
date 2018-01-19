@@ -1,6 +1,6 @@
-package com.xiaoyi.manager.dao;
+package com.xiaoyi.teacher.dao;
 
-import com.xiaoyi.manager.domain.Suggestions;
+import com.xiaoyi.teacher.domain.Suggestions;
 
 public interface ISuggestionsDao {
     int deleteByPrimaryKey(String lessontradeid);

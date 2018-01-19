@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.manager.dao.ILessonTradeSumDao" >
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonTradeSum" >
+<mapper namespace="com.xiaoyi.teacher.dao.ILessonTradeSumDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.LessonTradeSum" >
     <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
     <result column="checkedLessonNum" property="checkedlessonnum" jdbcType="SMALLINT" />
     <result column="withDrawLessonNum" property="withdrawlessonnum" jdbcType="SMALLINT" />
@@ -21,13 +21,13 @@
     delete from lessontradesum
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonTradeSum" >
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.LessonTradeSum" >
     insert into lessontradesum (teacherId, checkedLessonNum, withDrawLessonNum, 
       frozenLessonNum, totalLessonNum)
     values (#{teacherid,jdbcType=VARCHAR}, #{checkedlessonnum,jdbcType=SMALLINT}, #{withdrawlessonnum,jdbcType=SMALLINT}, 
       #{frozenlessonnum,jdbcType=SMALLINT}, #{totallessonnum,jdbcType=SMALLINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonTradeSum" >
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTradeSum" >
     insert into lessontradesum
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="teacherid != null" >
@@ -64,7 +64,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.LessonTradeSum" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.LessonTradeSum" >
     update lessontradesum
     <set >
       <if test="checkedlessonnum != null" >
@@ -82,7 +82,7 @@
     </set>
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonTradeSum" >
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.LessonTradeSum" >
     update lessontradesum
     set checkedLessonNum = #{checkedlessonnum,jdbcType=SMALLINT},
       withDrawLessonNum = #{withdrawlessonnum,jdbcType=SMALLINT},

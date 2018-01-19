@@ -1,4 +1,4 @@
-package com.xiaoyi.manager.domain;
+package com.xiaoyi.teacher.domain;
 
 public class LessonTrade {
     private String lessontradeid;

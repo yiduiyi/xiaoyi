@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.manager.dao.ILessonTradeDao" >
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonTrade" >
+<mapper namespace="com.xiaoyi.teacher.dao.ILessonTradeDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.LessonTrade" >
     <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
     <result column="lessonType" property="lessontype" jdbcType="INTEGER" />
     <result column="parentId" property="parentid" jdbcType="VARCHAR" />
@@ -24,7 +24,7 @@
     delete from lessontrade
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonTrade" >
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
     insert into lessontrade (lessonTradeId, lessonType, parentId, 
       teacherId, notes, status, 
       applyLessons, feedback)
@@ -32,7 +32,7 @@
       #{teacherid,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
       #{applylessons,jdbcType=SMALLINT}, #{feedback,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonTrade" >
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
     insert into lessontrade
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="lessontradeid != null" >
@@ -87,7 +87,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.LessonTrade" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
     update lessontrade
     <set >
       <if test="lessontype != null" >
@@ -114,7 +114,7 @@
     </set>
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonTrade" >
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
     update lessontrade
     set lessonType = #{lessontype,jdbcType=INTEGER},
       parentId = #{parentid,jdbcType=VARCHAR},

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.manager.dao.ISuggestionsDao" >
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Suggestions" >
+<mapper namespace="com.xiaoyi.teacher.dao.ISuggestionsDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.Suggestions" >
     <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
     <result column="situations" property="situations" jdbcType="VARCHAR" />
     <result column="suggestions" property="suggestions" jdbcType="VARCHAR" />
@@ -19,13 +19,13 @@
     delete from suggestions
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Suggestions" >
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.Suggestions" >
     insert into suggestions (lessonTradeId, situations, suggestions
       )
     values (#{lessontradeid,jdbcType=VARCHAR}, #{situations,jdbcType=VARCHAR}, #{suggestions,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Suggestions" >
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.Suggestions" >
     insert into suggestions
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="lessontradeid != null" >
@@ -50,7 +50,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Suggestions" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.Suggestions" >
     update suggestions
     <set >
       <if test="situations != null" >
@@ -62,7 +62,7 @@
     </set>
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Suggestions" >
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.Suggestions" >
     update suggestions
     set situations = #{situations,jdbcType=VARCHAR},
       suggestions = #{suggestions,jdbcType=VARCHAR}

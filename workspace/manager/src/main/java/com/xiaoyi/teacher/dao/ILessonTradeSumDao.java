@@ -1,6 +1,6 @@
-package com.xiaoyi.manager.dao;
+package com.xiaoyi.teacher.dao;
 
-import com.xiaoyi.manager.domain.LessonTradeSum;
+import com.xiaoyi.teacher.domain.LessonTradeSum;
 
 public interface ILessonTradeSumDao {
     int deleteByPrimaryKey(String teacherid);

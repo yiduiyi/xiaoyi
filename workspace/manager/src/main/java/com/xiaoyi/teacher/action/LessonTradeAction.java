@@ -49,7 +49,7 @@ public class LessonTradeAction {
 				
 		try {
 			//result.put("data",  recordService.getRecordList(reqData));			
-			
+			recordService.insertTeachingRecords(reqData);
 			
 			rtCode = RtConstants.SUCCESS;			
 		} catch (Exception e) {
