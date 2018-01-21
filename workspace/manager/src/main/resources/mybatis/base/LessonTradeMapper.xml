@@ -4,15 +4,18 @@
   <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.LessonTrade" >
     <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
     <result column="lessonType" property="lessontype" jdbcType="INTEGER" />
-    <result column="parentId" property="parentid" jdbcType="VARCHAR" />
     <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="memberId" property="memberid" jdbcType="VARCHAR" />
+    <result column="parentId" property="parentid" jdbcType="VARCHAR" />
     <result column="notes" property="notes" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT" />
     <result column="applyLessons" property="applylessons" jdbcType="SMALLINT" />
     <result column="feedback" property="feedback" jdbcType="VARCHAR" />
+    <result column="applyTime" property="applytime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    lessonTradeId, lessonType, parentId, teacherId, notes, status, applyLessons, feedback
+    lessonTradeId, lessonType, teacherId, memberId, parentId, notes, status, applyLessons, 
+    feedback, applyTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -25,12 +28,14 @@
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
-    insert into lessontrade (lessonTradeId, lessonType, parentId, 
-      teacherId, notes, status, 
-      applyLessons, feedback)
-    values (#{lessontradeid,jdbcType=VARCHAR}, #{lessontype,jdbcType=INTEGER}, #{parentid,jdbcType=VARCHAR}, 
-      #{teacherid,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
-      #{applylessons,jdbcType=SMALLINT}, #{feedback,jdbcType=VARCHAR})
+    insert into lessontrade (lessonTradeId, lessonType, teacherId, 
+      memberId, parentId, notes, 
+      status, applyLessons, feedback, 
+      applyTime)
+    values (#{lessontradeid,jdbcType=VARCHAR}, #{lessontype,jdbcType=INTEGER}, #{teacherid,jdbcType=VARCHAR}, 
+      #{memberid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{applylessons,jdbcType=SMALLINT}, #{feedback,jdbcType=VARCHAR}, 
+      #{applytime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
     insert into lessontrade
@@ -41,11 +46,14 @@
       <if test="lessontype != null" >
         lessonType,
       </if>
-      <if test="parentid != null" >
-        parentId,
-      </if>
       <if test="teacherid != null" >
         teacherId,
+      </if>
+      <if test="memberid != null" >
+        memberId,
+      </if>
+      <if test="parentid != null" >
+        parentId,
       </if>
       <if test="notes != null" >
         notes,
@@ -59,6 +67,9 @@
       <if test="feedback != null" >
         feedback,
       </if>
+      <if test="applytime != null" >
+        applyTime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="lessontradeid != null" >
@@ -67,11 +78,14 @@
       <if test="lessontype != null" >
         #{lessontype,jdbcType=INTEGER},
       </if>
-      <if test="parentid != null" >
-        #{parentid,jdbcType=VARCHAR},
-      </if>
       <if test="teacherid != null" >
         #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="memberid != null" >
+        #{memberid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
       </if>
       <if test="notes != null" >
         #{notes,jdbcType=VARCHAR},
@@ -85,6 +99,9 @@
       <if test="feedback != null" >
         #{feedback,jdbcType=VARCHAR},
       </if>
+      <if test="applytime != null" >
+        #{applytime,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
@@ -93,11 +110,14 @@
       <if test="lessontype != null" >
         lessonType = #{lessontype,jdbcType=INTEGER},
       </if>
-      <if test="parentid != null" >
-        parentId = #{parentid,jdbcType=VARCHAR},
-      </if>
       <if test="teacherid != null" >
         teacherId = #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="memberid != null" >
+        memberId = #{memberid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        parentId = #{parentid,jdbcType=VARCHAR},
       </if>
       <if test="notes != null" >
         notes = #{notes,jdbcType=VARCHAR},
@@ -111,18 +131,23 @@
       <if test="feedback != null" >
         feedback = #{feedback,jdbcType=VARCHAR},
       </if>
+      <if test="applytime != null" >
+        applyTime = #{applytime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
     update lessontrade
     set lessonType = #{lessontype,jdbcType=INTEGER},
-      parentId = #{parentid,jdbcType=VARCHAR},
       teacherId = #{teacherid,jdbcType=VARCHAR},
+      memberId = #{memberid,jdbcType=VARCHAR},
+      parentId = #{parentid,jdbcType=VARCHAR},
       notes = #{notes,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
       applyLessons = #{applylessons,jdbcType=SMALLINT},
-      feedback = #{feedback,jdbcType=VARCHAR}
+      feedback = #{feedback,jdbcType=VARCHAR},
+      applyTime = #{applytime,jdbcType=TIMESTAMP}
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -1,13 +1,17 @@
 package com.xiaoyi.teacher.domain;
 
+import java.util.Date;
+
 public class LessonTrade {
     private String lessontradeid;
 
     private Integer lessontype;
 
-    private String parentid;
-
     private String teacherid;
+
+    private String memberid;
+
+    private String parentid;
 
     private String notes;
 
@@ -16,6 +20,8 @@ public class LessonTrade {
     private Short applylessons;
 
     private String feedback;
+
+    private Date applytime;
 
     public String getLessontradeid() {
         return lessontradeid;
@@ -33,20 +39,28 @@ public class LessonTrade {
         this.lessontype = lessontype;
     }
 
-    public String getParentid() {
-        return parentid;
-    }
-
-    public void setParentid(String parentid) {
-        this.parentid = parentid == null ? null : parentid.trim();
-    }
-
     public String getTeacherid() {
         return teacherid;
     }
 
     public void setTeacherid(String teacherid) {
         this.teacherid = teacherid == null ? null : teacherid.trim();
+    }
+
+    public String getMemberid() {
+        return memberid;
+    }
+
+    public void setMemberid(String memberid) {
+        this.memberid = memberid == null ? null : memberid.trim();
+    }
+
+    public String getParentid() {
+        return parentid;
+    }
+
+    public void setParentid(String parentid) {
+        this.parentid = parentid == null ? null : parentid.trim();
     }
 
     public String getNotes() {
@@ -79,5 +93,13 @@ public class LessonTrade {
 
     public void setFeedback(String feedback) {
         this.feedback = feedback == null ? null : feedback.trim();
+    }
+
+    public Date getApplytime() {
+        return applytime;
+    }
+
+    public void setApplytime(Date applytime) {
+        this.applytime = applytime;
     }
 }

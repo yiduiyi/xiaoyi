@@ -7,9 +7,11 @@
     <result column="withDrawLessonNum" property="withdrawlessonnum" jdbcType="SMALLINT" />
     <result column="frozenLessonNum" property="frozenlessonnum" jdbcType="SMALLINT" />
     <result column="totalLessonNum" property="totallessonnum" jdbcType="SMALLINT" />
+    <result column="totalIncome" property="totalincome" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
-    teacherId, checkedLessonNum, withDrawLessonNum, frozenLessonNum, totalLessonNum
+    teacherId, checkedLessonNum, withDrawLessonNum, frozenLessonNum, totalLessonNum, 
+    totalIncome
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -23,9 +25,11 @@
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.teacher.domain.LessonTradeSum" >
     insert into lessontradesum (teacherId, checkedLessonNum, withDrawLessonNum, 
-      frozenLessonNum, totalLessonNum)
+      frozenLessonNum, totalLessonNum, totalIncome
+      )
     values (#{teacherid,jdbcType=VARCHAR}, #{checkedlessonnum,jdbcType=SMALLINT}, #{withdrawlessonnum,jdbcType=SMALLINT}, 
-      #{frozenlessonnum,jdbcType=SMALLINT}, #{totallessonnum,jdbcType=SMALLINT})
+      #{frozenlessonnum,jdbcType=SMALLINT}, #{totallessonnum,jdbcType=SMALLINT}, #{totalincome,jdbcType=DOUBLE}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTradeSum" >
     insert into lessontradesum
@@ -45,6 +49,9 @@
       <if test="totallessonnum != null" >
         totalLessonNum,
       </if>
+      <if test="totalincome != null" >
+        totalIncome,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="teacherid != null" >
@@ -61,6 +68,9 @@
       </if>
       <if test="totallessonnum != null" >
         #{totallessonnum,jdbcType=SMALLINT},
+      </if>
+      <if test="totalincome != null" >
+        #{totalincome,jdbcType=DOUBLE},
       </if>
     </trim>
   </insert>
@@ -79,6 +89,9 @@
       <if test="totallessonnum != null" >
         totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
       </if>
+      <if test="totalincome != null" >
+        totalIncome = #{totalincome,jdbcType=DOUBLE},
+      </if>
     </set>
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
@@ -87,7 +100,8 @@
     set checkedLessonNum = #{checkedlessonnum,jdbcType=SMALLINT},
       withDrawLessonNum = #{withdrawlessonnum,jdbcType=SMALLINT},
       frozenLessonNum = #{frozenlessonnum,jdbcType=SMALLINT},
-      totalLessonNum = #{totallessonnum,jdbcType=SMALLINT}
+      totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
+      totalIncome = #{totalincome,jdbcType=DOUBLE}
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
 </mapper>

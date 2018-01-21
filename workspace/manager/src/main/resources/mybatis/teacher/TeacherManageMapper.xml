@@ -134,7 +134,7 @@
 	<!-- 查询老师对应的订单 -->
 	<select id="selectRecordsByTid" resultType="com.alibaba.fastjson.JSONObject"
 		parameterType="java.lang.String">
-		SELECT a.purchaseTime,a.orderId,a.parentId,b.teacherId,
+		SELECT a.purchaseTime,a.orderId,a.parentId,a.memberId,b.teacherId,
 		b.lessonType,a.totalLessonNum,a.lessonLeftNum,c.parentName,c.telNum,d.name
 		as studentName
 		FROM ordersum a

@@ -11,6 +11,8 @@ public class LessonTradeSum {
 
     private Short totallessonnum;
 
+    private Double totalincome;
+
     public String getTeacherid() {
         return teacherid;
     }
@@ -49,5 +51,13 @@ public class LessonTradeSum {
 
     public void setTotallessonnum(Short totallessonnum) {
         this.totallessonnum = totallessonnum;
+    }
+
+    public Double getTotalincome() {
+        return totalincome;
+    }
+
+    public void setTotalincome(Double totalincome) {
+        this.totalincome = totalincome;
     }
 }
