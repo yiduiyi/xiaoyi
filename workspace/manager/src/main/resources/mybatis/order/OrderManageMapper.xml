@@ -34,7 +34,7 @@
 	</select>
 	<!-- 根据任教关系查询老师列表 -->
 	<select id="selectTeachersByTeachingIds" resultType="com.alibaba.fastjson.JSONObject" parameterType="java.util.List">
-		SELECT a.teachingId,a.lessonType,b.teacherName
+		SELECT a.teachingId,a.lessonType,b.teacherName,a.teacherId
 		FROM teacher_les_r a 
 			INNER JOIN teacher b ON a.teacherId=b.teacherId
 		WHERE a.teachingId IN 

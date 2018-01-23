@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IOTRelationDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -271,16 +272,19 @@ public class OrderServiceImpl implements IOrderService {
 							String teachingIds = order.getString("teachingIds");
 							if(!StringUtils.isEmpty(teachingIds)){
 								List<String>curTeachingIds = Arrays.asList(teachingIds.split(","));
-								StringBuffer sb = new StringBuffer();
+								//StringBuffer sb = new StringBuffer();
+								JSONArray teacherMaps = new JSONArray();
 								for(String curTeachingId : curTeachingIds){
 									JSONObject curTeacher = teachingIdNameMap.get(curTeachingId);
-									sb.append(curTeacher.getString("teacherName"));
+									/*sb.append(curTeacher.getString("teacherName"));
 									sb.append("(");
 									sb.append(curTeacher.get("lessonType"));
 									sb.append(")");
-									sb.append(",");
+									sb.append(",");*/
+									
+									teacherMaps.add(curTeacher);
 								}
-								order.put("bindTeachers", sb.substring(0, sb.length()-1));
+								order.put("bindTeachers", teacherMaps/*sb.substring(0, sb.length()-1)*/);
 							}
 						}
 					} catch (Exception e) {
