@@ -67,5 +67,13 @@
 		FROM lessontype
 		WHERE lessonType DIV 100 = #{gradeId}
 	</select>
-
+	
+	<!-- 获取当月老师授课记录 -->
+	<select id="selectMTeachingsByParams" resultType="hashmap" parameterType="hashmap">
+		SELECT DATE_FORMAT(teachingDate,'%Y%m') months, SUM(teachingNum) monthOfLessons
+		FROM teachingrecord a
+		WHERE orderId=#{orderId} AND teacherId=#{teacherId}
+		GROUP BY months
+	</select>
+	
 </mapper>

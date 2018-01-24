@@ -30,4 +30,6 @@ public interface IOrderService {
 	List<JSONObject> queryTeachingList(JSONObject params);
 
 	List<JSONObject> queryCourseList(JSONObject params);
+	
+	List<JSONObject> queryMTeachings(JSONObject params);
 }

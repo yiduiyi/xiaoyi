@@ -350,5 +350,15 @@ public class OrderServiceImpl implements IOrderService {
 		return 0;
 	}
 
+	@Override
+	public List<JSONObject> queryMTeachings(JSONObject params) {
+		try {
+			return orderManageDao.selectMTeachingsByParams(params);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	
 }

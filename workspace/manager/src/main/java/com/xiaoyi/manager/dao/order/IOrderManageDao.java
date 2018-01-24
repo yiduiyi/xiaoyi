@@ -17,4 +17,6 @@ public interface IOrderManageDao {
     
     //根据教学任务查找老师
     List<JSONObject> selectTeachersByTeachingIds(List<String> teachingIds);
+    
+    List<JSONObject> selectMTeachingsByParams(Map<String,Object> params);
 }
