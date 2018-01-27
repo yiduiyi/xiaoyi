@@ -30,17 +30,17 @@ public class WechatCallbackApi extends HttpServlet {
     
     public static String getTokenRequest(String code){
         String result = null;
-        GetTokenRequest  = GetTokenRequest.replace("APPID", urlEnodeUTF8(WXConstants.APPID));
-        GetTokenRequest  = GetTokenRequest.replace("APP_SECRET",urlEnodeUTF8(WXConstants.APP_SECRET));
-        GetTokenRequest = GetTokenRequest.replace("CODE", urlEnodeUTF8(code));
-        result = GetTokenRequest;
+        result  = GetTokenRequest.replace("APPID", urlEnodeUTF8(WXConstants.APPID));
+        result  = result.replace("APP_SECRET",urlEnodeUTF8(WXConstants.APP_SECRET));
+        result = result.replace("CODE", urlEnodeUTF8(code));
+        //result = GetTokenRequest;
         return result;
     }
     public static String getUserRequest(String accessToken, String openId){
         String result = null;
-        GetUserRequest  = GetUserRequest.replace("ACCESS_TOKEN", urlEnodeUTF8(accessToken));
-        GetUserRequest = GetUserRequest.replace("OPENID", urlEnodeUTF8(openId));
-        result = GetTokenRequest;
+        result  = GetUserRequest.replace("ACCESS_TOKEN", urlEnodeUTF8(accessToken));
+        result = result.replace("OPENID", urlEnodeUTF8(openId));
+        //result = GetUserRequest;
         return result;
     }
     
@@ -54,10 +54,13 @@ public class WechatCallbackApi extends HttpServlet {
         return result;
     }
     
+    /**
+     * 注：每个用户授权登录的这个接口只能调用一次,所以授权之后必须存储该用户信息
+     */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     	
-    	String code = request.getParameter("code");
+    	String code =/* "061U985k1VbWzk0xbZ3k1lGW4k1U985X";*/request.getParameter("code");
     	try {
     		logger.info("params:{code:"+code+"}");
 			String accessToken = HttpClient.httpGetRequest(getTokenRequest(code));
@@ -65,10 +68,17 @@ public class WechatCallbackApi extends HttpServlet {
 			logger.info("result:"+accessToken);
 			try {
 				JSONObject userInfo = (JSONObject)JSONObject.parse(accessToken) ;
-				
-				String user = HttpClient.httpGetRequest(getUserRequest(userInfo.getString("access_token"), userInfo.getString("openid")));
 				logger.info("userInfo:"+userInfo);				
 				
+				String user = HttpClient.httpGetRequest(getUserRequest(userInfo.getString("access_token"), userInfo.getString("openid")));
+				user = new String(user.getBytes("ISO-8859-1"),"UTF-8");
+				logger.info("user:"+user);
+				JSONObject userMap = (JSONObject)JSONObject.parse(user);
+				
+				//获取成功->保存入库
+				if(userMap != null && !userMap.containsKey("errcode")){
+					
+				}
 				response.getWriter().print(user);
 			} catch (Exception e) {
 				logger.error("获取用户信息出错！");

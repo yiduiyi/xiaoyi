@@ -10,3 +10,4 @@
 *.jar
 *.class
 workspace/manager/logs/ssm.log
+workspace/manager/src/main/webapp/WEB-INF/web.xml
