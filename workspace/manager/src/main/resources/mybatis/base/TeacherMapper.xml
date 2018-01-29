@@ -13,10 +13,11 @@
     <result column="teachingLevel" property="teachinglevel" jdbcType="TINYINT" />
     <result column="regDate" property="regdate" jdbcType="TIMESTAMP" />
     <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="openId" property="openId" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     teacherId, teacherName, picId, schoolId, gradeId, sex, education, telNumber, teachingLevel, 
-    regDate, notes
+    regDate, notes, openId
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -32,11 +33,11 @@
     insert into teacher (teacherId, teacherName, picId, 
       schoolId, gradeId, sex, 
       education, telNumber, teachingLevel, 
-      regDate, notes)
+      regDate, notes,openId)
     values (#{teacherid,jdbcType=VARCHAR}, #{teachername,jdbcType=VARCHAR}, #{picid,jdbcType=VARCHAR}, 
       #{schoolid,jdbcType=VARCHAR}, #{gradeid,jdbcType=VARCHAR}, #{sex,jdbcType=BIT}, 
       #{education,jdbcType=TINYINT}, #{telnumber,jdbcType=VARCHAR}, #{teachinglevel,jdbcType=TINYINT}, 
-      #{regdate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR})
+      #{regdate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Teacher" >
     insert into teacher
@@ -74,6 +75,9 @@
       <if test="notes != null" >
         notes,
       </if>
+       <if test="openId != null" >
+        openId,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="teacherid != null" >
@@ -108,6 +112,9 @@
       </if>
       <if test="notes != null" >
         #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null" >
+        #{openId,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -144,6 +151,9 @@
       <if test="notes != null" >
         notes = #{notes,jdbcType=VARCHAR},
       </if>
+      <if test="openId != null" >
+        openId = #{openId,jdbcType=VARCHAR},
+      </if>
     </set>
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
@@ -158,7 +168,8 @@
       telNumber = #{telnumber,jdbcType=VARCHAR},
       teachingLevel = #{teachinglevel,jdbcType=TINYINT},
       regDate = #{regdate,jdbcType=TIMESTAMP},
-      notes = #{notes,jdbcType=VARCHAR}
+      notes = #{notes,jdbcType=VARCHAR},
+      openId = #{openId, jdbcType=VARCAHR}
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
 </mapper>
