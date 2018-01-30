@@ -243,7 +243,9 @@ public class ConstantUtil {
 			return type/Math.abs(type);
 		}
 		public String getTypeName(){
-			return (type>0)?Type.STU_GO.toString():Type.TEA_GO.toString();
+			return (type>0)?
+					Type.STU_GO.toString()
+					:Type.TEA_GO.toString();
 		}
 		
 	}

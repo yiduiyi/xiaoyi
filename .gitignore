@@ -10,3 +10,5 @@
 *.jar
 *.class
 workspace/manager/logs/ssm.log
+*.log
+*.MF
