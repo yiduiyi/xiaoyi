@@ -11,6 +11,12 @@ public class User extends UserKey {
 
     private Boolean loginstatus;
 
+    private String openid;
+
+    private String nickname;
+
+    private String headimgurl;
+
     public String getUsername() {
         return username;
     }
@@ -49,5 +55,29 @@ public class User extends UserKey {
 
     public void setLoginstatus(Boolean loginstatus) {
         this.loginstatus = loginstatus;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid == null ? null : openid.trim();
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname == null ? null : nickname.trim();
+    }
+
+    public String getHeadimgurl() {
+        return headimgurl;
+    }
+
+    public void setHeadimgurl(String headimgurl) {
+        this.headimgurl = headimgurl == null ? null : headimgurl.trim();
     }
 }

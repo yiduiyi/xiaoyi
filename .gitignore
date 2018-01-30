@@ -12,3 +12,4 @@
 workspace/manager/logs/ssm.log
 *.log
 *.MF
+workspace/manager/src/main/webapp/WEB-INF/web.xml

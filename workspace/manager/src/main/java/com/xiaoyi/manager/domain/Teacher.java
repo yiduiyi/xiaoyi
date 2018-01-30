@@ -25,6 +25,7 @@ public class Teacher {
 
     private String notes;
 
+    private String openId;
     public String getTeacherid() {
         return teacherid;
     }
@@ -112,4 +113,12 @@ public class Teacher {
     public void setNotes(String notes) {
         this.notes = notes == null ? null : notes.trim();
     }
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
+	}
 }

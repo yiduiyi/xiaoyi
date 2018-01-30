@@ -30,7 +30,7 @@
 		<!-- test -->
 		<junit.version>3.8.1</junit.version>
 		<json.version>2.7.4</json.version>
-		
+
 		<!-- jdk -->
 		<jdk.version>1.7</jdk.version>
 		<maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
@@ -215,32 +215,33 @@
 			<version>${json.version}</version>
 		</dependency>
 		<!-- /Spring 升级4+ 依赖的JSON包 -->
+
+
+		<!-- http请求组件 -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<!-- <plugins>
-			define the project compile level
+		<!-- <plugins> define the project compile level <plugin> <groupId>org.apache.maven.plugins</groupId> 
+			<artifactId>maven-war-plugin</artifactId> <version>2.6</version> <configuration> 
+			<failOnMissingWebXml>false</failOnMissingWebXml> </configuration> </plugin> 
+			</plugins> -->
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
 				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<!-- 指定source和target的版本 -->
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
-		</plugins> -->
-		<plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <!-- 指定source和target的版本 -->
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
+		</plugins>
 		<finalName>xiaoyi</finalName>
 	</build>
 
