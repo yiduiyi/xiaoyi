@@ -16,6 +16,10 @@ public class ResponseConstants {
 			this.rtCode = code;
 		}
 		
+		public int getCode() {
+			return rtCode;
+		}
+		
 		@Override
 		public String toString(){
 			switch(rtCode){

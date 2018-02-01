@@ -15,7 +15,7 @@ import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
 
 @Controller
-@RequestMapping("/teacher")
+@RequestMapping("/teacher/trade")
 public class LessonTradeAction {
 	@Resource
 	private ITeachingRecordService recordService;
