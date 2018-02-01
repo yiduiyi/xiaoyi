@@ -30,5 +30,10 @@
 	</select>
 	
 	
+	<select id="selectSchoolDetailById" parameterType="hashmap" resultType="hashmap">
+		SELECT a.*, b.schoolName,b.schoolAddress,b.termInfo	
+		FROM grade a LEFT JOIN school b ON a.schoolId=b.schoolId
+		WHERE a.schoolId=#{schoolId}
+	</select>
 	
 </mapper>
