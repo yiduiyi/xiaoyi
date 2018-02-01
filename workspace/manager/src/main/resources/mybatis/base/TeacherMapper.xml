@@ -1,175 +1,180 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.manager.dao.ITeacherDao" >
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher" >
-    <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
-    <result column="teacherName" property="teachername" jdbcType="VARCHAR" />
-    <result column="picId" property="picid" jdbcType="VARCHAR" />
-    <result column="schoolId" property="schoolid" jdbcType="VARCHAR" />
-    <result column="gradeId" property="gradeid" jdbcType="VARCHAR" />
-    <result column="sex" property="sex" jdbcType="BIT" />
-    <result column="education" property="education" jdbcType="TINYINT" />
-    <result column="telNumber" property="telnumber" jdbcType="VARCHAR" />
-    <result column="teachingLevel" property="teachinglevel" jdbcType="TINYINT" />
-    <result column="regDate" property="regdate" jdbcType="TIMESTAMP" />
-    <result column="notes" property="notes" jdbcType="VARCHAR" />
-    <result column="openId" property="openId" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    teacherId, teacherName, picId, schoolId, gradeId, sex, education, telNumber, teachingLevel, 
-    regDate, notes, openId
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from teacher
-    where teacherId = #{teacherid,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from teacher
-    where teacherId = #{teacherid,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Teacher" >
-    insert into teacher (teacherId, teacherName, picId, 
-      schoolId, gradeId, sex, 
-      education, telNumber, teachingLevel, 
-      regDate, notes,openId)
-    values (#{teacherid,jdbcType=VARCHAR}, #{teachername,jdbcType=VARCHAR}, #{picid,jdbcType=VARCHAR}, 
-      #{schoolid,jdbcType=VARCHAR}, #{gradeid,jdbcType=VARCHAR}, #{sex,jdbcType=BIT}, 
-      #{education,jdbcType=TINYINT}, #{telnumber,jdbcType=VARCHAR}, #{teachinglevel,jdbcType=TINYINT}, 
-      #{regdate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Teacher" >
-    insert into teacher
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="teacherid != null" >
-        teacherId,
-      </if>
-      <if test="teachername != null" >
-        teacherName,
-      </if>
-      <if test="picid != null" >
-        picId,
-      </if>
-      <if test="schoolid != null" >
-        schoolId,
-      </if>
-      <if test="gradeid != null" >
-        gradeId,
-      </if>
-      <if test="sex != null" >
-        sex,
-      </if>
-      <if test="education != null" >
-        education,
-      </if>
-      <if test="telnumber != null" >
-        telNumber,
-      </if>
-      <if test="teachinglevel != null" >
-        teachingLevel,
-      </if>
-      <if test="regdate != null" >
-        regDate,
-      </if>
-      <if test="notes != null" >
-        notes,
-      </if>
-       <if test="openId != null" >
-        openId,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="teacherid != null" >
-        #{teacherid,jdbcType=VARCHAR},
-      </if>
-      <if test="teachername != null" >
-        #{teachername,jdbcType=VARCHAR},
-      </if>
-      <if test="picid != null" >
-        #{picid,jdbcType=VARCHAR},
-      </if>
-      <if test="schoolid != null" >
-        #{schoolid,jdbcType=VARCHAR},
-      </if>
-      <if test="gradeid != null" >
-        #{gradeid,jdbcType=VARCHAR},
-      </if>
-      <if test="sex != null" >
-        #{sex,jdbcType=BIT},
-      </if>
-      <if test="education != null" >
-        #{education,jdbcType=TINYINT},
-      </if>
-      <if test="telnumber != null" >
-        #{telnumber,jdbcType=VARCHAR},
-      </if>
-      <if test="teachinglevel != null" >
-        #{teachinglevel,jdbcType=TINYINT},
-      </if>
-      <if test="regdate != null" >
-        #{regdate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="notes != null" >
-        #{notes,jdbcType=VARCHAR},
-      </if>
-      <if test="openId != null" >
-        #{openId,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Teacher" >
-    update teacher
-    <set >
-      <if test="teachername != null" >
-        teacherName = #{teachername,jdbcType=VARCHAR},
-      </if>
-      <if test="picid != null" >
-        picId = #{picid,jdbcType=VARCHAR},
-      </if>
-      <if test="schoolid != null" >
-        schoolId = #{schoolid,jdbcType=VARCHAR},
-      </if>
-      <if test="gradeid != null" >
-        gradeId = #{gradeid,jdbcType=VARCHAR},
-      </if>
-      <if test="sex != null" >
-        sex = #{sex,jdbcType=BIT},
-      </if>
-      <if test="education != null" >
-        education = #{education,jdbcType=TINYINT},
-      </if>
-      <if test="telnumber != null" >
-        telNumber = #{telnumber,jdbcType=VARCHAR},
-      </if>
-      <if test="teachinglevel != null" >
-        teachingLevel = #{teachinglevel,jdbcType=TINYINT},
-      </if>
-      <if test="regdate != null" >
-        regDate = #{regdate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="notes != null" >
-        notes = #{notes,jdbcType=VARCHAR},
-      </if>
-      <if test="openId != null" >
-        openId = #{openId,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where teacherId = #{teacherid,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Teacher" >
-    update teacher
-    set teacherName = #{teachername,jdbcType=VARCHAR},
-      picId = #{picid,jdbcType=VARCHAR},
-      schoolId = #{schoolid,jdbcType=VARCHAR},
-      gradeId = #{gradeid,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=BIT},
-      education = #{education,jdbcType=TINYINT},
-      telNumber = #{telnumber,jdbcType=VARCHAR},
-      teachingLevel = #{teachinglevel,jdbcType=TINYINT},
-      regDate = #{regdate,jdbcType=TIMESTAMP},
-      notes = #{notes,jdbcType=VARCHAR},
-      openId = #{openId, jdbcType=VARCAHR}
-    where teacherId = #{teacherid,jdbcType=VARCHAR}
-  </update>
+<mapper namespace="com.xiaoyi.manager.dao.ITeacherDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher">
+		<id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+		<result column="teacherName" property="teachername" jdbcType="VARCHAR" />
+		<result column="picId" property="picid" jdbcType="VARCHAR" />
+		<result column="schoolId" property="schoolid" jdbcType="VARCHAR" />
+		<result column="gradeId" property="gradeid" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="BIT" />
+		<result column="education" property="education" jdbcType="TINYINT" />
+		<result column="telNumber" property="telnumber" jdbcType="VARCHAR" />
+		<result column="teachingLevel" property="teachinglevel"
+			jdbcType="TINYINT" />
+		<result column="regDate" property="regdate" jdbcType="TIMESTAMP" />
+		<result column="notes" property="notes" jdbcType="VARCHAR" />
+		<result column="openId" property="openId" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		teacherId, teacherName, picId, schoolId, gradeId, sex, education, telNumber,
+		teachingLevel,
+		regDate, notes, openId
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from teacher
+		where teacherId = #{teacherid,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from teacher
+		where teacherId = #{teacherid,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.xiaoyi.manager.domain.Teacher">
+		insert into teacher (teacherId, teacherName, picId,
+		schoolId, gradeId, sex,
+		education, telNumber, teachingLevel,
+		regDate, notes,openId)
+		values (#{teacherid,jdbcType=VARCHAR}, #{teachername,jdbcType=VARCHAR},
+		#{picid,jdbcType=VARCHAR},
+		#{schoolid,jdbcType=VARCHAR}, #{gradeid,jdbcType=VARCHAR}, #{sex,jdbcType=BIT},
+		#{education,jdbcType=TINYINT}, #{telnumber,jdbcType=VARCHAR},
+		#{teachinglevel,jdbcType=TINYINT},
+		#{regdate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Teacher">
+		insert into teacher
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="teacherid != null">
+				teacherId,
+			</if>
+			<if test="teachername != null">
+				teacherName,
+			</if>
+			<if test="picid != null">
+				picId,
+			</if>
+			<if test="schoolid != null">
+				schoolId,
+			</if>
+			<if test="gradeid != null">
+				gradeId,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="education != null">
+				education,
+			</if>
+			<if test="telnumber != null">
+				telNumber,
+			</if>
+			<if test="teachinglevel != null">
+				teachingLevel,
+			</if>
+			<if test="regdate != null">
+				regDate,
+			</if>
+			<if test="notes != null">
+				notes,
+			</if>
+			<if test="openId != null">
+				openId,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="teacherid != null">
+				#{teacherid,jdbcType=VARCHAR},
+			</if>
+			<if test="teachername != null">
+				#{teachername,jdbcType=VARCHAR},
+			</if>
+			<if test="picid != null">
+				#{picid,jdbcType=VARCHAR},
+			</if>
+			<if test="schoolid != null">
+				#{schoolid,jdbcType=VARCHAR},
+			</if>
+			<if test="gradeid != null">
+				#{gradeid,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=BIT},
+			</if>
+			<if test="education != null">
+				#{education,jdbcType=TINYINT},
+			</if>
+			<if test="telnumber != null">
+				#{telnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="teachinglevel != null">
+				#{teachinglevel,jdbcType=TINYINT},
+			</if>
+			<if test="regdate != null">
+				#{regdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="notes != null">
+				#{notes,jdbcType=VARCHAR},
+			</if>
+			<if test="openId != null">
+				#{openId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Teacher">
+		update teacher
+		<set>
+			<if test="teachername != null">
+				teacherName = #{teachername,jdbcType=VARCHAR},
+			</if>
+			<if test="picid != null">
+				picId = #{picid,jdbcType=VARCHAR},
+			</if>
+			<if test="schoolid != null">
+				schoolId = #{schoolid,jdbcType=VARCHAR},
+			</if>
+			<if test="gradeid != null">
+				gradeId = #{gradeid,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=BIT},
+			</if>
+			<if test="education != null">
+				education = #{education,jdbcType=TINYINT},
+			</if>
+			<if test="telnumber != null">
+				telNumber = #{telnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="teachinglevel != null">
+				teachingLevel = #{teachinglevel,jdbcType=TINYINT},
+			</if>
+			<if test="regdate != null">
+				regDate = #{regdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="notes != null">
+				notes = #{notes,jdbcType=VARCHAR},
+			</if>
+			<if test="openId != null">
+				openId = #{openId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where teacherId = #{teacherid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Teacher">
+		update teacher
+		set teacherName = #{teachername,jdbcType=VARCHAR},
+		picId = #{picid,jdbcType=VARCHAR},
+		schoolId = #{schoolid,jdbcType=VARCHAR},
+		gradeId = #{gradeid,jdbcType=VARCHAR},
+		sex = #{sex,jdbcType=BIT},
+		education = #{education,jdbcType=TINYINT},
+		telNumber = #{telnumber,jdbcType=VARCHAR},
+		teachingLevel = #{teachinglevel,jdbcType=TINYINT},
+		regDate = #{regdate,jdbcType=TIMESTAMP},
+		notes = #{notes,jdbcType=VARCHAR},
+		openId = #{openId, jdbcType=VARCAHR}
+		where teacherId = #{teacherid,jdbcType=VARCHAR}
+	</update>
 </mapper>
