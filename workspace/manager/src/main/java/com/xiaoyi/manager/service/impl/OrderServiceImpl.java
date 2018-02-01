@@ -235,7 +235,7 @@ public class OrderServiceImpl implements IOrderService {
 			throw new RuntimeException();
 		}
 	}
-
+	@Transactional
 	@Override
 	public List<JSONObject> getOrderList(JSONObject params) {
 		List<JSONObject> result = null;
@@ -299,7 +299,7 @@ public class OrderServiceImpl implements IOrderService {
 		}
 		return null;
 	}
-
+	@Transactional
 	@Override
 	public List<JSONObject> queryTeachingList(JSONObject params) {
 		try {
@@ -321,7 +321,7 @@ public class OrderServiceImpl implements IOrderService {
 		}
 		return null;
 	}
-
+	@Transactional
 	@Override
 	public int updateOrderSum(JSONObject params) {
 		try {
@@ -349,7 +349,8 @@ public class OrderServiceImpl implements IOrderService {
 		}
 		return 0;
 	}
-
+	
+	@Transactional
 	@Override
 	public List<JSONObject> queryMTeachings(JSONObject params) {
 		try {

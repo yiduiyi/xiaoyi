@@ -72,7 +72,7 @@ public class ScheduleServiceImpl implements IScheduleService {
 		
 		return 0;
 	}
-
+	@Transactional
 	@Override
 	public int deleteSchedule(String scheduleId) {
 		try {
@@ -82,7 +82,7 @@ public class ScheduleServiceImpl implements IScheduleService {
 			return -1;
 		}
 	}
-
+	@Transactional
 	@Override
 	public int updateSchedule(JSONObject schedule) {
 		try {
@@ -96,7 +96,7 @@ public class ScheduleServiceImpl implements IScheduleService {
 			return -1;
 		}		
 	}
-
+	@Transactional
 	@Override
 	public List<JSONObject> getScheduleList(JSONObject params) throws Exception{
 		// TODO Auto-generated method stub

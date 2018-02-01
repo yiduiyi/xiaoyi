@@ -21,7 +21,7 @@ public class AccountServiceImpl implements IAccountService{
 	public AccountServiceImpl() {
 		// TODO Auto-generated constructor stub
 	}
-
+	@Transactional
 	@Override
 	public Account getAccountById(String accountId) {
 		// TODO Auto-generated method stub
