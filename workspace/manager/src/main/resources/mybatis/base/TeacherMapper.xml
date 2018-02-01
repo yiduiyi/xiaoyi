@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-		<result column="education" property="education" jdbcType="TINYINT" />
-		<result column="teachingLevel" property="teachinglevel"
 <mapper namespace="com.xiaoyi.manager.dao.ITeacherDao" >
   <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher" >
     <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
@@ -164,7 +162,7 @@
         openId = #{openId,jdbcType=VARCHAR},
       </if>
       <if test="signed != null" >
-        signed,
+        signed = #{signed,jdbcType=VARCHAR},
       </if>
     </set>
     where teacherId = #{teacherid,jdbcType=VARCHAR}
