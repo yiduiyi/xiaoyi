@@ -26,6 +26,8 @@ public class Teacher {
     private String notes;
 
     private String openId;
+    
+    private Short signed;
     public String getTeacherid() {
         return teacherid;
     }
@@ -120,5 +122,13 @@ public class Teacher {
 
 	public void setOpenId(String openId) {
 		this.openId = openId;
+	}
+
+	public Short getSigned() {
+		return signed;
+	}
+
+	public void setSigned(Short signed) {
+		this.signed = signed;
 	}
 }

@@ -14,10 +14,11 @@
     <result column="regDate" property="regdate" jdbcType="TIMESTAMP" />
     <result column="notes" property="notes" jdbcType="VARCHAR" />
     <result column="openId" property="openId" jdbcType="VARCHAR" />
+    <result column="signed" property="signed" jdbcType="BIT" />
   </resultMap>
   <sql id="Base_Column_List" >
     teacherId, teacherName, picId, schoolId, gradeId, sex, education, telNumber, teachingLevel, 
-    regDate, notes, openId
+    regDate, notes, openId, signed
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -33,11 +34,11 @@
     insert into teacher (teacherId, teacherName, picId, 
       schoolId, gradeId, sex, 
       education, telNumber, teachingLevel, 
-      regDate, notes,openId)
+      regDate, notes,openId,signed)
     values (#{teacherid,jdbcType=VARCHAR}, #{teachername,jdbcType=VARCHAR}, #{picid,jdbcType=VARCHAR}, 
       #{schoolid,jdbcType=VARCHAR}, #{gradeid,jdbcType=VARCHAR}, #{sex,jdbcType=BIT}, 
       #{education,jdbcType=TINYINT}, #{telnumber,jdbcType=VARCHAR}, #{teachinglevel,jdbcType=TINYINT}, 
-      #{regdate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR})
+      #{regdate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}), #{signed,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Teacher" >
     insert into teacher
@@ -78,6 +79,9 @@
        <if test="openId != null" >
         openId,
       </if>
+      <if test="signed != null" >
+        signed,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="teacherid != null" >
@@ -115,6 +119,9 @@
       </if>
       <if test="openId != null" >
         #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="signed != null" >
+        signed,
       </if>
     </trim>
   </insert>
@@ -154,6 +161,9 @@
       <if test="openId != null" >
         openId = #{openId,jdbcType=VARCHAR},
       </if>
+      <if test="signed != null" >
+        signed,
+      </if>
     </set>
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
@@ -169,7 +179,8 @@
       teachingLevel = #{teachinglevel,jdbcType=TINYINT},
       regDate = #{regdate,jdbcType=TIMESTAMP},
       notes = #{notes,jdbcType=VARCHAR},
-      openId = #{openId, jdbcType=VARCAHR}
+      openId = #{openId, jdbcType=VARCHAR},
+      signed = #{signed,jdbcType=BIT}
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
 </mapper>

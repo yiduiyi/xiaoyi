@@ -5,6 +5,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.xiaoyi.manager.dao.IUserDao;
 import com.xiaoyi.manager.domain.User;
@@ -16,7 +17,7 @@ public class LoginServiceImpl implements ILoginService {
     private IUserDao userDao;  
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	@Transactional
 	@Override
 	public User userIdentify(User user) {
 		try {
@@ -40,7 +41,7 @@ public class LoginServiceImpl implements ILoginService {
 		}
 		return null;
 	}
-
+	@Transactional
 	@Override
 	public int userLogout(User user) {
 		try {
