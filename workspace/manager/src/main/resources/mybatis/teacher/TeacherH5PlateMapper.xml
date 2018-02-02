@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.teacher.dao.ITH5PlateDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher">
+		<id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+		<result column="teacherName" property="teachername" jdbcType="VARCHAR" />
+		<result column="picId" property="picid" jdbcType="VARCHAR" />
+		<result column="schoolId" property="schoolid" jdbcType="VARCHAR" />
+		<result column="gradeId" property="gradeid" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="BIT" />
+		<result column="education" property="education" jdbcType="TINYINT" />
+		<result column="telNumber" property="telnumber" jdbcType="VARCHAR" />
+		<result column="teachingLevel" property="teachinglevel"
+			jdbcType="TINYINT" />
+		<result column="regDate" property="regdate" jdbcType="TIMESTAMP" />
+		<result column="notes" property="notes" jdbcType="VARCHAR" />
+		<result column="openId" property="openId" jdbcType="VARCHAR" />
+		<result column="signed" property="signed" jdbcType="BIT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		teacherId, teacherName, picId, schoolId, gradeId, sex, education, telNumber,
+		teachingLevel,
+		regDate, notes, openId, signed
+	</sql>
+	<select id="selectTeacherByOpenId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from teacher
+		where openId = #{openId,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectTeacherByParams" resultMap="BaseResultMap"
+		parameterType="hashmap">
+		select
+		<include refid="Base_Column_List" />
+		from teacher
+		where teacherName = #{teacherName,jdbcType=VARCHAR} 
+				AND telNumber = #{telNumber,jdbcType=VARCHAR}
+	</select>
+
+	<update id="updateTeacherByOpenId" parameterType="com.xiaoyi.manager.domain.Teacher">
+		update teacher
+		<set>
+			<if test="teachername != null">
+				teacherName = #{teachername,jdbcType=VARCHAR},
+			</if>
+			<if test="picid != null">
+				picId = #{picid,jdbcType=VARCHAR},
+			</if>
+			<if test="schoolid != null">
+				schoolId = #{schoolid,jdbcType=VARCHAR},
+			</if>
+			<if test="gradeid != null">
+				gradeId = #{gradeid,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				sex = #{sex,jdbcType=BIT},
+			</if>
+			<if test="education != null">
+				education = #{education,jdbcType=TINYINT},
+			</if>
+			<if test="telnumber != null">
+				telNumber = #{telnumber,jdbcType=VARCHAR},
+			</if>
+			<if test="teachinglevel != null">
+				teachingLevel = #{teachinglevel,jdbcType=TINYINT},
+			</if>
+			<if test="regdate != null">
+				regDate = #{regdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="notes != null">
+				notes = #{notes,jdbcType=VARCHAR},
+			</if>
+			<if test="openId != null">
+				openId = #{openId,jdbcType=VARCHAR},
+			</if>
+			<if test="signed != null">
+				signed = #{signed,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where telNumber = #{telnumber,jdbcType=VARCHAR}
+	</update>
+
+</mapper>

@@ -33,13 +33,20 @@
 		from user
 		where 
 		<choose>
-			<when test="username!=null">
-				userName = #{username}
+			<when test="userid!=null">
+				userId = #{userid,jdbcType=VARCHAR}
 			</when>
 			<otherwise>
-				<if test="useraccountid!=null">    
-	      			userAccountId = #{useraccountid,jdbcType=VARCHAR}
-	  			</if>
+				<choose>
+					<when test="username!=null">
+						userName = #{username}
+					</when>
+					<otherwise>
+						<if test="useraccountid!=null">    
+			      			userAccountId = #{useraccountid,jdbcType=VARCHAR}
+			  			</if>
+					</otherwise>
+				</choose>
 			</otherwise>
 		</choose>
 		<!-- userAccountId = #{useraccountid,jdbcType=VARCHAR}

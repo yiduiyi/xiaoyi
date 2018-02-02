@@ -14,80 +14,60 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
+import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.IPrivateDomainService;
 
 @Controller
-@RequestMapping("/teacher/domain")
-public class PrivateDomainAction {
+@RequestMapping("/teacher/h5")
+public class H5PlateAction {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Resource
-	private IPrivateDomainService domainService;
+	private IH5PlateService h5PlateService;
 	
-	@RequestMapping(value="/getSignStatus",method=RequestMethod.POST)
+	@RequestMapping(value="/getBindStatus",method=RequestMethod.POST)
 	@ResponseBody
-	public  JSONObject getSignStatus(HttpServletRequest request
+	public  JSONObject getBindStatus(HttpServletRequest request
 			,HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		
 		try {
-			Short signStatus = domainService.getSignStatus(reqData);
+			int status = h5PlateService.queryBindStatus(reqData.getString("openId"));
+			JSONObject data = new JSONObject();
+			data.put("status", status);
 			
-			if(-1!=signStatus) {
-				JSONObject data = new JSONObject();
-				data.put("signed", signStatus);
-				result.put("data",data);
+			rtCode = RtConstants.SUCCESS;			
+		} catch (Exception e) {
+			logger.error("获取老师账号绑定状态失败！");
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
+	
+	@RequestMapping(value="/bindWechat",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject bindWechat(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {
+			int code = h5PlateService.bindWechat(reqData);
+			if(code==0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
-			logger.error("获取老师签约状态失败！");
+			logger.error("绑定老师账号失败！");
 		}
 		
 		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
 		return result;
 	}
 	
-	
-	@RequestMapping(value="/agree",method=RequestMethod.POST)
-	@ResponseBody
-	public  JSONObject agree(HttpServletRequest request
-			,HttpServletResponse response,
-			@RequestBody JSONObject reqData) {
-		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
-		
-		try {
-			domainService.setAgreement(reqData);
-			rtCode = RtConstants.SUCCESS;
-		} catch (Exception e) {			
-			logger.error("获取老师签约状态失败！");
-		}
-		
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
-		return result;
-	}
-	
-	
-	@RequestMapping(value="/getPrivateMsg",method=RequestMethod.POST)
-	@ResponseBody
-	public  JSONObject getPrivateMsg(HttpServletRequest request
-			,HttpServletResponse response,
-			@RequestBody JSONObject reqData) {
-		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
-		
-		try {
-			result.put("data", domainService.queryPrivateMsg(reqData));
-			rtCode = RtConstants.SUCCESS;
-		} catch (Exception e) {			
-			logger.error("获取老师信息失败！");
-		}
-		
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
-		return result;
-	}
 	
 	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
 		result.put("code", code);
