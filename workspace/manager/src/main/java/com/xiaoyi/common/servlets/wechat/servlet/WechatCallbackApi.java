@@ -1,9 +1,9 @@
-package com.xiaoyi.common.servlet;
+package com.xiaoyi.common.servlets.wechat.servlet;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.Arrays;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,10 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.servlets.wechat.service.WechatService;
 import com.xiaoyi.common.utils.HttpClient;
-import com.xiaoyi.common.utils.SHA1;
 import com.xiaoyi.common.utils.WXConstants;
 
 
@@ -22,6 +23,8 @@ import com.xiaoyi.common.utils.WXConstants;
 public class WechatCallbackApi extends HttpServlet {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	@Resource
+	private WechatService wechatService;
 	// 自定义 token
     private String TOKEN = "xiaoyiVerifyToken";
     
@@ -55,6 +58,7 @@ public class WechatCallbackApi extends HttpServlet {
     }
     
     /**
+     * get: 授权认证
      * 注：每个用户授权登录的这个接口只能调用一次,所以授权之后必须存储该用户信息
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -109,6 +113,21 @@ public class WechatCallbackApi extends HttpServlet {
             response.getWriter().print(echostr);
         }*/
     }
+    
+    /**
+     * post:
+     * 接收来自微信发来的消息
+     * 
+     * @param out
+     * @param request
+     * @param response
+     */
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		String responseMessage = wechatService.processRequest(req);
+		resp.getWriter().print(responseMessage);
+		//super.doPost(req, resp);
+	}
     
     
 }
