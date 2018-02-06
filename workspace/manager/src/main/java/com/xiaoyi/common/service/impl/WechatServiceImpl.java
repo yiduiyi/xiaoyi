@@ -1,4 +1,4 @@
-package com.xiaoyi.common.servlets.wechat.service;
+package com.xiaoyi.common.service.impl;
 
 import java.util.Map;
 
@@ -7,17 +7,18 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.xiaoyi.common.servlets.wechat.vo.TextMessage;
+import com.xiaoyi.common.vo.TextMessage;
+import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.WechatMessageUtil;
 
 
-@Service
-public class WechatService {
-    private static Logger log = Logger.getLogger(WechatService.class);
+@Service("wechatService")
+public class WechatServiceImpl implements IWechatService {
+    private static Logger logger = Logger.getLogger(WechatServiceImpl.class);
 
     public String processRequest(HttpServletRequest request) {
         Map<String, String> map = WechatMessageUtil.xmlToMap(request);
-        log.info(map);
+        logger.info(map);
         // 发送方帐号（一个OpenID）
         String fromUserName = map.get("FromUserName");
         // 开发者微信号
@@ -36,7 +37,7 @@ public class WechatService {
             textMessage.setContent("我已经受到你发来的消息了");
             responseMessage = WechatMessageUtil.textMessageToXml(textMessage);
         }
-        log.info(responseMessage);
+        logger.info(responseMessage);
         return responseMessage;
 
     }

@@ -14,7 +14,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.thoughtworks.xstream.XStream;
-import com.xiaoyi.common.servlets.wechat.vo.*;
+import com.xiaoyi.common.vo.*;
 
 public class WechatMessageUtil {
     // 各种消息类型,除了扫带二维码事件

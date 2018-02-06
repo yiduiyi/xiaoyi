@@ -1,4 +1,4 @@
-package com.xiaoyi.common.servlets.wechat.vo;
+package com.xiaoyi.common.vo;
 
 public class TextMessage extends BaseWechatMessage {
 	/**

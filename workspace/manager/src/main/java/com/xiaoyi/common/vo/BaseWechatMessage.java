@@ -1,4 +1,4 @@
-package com.xiaoyi.common.servlets.wechat.vo;
+package com.xiaoyi.common.vo;
 
 /**
  * @author gaowei.cheng

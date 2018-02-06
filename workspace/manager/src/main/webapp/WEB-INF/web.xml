@@ -76,8 +76,8 @@
 
 	<!-- Servlet 微信Token验证 -->
 	<servlet>
-		<servlet-name>wechatCallbackApi</servlet-name>
-		<servlet-class>com.xiaoyi.common.servlet.WechatCallbackApi</servlet-class>
+		<servlet-name>WechatCallbackApi</servlet-name>
+		<servlet-class>com.xiaoyi.common.servlets.wechat.servlet.WechatCallbackApi</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>WechatCallbackApi</servlet-name>

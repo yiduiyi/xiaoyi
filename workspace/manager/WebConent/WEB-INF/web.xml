@@ -27,7 +27,17 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-
+	
+	<!-- Servlet 微信Token验证 -->
+	<servlet>
+		<servlet-name>WechatCallbackApi</servlet-name>
+		<servlet-class>com.xiaoyi.common.servlets.WechatCallbackApi</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WechatCallbackApi</servlet-name>
+		<url-pattern>/WechatCallbackApi</url-pattern>
+	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>springMVC</servlet-name>
 		<url-pattern>/</url-pattern>
