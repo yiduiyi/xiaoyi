@@ -1,5 +1,7 @@
 package com.xiaoyi.manager.action;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,12 +11,15 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil;
+import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.manager.domain.Account;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.IAccountService;
@@ -111,6 +116,25 @@ public class ScheduleAction {
 		
 		try {			
 			List<JSONObject> datas = scheduleService.getScheduleList(reqData);
+			if(!CollectionUtils.isEmpty(datas)){
+				for(JSONObject data : datas){
+					//String dateTime = data.getString("createTime");					
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.DD");					
+					data.put("createTime", sdf.format(data.get("createTime")));
+					
+					Integer lessonType = data.getInteger("lessonType");
+					if(null!=lessonType){
+						LessonType type = LessonType.convert(lessonType);
+						if(null!=type){
+							StringBuffer sb = new StringBuffer();
+							sb.append(type.getLevelName(true))
+								.append(type.getGradeName(true))
+								.append(type.getCourseName(false));
+							data.put("lessonName", sb.toString());					
+						}
+					}
+				}
+			}
 			result.put("data", datas);
 			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {			

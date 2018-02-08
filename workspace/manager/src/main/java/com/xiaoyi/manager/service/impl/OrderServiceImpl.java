@@ -213,8 +213,8 @@ public class OrderServiceImpl implements IOrderService {
 					//补全老师Id及科目
 					if(null!=relationKey){
 						relation.setTeacherId(relationKey.getTeacherid());
-						int type = Math.abs(record.getLessontype())/record.getLessontype();
-						relation.setLessonType(relationKey.getLessontype()*type);
+						//int type = Math.abs(record.getLessontype())/record.getLessontype();
+						relation.setLessonType(record.getLessontype()/*relationKey.getLessontype()*type*/);
 					}
 					relations.add(relation);
 				}

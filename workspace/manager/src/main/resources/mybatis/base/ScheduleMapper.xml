@@ -21,8 +21,8 @@
     where scheduleId = #{scheduleid,jdbcType=VARCHAR}
   </select>
   
-  <select id="selectListByConditions" resultType="hashmap" parameterType="hashmap">
-  	SELECT a.scheduleId,c.openId,c.telNum,c.weChatNum,a.createTime,a.lessonType,a.notes,a.status,b.name
+  <select id="selectListByConditions" resultType="com.alibaba.fastjson.JSONObject" parameterType="hashmap">
+  	SELECT a.scheduleId,c.openId,c.telNum,c.weChatNum,a.createTime,a.lessonType,a.notes,a.status,b.name as studentName,c.parentName
 	FROM schedule a LEFT JOIN student b ON a.memberId=b.memberId
 		LEFT JOIN parents c ON a.parentId=c.parentId
 	<if test="stuName!=null">

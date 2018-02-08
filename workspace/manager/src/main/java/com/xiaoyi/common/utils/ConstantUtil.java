@@ -44,6 +44,18 @@ public class ConstantUtil {
 			}
 			return "null";
 		}
+		
+		public String getSimpleName(){
+			switch(level){
+			case 1:
+				return "小";
+			case 2: 
+				return "初";
+			case 3: 
+				return "高";
+			}
+			return "null";
+		}
 	}
 	
 	public static enum Grade{
@@ -57,6 +69,26 @@ public class ConstantUtil {
 		public int getValue(){
 			return grade;
 		}
+		
+		public String getSimpleName(){
+			switch(grade){
+			case 1:
+				return "一";
+			case 2:
+				return "二";
+			case 3:
+				return "三";
+			case 4:
+				return "四";
+			case 5:
+				return "五";
+			case 6: 
+				return "六";
+			}
+		
+			return "null";
+		}
+		
 		@Override
 		public String toString(){
 			switch(grade){
@@ -88,6 +120,30 @@ public class ConstantUtil {
 		public int getValue(){
 			return courseId;
 		}
+		
+		public String getSimpleName(){
+			switch(courseId){
+			case 1:
+				return "语";
+			case 2:
+				return "数";
+			case 3:
+				return "外";
+			case 4: 
+				return "政";
+			case 5:
+				return "历";
+			case 6:
+				return "地";
+			case 7:
+				return "物";
+			case 8:
+				return "化";
+			case 9:
+				return "生";
+			}			
+			return "null";
+		}			
 		
 		@Override
 		public String toString(){
@@ -180,14 +236,16 @@ public class ConstantUtil {
 		 * 返回年级名
 		 * @return
 		 */
-		public String getGradeName(){
+		public String getGradeName(Boolean simple){
 			for(Grade g : Grade.values()){
 				if(g.getValue() == getGradeId()){
-					return g.toString();
+					return simple?g.getSimpleName():g.toString();
 				}
 			}
 			return null;
 		}
+		
+		
 		
 		/**
 		 * 获取科目Id
@@ -202,10 +260,10 @@ public class ConstantUtil {
 		/**
 		 * 获取科目名称
 		 */
-		public String getCourseName(){
+		public String getCourseName(boolean simple){
 			for(Course c : Course.values()){
 				if(c.getValue() == getCourseId()){
-					return c.toString();
+					return simple?c.getSimpleName():c.toString();
 				}
 			}
 			return null;
@@ -226,10 +284,10 @@ public class ConstantUtil {
 		 * 获取学生层次（小学，初中，高中）
 		 * @return
 		 */
-		public String getLevelName(){
+		public String getLevelName(boolean simple){
 			for(Level l : Level.values()){
 				if(l.getValue()==getLevel()){
-					return l.toString();
+					return simple?l.getSimpleName():l.toString();
 				}
 			}
 			return null;
@@ -248,6 +306,17 @@ public class ConstantUtil {
 					:Type.TEA_GO.toString();
 		}
 		
+		/**
+		 * int 类型转换成 lessonType
+		 */
+		public static LessonType convert(int value){
+			for(LessonType type : LessonType.values()){
+				if(type.getValue() == value){
+					return type;
+				}
+			}
+			return null;
+		}
 	}
 
 }
