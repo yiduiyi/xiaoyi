@@ -21,7 +21,7 @@ import com.xiaoyi.manager.utils.constant.ResponseConstants.LoginConstants;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 /**
- * 1.	用户登录
+ * 1.	鐢ㄦ埛鐧诲綍
  * @author dengzhihua
  *
  */
@@ -50,12 +50,17 @@ public class AuthAction {
 			e.printStackTrace();
 		}
 		
-		//登录成功,添加user至session并设置session时间
+		//鐧诲綍鎴愬姛,娣诲姞user鑷硈ession骞惰缃畇ession鏃堕棿
 		if(loginUser!=null){
 			rtCode = RtConstants.SUCCESS;
 			request.getSession().setAttribute("userBean", loginUser); 			
-		}
 		
+			JSONObject data = new JSONObject();			
+			data.put("user", loginUser);
+			
+			result.put("data", data);
+		}
+			
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
@@ -70,7 +75,7 @@ public class AuthAction {
 		String userName = reqData.getString("userName");
 		
 		HttpSession session = request.getSession();
-		//设置session回话过期，更新用户登录状态
+		//璁剧疆session鍥炶瘽杩囨湡锛屾洿鏂扮敤鎴风櫥褰曠姸鎬�
 		if(null!=session){
 			User user = (User) session.getAttribute("userBean");
 			
