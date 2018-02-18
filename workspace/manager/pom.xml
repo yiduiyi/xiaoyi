@@ -223,28 +223,30 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5.1</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/dom4j/dom4j -->
-		<!-- <dependency>
-		    <groupId>dom4j</groupId>
-		    <artifactId>dom4j</artifactId>
-		    <version>1.6.1</version>
-		</dependency> -->
-		
+		<!-- <dependency> <groupId>dom4j</groupId> <artifactId>dom4j</artifactId> 
+			<version>1.6.1</version> </dependency> -->
+
 		<!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
 		<dependency>
-		    <groupId>com.thoughtworks.xstream</groupId>
-		    <artifactId>xstream</artifactId>
-		    <version>1.4.10</version>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.10</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/xmlpull/xmlpull -->
 		<dependency>
-		    <groupId>xmlpull</groupId>
-		    <artifactId>xmlpull</artifactId>
-		    <version>1.1.3.1</version>
+			<groupId>xmlpull</groupId>
+			<artifactId>xmlpull</artifactId>
+			<version>1.1.3.1</version>
 		</dependency>
-		
+		<!-- 微信支付 SDK -->
+		<dependency>
+			<groupId>com.github.wxpay</groupId>
+			<artifactId>wxpay-sdk</artifactId>
+			<version>0.0.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>

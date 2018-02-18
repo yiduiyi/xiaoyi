@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -19,6 +20,9 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil;
+import com.xiaoyi.common.utils.ConstantUtil.Course;
+import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.manager.dao.IOTRelationDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
@@ -91,7 +95,7 @@ public class OrderServiceImpl implements IOrderService {
 				try {
 					OrderSumKey orderSumKey = new OrderSumKey();
 					//只存年级和上门类型
-					orderSumKey.setLessontype(lessonType/100);
+					orderSumKey.setLessontype(lessonType/*/100*/);
 					
 					orderSumKey.setMemberid(studentId);
 					orderSumKey.setParentid(parentId);
@@ -103,7 +107,9 @@ public class OrderServiceImpl implements IOrderService {
 				}
 				
 				//添加订单条目
-				Short purchaseNum = params.getShort("purchaseNum");			
+				Short purchaseNum = params.getShort("purchaseNum")==null?
+						0:params.getShort("purchaseNum");	
+				
 				Orders order = new Orders();				
 				try {
 					order.setOrderid(UUID.randomUUID().toString());
@@ -256,6 +262,18 @@ public class OrderServiceImpl implements IOrderService {
 					if(!StringUtils.isEmpty(teachingIds)){
 						tIds.addAll(Arrays.asList(teachingIds.split(",")));
 					}
+					
+					//转换年级代码->名称
+					Integer grade = order.getIntValue("lessonType");
+					if(null!=grade) {
+						for(Level curLevel : ConstantUtil.Level.values()) {
+							if(curLevel.getValue() == grade) {
+								order.put("gradeName", curLevel.toString());
+								break;
+							}
+						}
+						
+					}
 				}
 				
 				//增加任教关系字段
@@ -281,7 +299,15 @@ public class OrderServiceImpl implements IOrderService {
 									sb.append(curTeacher.get("lessonType"));
 									sb.append(")");
 									sb.append(",");*/
-									
+									if(null!=curTeacher 
+											&& null!=curTeacher.getInteger("lessonType")) {
+										Integer lessonType = curTeacher.getInteger("lessonType");
+										for(Course curCourse : Course.values()) {
+											if(lessonType%10 == curCourse.getValue()) {
+												curTeacher.put("courseName", curCourse.toString());
+											}
+										}
+									}
 									teacherMaps.add(curTeacher);
 								}
 								order.put("bindTeachers", teacherMaps/*sb.substring(0, sb.length()-1)*/);
@@ -328,11 +354,13 @@ public class OrderServiceImpl implements IOrderService {
 			OrderSum record = new OrderSum();
 			record.setOrderid(params.getString("orderId"));
 			
+			//0：结算、1：充值
 			int type = params.getIntValue("operateType");
 			int operateNum = params.getIntValue("operateNum");
 			
 			operateNum = (type==0)?-operateNum:operateNum;
 			
+			//更新订单总表
 			try {
 				record = orderSumDao.selectByPrimaryKey(record);
 			} catch (Exception e) {
@@ -342,7 +370,30 @@ public class OrderServiceImpl implements IOrderService {
 			record.setTotallessonnum((short) (record.getTotallessonnum()+operateNum));
 			record.setLessonleftnum((short)(record.getLessonleftnum()+operateNum));
 			
-			orderSumDao.updateByPrimaryKeySelective(record);
+			try {
+				orderSumDao.updateByPrimaryKeySelective(record);				
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			
+			//插入结算、充值记录
+			Orders order = new Orders();				
+			try {
+				order.setOrderid(UUID.randomUUID().toString());
+			
+				order.setCreatetime(new Date());
+				order.setLessontype(record.getLessontype());
+				order.setMemberid(record.getMemberid());
+				order.setParentid(record.getParentid());
+				order.setPurchasenum((short)operateNum);				
+				
+				order.setOrderType(++type);
+				orderDao.insertSelective(order);
+			}catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return -1;
@@ -355,6 +406,30 @@ public class OrderServiceImpl implements IOrderService {
 	public List<JSONObject> queryMTeachings(JSONObject params) {
 		try {
 			return orderManageDao.selectMTeachingsByParams(params);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<JSONObject> queryMOrders(JSONObject params) {
+		try {
+			List<Orders>mOrders = orderManageDao.selectMOrdersByParams(params);
+			
+			List<JSONObject> data = new ArrayList<JSONObject>();
+			if(!CollectionUtils.isEmpty(mOrders)) {
+				SimpleDateFormat myFmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				for(Orders order : mOrders) {	
+					JSONObject singleData = new JSONObject();
+					singleData.put("operateType", order.getOrderType());
+					singleData.put("operateNum", order.getPurchasenum());				
+					singleData.put("date", myFmt.format(order.getCreatetime()));					
+					
+					data.add(singleData);
+				}
+			}
+			return data;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

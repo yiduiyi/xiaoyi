@@ -58,6 +58,28 @@ public class OrderAction {
 		return result;
 	}
 	
+	@RequestMapping(value="/queryMOrders",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject queryMOrders(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			List<JSONObject> data = orderService.queryMOrders(reqData);
+			//int rt = orderService.addOrder(reqData);
+			result.put("data", data);
+			rtCode = RtConstants.SUCCESS;
+			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
 	@RequestMapping(value="/addOrder",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject addOrder(HttpServletRequest request

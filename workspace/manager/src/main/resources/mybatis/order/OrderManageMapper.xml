@@ -15,22 +15,24 @@
 		SELECT a.orderId,a.purchaseTime,a.lessonType,a.lessonLeftNum,a.totalLessonNum,a.teachingIds,b.openId,b.parentName,b.telNum,c.name as studentName
 		FROM ordersum a INNER JOIN parents b ON a.parentId=b.parentId
 			INNER JOIN student c ON a.memberId=c.memberId
-		<!-- 催费最小课时数 -->
-		<if test="lessonLeftNum!=null">
-			a.lessonLeftNum &lt; #{lessonLeftNum} 
-		</if>
-		<!-- 电话号码 -->
-		<if test="telNum!=null">
-			b.telNum LIKE "$#{telNum}$"
-		</if>
-		<!-- 家长姓名 -->
-		<if test="parentName!=null">
-			b.parentName LIKE "$#{parentName}$"
-		</if>
-		<!-- 学生姓名 -->	
-		<if test="studentName!=null">
-			c.name LIKE "$#{studentName}$"
-		</if>
+		<where>
+			<!-- 催费最小课时数 -->
+			<if test="lessonLeftNum!=null">
+				a.lessonLeftNum &lt; #{lessonLeftNum} 
+			</if>
+			<!-- 电话号码 -->
+			<if test="telNum!=null">
+				and b.telNum LIKE '%${telNum}%'
+			</if>
+			<!-- 家长姓名 -->
+			<if test="parentName!=null">
+				and b.parentName LIKE '%${parentName}%'
+			</if>
+			<!-- 学生姓名 -->	
+			<if test="studentName!=null">
+				and c.name LIKE  '%${studentName}%'
+			</if>
+		</where>
 	</select>
 	<!-- 根据任教关系查询老师列表 -->
 	<select id="selectTeachersByTeachingIds" resultType="com.alibaba.fastjson.JSONObject" parameterType="java.util.List">
@@ -74,6 +76,15 @@
 		FROM teachingrecord a
 		WHERE orderId=#{orderId} AND teacherId=#{teacherId}
 		GROUP BY months
+	</select>
+	
+	<!-- 获取充值、结算订单 -->
+	<select id="selectMOrdersByParams" resultType="com.xiaoyi.manager.domain.Orders" parameterType="hashmap">
+		SELECT a.*
+		FROM orders a LEFT JOIN ordersum b
+			ON a.parentId=b.parentId AND a.memberId=b.memberId
+		WHERE 
+		orderType&lt;&gt;0
 	</select>
 	
 </mapper>

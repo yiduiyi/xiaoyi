@@ -10,11 +10,11 @@
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.Orders" >
     insert into orders (lessonType, memberId, orderId, 
-      parentId, createTime, purchaseNum
+      parentId, createTime, purchaseNum,orderType
       )
     values (#{lessontype,jdbcType=INTEGER}, #{memberid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
       #{parentid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{purchasenum,jdbcType=SMALLINT}
-      )
+      , #{orderType,jdbcType=SMALLINT})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Orders" >
     insert into orders
@@ -37,6 +37,9 @@
       <if test="purchasenum != null" >
         purchaseNum,
       </if>
+      <if test="orderType != null" >
+        orderType,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="lessontype != null" >
@@ -56,6 +59,9 @@
       </if>
       <if test="purchasenum != null" >
         #{purchasenum,jdbcType=SMALLINT},
+      </if>
+      <if test="purchasenum != null" >
+        #{orderType,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>

@@ -3,6 +3,7 @@ package com.xiaoyi.manager.service;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.manager.domain.Orders;
 
 public interface IOrderService {
 	
@@ -32,4 +33,6 @@ public interface IOrderService {
 	List<JSONObject> queryCourseList(JSONObject params);
 	
 	List<JSONObject> queryMTeachings(JSONObject params);
+	
+	List<JSONObject> queryMOrders(JSONObject params);
 }

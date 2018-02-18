@@ -33,7 +33,36 @@ public class ResponseConstants {
 			return null;
 		}
 	}
-	
+	public enum LogOutConstants{
+		SUCCESS(0),	
+		FAILED(-1),	
+		INVALIDE_USERNAME(-2),
+		ALREADY_LOGOUT(-3);
+		
+		private int rtCode;
+		private LogOutConstants(int code){
+			this.rtCode = code;
+		}
+		
+		public int getCode() {
+			return rtCode;
+		}
+		
+		@Override
+		public String toString(){
+			switch(rtCode){
+			case 0:
+				return "退出成功！";
+			case -1:
+				return "退出失败！";
+			case -2:
+				return "【用户名】参数不正确！";
+			case -3:
+				return "改用户已退出";
+			}
+			return null;
+		}
+	}
 	
 	public enum RtConstants{
 		SUCCESS(0),			

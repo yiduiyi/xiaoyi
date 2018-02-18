@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.manager.domain.Orders;
 
 public interface IOrderManageDao {
 	//查找订单列表
@@ -19,4 +20,7 @@ public interface IOrderManageDao {
     List<JSONObject> selectTeachersByTeachingIds(List<String> teachingIds);
     
     List<JSONObject> selectMTeachingsByParams(Map<String,Object> params);
+    
+    //查询管理员手动充值、结算订单
+    List<Orders> selectMOrdersByParams(Map<String,Object> params);
 }

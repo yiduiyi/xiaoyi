@@ -7,6 +7,8 @@ public class Orders extends OrdersKey {
 
     private Short purchasenum;
 
+    private int orderType;
+    
     public Date getCreatetime() {
         return createtime;
     }
@@ -22,4 +24,12 @@ public class Orders extends OrdersKey {
     public void setPurchasenum(Short purchasenum) {
         this.purchasenum = purchasenum;
     }
+
+	public int getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(int orderType) {
+		this.orderType = orderType;
+	}
 }
