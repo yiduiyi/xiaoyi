@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.teaching.ITeachingResourceDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher">
+		<id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+		<result column="teacherName" property="teachername" jdbcType="VARCHAR" />
+		<result column="picId" property="picid" jdbcType="VARCHAR" />
+		<result column="schoolId" property="schoolid" jdbcType="VARCHAR" />
+		<result column="gradeId" property="gradeid" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="BIT" />
+		<result column="education" property="education" jdbcType="TINYINT" />
+		<result column="telNumber" property="telnumber" jdbcType="VARCHAR" />
+		<result column="teachingLevel" property="teachinglevel"
+			jdbcType="TINYINT" />
+		<result column="regDate" property="regdate" jdbcType="TIMESTAMP" />
+		<result column="notes" property="notes" jdbcType="VARCHAR" />
+		<result column="openId" property="openId" jdbcType="VARCHAR" />
+		<result column="signed" property="signed" jdbcType="BIT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		teacherId, teacherName, picId, schoolId, gradeId, sex,
+		education, telNumber,
+		teachingLevel,
+		regDate, notes, openId, signed
+	</sql>
+	<!-- i. 查询教员信息列表 -->
+	<select id="selectTeachingResourceList" parameterType="java.util.List"
+		resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM teacher
+		WHERE telNumber in
+		<foreach collection="list" item="item" open="(" close=")"
+			separator=",">
+			#{item}
+		</foreach>
+	</select>
+
+	<!-- 导入教员信息 -->
+	<insert id="insertTeachingResourceList" parameterType="java.util.List">
+		insert
+		into teacher (teacherId, teacherName, picId, schoolId, gradeId,
+		sex,
+		education, telNumber, teachingLevel, regDate, notes,openId,signed)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.teacherid,jdbcType=VARCHAR}, #{item.teachername,jdbcType=VARCHAR},#{item.picid,jdbcType=VARCHAR},
+			#{item.schoolid,jdbcType=VARCHAR}, #{item.gradeid,jdbcType=VARCHAR},
+			#{item.sex,jdbcType=BIT},
+			#{item.education,jdbcType=TINYINT},
+			#{item.telnumber,jdbcType=VARCHAR},#{item.teachinglevel,jdbcType=TINYINT},
+			#{item.regdate,jdbcType=TIMESTAMP}, #{item.notes,jdbcType=VARCHAR},
+			#{item.openId,jdbcType=VARCHAR},
+			#{item.signed,jdbcType=BIT})
+		</foreach>
+	</insert>
+
+	<!-- <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Picture">
+		<id column="picId" property="picid" jdbcType="VARCHAR" />
+		<result column="picUrl" property="picurl" jdbcType="VARCHAR" />
+		<result column="picName" property="picname" jdbcType="VARCHAR" />
+		<result column="picType" property="pictype" jdbcType="TINYINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		picId, picUrl, picName, picType
+	</sql> -->
+	<insert id="insertTeacherImages" parameterType="java.util.List">
+		insert
+		into picture(picId, picUrl, picName, picType)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.picid},#{item.picurl},#{item.picname},#{item.pictype})
+		</foreach>
+	</insert>
+	
+	<!-- 查询学校 -->
+	<select id="selectSchoolByNames" parameterType="java.util.List" 
+			resultType="com.xiaoyi.manager.domain.School">
+		select *from school
+		where
+		schoolName in
+		<foreach collection="list" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+	
+		<!-- 新增学校 -->
+	<insert id="insertSchoolList" parameterType="java.util.List">
+		insert 
+		into school(schoolId, schoolName, schoolAddress, termInfo)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.schoolid}, #{item.schoolname}, #{item.schooladdress}, #{item.terminfo})
+		</foreach>
+	</insert>
+</mapper>
