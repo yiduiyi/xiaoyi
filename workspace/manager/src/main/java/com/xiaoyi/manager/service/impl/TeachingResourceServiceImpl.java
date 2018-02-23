@@ -20,6 +20,7 @@ import com.xiaoyi.manager.dao.teaching.ITeachingResourceDao;
 import com.xiaoyi.manager.domain.Picture;
 import com.xiaoyi.manager.domain.School;
 import com.xiaoyi.manager.domain.Teacher;
+import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.ITeachingResourceService;
 
 @Service("teachingResourceService")
@@ -77,8 +78,8 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					List<Picture> picList = new ArrayList<Picture>();
 					for(JSONObject data : datas) {
 						String telNum = data.getString("telNumber");
-						if(!CollectionUtils.isEmpty(telNums)
-								&& !telNums.contains(telNum)) {
+						if(CollectionUtils.isEmpty(telNums)
+								|| !telNums.contains(telNum)) {
 							continue;
 						}
 						
@@ -120,7 +121,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 						pic.setPicname(data.getString("teacherName")+telNum);
 						pic.setPicurl(data.getString("imgUrl"));
 						
-						picList.add(null);
+						picList.add(pic);
 					}
 					
 					//新学校入库
@@ -151,6 +152,32 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw e;
+					}
+					
+					//插入导入的老师用户信息
+					List<User> userList = new ArrayList<User>();
+					try {
+						if(CollectionUtils.isEmpty(newAddTeachers)) {
+							for(Teacher teacher : newAddTeachers) {							
+								User user = new User();
+								
+								user.setHeadimgurl(teacher.getPicid());
+								user.setLoginstatus(false);
+								user.setNickname(teacher.getTeachername());
+								user.setOpenid("");
+								user.setUsername(teacher.getTeachername());
+								user.setUserprivilege((byte)0);
+								user.setUsertype((byte)3);
+								
+								user.setUserid(teacher.getTeacherid());
+								user.setUseraccountid(teacher.getTelnumber());
+								user.setPassword(teacher.getTelnumber().substring(teacher.getTelnumber().length()-6, teacher.getTelnumber().length()));
+							}
+							teachingResourceDao.insertTUserList(userList);
+						}
+						
+					} catch (Exception e) {
+						// TODO: handle exception
 					}
 				}
 			} catch (Exception e) {

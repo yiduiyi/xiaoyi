@@ -5,6 +5,7 @@ import java.util.List;
 import com.xiaoyi.manager.domain.Picture;
 import com.xiaoyi.manager.domain.School;
 import com.xiaoyi.manager.domain.Teacher;
+import com.xiaoyi.manager.domain.User;
 
 public interface ITeachingResourceDao {
 	List<Teacher> selectTeachingResourceList(List<String> telNums);
@@ -16,4 +17,6 @@ public interface ITeachingResourceDao {
 	List<School> selectSchoolByNames(List<String> schoolNames);
 	
 	int insertSchoolList(List<School> schList);
+	
+	int insertTUserList(List<User> userList);
 }

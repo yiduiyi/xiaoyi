@@ -44,14 +44,10 @@
 		education, telNumber, teachingLevel, regDate, notes,openId,signed)
 		values
 		<foreach collection="list" item="item" separator=",">
-			(#{item.teacherid,jdbcType=VARCHAR}, #{item.teachername,jdbcType=VARCHAR},#{item.picid,jdbcType=VARCHAR},
-			#{item.schoolid,jdbcType=VARCHAR}, #{item.gradeid,jdbcType=VARCHAR},
-			#{item.sex,jdbcType=BIT},
-			#{item.education,jdbcType=TINYINT},
-			#{item.telnumber,jdbcType=VARCHAR},#{item.teachinglevel,jdbcType=TINYINT},
-			#{item.regdate,jdbcType=TIMESTAMP}, #{item.notes,jdbcType=VARCHAR},
-			#{item.openId,jdbcType=VARCHAR},
-			#{item.signed,jdbcType=BIT})
+			(#{item.teacherid}, #{item.teachername},#{item.picid},
+			#{item.schoolid}, #{item.gradeid},
+			#{item.sex},#{item.education},#{item.telnumber},#{item.teachinglevel},
+			#{item.regdate}, #{item.notes},#{item.openId},#{item.signed})
 		</foreach>
 	</insert>
 
@@ -84,13 +80,34 @@
 		</foreach>
 	</select>
 	
-		<!-- 新增学校 -->
+	<!-- 新增学校列表 -->
 	<insert id="insertSchoolList" parameterType="java.util.List">
 		insert 
 		into school(schoolId, schoolName, schoolAddress, termInfo)
 		values
 		<foreach collection="list" item="item" separator=",">
 			(#{item.schoolid}, #{item.schoolname}, #{item.schooladdress}, #{item.terminfo})
+		</foreach>
+	</insert>
+	
+	<!-- 新增老师用户列表（登录用） -->
+	<!-- <sql id="Base_Column_List">
+		userAccountId, userId, userName, password, userType, userPrivilege, loginStatus,
+		openId, nickname
+	</sql>
+	<sql id="Blob_Column_List">
+		headimgurl
+	</sql> -->
+	<insert id="insertTUserList">
+		insert 
+		into user(userAccountId, userId, userName, password, userType, userPrivilege, loginStatus,
+			openId, nickname,headimgurl)
+		values
+		<foreach collection="list" item="item" separator=",">
+			(#{item.useraccountid,jdbcType=VARCHAR}, #{item.userid,jdbcType=VARCHAR},#{item.username,jdbcType=VARCHAR},
+				#{item.password,jdbcType=VARCHAR}, #{item.usertype,jdbcType=TINYINT}, #{item.userprivilege,jdbcType=TINYINT},
+				#{item.loginstatus,jdbcType=BIT}, #{item.openid,jdbcType=VARCHAR},
+				#{item.nickname,jdbcType=VARCHAR},#{item.headimgurl,jdbcType=LONGVARCHAR})
 		</foreach>
 	</insert>
 </mapper>
