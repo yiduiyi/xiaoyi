@@ -51,15 +51,12 @@
 		</foreach>
 	</insert>
 
-	<!-- <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Picture">
-		<id column="picId" property="picid" jdbcType="VARCHAR" />
-		<result column="picUrl" property="picurl" jdbcType="VARCHAR" />
-		<result column="picName" property="picname" jdbcType="VARCHAR" />
-		<result column="picType" property="pictype" jdbcType="TINYINT" />
-	</resultMap>
-	<sql id="Base_Column_List">
-		picId, picUrl, picName, picType
-	</sql> -->
+	<!-- <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Picture"> 
+		<id column="picId" property="picid" jdbcType="VARCHAR" /> <result column="picUrl" 
+		property="picurl" jdbcType="VARCHAR" /> <result column="picName" property="picname" 
+		jdbcType="VARCHAR" /> <result column="picType" property="pictype" jdbcType="TINYINT" 
+		/> </resultMap> <sql id="Base_Column_List"> picId, picUrl, picName, picType 
+		</sql> -->
 	<insert id="insertTeacherImages" parameterType="java.util.List">
 		insert
 		into picture(picId, picUrl, picName, picType)
@@ -68,46 +65,66 @@
 			(#{item.picid},#{item.picurl},#{item.picname},#{item.pictype})
 		</foreach>
 	</insert>
-	
+
 	<!-- 查询学校 -->
-	<select id="selectSchoolByNames" parameterType="java.util.List" 
-			resultType="com.xiaoyi.manager.domain.School">
+	<select id="selectSchoolByNames" parameterType="java.util.List"
+		resultType="com.xiaoyi.manager.domain.School">
 		select *from school
 		where
 		schoolName in
-		<foreach collection="list" item="item" open="(" separator="," close=")">
+		<foreach collection="list" item="item" open="(" separator=","
+			close=")">
 			#{item}
 		</foreach>
 	</select>
-	
+
 	<!-- 新增学校列表 -->
 	<insert id="insertSchoolList" parameterType="java.util.List">
-		insert 
+		insert
 		into school(schoolId, schoolName, schoolAddress, termInfo)
 		values
 		<foreach collection="list" item="item" separator=",">
-			(#{item.schoolid}, #{item.schoolname}, #{item.schooladdress}, #{item.terminfo})
+			(#{item.schoolid}, #{item.schoolname}, #{item.schooladdress},
+			#{item.terminfo})
 		</foreach>
 	</insert>
-	
+
 	<!-- 新增老师用户列表（登录用） -->
-	<!-- <sql id="Base_Column_List">
-		userAccountId, userId, userName, password, userType, userPrivilege, loginStatus,
-		openId, nickname
-	</sql>
-	<sql id="Blob_Column_List">
-		headimgurl
-	</sql> -->
+	<!-- <sql id="Base_Column_List"> userAccountId, userId, userName, password, 
+		userType, userPrivilege, loginStatus, openId, nickname </sql> <sql id="Blob_Column_List"> 
+		headimgurl </sql> -->
 	<insert id="insertTUserList">
-		insert 
-		into user(userAccountId, userId, userName, password, userType, userPrivilege, loginStatus,
-			openId, nickname,headimgurl)
+		insert
+		into user(userAccountId, userId, userName, password, userType,
+		userPrivilege, loginStatus,
+		openId, nickname,headimgurl)
 		values
 		<foreach collection="list" item="item" separator=",">
-			(#{item.useraccountid,jdbcType=VARCHAR}, #{item.userid,jdbcType=VARCHAR},#{item.username,jdbcType=VARCHAR},
-				#{item.password,jdbcType=VARCHAR}, #{item.usertype,jdbcType=TINYINT}, #{item.userprivilege,jdbcType=TINYINT},
-				#{item.loginstatus,jdbcType=BIT}, #{item.openid,jdbcType=VARCHAR},
-				#{item.nickname,jdbcType=VARCHAR},#{item.headimgurl,jdbcType=LONGVARCHAR})
+			(#{item.useraccountid,jdbcType=VARCHAR},
+			#{item.userid,jdbcType=VARCHAR},#{item.username,jdbcType=VARCHAR},
+			#{item.password,jdbcType=VARCHAR}, #{item.usertype,jdbcType=TINYINT},
+			#{item.userprivilege,jdbcType=TINYINT},
+			#{item.loginstatus,jdbcType=BIT}, #{item.openid,jdbcType=VARCHAR},
+			#{item.nickname,jdbcType=VARCHAR},#{item.headimgurl,jdbcType=LONGVARCHAR})
 		</foreach>
 	</insert>
+
+	<!-- 获取师资列表（课时） -->
+	<select id="selectTeachingsByParams" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT a.teacherId,a.checkedLessonNum,a.withDrawLessonNum,a.frozenLessonNum,b.teacherName,b.sex,
+			b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName
+		FROM lessontradesum a 
+			LEFT JOIN teacher b ON a.teacherId=b.teacherId
+			LEFT JOIN school c ON b.schoolId=c.schoolId
+		WHERE b.signed=1 
+		<if test="totalLessonNum!=null">
+			AND a.totalLessonNum &lt; #{totalLessonNum}	
+		</if>
+		<if test="teacherName!=null">
+			AND b.teacherName LIKE '%${teacherName}%' 
+		</if>
+		<if test="telNumber!=null">
+			AND b.telNumber LIKE '%${telNumber}%'	
+		</if>
+	</select>
 </mapper>

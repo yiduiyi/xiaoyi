@@ -49,9 +49,8 @@
 			<array>
 				<value>classpath:mybatis/*.xml</value>
 				<value>classpath:mybatis/base/*.xml</value>
-				<value>classpath:mybatis/order/*.xml</value>
+				<value>classpath:mybatis/manager/*.xml</value>
 				<value>classpath:mybatis/teacher/*.xml</value>
-				<value>classpath:mybatis/teaching/*.xml</value>
 			</array>
 		</property>
 	</bean>

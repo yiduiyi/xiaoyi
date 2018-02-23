@@ -1,6 +1,8 @@
 package com.xiaoyi.manager.action;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,6 +57,36 @@ public class TeachingResourceAction {
 			
 			rtCode = RtConstants.SUCCESS;
 			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
+	@RequestMapping(value="/getTeachingList",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getTeachingList(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			List<JSONObject> teachings = tResourceService.queryTeachingList(reqData);
+			
+			if(!CollectionUtils.isEmpty(teachings)) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.DD");
+				for(JSONObject teaching : teachings) {
+					Object regDate = teaching.get("regDate");
+					if(null!=regDate) {
+						teaching.put("regDate", format.format(regDate));
+					}
+				}
+			}
+			result.put("data", teachings);
+			rtCode = RtConstants.SUCCESS;			
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}

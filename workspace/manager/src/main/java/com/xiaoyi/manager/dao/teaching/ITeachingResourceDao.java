@@ -1,7 +1,9 @@
 package com.xiaoyi.manager.dao.teaching;
 
 import java.util.List;
+import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.Picture;
 import com.xiaoyi.manager.domain.School;
 import com.xiaoyi.manager.domain.Teacher;
@@ -19,4 +21,6 @@ public interface ITeachingResourceDao {
 	int insertSchoolList(List<School> schList);
 	
 	int insertTUserList(List<User> userList);
+	
+	List<JSONObject> selectTeachingsByParams(Map<String,Object> params);
 }
