@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IPictureDao;
@@ -22,6 +23,8 @@ import com.xiaoyi.manager.domain.School;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.ITeachingResourceService;
+import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
+import com.xiaoyi.teacher.domain.LessonTradeSum;
 
 @Service("teachingResourceService")
 public class TeachingResourceServiceImpl implements ITeachingResourceService {
@@ -33,6 +36,9 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	
 	@Resource
 	ITeachingResourceDao teachingResourceDao;
+	
+	@Resource
+	ILessonTradeSumDao lessonTradeSumDao;
 	
 	@Transactional
 	@Override
@@ -216,6 +222,46 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public int operateTeacherLessons(JSONObject params) {
+		try {
+			String teacherId = params.getString("teacherId");
+			
+			if(!StringUtils.isEmpty(teacherId)) {
+				LessonTradeSum record = lessonTradeSumDao.selectByPrimaryKey(teacherId);
+				if(null == record) {
+					record = new LessonTradeSum();
+				}
+				
+				//record.setTeacherid(teacherId);
+				
+				int operateNum = params.getIntValue("operateNum");
+				int operateType = params.getIntValue("operateType");
+				
+				//课时操作
+				if(0==operateType) { //冻结					
+					if(operateNum>record.getWithdrawlessonnum()) {
+						return 0;
+					}
+					
+					record.setFrozenlessonnum((short)(record.getFrozenlessonnum()+operateNum));
+				}else {	//解冻
+					if(operateNum>record.getFrozenlessonnum()) {
+						return 0;
+					}
+					
+					record.setFrozenlessonnum((short)(record.getFrozenlessonnum()-operateNum));
+				}
+												
+				return lessonTradeSumDao.updateByPrimaryKeySelective(record);				
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		return 0;
 	}
 	
 }

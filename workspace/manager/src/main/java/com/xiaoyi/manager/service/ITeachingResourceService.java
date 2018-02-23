@@ -20,7 +20,9 @@ public interface ITeachingResourceService {
 	List<JSONObject> queryTeachingList(JSONObject params);
 	
 	/**
-	 * 
+	 * i.	查询教员信息列表 
 	 */
 	List<JSONObject> queryTeacherList(JSONObject params);
+	
+	int operateTeacherLessons(JSONObject params);
 }
