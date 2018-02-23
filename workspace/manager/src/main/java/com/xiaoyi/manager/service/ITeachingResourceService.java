@@ -15,7 +15,12 @@ public interface ITeachingResourceService {
 	int addTeachingTeacher(List<JSONObject> teachers) ;
 	
 	/**
-	 * 
+	 * i.	课时列表查询
 	 */
 	List<JSONObject> queryTeachingList(JSONObject params);
+	
+	/**
+	 * 
+	 */
+	List<JSONObject> queryTeacherList(JSONObject params);
 }

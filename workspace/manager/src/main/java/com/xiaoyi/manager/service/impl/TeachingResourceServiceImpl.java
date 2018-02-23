@@ -206,5 +206,16 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 		}
 		return null;
 	}
+
+	@Override
+	public List<JSONObject> queryTeacherList(JSONObject params) {
+		try {
+			List<JSONObject> result = teachingResourceDao.selectTeachersByParams(params);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 }

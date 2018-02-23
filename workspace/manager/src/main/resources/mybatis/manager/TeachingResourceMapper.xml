@@ -127,4 +127,31 @@
 			AND b.telNumber LIKE '%${telNumber}%'	
 		</if>
 	</select>
+	
+	<select id="selectTeachersByParams" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT b.teacherName,b.sex,b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName,d.picUrl,b.teachingLevel,b.education,b.notes,b.gradeId
+		FROM teacher b 
+			LEFT JOIN school c ON b.schoolId=c.schoolId
+			LEFT JOIN picture d ON b.picId=d.picId
+		<where>
+			<if test="teacherName!=null">
+				b.teacherName LIKE '%${teacherName}%' 
+			</if>
+			<if test="telNumber!=null">
+				AND b.telNumber LIKE '%${telNumber}%'	
+			</if>
+			<if test="gradeId!=null">
+				AND gradeId=#{gradeId}
+			</if>
+			<if test="education!=null">
+				AND b.education=#{education}
+			</if>
+			<if test="sex!=null">
+				AND b.sex=#{sex}
+			</if>
+			<if test="teachingLevel!=null">
+				AND b.teachingLevel=#{teachingLevel}
+			</if>
+		</where>
+	</select>
 </mapper>

@@ -95,6 +95,36 @@ public class TeachingResourceAction {
 		return result;
 	}
 	
+	@RequestMapping(value="/getTeachingTeachers",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getTeachingTeachers(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			List<JSONObject> teachers = tResourceService.queryTeacherList(reqData);
+			
+			if(!CollectionUtils.isEmpty(teachers)) {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.DD");
+				for(JSONObject teaching : teachers) {
+					Object regDate = teaching.get("regDate");
+					if(null!=regDate) {
+						teaching.put("regDate", format.format(regDate));
+					}
+				}
+			}
+			result.put("data", teachers);
+			rtCode = RtConstants.SUCCESS;			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
 	///
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());

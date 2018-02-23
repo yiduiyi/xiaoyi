@@ -23,4 +23,6 @@ public interface ITeachingResourceDao {
 	int insertTUserList(List<User> userList);
 	
 	List<JSONObject> selectTeachingsByParams(Map<String,Object> params);
+	
+	List<JSONObject> selectTeachersByParams(Map<String,Object> params);
 }
