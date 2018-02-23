@@ -157,7 +157,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					//插入导入的老师用户信息
 					List<User> userList = new ArrayList<User>();
 					try {
-						if(CollectionUtils.isEmpty(newAddTeachers)) {
+						if(!CollectionUtils.isEmpty(newAddTeachers)) {
 							for(Teacher teacher : newAddTeachers) {							
 								User user = new User();
 								
@@ -172,12 +172,17 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 								user.setUserid(teacher.getTeacherid());
 								user.setUseraccountid(teacher.getTelnumber());
 								user.setPassword(teacher.getTelnumber().substring(teacher.getTelnumber().length()-6, teacher.getTelnumber().length()));
+						
+								userList.add(user);
 							}
-							teachingResourceDao.insertTUserList(userList);
+							if(!CollectionUtils.isEmpty(userList)) {
+								teachingResourceDao.insertTUserList(userList);
+							}
 						}
 						
 					} catch (Exception e) {
-						// TODO: handle exception
+						e.printStackTrace();
+						throw e;
 					}
 				}
 			} catch (Exception e) {
