@@ -35,7 +35,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	
 	@Transactional
 	@Override
-	public int addTeachingTeacher(List<JSONObject> datas) throws Exception {
+	public int addTeachingTeacher(List<JSONObject> datas) {
 		//校验导入数据
 		try {
 			//去重
@@ -154,7 +154,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					}
 				}
 			} catch (Exception e) {
-				throw new RuntimeException();
+				throw e;
 			}
 			
 		} catch (Exception e) {

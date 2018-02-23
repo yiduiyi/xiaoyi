@@ -12,5 +12,5 @@ public interface ITeachingResourceService {
 	 * @return
 	 * @throws Exception
 	 */
-	int addTeachingTeacher(List<JSONObject> teachers) throws Exception;
+	int addTeachingTeacher(List<JSONObject> teachers) ;
 }
