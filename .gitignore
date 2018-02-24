@@ -14,3 +14,4 @@ workspace/manager/logs/ssm.log
 *.MF
 workspace/manager/src/main/webapp/WEB-INF/web.xml
 ~$网络交易前后端接口文档.docx
+workspace/manager/.classpath

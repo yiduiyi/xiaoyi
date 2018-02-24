@@ -125,6 +125,29 @@ public class TeachingResourceAction {
 		return result;
 	}
 	
+	@RequestMapping(value="/operateLessons",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject frozenLessons(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			int rt = tResourceService.operateTeacherLessons(reqData);
+			if(rt==0) {
+				result.put("code", 0);
+				result.put("msg", "数字输入有误！");
+				return result;
+			}
+			rtCode = RtConstants.SUCCESS;			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
 	///
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());
