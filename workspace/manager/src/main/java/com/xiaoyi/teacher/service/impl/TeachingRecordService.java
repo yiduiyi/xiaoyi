@@ -160,4 +160,24 @@ public class TeachingRecordService implements ITeachingRecordService {
 		return 0;
 	}
 
+	@Override
+	public JSONObject getTRecordSum(JSONObject params) throws Exception {
+		try {
+			LessonTradeSum tradeSum = tradeSumDao.selectByPrimaryKey(params.getString("teacherId"));
+			if(null!=tradeSum) {
+				JSONObject tradeSumMap = new JSONObject();
+				tradeSumMap.put("totalIncome", tradeSum.getTotalincome());
+				tradeSumMap.put("withDrawLessonNum", tradeSum.getWithdrawlessonnum());
+				tradeSumMap.put("checkedLessonNum", tradeSum.getCheckedlessonnum());
+				tradeSumMap.put("frozenLessonNum", tradeSum.getFrozenlessonnum());
+				
+				return tradeSumMap;
+			}
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
 }

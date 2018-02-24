@@ -19,6 +19,25 @@ import com.xiaoyi.teacher.service.ITeachingRecordService;
 public class LessonTradeAction {
 	@Resource
 	private ITeachingRecordService recordService;
+
+	@RequestMapping(value="/showTRecordsSum",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject showTRecordsSum(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+				
+		try {
+			result.put("data",  recordService.getTRecordSum(reqData));			
+			rtCode = RtConstants.SUCCESS;			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
 	
 	@RequestMapping(value="/showTRecords",method=RequestMethod.POST)
 	@ResponseBody

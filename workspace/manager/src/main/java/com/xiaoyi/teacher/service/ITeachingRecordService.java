@@ -6,6 +6,8 @@ import com.alibaba.fastjson.JSONObject;
 
 public interface ITeachingRecordService {
 	
+	JSONObject getTRecordSum(JSONObject params) throws Exception;
+	
 	List<JSONObject> getRecordList(JSONObject params) throws Exception;
 	
 	/**
