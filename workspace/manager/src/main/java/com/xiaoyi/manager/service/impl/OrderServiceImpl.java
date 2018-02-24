@@ -388,7 +388,7 @@ public class OrderServiceImpl implements IOrderService {
 				order.setParentid(record.getParentid());
 				order.setPurchasenum((short)operateNum);				
 				
-				order.setOrderType(++type);
+				order.setOrderType(/*++*/type);
 				orderDao.insertSelective(order);
 			}catch (Exception e) {
 				e.printStackTrace();
@@ -415,6 +415,27 @@ public class OrderServiceImpl implements IOrderService {
 	@Override
 	public List<JSONObject> queryMOrders(JSONObject params) {
 		try {
+			try {
+				OrderSumKey key = new OrderSumKey();
+				key.setOrderid(params.getString("orderId"));
+				OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
+				
+				if(null==orderSum 
+						|| orderSum.getMemberid()==null
+						|| orderSum.getParentid()==null) {
+					return null;
+				}
+				
+				params.put("memberId", orderSum.getMemberid());
+				params.put("parentId", orderSum.getParentid());
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			
+			
+			//查询对应的充值、结算记录
 			List<Orders>mOrders = orderManageDao.selectMOrdersByParams(params);
 			
 			List<JSONObject> data = new ArrayList<JSONObject>();

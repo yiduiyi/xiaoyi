@@ -9,12 +9,15 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil;
+import com.xiaoyi.common.utils.ConstantUtil.Education;
 import com.xiaoyi.manager.domain.Account;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.IAccountService;
@@ -116,7 +119,7 @@ public class OrderAction {
 			reqData.put("courseId", reqData.getInteger("lessonType")%10);
 			List<JSONObject> data = orderService.queryTeachingList(reqData);
 						
-			if(null!=data){
+			if(null!=data){								
 				rtCode = RtConstants.SUCCESS;
 				result.put("data", data);
 			}

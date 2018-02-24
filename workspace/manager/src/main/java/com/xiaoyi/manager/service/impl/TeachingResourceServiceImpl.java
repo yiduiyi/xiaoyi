@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IPictureDao;
+import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.dao.order.ITeachingDao;
 import com.xiaoyi.manager.dao.teaching.ITeachingResourceDao;
 import com.xiaoyi.manager.domain.Picture;
@@ -30,6 +31,9 @@ import com.xiaoyi.teacher.domain.LessonTradeSum;
 public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	@Resource
 	ITeachingDao teachingDao;
+	
+	@Resource
+	ITeacherDao teacherDao;
 	
 	@Resource
 	IPictureDao pictureDao;
@@ -262,6 +266,16 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 			throw new RuntimeException();
 		}
 		return 0;
+	}
+
+	@Override
+	public int deleteTeachingTeacher(String teacherId) {
+		try {
+			return teacherDao.deleteByPrimaryKey(teacherId); 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 }

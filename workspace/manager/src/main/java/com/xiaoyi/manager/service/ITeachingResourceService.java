@@ -24,5 +24,14 @@ public interface ITeachingResourceService {
 	 */
 	List<JSONObject> queryTeacherList(JSONObject params);
 	
+	/**
+	 * ii.	冻结课时
+		iii.	解冻课时
+		0:冻结、1：解冻
+	 * @param params
+	 * @return
+	 */
 	int operateTeacherLessons(JSONObject params);
+	
+	int deleteTeachingTeacher(String teacherId);
 }

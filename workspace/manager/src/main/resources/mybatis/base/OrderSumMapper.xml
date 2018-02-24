@@ -24,10 +24,12 @@
     	<when test="orderid != null">
     		orderId = #{orderid,jdbcType=VARCHAR}
     	</when>
-    	<otherwise>
-    		lessonType = #{lessontype,jdbcType=INTEGER}
-      			and memberId = #{memberid,jdbcType=VARCHAR}
-      			and parentId = #{parentid,jdbcType=VARCHAR}
+    	<otherwise>	
+      		memberId = #{memberid,jdbcType=VARCHAR}
+      		and parentId = #{parentid,jdbcType=VARCHAR}
+    		<if test="lessonType!=null">
+    			and lessonType = #{lessontype,jdbcType=INTEGER}
+    		</if>
     	</otherwise>
     </choose>
   </select>

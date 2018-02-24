@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil.Education;
+import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
+import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.domain.Account;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.IAccountService;
@@ -39,7 +43,7 @@ import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 @RequestMapping("/teaching")
 public class TeachingResourceAction {
 	@Resource
-	ITeachingResourceService tResourceService;
+	private ITeachingResourceService tResourceService;
 	
 	@RequestMapping(value="/addTeacher",method=RequestMethod.POST)
 	@ResponseBody
@@ -113,6 +117,28 @@ public class TeachingResourceAction {
 					if(null!=regDate) {
 						teaching.put("regDate", format.format(regDate));
 					}
+					
+					//转换学历 -> 名称
+					Integer education = teaching.getInteger("education");
+					if(null!=education) {
+						for(Education value : Education.values()) {
+							if(education==value.getValue()) {
+								teaching.put("education", value.toString());
+								break;
+							}
+						}
+					}
+					
+					//转换老师等级 -> 名称
+					Integer teachingLevel = teaching.getInteger("teachingLevel");
+					if(null!=teachingLevel) {
+						for(TeachingLevel level : TeachingLevel.values()) {
+							if(teachingLevel==level.getValue()) {
+								teaching.put("teachingLevel", level.toString());
+								break;
+							}
+						}
+					}
 				}
 			}
 			result.put("data", teachers);
@@ -148,6 +174,26 @@ public class TeachingResourceAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
+	
+	@RequestMapping(value="/deleteTeachingTeacher",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject deleteTeachingTeacher(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			tResourceService.deleteTeachingTeacher(reqData.getString("teacherId"));
+			rtCode = RtConstants.SUCCESS;			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
 	///
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());

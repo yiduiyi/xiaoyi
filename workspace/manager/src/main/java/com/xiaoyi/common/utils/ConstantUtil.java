@@ -2,6 +2,70 @@ package com.xiaoyi.common.utils;
 
 public class ConstantUtil {
 	
+	public static enum Education {
+		TECHNICAL(1),JUNIOR(2),COLLEGE(3),POSTGRADUATE(4),PHD(5),OTHER(6);
+		
+		private int education;
+		
+		private Education(int level) {
+			this.education = level;
+		}
+		
+		public int getValue(){
+			return education;
+		}
+		
+		@Override
+		public String toString(){
+			switch(education) {
+			case 1:
+				return "中专";
+			case 2:
+				return "大专";
+			case 3:
+				return "本科";
+			case 4:
+				return "研究生";
+			case 5:
+				return "博士生";
+			default:
+				return "其它";
+			}			
+		}
+	}
+	
+	/**
+	 * 教师等级（-1：黑名单
+            1:普通
+            2：金牌
+                    ）
+	 * @author dengzhihua
+	 *
+	 */
+	public static enum TeachingLevel{
+		BLACK_LIST(-1),NORMAL(1),GOLD(2);
+		
+		private int teachingLevel;
+		private TeachingLevel(int level) {
+			this.teachingLevel = level;
+		}
+		
+		public int getValue() {
+			return teachingLevel;
+		}
+		
+		@Override
+		public String toString(){
+			switch(teachingLevel) {
+			case -1: return "黑名单";
+			case 1:	return "普通";
+			case 2: return "金牌";
+			}
+			
+			return null;		
+		}
+	}
+	
 	public static enum Type {
 		STU_GO(1),
 		TEA_GO(-1);

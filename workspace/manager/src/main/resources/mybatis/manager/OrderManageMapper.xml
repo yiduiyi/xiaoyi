@@ -49,18 +49,19 @@
 		parameterType="hashmap">
 		SELECT a.teacherId,a.teachingId,b.teacherName,a.lessonType
 		FROM teacher_les_r a INNER JOIN teacher b ON a.teacherId=b.teacherId
-		<if test="gradeId!=null">
-			<!-- 年级 -->
-			WHERE a.lessonType DIV 100 = #{gradeId}
+		<where>
+			<if test="gradeId!=null">
+				a.lessonType DIV 100 = #{gradeId}
+			</if>
 			<!-- 名字 -->
 			<if test="teacherName!=null">
-				AND b.teacherName LIKE "%${teacherName}%"
+				AND b.teacherName LIKE '%${teacherName}%'
 			</if>
 			<!-- 科目 -->
 			<if test="courseId!=null">
 				AND a.lessonType MOD 10 = #{courseId}
 			</if>
-		</if>
+		</where>
 	</select>
 
 	<!-- 获取年级下的科目 -->
@@ -84,7 +85,13 @@
 		FROM orders a LEFT JOIN ordersum b
 			ON a.parentId=b.parentId AND a.memberId=b.memberId
 		WHERE 
-		orderType&lt;&gt;0
+		orderType in (0,1)
+		<if test="memberId!=null">
+			and a.memberId=#{memberId}
+		</if>
+		<if test="parentId!=null">
+			and a.parentId=#{parentId}
+		</if>
 	</select>
 	
 </mapper>
