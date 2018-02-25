@@ -165,37 +165,71 @@ public class OrderServiceImpl implements IOrderService {
 	@Override
 	public int updateOrder(JSONObject params) {
 		try {
-			String teachingIds = params.getString("teachingIds");
-			OrderSum record = new OrderSum();
-			record.setTeachingids(teachingIds);
-			record.setOrderid(params.getString("orderId"));
+			String teacherIds = params.getString("teacherIds");
+			List<String> newTeachingIds = new ArrayList<String>();
+			List<String> oldTeachingIds = null;
+			Map<String,String> teacherTeachingMap = new HashMap<String,String>();
+			
+			//没有设置
+			if(null==teacherIds) {
+				teacherIds = "";
+			}
+			
+			//新设教学任务
+			StringBuffer addTeachingIds = new StringBuffer();
+			for(String teacherId : teacherIds.split(",")) {
+				String newTeachingId = UUID.randomUUID().toString();
+				addTeachingIds.append(newTeachingId+",");
+				newTeachingIds.add(newTeachingId);
+				
+				teacherTeachingMap.put(newTeachingId, teacherId);
+			}
+			
+			OrderSum newOrderSum = new OrderSum();
+			newOrderSum.setTeachingids(/*teachingIds*/addTeachingIds.substring(0,addTeachingIds.length()-1));
+			newOrderSum.setOrderid(params.getString("orderId"));
+			
+			//获取老教学任务
+			OrderSum oldOrderSum=null;
+			try {				
+				//orderSumKey.setOrderid(record);
+				oldOrderSum = orderSumDao.selectByPrimaryKey(newOrderSum);
+				if(null!=oldOrderSum) {
+					String oldTeachingids = oldOrderSum.getTeachingids();
+					if(!StringUtils.isEmpty(oldTeachingids)) {
+						oldTeachingIds = Arrays.asList(oldTeachingids.split(","));
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			//更新订单的任教关系
 			try {
-				orderSumDao.updateByPrimaryKeySelective(record);				
+				orderSumDao.updateByPrimaryKeySelective(newOrderSum);				
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
 			}
 			
 			//获取更新的订单
-			try {
-				record = orderSumDao.selectByPrimaryKey(record);
+			/*try {
+				newOrderSum = orderSumDao.selectByPrimaryKey(newOrderSum);
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
-			}
+			}*/
 			
 			
 			
-			//生成订单-任教关系
-			if(null!=record && null!=teachingIds){
-				List<String> teachingIdList = Arrays.asList(teachingIds.split(","));
+			//删除旧的教学任务，生成订单-任教关系
+			if(null!=oldOrderSum/*newOrderSum */&& !CollectionUtils.isEmpty(oldTeachingIds)/*null!=teachingIds*/){
+				//List<String> teachingIdList = Arrays.asList(teachingIds.split(","));
 				
 				//查询任教关系Id-老师对应关系
 				Map<String,TeacherLesRelationKey>ttMap = new HashMap<String,TeacherLesRelationKey>();
 				try {
-					List<TeacherLesRelationKey> tlRelations = tlRelationDao.selectTLRelationsById(teachingIdList);
+					List<TeacherLesRelationKey> tlRelations = tlRelationDao.selectTLRelationsById(oldTeachingIds/*teachingIdList*/);
 					if(!CollectionUtils.isEmpty(tlRelations)){
 						for(TeacherLesRelationKey tlRelation : tlRelations){
 							ttMap.put(tlRelation.getTeachingid(), tlRelation);
@@ -205,29 +239,29 @@ public class OrderServiceImpl implements IOrderService {
 					e.printStackTrace();
 				}
 				
-				//设置订单-任教关系
+				//设置订单-任教关系()
 				List<OrderTeachingRelation> relations = new ArrayList<OrderTeachingRelation>();
-				for(String teachingId : teachingIdList){
+				for(String teachingId : newTeachingIds/*teachingIdList*/){
 					OrderTeachingRelation relation = new OrderTeachingRelation();
-					TeacherLesRelationKey relationKey = ttMap.get(teachingId);
+					//TeacherLesRelationKey relationKey = ttMap.get(teachingId);
 					
-					relation.setMemberId(record.getMemberid());
-					relation.setOrderId(record.getOrderid());
-					relation.setParentId(record.getParentid());
+					relation.setMemberId(oldOrderSum.getMemberid());
+					relation.setOrderId(oldOrderSum.getOrderid());
+					relation.setParentId(oldOrderSum.getParentid());
 					relation.setTeachingId(teachingId);
 					
 					//补全老师Id及科目
-					if(null!=relationKey){
-						relation.setTeacherId(relationKey.getTeacherid());
+					//if(null!=relationKey){
+						relation.setTeacherId( teacherTeachingMap.get(teachingId)/*relationKey.getTeacherid()*/);
 						//int type = Math.abs(record.getLessontype())/record.getLessontype();
-						relation.setLessonType(record.getLessontype()/*relationKey.getLessontype()*type*/);
-					}
+						relation.setLessonType(oldOrderSum.getLessontype()/*relationKey.getLessontype()*type*/);
+					//}
 					relations.add(relation);
 				}
 				
 				//入库
 				try {
-					otRelationDao.deleteOTRelations(record.getOrderid());
+					otRelationDao.deleteOTRelations(newOrderSum.getOrderid());
 					otRelationDao.insertOTRelations(relations);
 				} catch (Exception e) {
 					e.printStackTrace();

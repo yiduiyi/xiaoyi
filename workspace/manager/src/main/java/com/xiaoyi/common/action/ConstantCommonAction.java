@@ -2,6 +2,8 @@ package com.xiaoyi.common.action;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -46,43 +48,55 @@ public class ConstantCommonAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		    	    	
     	try {
-    		JSONObject data = new JSONObject();
+    		List<JSONObject> datas = new ArrayList<JSONObject>();
     		switch(reqData.getString("key")) {
     		case "sex":
     			for(Sex sex : Sex.values()) {
+    				JSONObject data = new JSONObject();
     				data.put(sex.toString(),sex.getValue());
+    				datas.add(data);
     			}  			
     			break;
     		case "education":
     			for(Education education : Education.values()) {
+    				JSONObject data = new JSONObject();
     				data.put(education.toString(),education.getValue());
+    				datas.add(data);
     			}    			
     			break;
     		case "teachingLevel":
     			for(TeachingLevel teachingLevel : TeachingLevel.values()) {
+    				JSONObject data = new JSONObject();
     				data.put(teachingLevel.toString(), teachingLevel.getValue());
+    				datas.add(data);
     			}
     			break;
     		case "lessonType":
     			for(LessonType lessonType : LessonType.values()) {
+    				JSONObject data = new JSONObject();
     				data.put(lessonType.toString(), lessonType.getValue());
+    				datas.add(data);
     			}
     			break;
     		case "grade":
     			for(Grade grade : Grade.values()) {
-    				result.put(grade.toString(), grade.getValue());
+    				JSONObject data = new JSONObject();
+    				data.put(grade.toString(), grade.getValue());
+    				datas.add(data);
     			}
     			break;
     		case "course":
     			for(Course course : Course.values()) {
-    				result.put(course.toString(), course.getValue());
+    				JSONObject data = new JSONObject();
+    				data.put(course.toString(), course.getValue());
+    				datas.add(data);
     			}
     			break;
     		}
-    		if(!CollectionUtils.isEmpty(data)) {
+    		if(!CollectionUtils.isEmpty(datas)) {
     			rtCode = RtConstants.SUCCESS;
     		}
-    		result.put("data", data);
+    		result.put("data", datas);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
