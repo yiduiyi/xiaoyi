@@ -20,6 +20,7 @@ import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.common.utils.WXConstants;
 import com.xiaoyi.common.utils.WechatMessageUtil;
+import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Education;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
@@ -70,6 +71,11 @@ public class ConstantCommonAction {
     		case "grade":
     			for(Grade grade : Grade.values()) {
     				result.put(grade.toString(), grade.getValue());
+    			}
+    			break;
+    		case "course":
+    			for(Course course : Course.values()) {
+    				result.put(course.toString(), course.getValue());
     			}
     			break;
     		}
