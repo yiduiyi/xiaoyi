@@ -115,8 +115,19 @@ public class OrderAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		
 		try {	
-			reqData.put("gradeId", reqData.getInteger("lessonType")/100);
-			reqData.put("courseId", reqData.getInteger("lessonType")%10);
+			Integer level = reqData.getInteger("level");
+			Integer gradeId = reqData.getInteger("gradeId");
+			Integer courseId = reqData.getInteger("courseId");
+			if(null!=level) {
+				reqData.put("level", level/*reqData.getInteger("lessonType")/100*/);
+			}
+			if(null!=gradeId) {
+				reqData.put("gradeId", gradeId);
+			}
+			if(null!=courseId) {
+				reqData.put("courseId", courseId);
+			}
+			
 			List<JSONObject> data = orderService.queryTeachingList(reqData);
 						
 			if(null!=data){								

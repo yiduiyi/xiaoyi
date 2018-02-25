@@ -108,6 +108,7 @@ public class TeachingResourceAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		
 		try {			
+			reqData.put("gradeId", reqData.get("graduation"));
 			List<JSONObject> teachers = tResourceService.queryTeacherList(reqData);
 			
 			if(!CollectionUtils.isEmpty(teachers)) {
@@ -117,6 +118,7 @@ public class TeachingResourceAction {
 					if(null!=regDate) {
 						teaching.put("regDate", format.format(regDate));
 					}
+					teaching.put("graduation", teaching.get("gradeId"));
 					
 					//转换学历 -> 名称
 					Integer education = teaching.getInteger("education");

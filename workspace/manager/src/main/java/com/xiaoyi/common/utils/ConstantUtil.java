@@ -2,6 +2,30 @@ package com.xiaoyi.common.utils;
 
 public class ConstantUtil {
 	
+	public static enum Sex {
+		MALE(0),FEMALE(1);
+		private int type;
+		
+		private Sex(int type) {
+			this.type = type;
+		}
+
+		public int getValue() {
+			return type;
+		}
+		
+		@Override
+		public String toString() {
+			if(type == 0) {
+				return "女";
+			}else {
+				return "男";
+			}			
+		}
+		
+		
+	}
+	
 	public static enum Education {
 		TECHNICAL(1),JUNIOR(2),COLLEGE(3),POSTGRADUATE(4),PHD(5),OTHER(6);
 		

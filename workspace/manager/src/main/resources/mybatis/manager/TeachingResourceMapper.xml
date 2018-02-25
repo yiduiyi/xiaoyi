@@ -113,13 +113,13 @@
 	<select id="selectTeachingsByParams" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
 		SELECT a.teacherId,a.checkedLessonNum,a.withDrawLessonNum,a.frozenLessonNum,b.teacherName,b.sex,
 			b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName
-		FROM lessontradesum a 
-			LEFT JOIN teacher b ON a.teacherId=b.teacherId
+		FROM teacher b
+			LEFT JOIN lessontradesum a  ON a.teacherId=b.teacherId
 			LEFT JOIN school c ON b.schoolId=c.schoolId
-		WHERE b.signed=1 
-		<if test="totalLessonNum!=null">
+		WHERE b.signed=1 AND a.totalLessonNum &gt; 0
+		<!-- <if test="totalLessonNum!=null">
 			AND a.totalLessonNum &lt; #{totalLessonNum}	
-		</if>
+		</if> -->
 		<if test="teacherName!=null">
 			AND b.teacherName LIKE '%${teacherName}%' 
 		</if>

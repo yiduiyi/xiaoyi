@@ -95,7 +95,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 						
 						Teacher teacher = new Teacher();
 						teacher.setEducation(data.getByte("education"));
-						teacher.setGradeid(data.getString("gradeId"));
+						teacher.setGradeid(data.getString("graduation"));
 						teacher.setNotes(data.getString("notes"));
 						teacher.setOpenId("");
 						
@@ -175,12 +175,12 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 								user.setLoginstatus(false);
 								user.setNickname(teacher.getTeachername());
 								user.setOpenid("");
-								user.setUsername(teacher.getTeachername());
+								user.setUsername(teacher.getTelnumber());
 								user.setUserprivilege((byte)0);
 								user.setUsertype((byte)3);
 								
 								user.setUserid(teacher.getTeacherid());
-								user.setUseraccountid(teacher.getTelnumber());
+								user.setUseraccountid(teacher.getTeacherid());
 								user.setPassword(teacher.getTelnumber().substring(teacher.getTelnumber().length()-6, teacher.getTelnumber().length()));
 						
 								userList.add(user);
