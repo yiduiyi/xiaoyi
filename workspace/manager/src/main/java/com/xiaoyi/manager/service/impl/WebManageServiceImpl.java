@@ -6,6 +6,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.manager.dao.IPictureDao;
+import com.xiaoyi.manager.dao.ISchoolDao;
 import com.xiaoyi.manager.dao.IStudentDao;
 import com.xiaoyi.manager.dao.web.IWebManageDao;
 import com.xiaoyi.manager.domain.Student;
@@ -20,6 +22,12 @@ public class WebManageServiceImpl implements IWebManageService {
 	@Resource
 	IStudentDao studentDao;
 	
+	@Resource
+	IPictureDao pictureDao;
+	
+	@Resource 
+	ISchoolDao schoolDao;
+	
 	@Override
 	public List<JSONObject> queryStarMembers() {
 		try {
@@ -33,6 +41,8 @@ public class WebManageServiceImpl implements IWebManageService {
 	@Override
 	public int addStarMember(JSONObject params) {
 		try {
+			String schoolName = params.getString("schoolName");
+			//schoolDao.
 			
 		} catch (Exception e) {
 			// TODO: handle exception

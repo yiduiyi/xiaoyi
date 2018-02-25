@@ -129,7 +129,7 @@
 	</select>
 	
 	<select id="selectTeachersByParams" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT b.teacherName,b.sex,b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName,d.picUrl,
+		SELECT b.teacherName,b.teacherId,b.sex,b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName,d.picUrl,
 			b.teachingLevel,b.education,b.notes,b.gradeId,b.signed
 		FROM teacher b 
 			LEFT JOIN school c ON b.schoolId=c.schoolId
