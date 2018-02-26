@@ -345,11 +345,9 @@ public class OrderServiceImpl implements IOrderService {
 								JSONArray teacherMaps = new JSONArray();
 								for(String curTeachingId : curTeachingIds){
 									JSONObject curTeacher = teachingIdNameMap.get(curTeachingId);
-									/*sb.append(curTeacher.getString("teacherName"));
-									sb.append("(");
-									sb.append(curTeacher.get("lessonType"));
-									sb.append(")");
-									sb.append(",");*/
+									if(null==curTeacher) {
+										continue;
+									}
 									if(null!=curTeacher 
 											&& null!=curTeacher.getInteger("lessonType")) {
 										Integer lessonType = curTeacher.getInteger("lessonType");
@@ -358,6 +356,7 @@ public class OrderServiceImpl implements IOrderService {
 												curTeacher.put("courseName", curCourse.toString());
 											}
 										}
+										
 									}
 									teacherMaps.add(curTeacher);
 								}
@@ -508,6 +507,7 @@ public class OrderServiceImpl implements IOrderService {
 		return null;
 	}
 
+	@Transactional
 	@Override
 	public int deleteTeachingTeacher(JSONObject params) {
 		try {
@@ -517,6 +517,42 @@ public class OrderServiceImpl implements IOrderService {
 			reqParams.put("teacherId", params.get("teacherId"));
 			
 			otRelationDao.deleteOTRelations(reqParams);	
+			//otRelationDao.selectOTRelationsByOrderId(params.getString("orderId"));
+			
+			String deleteTeachingId = null;
+			//删除教师教学任务
+			try {
+				TeacherLesRelationKey tlRelationKey = new TeacherLesRelationKey();
+				tlRelationKey.setLessontype(params.getInteger("courseId"));
+				tlRelationKey.setTeacherid(params.getString("teacherId"));
+			
+				//补充 teachingId
+				tlRelationKey = tlRelationDao.selectTLRelationByParams(tlRelationKey);
+				deleteTeachingId = tlRelationKey.getTeachingid();
+				
+				tlRelationDao.deleteByPrimaryKey(tlRelationKey);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			
+			//删除订单总表中的教学任务
+			try {
+				OrderSumKey key = new OrderSumKey();
+				
+				key.setOrderid(params.getString("orderId"));
+				OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
+				if(null!=orderSum && !StringUtils.isEmpty(orderSum.getTeachingids())) {
+					String teachingIds = orderSum.getTeachingids();
+					orderSum.setTeachingids(teachingIds.replaceFirst(deleteTeachingId+",", ""));
+					
+					orderSumDao.updateByPrimaryKeySelective(orderSum);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

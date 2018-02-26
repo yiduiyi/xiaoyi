@@ -15,6 +15,9 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.manager.dao.IOrderSumDao;
+import com.xiaoyi.manager.domain.OrderSum;
+import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
@@ -40,6 +43,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 	
 	@Resource
 	ISuggestionsDao suggestionDao;
+	
+	@Resource
+	IOrderSumDao orderSumDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -146,6 +152,19 @@ public class TeachingRecordService implements ITeachingRecordService {
 						tradeSumDao.updateByPrimaryKeySelective(tradeSum);
 					} catch (Exception e) {
 						logger.error("插入汇总表出错！");
+						throw e;
+					}
+					
+					//更新用户订单课时数
+					try {
+						OrderSumKey key = new OrderSumKey();
+						key.setOrderid(orderId);
+						OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);											
+						orderSum.setLessonleftnum((short)(orderSum.getLessonleftnum()-totalLessons));
+						
+						orderSumDao.updateByPrimaryKeySelective(orderSum);						
+					} catch (Exception e) {
+						e.printStackTrace();
 						throw e;
 					}
 				} catch (Exception e) {

@@ -17,11 +17,33 @@
   	</foreach>
   </select>
   
+  <select id="selectTLRelationByParams" resultType="com.xiaoyi.manager.domain.TeacherLesRelationKey"
+  		parameterType="com.xiaoyi.manager.domain.TeacherLesRelationKey">
+  	select *from teacher_les_r
+    where
+    <choose>
+    	<when test="teachingid!=null">
+    		teachingId = #{teachingid,jdbcType=VARCHAR}
+    	</when>
+    	<otherwise>
+    		lessonType = #{lessontype,jdbcType=INTEGER}
+      		and teacherId = #{teacherid,jdbcType=VARCHAR}
+    	</otherwise>
+    </choose>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.TeacherLesRelationKey" >
     delete from teacher_les_r
-    where lessonType = #{lessontype,jdbcType=INTEGER}
-      and teacherId = #{teacherid,jdbcType=VARCHAR}
-      and teachingId = #{teachingid,jdbcType=VARCHAR}
+    where
+    <choose>
+    	<when test="teachingid!=null">
+    		teachingId = #{teachingid,jdbcType=VARCHAR}
+    	</when>
+    	<otherwise>
+    		lessonType = #{lessontype,jdbcType=INTEGER}
+      		and teacherId = #{teacherid,jdbcType=VARCHAR}
+    	</otherwise>
+    </choose>
   </delete>
   <insert id="insertTLRelationList" parameterType="java.util.List" >
   	insert into teacher_les_r (lessonType, teacherId, teachingId)

@@ -13,7 +13,9 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.manager.dao.ITeacherDao;
+import com.xiaoyi.manager.dao.IUserDao;
 import com.xiaoyi.manager.domain.Teacher;
+import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.teacher.dao.IPrivateDomainDao;
 import com.xiaoyi.teacher.service.IPrivateDomainService;
 
@@ -23,6 +25,9 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 	
 	@Resource
 	private ITeacherDao teacherDao;
+	
+	@Resource
+	private IUserDao userDao;
 	
 	@Resource
 	private IPrivateDomainDao domainDao;
@@ -45,10 +50,18 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 
 	@Override
 	public int setAgreement(JSONObject params)  throws Exception{
+		String teacherId = params.getString("teacherId");
 		try {
 			Teacher teacher = new Teacher();
-			teacher.setTeacherid(params.getString("teacherId"));
+			teacher.setTeacherid(teacherId);
 			teacher.setSigned((short)1);
+			
+			User user = new User();
+			user.setUseraccountid(teacherId);
+			user.setUserid(teacherId);
+			user.setUserprivilege((byte)1);
+			userDao.updateByPrimaryKeySelective(user);
+			
 			return teacherDao.updateByPrimaryKeySelective(teacher);
 		} catch (Exception e) {
 			e.printStackTrace();
