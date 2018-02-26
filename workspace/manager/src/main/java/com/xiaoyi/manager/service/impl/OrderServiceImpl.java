@@ -166,14 +166,22 @@ public class OrderServiceImpl implements IOrderService {
 	public int updateOrder(JSONObject params) {
 		try {
 			String teacherIds = params.getString("teacherIds");
+			String courseIds = params.getString("courseIds");
 			List<String> newTeachingIds = new ArrayList<String>();
 			List<String> oldTeachingIds = null;
+			List<String> courseList = null;
 			Map<String,String> teacherTeachingMap = new HashMap<String,String>();
+			Map<String,Integer> teachingIdCourseMap = new HashMap<String,Integer>();			
 			
 			//没有设置
 			if(null==teacherIds) {
 				teacherIds = "";
 			}
+			
+			if(null==courseIds) {
+				courseIds = "";
+			}
+			courseList = Arrays.asList(courseIds.split(","));			
 			
 			//新设教学任务
 			StringBuffer addTeachingIds = new StringBuffer();
@@ -182,8 +190,18 @@ public class OrderServiceImpl implements IOrderService {
 				addTeachingIds.append(newTeachingId+",");
 				newTeachingIds.add(newTeachingId);
 				
-				teacherTeachingMap.put(newTeachingId, teacherId);
+				teacherTeachingMap.put(newTeachingId, teacherId);				
 			}
+			
+			//科目与老师不统一
+			if(courseList.size()!=newTeachingIds.size()) {
+				return -1;
+			}
+			
+			for(int i=0; i<newTeachingIds.size(); i++) {
+				teachingIdCourseMap.put(newTeachingIds.get(i), Integer.parseInt(courseList.get(0)));
+			}
+			
 			
 			OrderSum newOrderSum = new OrderSum();
 			newOrderSum.setTeachingids(/*teachingIds*/addTeachingIds.substring(0,addTeachingIds.length()-1));
@@ -254,14 +272,22 @@ public class OrderServiceImpl implements IOrderService {
 					//if(null!=relationKey){
 						relation.setTeacherId( teacherTeachingMap.get(teachingId)/*relationKey.getTeacherid()*/);
 						//int type = Math.abs(record.getLessontype())/record.getLessontype();
-						relation.setLessonType(oldOrderSum.getLessontype()/*relationKey.getLessontype()*type*/);
+						relation.setLessonType(teachingIdCourseMap.get(teachingId));/*oldOrderSum.getLessontype()*//*relationKey.getLessontype()*type);*/
 					//}
 					relations.add(relation);
 				}
 				
 				//入库
 				try {
-					otRelationDao.deleteOTRelations(newOrderSum.getOrderid());
+					//删除重复教学任务
+					for(String teachingId : teachingIdCourseMap.keySet()) {
+						Map<String,Object> reqParams = new HashMap<String,Object>();
+						reqParams.put("orderId", newOrderSum.getOrderid());
+						reqParams.put("courseId", teachingIdCourseMap.get(teachingId));
+						reqParams.put("teacherId", teacherTeachingMap.get(teachingId));
+						
+						otRelationDao.deleteOTRelations(reqParams);						
+					}
 					otRelationDao.insertOTRelations(relations);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -489,6 +515,21 @@ public class OrderServiceImpl implements IOrderService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public int deleteTeachingTeacher(JSONObject params) {
+		try {
+			Map<String,Object> reqParams = new HashMap<String,Object>();
+			reqParams.put("orderId", params.get("orderId"));
+			reqParams.put("courseId", params.get("courseId"));
+			reqParams.put("teacherId", params.get("teacherId"));
+			
+			otRelationDao.deleteOTRelations(reqParams);	
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return 0;
 	}
 
 	

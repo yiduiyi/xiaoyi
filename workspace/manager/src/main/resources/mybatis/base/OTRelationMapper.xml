@@ -3,9 +3,17 @@
 <mapper namespace="com.xiaoyi.manager.dao.IOTRelationDao" >
 	
 	<!-- 删除订单-任教关系 -->
-	<delete id="deleteOTRelations" parameterType="java.lang.String">
+	<delete id="deleteOTRelations" parameterType="hashmap">
 		DELETE FROM order_teaching_r 
 		WHERE orderId=#{orderId}	
+		<!-- 指定单个教学任务 -->
+		<if test="courseId!=null">
+			and lessonType = #{courseId}			
+		</if>
+		<!-- 指定单个教学任务 -->
+		<if test="teacherId!=null">
+			and teacherId = #{teacherId}	
+		</if>
 	</delete>
 	
 	<!-- 插入订单-任教关系 -->

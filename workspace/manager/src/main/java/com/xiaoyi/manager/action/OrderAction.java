@@ -207,6 +207,28 @@ public class OrderAction {
 		return result;
 	}
 	
+	@RequestMapping(value="/teaching/removeTeaching",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject removeTeaching(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			//List<JSONObject> data = orderService.queryCourseList(reqData);						
+			if(-1!=orderService.deleteTeachingTeacher(reqData)){
+				rtCode = RtConstants.SUCCESS;
+			}
+			//result.put("data", data);			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+	
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
 	@RequestMapping(value="/getMTeaching",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject getMTeaching(HttpServletRequest request
