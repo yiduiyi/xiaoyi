@@ -35,4 +35,6 @@ public interface IOrderService {
 	List<JSONObject> queryMTeachings(JSONObject params);
 	
 	List<JSONObject> queryMOrders(JSONObject params);
+	
+	int deleteTeachingTeacher(JSONObject params);
 }

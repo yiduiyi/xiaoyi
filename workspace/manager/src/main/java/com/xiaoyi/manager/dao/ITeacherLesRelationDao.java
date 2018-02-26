@@ -12,4 +12,6 @@ public interface ITeacherLesRelationDao {
     int insert(TeacherLesRelationKey record);
 
     int insertSelective(TeacherLesRelationKey record);
+    
+    int insertTLRelationList(List<TeacherLesRelationKey> records);
 }
