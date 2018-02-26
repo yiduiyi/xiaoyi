@@ -8,4 +8,6 @@ import com.xiaoyi.manager.domain.OrderTeachingRelation;
 public interface IOTRelationDao {
 	int insertOTRelations(List<OrderTeachingRelation> relations);
 	int deleteOTRelations(Map<String,Object> parmas);
+	
+	List<OrderTeachingRelation> selectOTRelationsByOrderId(String orderId);
 }

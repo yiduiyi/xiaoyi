@@ -47,24 +47,24 @@
 
 	<select id="selectTeachersByConditions" resultType="com.alibaba.fastjson.JSONObject"
 		parameterType="hashmap">
-		SELECT a.teacherId,a.teachingId,b.teacherName,a.lessonType
-		FROM teacher_les_r a INNER JOIN teacher b ON a.teacherId=b.teacherId
+		SELECT teacherId<!-- ,a.teachingId -->,teacherName<!-- ,a.lessonType -->
+		FROM <!-- teacher_les_r a INNER JOIN --> teacher <!-- b ON a.teacherId=b.teacherId -->
 		<where>
-			<!-- 层次 -->
+			<!-- 
 			<if test="level!=null">
 				a.lessonType DIV 100 = #{level}
 			</if>
-			<!-- 年级 -->
+			年级
 			<if test="gradeId!=null">
 				AND (a.lessonType DIV 10) MOD 10 = #{gradeId}
 			</if>
-			<!-- 科目 -->
+			科目
 			<if test="courseId!=null">
 				AND a.lessonType MOD 10 = #{courseId}
-			</if>
+			</if> -->
 			<!-- 名字 -->
 			<if test="teacherName!=null">
-				AND b.teacherName LIKE '%${teacherName}%'
+				teacherName LIKE '%${teacherName}%'
 			</if>
 		</where>
 	</select>

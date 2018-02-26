@@ -25,4 +25,9 @@
 		</foreach>
 	</insert>
 	
+	<select id="selectOTRelationsByOrderId" parameterType="java.lang.String" 
+		resultType="com.xiaoyi.manager.domain.OrderTeachingRelation">
+		SELECT *FROM order_teaching_r
+		WHERE orderId=#{orderId}	
+	</select>
 </mapper>

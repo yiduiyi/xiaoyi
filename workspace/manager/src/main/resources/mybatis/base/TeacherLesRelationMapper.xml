@@ -23,6 +23,13 @@
       and teacherId = #{teacherid,jdbcType=VARCHAR}
       and teachingId = #{teachingid,jdbcType=VARCHAR}
   </delete>
+  <insert id="insertTLRelationList" parameterType="java.util.List" >
+  	insert into teacher_les_r (lessonType, teacherId, teachingId)
+    	values
+    	<foreach collection="list" item="item" separator=",">
+	    	 (#{item.lessontype,jdbcType=INTEGER}, #{item.teacherid,jdbcType=VARCHAR}, #{item.teachingid,jdbcType=VARCHAR})    	
+    	</foreach>
+  </insert>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.TeacherLesRelationKey" >
     insert into teacher_les_r (lessonType, teacherId, teachingId
       )
