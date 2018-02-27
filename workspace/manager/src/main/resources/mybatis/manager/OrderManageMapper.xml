@@ -32,6 +32,15 @@
 			<if test="studentName!=null">
 				and c.name LIKE  '%${studentName}%'
 			</if>
+			<!-- 学生、老师上门 -->
+			<if test="lessonType!=null">
+				 <if test="lessonType==0">
+				 	and a.lessonType&gt;0
+				 </if>
+				 <if test="lessonType==1">
+				 	and a.lessonType&lt;0
+				 </if>
+			</if>
 		</where>
 	</select>
 	<!-- 根据任教关系查询老师列表 -->
