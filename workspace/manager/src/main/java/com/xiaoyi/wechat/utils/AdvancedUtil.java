@@ -1,4 +1,4 @@
-package com.xiaoyi.weichat.utils;
+package com.xiaoyi.wechat.utils;
 
 import java.util.List;
 

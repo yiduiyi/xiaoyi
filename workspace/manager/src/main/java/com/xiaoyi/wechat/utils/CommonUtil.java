@@ -1,4 +1,4 @@
-package com.xiaoyi.weichat.utils;
+package com.xiaoyi.wechat.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -69,6 +69,7 @@ public class CommonUtil {
 	        } catch (Exception e) {
 	           // log.error("https请求异常：{}", e);
 	        }
+	        System.out.println("return msg:"+jsonObject);
 	        return jsonObject;
 	    }
 	

@@ -1,4 +1,4 @@
-package com.xiaoyi.weichat.utils;
+package com.xiaoyi.wechat.utils;
 
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;

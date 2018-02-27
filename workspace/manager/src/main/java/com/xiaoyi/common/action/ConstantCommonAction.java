@@ -26,6 +26,7 @@ import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Education;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
+import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Sex;
 import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
@@ -92,7 +93,15 @@ public class ConstantCommonAction {
     				datas.add(data);
     			}
     			break;
+    		case "level":
+    			for(Level level: Level.values()) {
+    				JSONObject data = new JSONObject();
+    				data.put(level.toString(), level.getValue());
+    				datas.add(data);
+    			}
+    			break;
     		}
+    		
     		if(!CollectionUtils.isEmpty(datas)) {
     			rtCode = RtConstants.SUCCESS;
     		}

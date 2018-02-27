@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.HttpClient;
-import com.xiaoyi.weichat.utils.UUIDUtil;
-import com.xiaoyi.weichat.utils.WeiXinConfig;
+import com.xiaoyi.wechat.utils.UUIDUtil;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 import net.sf.json.xml.XMLSerializer;
 

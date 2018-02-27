@@ -7,9 +7,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.xiaoyi.weichat.utils.AdvancedUtil;
-import com.xiaoyi.weichat.utils.WeiXinConfig;
-import com.xiaoyi.weichat.utils.WeixinOauth2Token;
+import com.xiaoyi.wechat.utils.AdvancedUtil;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
+import com.xiaoyi.wechat.utils.WeixinOauth2Token;
  
 
 @Controller

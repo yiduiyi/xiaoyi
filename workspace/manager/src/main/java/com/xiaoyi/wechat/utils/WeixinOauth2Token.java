@@ -1,4 +1,4 @@
-package com.xiaoyi.weichat.utils;
+package com.xiaoyi.wechat.utils;
 
 public class WeixinOauth2Token {
     // 网页授权接口调用凭证
