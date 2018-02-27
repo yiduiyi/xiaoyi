@@ -119,6 +119,7 @@ public class OrderServiceImpl implements IOrderService {
 					order.setMemberid(studentId);
 					order.setParentid(parentId);
 					order.setPurchasenum(purchaseNum);				
+					order.setHasBook(params.getShort("hasBook"));
 					
 					orderDao.insertSelective(order);
 				} catch (Exception e) {

@@ -9,7 +9,17 @@ public class Orders extends OrdersKey {
 
     private int orderType;
     
-    public Date getCreatetime() {
+    private Short hasBook;
+    
+    public Short isHasBook() {
+		return hasBook;
+	}
+
+	public void setHasBook(Short hasBook) {
+		this.hasBook = hasBook;
+	}
+
+	public Date getCreatetime() {
         return createtime;
     }
 

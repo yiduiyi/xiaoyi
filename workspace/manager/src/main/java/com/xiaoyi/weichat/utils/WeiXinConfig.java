@@ -1,0 +1,90 @@
+package com.xiaoyi.weichat.utils;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+
+/** 
+* @author  Administrator
+* @version 创建时间：2017年7月3日 下午8:33:48 
+* 微信设置
+*/
+public class WeiXinConfig {
+
+	public static String APPID = "wxd9579db73c42cf91";//服务号的应用号
+	public static String mchId = "1493091612";//商户号
+	public static String tradeType = "JSAPI";
+	public static String signType = "MD5";//签名加密方式
+	public static String KEY = "LiuGuo888Dai66limingY756a8nhuida";//API密钥 ed88788d15aa1982954d605f7569fe0f  N4ufMPFoicK1ewPFZbdQjGNNtFUr6SERjUMjKdU67rh
+	public static String SECRET = "2e50c7d680e6fc3efe5fc0cdf81568fd"; //AppSecret 确定正确
+	
+	
+
+	 public static String getRequestXml(SortedMap<String, String> parameters) {
+		   StringBuffer sb = new StringBuffer();
+		   sb.append("<xml>");
+		   Set es = parameters.entrySet();
+		   Iterator it = es.iterator();
+		   while (it.hasNext()) {
+		   Map.Entry entry = (Map.Entry) it.next();
+		   String k = (String) entry.getKey();
+		   String v = (String) entry.getValue();
+		      sb.append("<" + k + ">" + v + "</" + k + ">");
+		   }
+		   sb.append("</xml>");
+		   return sb.toString();
+	 }
+	 
+	 
+	 public static String createSign(String characterEncoding,SortedMap<String, String> parameters) {
+		 
+		   StringBuffer sb = new StringBuffer();
+		   Set es = parameters.entrySet();
+		   Iterator it = es.iterator();
+		   while (it.hasNext()) {
+			   Map.Entry entry = (Map.Entry) it.next();
+			   String k = (String) entry.getKey();
+			   Object v = entry.getValue();
+			   if (null != v && !"".equals(v) ) {
+			      sb.append(k + "=" + v + "&");
+			   }
+		   }
+		    sb.append("key=" + WeiXinConfig.KEY);
+		    String sign = MD5Util.getMD5String(sb.toString()).toUpperCase();
+	 
+		   return sign;
+	 }
+	 
+	 
+		public static String getIp(HttpServletRequest request) {
+			if (request == null)
+				return "";
+			String ip = request.getHeader("X-Requested-For");
+			if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("X-Forwarded-For");
+			}
+			if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("Proxy-Client-IP");
+			}
+			if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("WL-Proxy-Client-IP");
+			}
+			if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("HTTP_CLIENT_IP");
+			}
+			if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+			}
+			if (StringUtils.isEmpty(ip) || "unknown".equalsIgnoreCase(ip)) {
+				ip = request.getRemoteAddr();
+			}
+			return ip;
+		}
+		
+	
+}
