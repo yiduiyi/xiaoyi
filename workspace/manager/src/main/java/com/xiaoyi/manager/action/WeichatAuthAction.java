@@ -30,7 +30,7 @@ public class WeichatAuthAction{
 	              String openid = weixinOauth2Token.getOpenId();
 	              req.getSession().setAttribute("openid", openid);
 	              log.error("openid====>" + openid);
-	              res.sendRedirect( req.getContextPath() + "/weichat/index.html");
+	              res.sendRedirect( req.getContextPath() + "/wechat/index.html");
 	        } 
 	      
 		} catch (Exception e) {
@@ -52,7 +52,7 @@ public class WeichatAuthAction{
 	              String openid = weixinOauth2Token.getOpenId();
 	              req.getSession().setAttribute("openid", openid);
 	              log.error("openid====>" + openid);
-	              res.sendRedirect( req.getContextPath() + "/weichat/index.html#/personCenter");
+	              res.sendRedirect( req.getContextPath() + "/wechat/index.html#/personCenter");
 	        } 
 	      
 		} catch (Exception e) {

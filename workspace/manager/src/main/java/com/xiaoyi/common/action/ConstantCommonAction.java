@@ -114,7 +114,24 @@ public class ConstantCommonAction {
 		return result;
 	}
 
-	
+	@RequestMapping(value="/getCoursePrice",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getCoursePrice(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		    	    	
+    	try {
+    	
+    		//result.put("data", datas);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
 	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
 		result.put("code", code);
 		result.put("msg", rtString);
