@@ -83,6 +83,13 @@ public class OrderAction {
 		return result;
 	}
 	
+	/**
+	 * 手动录入
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
 	@RequestMapping(value="/addOrder",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject addOrder(HttpServletRequest request

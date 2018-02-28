@@ -1,6 +1,5 @@
 package com.xiaoyi.common.utils;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +27,19 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.net.URLConnection;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * 
@@ -158,60 +170,150 @@ public class HttpClient {
 		return EMPTY_STR;
 	}
 
-	public static String sendPost(String xml) throws Exception{
+	public static String sendPost(String xml) throws Exception {
 		// HostnameVerifier hnv = new HostnameVerifier() {
-        //     public boolean verify(String hostname, SSLSession session) {
-        //         // Always return true，接受任意域名服务器
-        //         return true;
-        //     }
-        // };
-        // HttpsURLConnection.setDefaultHostnameVerifier(hnv);
+		// public boolean verify(String hostname, SSLSession session) {
+		// // Always return true，接受任意域名服务器
+		// return true;
+		// }
+		// };
+		// HttpsURLConnection.setDefaultHostnameVerifier(hnv);
 
-        String UTF8 = "UTF-8";
-        String reqBody = xml;//"<xml><body>测试商家-商品类目</body><trade_type>NATIVE</trade_type><mch_id>11473623</mch_id><sign_type>HMAC-SHA256</sign_type><nonce_str>b1089cb0231011e7b7e1484520356fdc</nonce_str><detail /><fee_type>CNY</fee_type><device_info>WEB</device_info><out_trade_no>20161909105959000000111108</out_trade_no><total_fee>1</total_fee><appid>wxab8acb865bb1637e</appid><notify_url>http://test.letiantian.com/wxpay/notify</notify_url><sign>78F24E555374B988277D18633BF2D4CA23A6EAF06FEE0CF1E50EA4EADEEC41A3</sign><spbill_create_ip>123.12.12.123</spbill_create_ip></xml>";
-        URL httpUrl = new URL("https://14.215.140.116/pay/unifiedorder");
-        HttpURLConnection httpURLConnection = (HttpURLConnection) httpUrl.openConnection();
-        httpURLConnection.setRequestProperty("Host", "api.mch.weixin.qq.com");
-        httpURLConnection.setDoOutput(true);
-        httpURLConnection.setRequestMethod("POST");
-        httpURLConnection.setConnectTimeout(10*1000);
-        httpURLConnection.setReadTimeout(10*1000);
-        httpURLConnection.connect();
-        OutputStream outputStream = httpURLConnection.getOutputStream();
-        outputStream.write(reqBody.getBytes(UTF8));
+		String UTF8 = "UTF-8";
+		String reqBody = xml;// "<xml><body>测试商家-商品类目</body><trade_type>NATIVE</trade_type><mch_id>11473623</mch_id><sign_type>HMAC-SHA256</sign_type><nonce_str>b1089cb0231011e7b7e1484520356fdc</nonce_str><detail
+								// /><fee_type>CNY</fee_type><device_info>WEB</device_info><out_trade_no>20161909105959000000111108</out_trade_no><total_fee>1</total_fee><appid>wxab8acb865bb1637e</appid><notify_url>http://test.letiantian.com/wxpay/notify</notify_url><sign>78F24E555374B988277D18633BF2D4CA23A6EAF06FEE0CF1E50EA4EADEEC41A3</sign><spbill_create_ip>123.12.12.123</spbill_create_ip></xml>";
+		URL httpUrl = new URL("https://14.215.140.116/pay/unifiedorder");
+		HttpURLConnection httpURLConnection = (HttpURLConnection) httpUrl.openConnection();
+		httpURLConnection.setRequestProperty("Host", "api.mch.weixin.qq.com");
+		httpURLConnection.setDoOutput(true);
+		httpURLConnection.setRequestMethod("POST");
+		httpURLConnection.setConnectTimeout(10 * 1000);
+		httpURLConnection.setReadTimeout(10 * 1000);
+		httpURLConnection.connect();
+		OutputStream outputStream = httpURLConnection.getOutputStream();
+		outputStream.write(reqBody.getBytes(UTF8));
 
-        //获取内容
-        InputStream inputStream = httpURLConnection.getInputStream();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, UTF8));
-        final StringBuffer stringBuffer = new StringBuffer();
-        String line = null;
-        while ((line = bufferedReader.readLine()) != null) {
-            stringBuffer.append(line);
-        }
-        String resp = stringBuffer.toString();
-        if (stringBuffer!=null) {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (inputStream!=null) {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if (outputStream!=null) {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+		// 获取内容
+		InputStream inputStream = httpURLConnection.getInputStream();
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, UTF8));
+		final StringBuffer stringBuffer = new StringBuffer();
+		String line = null;
+		while ((line = bufferedReader.readLine()) != null) {
+			stringBuffer.append(line);
+		}
+		String resp = stringBuffer.toString();
+		if (stringBuffer != null) {
+			try {
+				bufferedReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (inputStream != null) {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (outputStream != null) {
+			try {
+				outputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
-        System.out.println(resp);
-        return resp;
+		System.out.println(resp);
+		return resp;
 	}
+
+	public static String httpPost(String url, String data, String contentType) {
+		URLConnection request = null;
+		OutputStream reqStream = null;
+		InputStream resStream = null;
+		String respText = null;
+		try {
+			request = createRequest(url.trim(), "POST");
+			request.setRequestProperty("Content-type", contentType);
+			byte postData[] = data.getBytes("UTF-8");
+			request.setRequestProperty("Content-length", String.valueOf(postData.length));
+			request.setConnectTimeout(120 * 1000);
+			request.setReadTimeout(120 * 1000);
+			reqStream = request.getOutputStream();
+			reqStream.write(postData);
+			reqStream.flush();
+			reqStream.close();
+			ByteArrayOutputStream ms = null;
+			resStream = request.getInputStream();
+			ms = new ByteArrayOutputStream();
+			byte buf[] = new byte[4096];
+			int count;
+			while ((count = resStream.read(buf, 0, buf.length)) > 0) {
+				ms.write(buf, 0, count);
+			}
+			resStream.close();
+			respText = new String(ms.toByteArray(), "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return respText;
+
+	}
+
+	private static URLConnection createRequest(String strUrl, String strMethod) throws Exception {
+		URL url = new URL(strUrl);
+		URLConnection conn = url.openConnection();
+		conn.setDoInput(true);
+		conn.setDoOutput(true);
+
+		if (conn instanceof HttpsURLConnection) {
+			HttpsURLConnection httpsConn = (HttpsURLConnection) conn;
+			httpsConn.setRequestMethod(strMethod);
+			httpsConn.setSSLSocketFactory(getSSLSF());
+			httpsConn.setHostnameVerifier(simpleVerifier);
+		} else if (conn instanceof HttpURLConnection) {
+			HttpURLConnection httpConn = (HttpURLConnection) conn;
+			httpConn.setRequestMethod(strMethod);
+		}
+		return conn;
+	}
+
+	public static synchronized SSLSocketFactory getSSLSF() throws Exception {
+		if (sslFactory != null) {
+			return sslFactory;
+		} else {
+			SSLContext sc = SSLContext.getInstance("SSLv3");
+			sc.init(null, new TrustManager[] { simpleVerifier }, null);
+			sslFactory = sc.getSocketFactory();
+			return sslFactory;
+		}
+	}
+
+	private static class SSLHandler implements X509TrustManager, HostnameVerifier {
+		public void checkClientTrusted(X509Certificate ax509certificate[], String s) throws CertificateException {
+		}
+
+		public void checkServerTrusted(X509Certificate ax509certificate[], String s) throws CertificateException {
+		}
+
+		public X509Certificate[] getAcceptedIssuers() {
+			return null;
+		}
+
+		public boolean verify(String arg0, SSLSession arg1) {
+			return true;
+		}
+
+		private SSLHandler() {
+		}
+
+		SSLHandler(SSLHandler sslhandler) {
+			this();
+		}
+	}
+
+	private static final SSLHandler simpleVerifier = new SSLHandler(null);
+	private static SSLSocketFactory sslFactory;
+
 }

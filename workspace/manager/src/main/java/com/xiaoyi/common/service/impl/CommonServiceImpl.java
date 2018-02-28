@@ -55,7 +55,7 @@ public class CommonServiceImpl implements ICommonDataService {
 							gradeCoursesMap.put(levelGrade, gradeLessonsMap);
 						}
 						
-						 new JSONObject();
+						// new JSONObject();
 						gradeLessonsMap.put("grade", levelGrade);
 						gradeLessonsMap.put("gradeName", gradeIdNameMap.get(Math.abs(levelGrade%10)));
 						JSONArray sortlist = gradeLessonsMap.getJSONArray("sortlist");
