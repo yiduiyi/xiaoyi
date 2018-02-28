@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.domain.LessonType;
+import com.xiaoyi.manager.service.IOrderService;
 import com.xiaoyi.wechat.utils.MD5Util;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 
@@ -39,7 +40,11 @@ import net.sf.json.xml.XMLSerializer;
 @RequestMapping("/interface")
 public class UserPayOutAction {
 	
-	@Resource ILessonTypeDao lessonTypeDao;
+	@Resource 
+	ILessonTypeDao lessonTypeDao;
+	
+	@Resource
+	private IOrderService orderService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(UserPayOutAction.class);	
 	
@@ -47,7 +52,7 @@ public class UserPayOutAction {
 	@ResponseBody
 	public JSONObject payout(@RequestBody JSONObject request, HttpServletRequest req, 
 			HttpServletResponse res) throws Exception {
-
+		
 		JSONObject response = new JSONObject();
 		String ip = WeiXinConfig.getIp(req);
 
@@ -58,6 +63,13 @@ public class UserPayOutAction {
 		String payName = request.getString("payName") + "";
 		String stuName = request.getString("studentName");
 		
+		JSONObject attach = new JSONObject();
+		attach.put("studentName", "登登登");
+		attach.put("parentName", payName);
+		attach.put("lessonType", "323");
+		attach.put("purchaseNum", "23");
+		attach.put("hasBook", "1");
+
 		JSONObject parm = new JSONObject();
 		parm.put("uuid", uuid);
 		Float amount=null;
@@ -101,7 +113,7 @@ public class UserPayOutAction {
 		parameters.put("out_trade_no", order);// 订单号
 		parameters.put("total_fee", amounts + "");// 总金额单位为分
 		parameters.put("spbill_create_ip", ip);
-		parameters.put("attach", "用户参数");
+		parameters.put("attach", attach.toJSONString());
 		
 		//到账通知地址
 		parameters.put("notify_url", "http://test.yduiy.com.cn/xiaoyi/interface/notice.do");
@@ -164,11 +176,28 @@ public class UserPayOutAction {
 			 parm.put("openId", jsonObject.getString("openid"));
 			 parm.put("orderNum", jsonObject.getString("out_trade_no"));
 			 parm.put("status", 1l);
+			 net.sf.json.JSONObject attach = jsonObject.getJSONObject("attach");
+			 
+			 parm.put("studentName", attach.get("studentName"));
+			 parm.put("parentName", attach.get("parentName"));
+			 parm.put("lessonType", attach.get("lessonType"));
+			 parm.put("purchaseNum", attach.get("purchaseNum"));
+			 parm.put("hasBook", attach.get("hasBook"));
+			 
+			 try {
+				orderService.addOrder(parm);
+				parameters.put("return_code", "SUCCESS");
+				parameters.put("return_msg", "OK");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				parameters.put("return_code", "FAILED");
+				parameters.put("return_msg", "充值失败,请联系管理员！");
+
+			}
   		     //busiService.updateNoticeArrival(parm); 
 		 }
 		
-		 parameters.put("return_code", "SUCCESS");
-		 parameters.put("return_msg", "OK");
 		 PrintWriter writer;
 		try {
 			writer = res.getWriter();

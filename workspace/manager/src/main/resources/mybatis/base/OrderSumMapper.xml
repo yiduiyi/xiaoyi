@@ -27,7 +27,7 @@
     	<otherwise>	
       		memberId = #{memberid,jdbcType=VARCHAR}
       		and parentId = #{parentid,jdbcType=VARCHAR}
-    		<if test="lessonType!=null">
+    		<if test="lessontype!=null">
     			and lessonType = #{lessontype,jdbcType=INTEGER}
     		</if>
     	</otherwise>

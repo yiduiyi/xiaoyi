@@ -64,10 +64,10 @@
         #{purchasenum,jdbcType=SMALLINT},
       </if>
       <if test="orderType != null" >
-        orderType,
+        #{orderType},
       </if>
       <if test="hasBook!= null" >
-        hasBook,
+       #{hasBook},
       </if>
     </trim>
   </insert>

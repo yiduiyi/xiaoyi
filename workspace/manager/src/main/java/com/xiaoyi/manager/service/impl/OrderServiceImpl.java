@@ -140,7 +140,7 @@ public class OrderServiceImpl implements IOrderService {
 					orderSum.setMemberid(studentId);
 					orderSum.setParentid(parentId);
 					orderSum.setPurchasetime(new Date());
-					orderSum.setLessontype(lessonType/100);
+					orderSum.setLessontype(lessonType/*/100*/);
 					orderSum.setLessonleftnum(isNewOrder?purchaseNum:(short)(orderSum.getLessonleftnum()+purchaseNum));
 					orderSum.setTotallessonnum(isNewOrder?purchaseNum:(short)(orderSum.getTotallessonnum()+purchaseNum));
 					
