@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.ICommonDataService;
 import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.common.utils.WXConstants;
@@ -37,6 +38,9 @@ public class ConstantCommonAction {
 	
 	@Resource
 	private IWechatService wechatService;
+	
+	@Resource
+	private ICommonDataService commonDataService;
 	
 	private static Logger logger = Logger.getLogger(WechatAction.class);
 	
@@ -123,8 +127,12 @@ public class ConstantCommonAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		    	    	
     	try {
-    	
-    		//result.put("data", datas);
+    		List<JSONObject> datas = commonDataService.getCoursePrices(reqData);
+    		
+    		if(null!=datas) {
+    			rtCode = RtConstants.SUCCESS;
+    		}
+    		result.put("data", datas);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

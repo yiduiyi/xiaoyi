@@ -6,6 +6,6 @@ import java.util.Map;
 import com.alibaba.fastjson.JSONObject;
 
 
-public interface ICommonService {
-	 List<JSONObject> processRequest(Map<String,Object> params);
+public interface ICommonDataService {
+	 List<JSONObject> getCoursePrices(Map<String,Object> params);
 }

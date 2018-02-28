@@ -15,21 +15,21 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.service.ICommonService;
+import com.xiaoyi.common.service.ICommonDataService;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.domain.LessonType;
 
 
-@Service("commonService")
-public class CommonServiceImpl implements ICommonService {
+@Service("commonDataService")
+public class CommonServiceImpl implements ICommonDataService {
     private static Logger logger = Logger.getLogger(WechatServiceImpl.class);
 
     @Resource
     ILessonTypeDao lessonTypeDao;
     
 	@Override
-	public List<JSONObject> processRequest(Map<String, Object> params) {
+	public List<JSONObject> getCoursePrices(Map<String, Object> params) {
 		try {
 			logger.info("params:"+params);
 			List<LessonType>lessonTypeList = lessonTypeDao.selectByParams(params);
@@ -57,7 +57,7 @@ public class CommonServiceImpl implements ICommonService {
 						
 						 new JSONObject();
 						gradeLessonsMap.put("grade", levelGrade);
-						gradeLessonsMap.put("gradeName", gradeIdNameMap.get(levelGrade%10));
+						gradeLessonsMap.put("gradeName", gradeIdNameMap.get(Math.abs(levelGrade%10)));
 						JSONArray sortlist = gradeLessonsMap.getJSONArray("sortlist");
 						if(null==sortlist) {
 							sortlist = new JSONArray();
@@ -75,8 +75,10 @@ public class CommonServiceImpl implements ICommonService {
 						sortlist.add(lesson);
 					}
 					
-					return gradeCoursesMap.values();	
 				}
+				List<JSONObject>datas = new ArrayList<JSONObject>();
+				datas.addAll(gradeCoursesMap.values());	
+				return datas;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
