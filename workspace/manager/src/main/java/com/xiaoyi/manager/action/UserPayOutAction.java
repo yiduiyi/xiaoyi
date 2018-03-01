@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.domain.LessonType;
+import com.xiaoyi.manager.domain.LessonTypeKey;
 import com.xiaoyi.manager.service.IOrderService;
 import com.xiaoyi.wechat.utils.MD5Util;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
@@ -75,7 +76,10 @@ public class UserPayOutAction {
 		Float amount=null;
 		try {
 			//查询价格
-			LessonType lessonType = lessonTypeDao.selectByPrimaryKey(request.getInteger("lessonType"));
+			LessonTypeKey lessonTypeKey = new LessonTypeKey();
+			//lessonTypeKey.setCoursecnt(request.getShort("courseCnt"));
+			lessonTypeKey.setLessontype(request.getInteger("lessonType"));
+			LessonType lessonType = lessonTypeDao.selectByPrimaryKey(lessonTypeKey);
 			
 			if(null!=lessonType) {
 				if(lessonType.getIsholiday()==0) {

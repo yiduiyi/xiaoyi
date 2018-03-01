@@ -1,160 +1,212 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.manager.dao.ILessonTypeDao" >
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonType" >
-    <id column="lessonType" property="lessontype" jdbcType="INTEGER" />
-    <result column="lessonPrice" property="lessonprice" jdbcType="REAL" />
-    <result column="lessonName" property="lessonname" jdbcType="VARCHAR" />
-    <result column="courseName" property="coursename" jdbcType="VARCHAR" />
-    <result column="needBook" property="needbook" jdbcType="BIT" />
-    <result column="discountPrice" property="discountprice" jdbcType="REAL" />
-    <result column="teachingWay" property="teachingway" jdbcType="TINYINT" />
-    <result column="isholiday" property="isholiday" jdbcType="TINYINT" />
-    <result column="courseCnt" property="coursecnt" jdbcType="SMALLINT" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    lessonType, lessonPrice, lessonName, courseName, needBook, discountPrice, teachingWay, 
-    isholiday, courseCnt
-  </sql>
-  <select id="selectByParams" resultMap="BaseResultMap" parameterType="hashmap">
-    select 
-    <include refid="Base_Column_List" />
-    from lessontype
-    <where>
-    	<if test="lessonType!=null">
-    		lessonType = #{lessonType,jdbcType=INTEGER}
-    	</if>
-    	<if test="teachingWay!=null">
-    		<if test="teachingWay==0">
-    			lessonType &gt; 0
-    		</if>
-    		<if test="teachingWay==1">
-    			lessonType &lt; 0
-    		</if>
-    	</if>
-    </where>     
-  </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from lessontype
-    where lessonType = #{lessontype,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from lessontype
-    where lessonType = #{lessontype,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonType" >
-    insert into lessontype (lessonType, lessonPrice, lessonName, 
-      courseName, needBook, discountPrice, 
-      teachingWay, isholiday, courseCnt
-      )
-    values (#{lessontype,jdbcType=INTEGER}, #{lessonprice,jdbcType=REAL}, #{lessonname,jdbcType=VARCHAR}, 
-      #{coursename,jdbcType=VARCHAR}, #{needbook,jdbcType=BIT}, #{discountprice,jdbcType=REAL}, 
-      #{teachingway,jdbcType=TINYINT}, #{isholiday,jdbcType=TINYINT}, #{coursecnt,jdbcType=SMALLINT}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonType" >
-    insert into lessontype
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="lessontype != null" >
-        lessonType,
-      </if>
-      <if test="lessonprice != null" >
-        lessonPrice,
-      </if>
-      <if test="lessonname != null" >
-        lessonName,
-      </if>
-      <if test="coursename != null" >
-        courseName,
-      </if>
-      <if test="needbook != null" >
-        needBook,
-      </if>
-      <if test="discountprice != null" >
-        discountPrice,
-      </if>
-      <if test="teachingway != null" >
-        teachingWay,
-      </if>
-      <if test="isholiday != null" >
-        isholiday,
-      </if>
-      <if test="coursecnt != null" >
-        courseCnt,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="lessontype != null" >
-        #{lessontype,jdbcType=INTEGER},
-      </if>
-      <if test="lessonprice != null" >
-        #{lessonprice,jdbcType=REAL},
-      </if>
-      <if test="lessonname != null" >
-        #{lessonname,jdbcType=VARCHAR},
-      </if>
-      <if test="coursename != null" >
-        #{coursename,jdbcType=VARCHAR},
-      </if>
-      <if test="needbook != null" >
-        #{needbook,jdbcType=BIT},
-      </if>
-      <if test="discountprice != null" >
-        #{discountprice,jdbcType=REAL},
-      </if>
-      <if test="teachingway != null" >
-        #{teachingway,jdbcType=TINYINT},
-      </if>
-      <if test="isholiday != null" >
-        #{isholiday,jdbcType=TINYINT},
-      </if>
-      <if test="coursecnt != null" >
-        #{coursecnt,jdbcType=SMALLINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.LessonType" >
-    update lessontype
-    <set >
-      <if test="lessonprice != null" >
-        lessonPrice = #{lessonprice,jdbcType=REAL},
-      </if>
-      <if test="lessonname != null" >
-        lessonName = #{lessonname,jdbcType=VARCHAR},
-      </if>
-      <if test="coursename != null" >
-        courseName = #{coursename,jdbcType=VARCHAR},
-      </if>
-      <if test="needbook != null" >
-        needBook = #{needbook,jdbcType=BIT},
-      </if>
-      <if test="discountprice != null" >
-        discountPrice = #{discountprice,jdbcType=REAL},
-      </if>
-      <if test="teachingway != null" >
-        teachingWay = #{teachingway,jdbcType=TINYINT},
-      </if>
-      <if test="isholiday != null" >
-        isholiday = #{isholiday,jdbcType=TINYINT},
-      </if>
-      <if test="coursecnt != null" >
-        courseCnt = #{coursecnt,jdbcType=SMALLINT},
-      </if>
-    </set>
-    where lessonType = #{lessontype,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonType" >
-    update lessontype
-    set lessonPrice = #{lessonprice,jdbcType=REAL},
-      lessonName = #{lessonname,jdbcType=VARCHAR},
-      courseName = #{coursename,jdbcType=VARCHAR},
-      needBook = #{needbook,jdbcType=BIT},
-      discountPrice = #{discountprice,jdbcType=REAL},
-      teachingWay = #{teachingway,jdbcType=TINYINT},
-      isholiday = #{isholiday,jdbcType=TINYINT},
-      courseCnt = #{coursecnt,jdbcType=SMALLINT}
-    where lessonType = #{lessontype,jdbcType=INTEGER}
-  </update>
+<mapper>
+	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonType">
+		<id column="courseCnt" property="coursecnt" jdbcType="SMALLINT" />
+		<id column="lessonType" property="lessontype" jdbcType="INTEGER" />
+		<result column="teachingWay" property="teachingway" jdbcType="TINYINT" />
+		<result column="gradeId" property="gradeid" jdbcType="SMALLINT" />
+		<result column="lessonPrice" property="lessonprice" jdbcType="REAL" />
+		<result column="lessonName" property="lessonname" jdbcType="VARCHAR" />
+		<result column="gradeName" property="gradename" jdbcType="VARCHAR" />
+		<result column="needBook" property="needbook" jdbcType="BIT" />
+		<result column="discountPrice" property="discountprice"
+			jdbcType="REAL" />
+		<result column="isholiday" property="isholiday" jdbcType="TINYINT" />
+		<result column="singleCoursePrice" property="singlecourseprice"
+			jdbcType="REAL" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		courseCnt, lessonType, teachingWay, gradeId, lessonPrice,
+		lessonName, gradeName,
+		needBook, discountPrice, isholiday,
+		singleCoursePrice
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="com.xiaoyi.manager.domain.LessonTypeKey">
+		select
+		<include refid="Base_Column_List" />
+		from lessontype
+		<where>
+			<if test="courseCnt!=null">
+				courseCnt = #{coursecnt,jdbcType=SMALLINT}
+			</if>
+			<if test="lessonType!=null">
+				and lessonType = #{lessontype,jdbcType=INTEGER}
+			</if>
+		</where>
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonTypeKey">
+		delete from
+		lessontype
+		where courseCnt = #{coursecnt,jdbcType=SMALLINT}
+		and
+		lessonType = #{lessontype,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonType">
+		insert into lessontype
+		(courseCnt, lessonType, teachingWay,
+		gradeId, lessonPrice, lessonName,
+		gradeName, needBook, discountPrice,
+		isholiday, singleCoursePrice)
+		values (#{coursecnt,jdbcType=SMALLINT},
+		#{lessontype,jdbcType=INTEGER},
+		#{teachingway,jdbcType=TINYINT},
+		#{gradeid,jdbcType=SMALLINT}, #{lessonprice,jdbcType=REAL},
+		#{lessonname,jdbcType=VARCHAR},
+		#{gradename,jdbcType=VARCHAR},
+		#{needbook,jdbcType=BIT},
+		#{discountprice,jdbcType=REAL},
+		#{isholiday,jdbcType=TINYINT}, #{singlecourseprice,jdbcType=REAL})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonType">
+		insert into lessontype
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="coursecnt != null">
+				courseCnt,
+			</if>
+			<if test="lessontype != null">
+				lessonType,
+			</if>
+			<if test="teachingway != null">
+				teachingWay,
+			</if>
+			<if test="gradeid != null">
+				gradeId,
+			</if>
+			<if test="lessonprice != null">
+				lessonPrice,
+			</if>
+			<if test="lessonname != null">
+				lessonName,
+			</if>
+			<if test="gradename != null">
+				gradeName,
+			</if>
+			<if test="needbook != null">
+				needBook,
+			</if>
+			<if test="discountprice != null">
+				discountPrice,
+			</if>
+			<if test="isholiday != null">
+				isholiday,
+			</if>
+			<if test="singlecourseprice != null">
+				singleCoursePrice,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="coursecnt != null">
+				#{coursecnt,jdbcType=SMALLINT},
+			</if>
+			<if test="lessontype != null">
+				#{lessontype,jdbcType=INTEGER},
+			</if>
+			<if test="teachingway != null">
+				#{teachingway,jdbcType=TINYINT},
+			</if>
+			<if test="gradeid != null">
+				#{gradeid,jdbcType=SMALLINT},
+			</if>
+			<if test="lessonprice != null">
+				#{lessonprice,jdbcType=REAL},
+			</if>
+			<if test="lessonname != null">
+				#{lessonname,jdbcType=VARCHAR},
+			</if>
+			<if test="gradename != null">
+				#{gradename,jdbcType=VARCHAR},
+			</if>
+			<if test="needbook != null">
+				#{needbook,jdbcType=BIT},
+			</if>
+			<if test="discountprice != null">
+				#{discountprice,jdbcType=REAL},
+			</if>
+			<if test="isholiday != null">
+				#{isholiday,jdbcType=TINYINT},
+			</if>
+			<if test="singlecourseprice != null">
+				#{singlecourseprice,jdbcType=REAL},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.LessonType">
+		update lessontype
+		<set>
+			<if test="teachingway != null">
+				teachingWay = #{teachingway,jdbcType=TINYINT},
+			</if>
+			<if test="gradeid != null">
+				gradeId = #{gradeid,jdbcType=SMALLINT},
+			</if>
+			<if test="lessonprice != null">
+				lessonPrice = #{lessonprice,jdbcType=REAL},
+			</if>
+			<if test="lessonname != null">
+				lessonName = #{lessonname,jdbcType=VARCHAR},
+			</if>
+			<if test="gradename != null">
+				gradeName = #{gradename,jdbcType=VARCHAR},
+			</if>
+			<if test="needbook != null">
+				needBook = #{needbook,jdbcType=BIT},
+			</if>
+			<if test="discountprice != null">
+				discountPrice = #{discountprice,jdbcType=REAL},
+			</if>
+			<if test="isholiday != null">
+				isholiday = #{isholiday,jdbcType=TINYINT},
+			</if>
+			<if test="singlecourseprice != null">
+				singleCoursePrice = #{singlecourseprice,jdbcType=REAL},
+			</if>
+		</set>
+		where courseCnt = #{coursecnt,jdbcType=SMALLINT}
+		and lessonType =
+		#{lessontype,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonType">
+		update lessontype
+		set teachingWay = #{teachingway,jdbcType=TINYINT},
+		gradeId =
+		#{gradeid,jdbcType=SMALLINT},
+		lessonPrice =
+		#{lessonprice,jdbcType=REAL},
+		lessonName =
+		#{lessonname,jdbcType=VARCHAR},
+		gradeName =
+		#{gradename,jdbcType=VARCHAR},
+		needBook = #{needbook,jdbcType=BIT},
+		discountPrice = #{discountprice,jdbcType=REAL},
+		isholiday =
+		#{isholiday,jdbcType=TINYINT},
+		singleCoursePrice =
+		#{singlecourseprice,jdbcType=REAL}
+		where courseCnt =
+		#{coursecnt,jdbcType=SMALLINT}
+		and lessonType =
+		#{lessontype,jdbcType=INTEGER}
+	</update>
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="hashmap">
+		select
+		<include refid="Base_Column_List" />
+		from lessontype
+		<where>
+			<if test="lessonType!=null">
+				lessonType = #{lessonType,jdbcType=INTEGER}
+			</if>
+			<if test="teachingWay!=null">
+				<if test="teachingWay==0">
+					lessonType &gt; 0
+				</if>
+				<if test="teachingWay==1">
+					lessonType &lt; 0
+				</if>
+			</if>
+		</where>
+	</select>
+
 </mapper>

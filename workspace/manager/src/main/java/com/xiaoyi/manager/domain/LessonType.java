@@ -1,30 +1,38 @@
 package com.xiaoyi.manager.domain;
 
-public class LessonType {
-    private Integer lessontype;
+public class LessonType extends LessonTypeKey {
+    private Byte teachingway;
+
+    private Short gradeid;
 
     private Float lessonprice;
 
     private String lessonname;
 
-    private String coursename;
+    private String gradename;
 
     private Boolean needbook;
 
     private Float discountprice;
 
-    private Byte teachingway;
-
     private Byte isholiday;
 
-    private Short coursecnt;
+    private Float singlecourseprice;
 
-    public Integer getLessontype() {
-        return lessontype;
+    public Byte getTeachingway() {
+        return teachingway;
     }
 
-    public void setLessontype(Integer lessontype) {
-        this.lessontype = lessontype;
+    public void setTeachingway(Byte teachingway) {
+        this.teachingway = teachingway;
+    }
+
+    public Short getGradeid() {
+        return gradeid;
+    }
+
+    public void setGradeid(Short gradeid) {
+        this.gradeid = gradeid;
     }
 
     public Float getLessonprice() {
@@ -43,12 +51,12 @@ public class LessonType {
         this.lessonname = lessonname == null ? null : lessonname.trim();
     }
 
-    public String getCoursename() {
-        return coursename;
+    public String getGradename() {
+        return gradename;
     }
 
-    public void setCoursename(String coursename) {
-        this.coursename = coursename == null ? null : coursename.trim();
+    public void setGradename(String gradename) {
+        this.gradename = gradename == null ? null : gradename.trim();
     }
 
     public Boolean getNeedbook() {
@@ -67,14 +75,6 @@ public class LessonType {
         this.discountprice = discountprice;
     }
 
-    public Byte getTeachingway() {
-        return teachingway;
-    }
-
-    public void setTeachingway(Byte teachingway) {
-        this.teachingway = teachingway;
-    }
-
     public Byte getIsholiday() {
         return isholiday;
     }
@@ -83,11 +83,11 @@ public class LessonType {
         this.isholiday = isholiday;
     }
 
-    public Short getCoursecnt() {
-        return coursecnt;
+    public Float getSinglecourseprice() {
+        return singlecourseprice;
     }
 
-    public void setCoursecnt(Short coursecnt) {
-        this.coursecnt = coursecnt;
+    public void setSinglecourseprice(Float singlecourseprice) {
+        this.singlecourseprice = singlecourseprice;
     }
 }

@@ -4,18 +4,21 @@ import java.util.List;
 import java.util.Map;
 
 import com.xiaoyi.manager.domain.LessonType;
+import com.xiaoyi.manager.domain.LessonTypeKey;
 
 public interface ILessonTypeDao {
-    int deleteByPrimaryKey(Integer lessontype);
+    int deleteByPrimaryKey(LessonTypeKey key);
 
     int insert(LessonType record);
 
     int insertSelective(LessonType record);
 
-    LessonType selectByPrimaryKey(Integer lessontype);
+    LessonType selectByPrimaryKey(LessonTypeKey key);
 
-    List<LessonType> selectByParams(Map<String,Object> params);
     int updateByPrimaryKeySelective(LessonType record);
 
     int updateByPrimaryKey(LessonType record);
+
+    List<LessonType> selectByParams(Map<String,Object> params);
+
 }
