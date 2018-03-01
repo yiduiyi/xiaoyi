@@ -111,7 +111,10 @@ public class ConstantUtil {
 	public static enum Level{
 		PRIMARY(1),
 		MIDDLE(2),
-		HIGH(3);
+		HIGH(3),
+		PRIMARY_ONE(11),PRIMARY_TWO(12),PRIMARY_THREE(13),PRIMARY_FOUR(14),PRIMARY_FIVE(15),PRIMARY_SIX(16),
+		MIDDLE_TWO(22),MIDDLE_ONE(21),MIDDLE_THREE(23),
+		HIGH_ONE(31),HIGH_TWO(32),HIGH_THREE(33);
 		
 		private int level;
 		private Level(int level){
@@ -129,7 +132,24 @@ public class ConstantUtil {
 				return "初中";
 			case 3: 
 				return "高中";
+			case 11:case 12:case 13:case 14:case 15:case 16:
+			case 21:case 22:case 23:
+			case 31:case 32:case 33:
+				StringBuffer levelName = new StringBuffer();
+				for(Level l : Level.values()) {
+					if(level/10==l.getValue()) {
+						levelName.append(l.getSimpleName());
+						break;
+					}
+				}
+				for(Grade g : Grade.values()) {
+					if(level%10==g.getValue()) {
+						levelName.append(g.toString());
+					}
+				}
+				return levelName.toString();
 			}
+			
 			return "null";
 		}
 		
