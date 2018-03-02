@@ -51,6 +51,7 @@
 				<value>classpath:mybatis/base/*.xml</value>
 				<value>classpath:mybatis/manager/*.xml</value>
 				<value>classpath:mybatis/teacher/*.xml</value>
+				<value>classpath:mybatis/custom/*.xml</value>
 			</array>
 		</property>
 	</bean>
@@ -62,6 +63,10 @@
 	</bean>
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.xiaoyi.teacher.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.xiaoyi.custom.dao" />
 		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
 	</bean>
 

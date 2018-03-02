@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.custom.dao.ICustomDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.OrderSum" >
+    <id column="lessonType" property="lessontype" jdbcType="INTEGER" />
+    <id column="memberId" property="memberid" jdbcType="VARCHAR" />
+    <id column="orderId" property="orderid" jdbcType="VARCHAR" />
+    <id column="parentId" property="parentid" jdbcType="VARCHAR" />
+    <result column="purchaseTime" property="purchasetime" jdbcType="TIMESTAMP" />
+    <result column="totalLessonNum" property="totallessonnum" jdbcType="SMALLINT" />
+    <result column="lessonLeftNum" property="lessonleftnum" jdbcType="SMALLINT" />
+    <result column="teachingIds" property="teachingids" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lessonType, memberId, orderId, parentId, purchaseTime, totalLessonNum, lessonLeftNum, 
+    teachingIds
+  </sql>
+  <select id="selectOrderSumsByParentId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from ordersum
+    where
+   	parentId = #{parentId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectTransactionOrders" resultType="com.xiaoyi.manager.domain.Orders" parameterType="java.lang.String">
+  	SELECT *
+	FROM orders
+	WHERE 	
+	parentId = #{parentId,jdbcType=VARCHAR}
+  </select>
+  
+</mapper>

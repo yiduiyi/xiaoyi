@@ -16,8 +16,10 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IOrderSumDao;
+import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
+import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
@@ -46,6 +48,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 	
 	@Resource
 	IOrderSumDao orderSumDao;
+	
+	@Resource 
+	IOrdersDao ordersDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -162,6 +167,20 @@ public class TeachingRecordService implements ITeachingRecordService {
 						OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);											
 						orderSum.setLessonleftnum((short)(orderSum.getLessonleftnum()-totalLessons));
 						
+						//新增家长端老师提现记录
+						Orders order = new Orders();
+						order.setOrderid(UUID.randomUUID().toString());
+						order.setCreatetime(new Date());
+						order.setLessontype(orderSum.getLessontype());
+						order.setMemberid(orderSum.getMemberid());
+						order.setOrderType(-1);
+						order.setParentid(orderSum.getParentid());
+						order.setPurchasenum((short)-totalLessons);
+						
+						//提现记录入库
+						ordersDao.insert(order);
+						
+						//更新用户总课时
 						orderSumDao.updateByPrimaryKeySelective(orderSum);						
 					} catch (Exception e) {
 						e.printStackTrace();

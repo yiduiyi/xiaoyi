@@ -187,6 +187,7 @@ public class UserPayOutAction {
 			 parm.put("lessonType", attach.get("lessonType"));
 			 parm.put("purchaseNum", attach.get("purchaseNum"));
 			 parm.put("hasBook", attach.get("hasBook"));
+			 parm.put("orderType", 2);	//家长支付
 			 
 			 try {
 				orderService.addOrder(parm);
