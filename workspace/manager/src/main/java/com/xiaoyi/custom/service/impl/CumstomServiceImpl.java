@@ -16,8 +16,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.IParentsDao;
+import com.xiaoyi.manager.dao.IScheduleDao;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.Parents;
+import com.xiaoyi.manager.domain.Schedule;
+import com.xiaoyi.manager.service.ICommonService;
 
 @Service("customService")
 public class CumstomServiceImpl implements ICustomService{
@@ -27,6 +30,12 @@ public class CumstomServiceImpl implements ICustomService{
 	
 	@Resource 
 	private ICustomDao customDao;
+	
+	@Resource
+	IScheduleDao scheduleDao;
+	
+	@Resource
+	private ICommonService commonService;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -117,6 +126,49 @@ public class CumstomServiceImpl implements ICustomService{
 			e.printStackTrace();
 			throw e;
 		}	
+	}
+
+	@Override
+	public int commitSchedule(JSONObject params) {
+		String scheduleType = params.getString("orderType");
+		Integer grade = params.getInteger("grade");
+		Integer subject = params.getInteger("subject");
+		String studentName = params.getString("studentName");
+		String telNum = params.getString("telphone");
+		String weixin = params.getString("weixin");
+		
+		try {
+			JSONObject reqParams = new JSONObject();
+			JSONObject relations = commonService.addOrGetPSR(reqParams);
+			if(null==relations) {
+				return -1;
+			}
+			
+			try {
+				Parents parents = (Parents)relations.get("parents");
+				
+				if(null==parents) {
+					return -1;
+				}
+				
+				Schedule schedule = new Schedule();
+				scheduleDao.insertSelective(schedule);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public List<JSONObject> getMySchedules(String openId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

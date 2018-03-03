@@ -11,6 +11,7 @@ public interface IParentsDao {
 
     Parents selectByPrimaryKey(String parentid);
     Parents selectByOpenId(String openId);
+    Parents selectByTelNum(String telNum);
     
     int updateByPrimaryKeySelective(Parents record);
 

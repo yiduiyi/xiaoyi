@@ -1,6 +1,5 @@
 package com.xiaoyi.common.action;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 
 import javax.annotation.Resource;
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,17 +16,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.common.utils.WXConstants;
-import com.xiaoyi.common.utils.WechatMessageUtil;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 @Controller
 @RequestMapping("/wechat")
-public class WechatAction {
+public class WechatIdentityAction {
 	
 	@Resource
 	private IWechatService wechatService;
 	
-	private static Logger logger = Logger.getLogger(WechatAction.class);
+	private static Logger logger = Logger.getLogger(WechatIdentityAction.class);
 	
 	@RequestMapping(value="/getUserInfo",method=RequestMethod.GET)
 	@ResponseBody

@@ -25,17 +25,14 @@
   	SELECT a.scheduleId,c.openId,c.telNum,c.weChatNum,a.createTime,a.lessonType,a.notes,a.status,b.name as studentName,c.parentName
 	FROM schedule a LEFT JOIN student b ON a.memberId=b.memberId
 		LEFT JOIN parents c ON a.parentId=c.parentId
-	<if test="stuName!=null">
-		WHERE b.name LIKE #{stuName} 
-	</if>
-	<if test="telNum!=null">
+	<where>
 		<if test="stuName!=null">
-			OR c.telNum LIKE #{telNum}		
+			b.name LIKE '%${stuName}%'
 		</if>
-		<if test="stuName==null">
-		 	WHERE c.telNum LIKE #{telNum} 
+		<if test="telNum!=null">
+			AND c.telNum LIKE '%${telNum}%'
 		</if>
-	</if>
+	</where>
 	
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >

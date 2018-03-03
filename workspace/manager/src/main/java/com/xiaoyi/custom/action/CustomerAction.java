@@ -46,7 +46,51 @@ public class CustomerAction {
 		return result;
 	}
 
-  
+	@RequestMapping(value="/commitSchedule",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject commitSchedule(HttpServletRequest request
+			,HttpServletResponse response,@RequestBody JSONObject reqDate) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openid = (String) request.getSession().getAttribute("openid");
+    	logger.info("openId:"+openid);
+		if(logger.isDebugEnabled()) {
+			openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70";
+		}
+    	try {
+    		//result.put("data", customService.queryTransactionCourses(openid));
+    		
+    		rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
+	
+	@RequestMapping(value="/getMySchedules",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getMySchedules(HttpServletRequest request
+			,HttpServletResponse response,@RequestBody JSONObject reqDate) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openid = (String) request.getSession().getAttribute("openid");
+    	logger.info("openId:"+openid);
+		if(logger.isDebugEnabled()) {
+			openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70";
+		}
+    	try {
+    		//result.put("data", customService.queryTransactionCourses(openid));
+    		
+    		rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
 	
 	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
 		result.put("code", code);

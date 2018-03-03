@@ -29,4 +29,13 @@
 	parentId = #{parentId,jdbcType=VARCHAR}
   </select>
   
+  <!-- 根据parentsId 查询预约记录 -->
+  <select id="selectScheduleByParentsId" resultType="com.xiaoyi.manager.domain.Schedule" 
+  		parameterType="java.lang.String">
+  	SELECT *
+	FROM schedule
+	WHERE 	
+	parentId = #{parentId,jdbcType=VARCHAR}
+  </select>
+  
 </mapper>

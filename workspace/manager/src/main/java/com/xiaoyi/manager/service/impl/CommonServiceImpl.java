@@ -55,13 +55,19 @@ public class CommonServiceImpl implements ICommonService {
 			String stuName = params.getString("studentName");
 			
 			
-			boolean hasRelation = false;
-			
+			boolean hasRelation = false;			
 			try {
+				List<ParentStuRelation> relations = null;
+				
 				logger.info("query params:{openId+"+params.getString("openId")+"}");
 				try {
 					logger.info("根据openId查询家长角色【params】：{openId:"+params.get("openId")+"}");
-					parents = parentsDao.selectByOpenId(params.getString("openId"));
+					parents = parentsDao.selectByOpenId(params.getString("openId"));	//一般情况（家长付费）
+					if(null==parents) {		//管理员手动录入
+						logger.info("根据telNum查询家长角色【params】：{根据telNum:"+params.get("telNum")+"}");
+						parents = parentsDao.selectByTelNum(params.getString("telNum"));
+					}
+					
 					if(null!=parents){
 						parentId = parents.getParentid();
 						
@@ -69,11 +75,24 @@ public class CommonServiceImpl implements ICommonService {
 						if(StringUtils.isEmpty(parents.getParentname())
 								&& params.get("parentName")!=null){
 							//更新联系方式
-							if(null!=params.getString("telNum") && params.getString("telNum").equals(parents.getTelnum())){
+							if(null!=params.getString("telNum") 
+									&& !params.getString("telNum").equals(parents.getTelnum())
+									&& null!=parentsDao.selectByTelNum(params.getString("telNum"))){
 								parents.setTelnum(params.getString("telNum"));
 							}
 							parents.setParentname(params.getString("parentName"));
-							parentsDao.updateByPrimaryKeySelective(parents);
+							try {
+								parentsDao.updateByPrimaryKeySelective(parents);								
+							} catch (Exception e) {
+								logger.info("查询家长出错！");
+								throw e;
+							}
+						}
+						try {
+							relations = relationDao.selectRelationsByParentId(parentId);							
+						} catch (Exception e) {
+							logger.info("查询学生-家长关系出错！");
+							throw e;
 						}
 					}else{
 						parentId = UUID.randomUUID().toString();
@@ -84,7 +103,7 @@ public class CommonServiceImpl implements ICommonService {
 						parents.setWechatnum(params.getString("weChatNum"));
 						parents.setParentname(params.getString("parentName"));
 						
-						//新增家长
+						//新增家长(必然不存在家长-学生关系)
 						try {
 							parentsDao.insertSelective(parents);
 						} catch (Exception e) {
@@ -100,8 +119,8 @@ public class CommonServiceImpl implements ICommonService {
 				//查询家长-学生关系
 				try {
 					List<String> stuIds = new ArrayList<String>();
-					List<ParentStuRelation> relations = relationDao.selectRelationsByParentId(parentId);
-					//已存在该家长
+					
+					//已存在该家长（判断已存在的关系是否包含即将插入的学生-家长关系）
 					if(!CollectionUtils.isEmpty(relations)){
 						for(ParentStuRelation r : relations){
 							stuIds.add(r.getMemberid());
@@ -122,21 +141,6 @@ public class CommonServiceImpl implements ICommonService {
 								throw e;							
 							}							
 						}
-					}else{						
-						/*parents = new Parents();
-						parents.setParentid(UUID.randomUUID().toString());
-						parents.setOpenid(params.getString("openId"));
-						parents.setTelnum(params.getString("telNum"));
-						parents.setWechatnum(params.getString("weChatNum"));
-						parents.setParentname(params.getString("parentName"));
-						
-						//新增家长
-						try {
-							parentsDao.insertSelective(parents);
-						} catch (Exception e) {
-							logger.info("插入家长失败！");
-							throw e;
-						}*/
 					}
 				} catch (Exception e) {
 					logger.info("内部错误！");
@@ -147,18 +151,13 @@ public class CommonServiceImpl implements ICommonService {
 				throw e;
 			}
 			
-			//之前没有添加过该家长-学生的对应关系（添加关系）
-			
-			
-			relation.setMemberid(studentId);
-			relation.setParentid(parentId);
-			student.setName(stuName);
-			student.setMemberid(studentId);
-			
+			//之前没有添加过该家长-学生的对应关系（添加关系）								
 			if(!hasRelation){
 				studentId = UUID.randomUUID().toString();													
 				student.setMemberid(studentId);
-				relation.setMemberid(studentId);
+				student.setName(stuName);
+				student.setMemberid(studentId);
+				
 				
 				//添加学生
 				try {
@@ -170,7 +169,8 @@ public class CommonServiceImpl implements ICommonService {
 				
 				//添加家长-学生关系
 				try {					
-					//relation = new ParentStuRelation();						
+					relation.setMemberid(studentId);
+					relation.setParentid(parentId);
 					relationDao.insert(relation);
 				} catch (Exception e) {
 					logger.info("插入家长-学生关系出错！");

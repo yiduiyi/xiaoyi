@@ -17,11 +17,19 @@
     from parents
     where parentId = #{parentid,jdbcType=VARCHAR}
   </select>
+ 	<!-- 根据OpenId查找家长 -->
   <select id="selectByOpenId" resultMap="BaseResultMap" parameterType="java.lang.String">
   	 select 
     <include refid="Base_Column_List" />
     from parents
     where openId = #{openid,jdbcType=VARCHAR}
+  </select>
+  <!-- 根据TelNum查找家长 -->
+  <select id="selectByTelNum" resultMap="BaseResultMap" parameterType="java.lang.String">
+  	 select 
+    <include refid="Base_Column_List" />
+    from parents
+    where telNum = #{telNum,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from parents

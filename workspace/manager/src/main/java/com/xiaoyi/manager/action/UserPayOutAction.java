@@ -17,6 +17,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -63,14 +64,18 @@ public class UserPayOutAction {
 		String courseType = request.getString("courseType") + "";
 		String payName = request.getString("payName") + "";
 		String stuName = request.getString("studentName");
+		Integer purchaseNum = request.getInteger("purchaseNum");
 		
 		JSONObject attach = new JSONObject();
-		attach.put("studentName", "登登登");
+		if(StringUtils.isEmpty(stuName)) {
+			attach.put("studentName", "未登记");
+		}
 		attach.put("parentName", payName);
 		attach.put("lessonType", "323");
 		attach.put("purchaseNum", "23");
 		attach.put("hasBook", "1");
-
+		attach.put("telNum", telphone);
+		
 		JSONObject parm = new JSONObject();
 		parm.put("uuid", uuid);
 		Float amount=null;
@@ -188,6 +193,7 @@ public class UserPayOutAction {
 			 parm.put("purchaseNum", attach.get("purchaseNum"));
 			 parm.put("hasBook", attach.get("hasBook"));
 			 parm.put("orderType", 2);	//家长支付
+			 parm.put("telNum", attach.get("telNum"));
 			 
 			 try {
 				orderService.addOrder(parm);

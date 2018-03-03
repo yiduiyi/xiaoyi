@@ -42,7 +42,7 @@ public class ConstantCommonAction {
 	@Resource
 	private ICommonDataService commonDataService;
 	
-	private static Logger logger = Logger.getLogger(WechatAction.class);
+	private static Logger logger = Logger.getLogger(WechatIdentityAction.class);
 	
 	@RequestMapping(value="/getConstantMap",method=RequestMethod.POST)
 	@ResponseBody
