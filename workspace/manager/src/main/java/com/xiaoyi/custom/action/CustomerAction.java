@@ -82,7 +82,7 @@ public class CustomerAction {
 			openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70";
 		}
     	try {
-    		//result.put("data", customService.queryTransactionCourses(openid));
+    		result.put("data", customService.getMySchedules(openid));
     		
     		rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {

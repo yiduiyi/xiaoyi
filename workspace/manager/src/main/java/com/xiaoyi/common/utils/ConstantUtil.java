@@ -144,7 +144,7 @@ public class ConstantUtil {
 				}
 				for(Grade g : Grade.values()) {
 					if(level%10==g.getValue()) {
-						levelName.append(g.toString());
+						levelName.append(g.getSimpleName());
 					}
 				}
 				return levelName.toString();

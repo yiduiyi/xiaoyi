@@ -16,14 +16,21 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil.Course;
+import com.xiaoyi.common.utils.ConstantUtil.Grade;
+import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.IParentsDao;
 import com.xiaoyi.manager.dao.IScheduleDao;
+import com.xiaoyi.manager.dao.IStudentDao;
+import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.ParentStuRelation;
 import com.xiaoyi.manager.domain.Parents;
 import com.xiaoyi.manager.domain.Schedule;
+import com.xiaoyi.manager.domain.Student;
+import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.service.ICommonService;
 
 @Service("customService")
@@ -37,6 +44,12 @@ public class CumstomServiceImpl implements ICustomService{
 	
 	@Resource
 	IScheduleDao scheduleDao;
+	
+	@Resource
+	ITeacherDao teacherDao;
+	
+	@Resource
+	IStudentDao studentDao;
 	
 	@Resource
 	private ICommonService commonService;
@@ -197,8 +210,89 @@ public class CumstomServiceImpl implements ICustomService{
 
 	@Override
 	public List<JSONObject> getMySchedules(String openId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		
+		try {
+			Parents parents = null;
+			try {
+				parents = parentDao.selectByOpenId(openId);
+			} catch (Exception e) {
+				logger.info(e.getMessage());
+				throw e;
+			}
+			String parentId = null;
+			if(null!=parents && null!=parents.getParentid()) {
+				parentId = parents.getParentid();
+			}
+			
+			//获取学生预约列表
+			List<Schedule> scheduleList = null;
+			try {
+				scheduleList = customDao.selectScheduleByParentsId(parentId);				
+			} catch (Exception e) {
+				logger.info(e.getMessage());
+				throw e;
+			}
+			
+			if(!CollectionUtils.isEmpty(scheduleList)) {
+				SimpleDateFormat myFmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				for(Schedule schedule : scheduleList) {
+					JSONObject data = new JSONObject();
+					Integer lessonType = schedule.getLessontype();
+					if(null!=lessonType) {
+						//预约类型
+						data.put("orderType", lessonType>0?"of":"on");						
+						int gradeId = Math.abs(lessonType/10);
+						
+						//年级
+						for(Level level : Level.values()) {
+							if(gradeId == level.getValue()) {
+								data.put("gradeName", level.toString());
+								break;
+							}
+						}
+						
+						//科目
+						int courseId = Math.abs(lessonType%10);
+						for(Course course : Course.values()) {
+							if(courseId == course.getValue()) {
+								data.put("subjectName", course.toString());
+								break;
+							}
+						}
+					}
+					
+					data.put("telphone", parents.getTelnum());
+					
+					//查询指派老师
+					if(schedule.getTeacherid()!=null) {
+						JSONArray teachers = new JSONArray();
+						JSONObject t = new JSONObject();
+						Teacher teacher = 
+								teacherDao.selectByPrimaryKey(schedule.getTeacherid() );
+						 t.put("teacherName", teacher.getTeachername());
+						 teachers.add(t);
+						 
+						 data.put("teacher", "");
+					}
+					
+					//查询学生姓名
+					if(null!=schedule.getMemberid()) {
+						Student student = studentDao.selectByPrimaryKey(schedule.getMemberid());
+						data.put("studentName", student.getName());
+					}
+					data.put("statusName", schedule.getNotes());
+					data.put("orderDate", myFmt.format(schedule.getCreatetime()));
+					
+					datas.add(data);
+				}
+			}
+			
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			throw e;
+		}
+		return datas;
 	}
 
 }
