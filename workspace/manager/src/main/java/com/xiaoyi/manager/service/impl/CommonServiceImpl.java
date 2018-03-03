@@ -52,8 +52,7 @@ public class CommonServiceImpl implements ICommonService {
 			//查询/生成家长ID、学生Id
 			String parentId = null;
 			String studentId = null;
-			String stuName = params.getString("studentName");
-			
+			String stuName = params.getString("studentName");		
 			
 			boolean hasRelation = false;			
 			try {

@@ -49,17 +49,18 @@ public class CustomerAction {
 	@RequestMapping(value="/commitSchedule",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject commitSchedule(HttpServletRequest request
-			,HttpServletResponse response,@RequestBody JSONObject reqDate) {
+			,HttpServletResponse response,@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		String openid = (String) request.getSession().getAttribute("openid");
     	logger.info("openId:"+openid);
 		if(logger.isDebugEnabled()) {
 			openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70";
+			reqData.put("openid",openid);
 		}
     	try {
     		//result.put("data", customService.queryTransactionCourses(openid));
-    		
+    		customService.commitSchedule(reqData);
     		rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
