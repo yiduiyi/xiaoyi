@@ -66,7 +66,7 @@ public class CommonServiceImpl implements ICommonDataService {
 						
 						JSONObject lesson = new JSONObject();
 						lesson.put("lessonType", lessonType.getLessontype());
-						lesson.put("uuid", lessonType.getLessontype());
+						lesson.put("lessonId", lessonType.getLessonId());
 						lesson.put("price", lessonType.getLessonprice());
 						lesson.put("discountPrice", lessonType.getDiscountprice());
 						lesson.put("courseCnt", lessonType.getCoursecnt());

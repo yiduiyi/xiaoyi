@@ -4,6 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonType">
 		<id column="courseCnt" property="coursecnt" jdbcType="SMALLINT" />
 		<id column="lessonType" property="lessontype" jdbcType="INTEGER" />
+		<id column="lessonId" property="lessonId" jdbcType="VARCHAR" />
 		<result column="teachingWay" property="teachingway" jdbcType="TINYINT" />
 		<result column="gradeId" property="gradeid" jdbcType="SMALLINT" />
 		<result column="lessonPrice" property="lessonprice" jdbcType="REAL" />
@@ -17,7 +18,7 @@
 			jdbcType="REAL" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		courseCnt, lessonType, teachingWay, gradeId, lessonPrice,
+		lessonId,courseCnt, lessonType, teachingWay, gradeId, lessonPrice,
 		lessonName, gradeName,
 		needBook, discountPrice, isholiday,
 		singleCoursePrice
@@ -28,10 +29,13 @@
 		<include refid="Base_Column_List" />
 		from lessontype
 		<where>
-			<if test="courseCnt!=null">
+			<if test="lessonId!=null">
+				lessonId = #{lessonId,jdbcType=VARCHAR}
+			</if>
+			<if test="coursecnt!=null">
 				courseCnt = #{coursecnt,jdbcType=SMALLINT}
 			</if>
-			<if test="lessonType!=null">
+			<if test="lessontype!=null">
 				and lessonType = #{lessontype,jdbcType=INTEGER}
 			</if>
 		</where>
@@ -45,11 +49,12 @@
 	</delete>
 	<insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonType">
 		insert into lessontype
-		(courseCnt, lessonType, teachingWay,
+		(lessonId,courseCnt, lessonType, teachingWay,
 		gradeId, lessonPrice, lessonName,
 		gradeName, needBook, discountPrice,
 		isholiday, singleCoursePrice)
-		values (#{coursecnt,jdbcType=SMALLINT},
+		values (#{lessonId,jdbcType=VARCHAR},
+		#{coursecnt,jdbcType=SMALLINT},
 		#{lessontype,jdbcType=INTEGER},
 		#{teachingway,jdbcType=TINYINT},
 		#{gradeid,jdbcType=SMALLINT}, #{lessonprice,jdbcType=REAL},
@@ -62,6 +67,9 @@
 	<insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonType">
 		insert into lessontype
 		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lessonId != null">
+				lessonId,
+			</if>
 			<if test="coursecnt != null">
 				courseCnt,
 			</if>
@@ -97,6 +105,9 @@
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="lessonId != null">
+				#{lessonId,jdbcType=VARCHAR},
+			</if>
 			<if test="coursecnt != null">
 				#{coursecnt,jdbcType=SMALLINT},
 			</if>
@@ -195,8 +206,11 @@
 		<include refid="Base_Column_List" />
 		from lessontype
 		<where>
+			<if test="lessonId!=null">
+				lessonId = #{lessonId,jdbcType=VARCHAR}
+			</if>
 			<if test="lessonType!=null">
-				lessonType = #{lessonType,jdbcType=INTEGER}
+				AND lessonType = #{lessontype,jdbcType=INTEGER}
 			</if>
 			<if test="teachingWay!=null">
 				<if test="teachingWay==0">

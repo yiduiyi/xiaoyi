@@ -60,20 +60,20 @@ public class UserPayOutAction {
 
 		String openid = (String) req.getSession().getAttribute("openid");
 		String uuid = request.getString("uuid");
-		String telphone = request.getString("telphone") + "";
-		String courseType = request.getString("courseType") + "";
-		String payName = request.getString("payName") + "";
+		String telphone = request.getString("telphone");
+		String courseType = request.getString("lessonType");
+		String parentName = request.getString("parentName");
 		String stuName = request.getString("studentName");
 		Integer purchaseNum = request.getInteger("purchaseNum");
+		String lessonId = request.getString("lessonId");
 		
 		JSONObject attach = new JSONObject();
 		if(StringUtils.isEmpty(stuName)) {
 			attach.put("studentName", "未登记");
 		}
-		attach.put("parentName", payName);
-		attach.put("lessonType", "323");
-		attach.put("purchaseNum", "23");
-		attach.put("hasBook", "1");
+		attach.put("parentName", parentName);
+		attach.put("lessonType", courseType);
+		attach.put("hasBook", request.get("hasBook"));
 		attach.put("telNum", telphone);
 		
 		JSONObject parm = new JSONObject();
@@ -83,10 +83,13 @@ public class UserPayOutAction {
 			//查询价格
 			LessonTypeKey lessonTypeKey = new LessonTypeKey();
 			//lessonTypeKey.setCoursecnt(request.getShort("courseCnt"));
+			lessonTypeKey.setLessonId(lessonId);
 			lessonTypeKey.setLessontype(request.getInteger("lessonType"));
+			
 			LessonType lessonType = lessonTypeDao.selectByPrimaryKey(lessonTypeKey);
 			
 			if(null!=lessonType) {
+				attach.put("purchaseNum", lessonType.getCoursecnt());
 				if(lessonType.getIsholiday()==0) {
 					amount=lessonType.getDiscountprice()*100;
 				}else {
@@ -103,7 +106,7 @@ public class UserPayOutAction {
 		logger.error("ip ==" + ip);
 		logger.error("openid ==" + openid);
 		//Double amount = object.getDouble("discountPrice") * 100;
-		Integer amounts = 1;//amount.intValue();
+		Integer amounts = amount.intValue();
 		//amounts = amount.intValue();
 		String nonceStr = RandomStringUtils.random(32, "5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
 		parm = new JSONObject();
