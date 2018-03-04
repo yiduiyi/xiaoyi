@@ -137,9 +137,9 @@ public class WechatPayAction {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.ERROR;
 		String openId = (String)req.getSession().getAttribute("openid");
-		if(logger.isDebugEnabled()) {
+		/*if(logger.isDebugEnabled()) {
 			openId = "";
-		}
+		}*/
 		try {			
 			redPackets(null, openId);
 			rtCode = RtConstants.SUCCESS;

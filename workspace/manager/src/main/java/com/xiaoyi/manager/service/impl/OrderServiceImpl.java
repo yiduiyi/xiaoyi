@@ -320,7 +320,7 @@ public class OrderServiceImpl implements IOrderService {
 					Integer grade = order.getIntValue("lessonType");
 					if(null!=grade) {
 						for(Level curLevel : ConstantUtil.Level.values()) {
-							if(curLevel.getValue() == grade) {
+							if(curLevel.getValue() == grade/10) {
 								order.put("gradeName", curLevel.toString());
 								break;
 							}

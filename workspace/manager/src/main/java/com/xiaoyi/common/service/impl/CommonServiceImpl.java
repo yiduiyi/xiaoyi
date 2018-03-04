@@ -2,10 +2,12 @@ package com.xiaoyi.common.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import javax.annotation.Resource;
 
@@ -57,7 +59,7 @@ public class CommonServiceImpl implements ICommonDataService {
 						
 						// new JSONObject();
 						gradeLessonsMap.put("grade", levelGrade);
-						gradeLessonsMap.put("gradeName", gradeIdNameMap.get(Math.abs(levelGrade%10)));
+						gradeLessonsMap.put("gradeName", lessonType.getGradename()/*gradeIdNameMap.get(Math.abs(levelGrade%10))*/);
 						JSONArray sortlist = gradeLessonsMap.getJSONArray("sortlist");
 						if(null==sortlist) {
 							sortlist = new JSONArray();
@@ -71,13 +73,24 @@ public class CommonServiceImpl implements ICommonDataService {
 						lesson.put("discountPrice", lessonType.getDiscountprice());
 						lesson.put("courseCnt", lessonType.getCoursecnt());
 						lesson.put("isholiday", lessonType.getIsholiday());
+						lesson.put("hasBook", lessonType.getNeedbook()?1:0);
 						
 						sortlist.add(lesson);
 					}
 					
 				}
-				List<JSONObject>datas = new ArrayList<JSONObject>();
-				datas.addAll(gradeCoursesMap.values());	
+				List<JSONObject>datas = new ArrayList<JSONObject>();							
+				
+				//排序
+				//TreeSet<Integer> sortedKeys = new TreeSet<Integer>(gradeCoursesMap.keySet());			
+				Integer[] sortedGrade = new Integer[]{21,23,31,33,11,16};
+				for(Integer gradeId : sortedGrade) {
+					if(!gradeCoursesMap.containsKey(gradeId)) {
+						gradeId *=-1;
+					}
+					datas.add(gradeCoursesMap.get(gradeId));
+				}
+				
 				return datas;
 			}
 		} catch (Exception e) {

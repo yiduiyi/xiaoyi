@@ -66,14 +66,16 @@ public class UserPayOutAction {
 		String stuName = request.getString("studentName");
 		Integer purchaseNum = request.getInteger("purchaseNum");
 		String lessonId = request.getString("lessonId");
+		Integer hasBook = request.getInteger("hasBook");
 		
 		JSONObject attach = new JSONObject();
 		if(StringUtils.isEmpty(stuName)) {
 			attach.put("studentName", "未登记");
 		}
+		attach.put("studentName", stuName);
 		attach.put("parentName", parentName);
 		attach.put("lessonType", courseType);
-		attach.put("hasBook", request.get("hasBook"));
+		attach.put("hasBook", hasBook);
 		attach.put("telNum", telphone);
 		
 		JSONObject parm = new JSONObject();
@@ -96,16 +98,21 @@ public class UserPayOutAction {
 					amount=lessonType.getLessonprice()*100;
 				}
 			}
+			
+			if(hasBook!=null && hasBook.intValue()==1) {
+				amount += 50*100;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			setPromptMessage(response, "-1", "查询课程失败价格！");
-			//return response;
+			throw e;
 		}
 		//commonDataService.equals(obj)
 		//JSONObject object = baseinforService.selectCourse(parm);
 		logger.error("ip ==" + ip);
 		logger.error("openid ==" + openid);
 		//Double amount = object.getDouble("discountPrice") * 100;
+		logger.info("付款数额："+amount.intValue());
 		Integer amounts = amount.intValue();
 		//amounts = amount.intValue();
 		String nonceStr = RandomStringUtils.random(32, "5K8264ILTKCH16CQ2502SI8ZNMTM67VS");

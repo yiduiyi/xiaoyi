@@ -101,7 +101,7 @@ public class CumstomServiceImpl implements ICustomService{
 					if(null==details) {
 						details = new JSONArray();
 						lessonSummary.put("details", details);
-						lessonSummary.put("orderType", "on");
+						lessonSummary.put("orderType", "of");
 					}
 					detail.put("teachingTime", myFmt.format(order.getCreatetime()));
 
@@ -110,7 +110,7 @@ public class CumstomServiceImpl implements ICustomService{
 					if(null==details) {
 						details = new JSONArray();
 						lessonSummary2.put("details", details);
-						lessonSummary2.put("orderType", "of");
+						lessonSummary2.put("orderType", "on");
 					}
 					detail.put("usedTime", myFmt.format(order.getCreatetime()));
 				}
@@ -149,7 +149,7 @@ public class CumstomServiceImpl implements ICustomService{
 		String studentName = params.getString("studentName");
 		String telNum = params.getString("telphone");
 		String weixin = params.getString("weixin");
-		String openId = params.getString("openid");
+		String openId = params.getString("openId");
 		
 		try {
 			JSONObject reqParams = new JSONObject();
@@ -157,7 +157,7 @@ public class CumstomServiceImpl implements ICustomService{
 			reqParams.put("openId", openId);
 			//reqParams.put("parentName", null);
 			reqParams.put("studentName", studentName);
-			
+			reqParams.put("weChatNum", params.get("weixin"));
 			JSONObject relations = commonService.addOrGetPSR(reqParams);
 			if(null==relations) {
 				return -1;

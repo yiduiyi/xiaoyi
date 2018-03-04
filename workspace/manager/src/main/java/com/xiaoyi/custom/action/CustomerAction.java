@@ -1,5 +1,7 @@
 package com.xiaoyi.custom.action;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
+import com.xiaoyi.wechat.utils.AdvancedUtil;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
+import com.xiaoyi.wechat.utils.WeixinOauth2Token;
 
 @Controller
 @RequestMapping("/custom")
@@ -31,10 +36,10 @@ public class CustomerAction {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		String openid = (String) request.getSession().getAttribute("openid");
-    	logger.info("openId:"+openid);
-		if(logger.isDebugEnabled()) {
+    	logger.info("获取课时交易记录-openId:"+openid);
+		/*if(logger.isDebugEnabled()) {
 			openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70";
-		}
+		}*/
     	try {
     		result.put("data", customService.queryTransactionCourses(openid));
     		rtCode = RtConstants.SUCCESS;
@@ -49,17 +54,30 @@ public class CustomerAction {
 	@RequestMapping(value="/commitSchedule",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject commitSchedule(HttpServletRequest request
-			,HttpServletResponse response,@RequestBody JSONObject reqData) {
+			,HttpServletResponse response,@RequestBody JSONObject reqData) throws UnsupportedEncodingException {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		String openid = (String) request.getSession().getAttribute("openid");
-    	logger.info("openId:"+openid);
-		if(logger.isDebugEnabled()) {
+    	logger.info("提交预约-openId:"+openid);
+		if(null==openid) {	//从其他界面直接跳转的
+			logger.info("查询openId：");
+			request.setCharacterEncoding("utf-8");
+			request.setCharacterEncoding("utf-8");
+		    String code = request.getParameter("code");
+	        if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID, WeiXinConfig.SECRET , code);
+	              openid = weixinOauth2Token.getOpenId();
+	              request.getSession().setAttribute("openid", openid);
+	              logger.info("预约模块-查找 openid====>" + openid);	             
+	        } 	      		
+		}
+    	/*if(logger.isDebugEnabled()) {
 			openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70";
 			reqData.put("openid",openid);
-		}
+		}*/
     	try {
     		//result.put("data", customService.queryTransactionCourses(openid));
+    		reqData.put("openId", openid);
     		customService.commitSchedule(reqData);
     		rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
@@ -77,10 +95,10 @@ public class CustomerAction {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		String openid = (String) request.getSession().getAttribute("openid");
-    	logger.info("openId:"+openid);
-		if(logger.isDebugEnabled()) {
+    	logger.info("预约模块-openId:"+openid);
+		/*if(logger.isDebugEnabled()) {
 			openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70";
-		}
+		}*/
     	try {
     		result.put("data", customService.getMySchedules(openid));
     		

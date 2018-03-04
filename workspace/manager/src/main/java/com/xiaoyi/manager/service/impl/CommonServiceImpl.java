@@ -53,6 +53,7 @@ public class CommonServiceImpl implements ICommonService {
 			String parentId = null;
 			String studentId = null;
 			String stuName = params.getString("studentName");		
+			String wechatNum = params.getString("wechatNum") ;
 			
 			boolean hasRelation = false;			
 			try {
@@ -70,15 +71,22 @@ public class CommonServiceImpl implements ICommonService {
 					if(null!=parents){
 						parentId = parents.getParentid();
 						
+						//更新联系方式
+						if(null!=params.getString("telNum") 
+								&& !params.getString("telNum").equals(parents.getTelnum())
+								&& null!=parentsDao.selectByTelNum(params.getString("telNum"))){
+							parents.setTelnum(params.getString("telNum"));
+						}
+
+						//更新微信号
+						if(null!=wechatNum 
+								&& !wechatNum.trim().equals(parents.getWechatnum())) {
+							parents.setWechatnum(wechatNum);
+						}
+						
 						//更新家长信息（名字）
 						if(StringUtils.isEmpty(parents.getParentname())
 								&& params.get("parentName")!=null){
-							//更新联系方式
-							if(null!=params.getString("telNum") 
-									&& !params.getString("telNum").equals(parents.getTelnum())
-									&& null!=parentsDao.selectByTelNum(params.getString("telNum"))){
-								parents.setTelnum(params.getString("telNum"));
-							}
 							parents.setParentname(params.getString("parentName"));
 							try {
 								parentsDao.updateByPrimaryKeySelective(parents);								
@@ -94,6 +102,8 @@ public class CommonServiceImpl implements ICommonService {
 							throw e;
 						}
 					}else{
+						logger.info("openId\'"+params.getString("openId")+"\'没有关联家长");
+						logger.info("开始新增家长账号：");
 						parentId = UUID.randomUUID().toString();
 						parents = new Parents();
 						parents.setParentid(parentId);
@@ -104,6 +114,7 @@ public class CommonServiceImpl implements ICommonService {
 						
 						//新增家长(必然不存在家长-学生关系)
 						try {
+							logger.info("插入家长账号：【params】"+parents.toString());
 							parentsDao.insertSelective(parents);
 						} catch (Exception e) {
 							logger.info("插入家长失败！");
@@ -126,32 +137,41 @@ public class CommonServiceImpl implements ICommonService {
 						}
 						if(!CollectionUtils.isEmpty(stuIds)){
 							try {
+								logger.info("根据学生Id查询学生：【params】"+stuIds);
 								List<Student> stuList = studentDao.selectByStuIds(stuIds);
 								if(null!=stuList){
 									for(Student s : stuList){
-										if(s.getName().equals(stuName)){
+										if(null!=s.getName() && s.getName().equals(stuName)
+												|| (StringUtils.isEmpty(s.getName()) && StringUtils.isEmpty(stuName))){
 											hasRelation = true;
 											studentId = s.getMemberid();
+											
+											relation.setMemberid(studentId);
+											relation.setParentid(parentId);
 											break;
 										}
 									}
 								}
 							} catch (Exception e) {
+								e.printStackTrace();
 								throw e;							
 							}							
 						}
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 					logger.info("内部错误！");
 					throw e;
 				}								
 			} catch (Exception e) {
+				e.printStackTrace();
 				logger.info("查询家长角色出错！！");
 				throw e;
 			}
 			
 			//之前没有添加过该家长-学生的对应关系（添加关系）								
 			if(!hasRelation){
+				logger.info("之前没有添加过该家长-学生的对应关系（添加关系）");
 				studentId = UUID.randomUUID().toString();													
 				student.setMemberid(studentId);
 				student.setName(stuName);
@@ -160,6 +180,7 @@ public class CommonServiceImpl implements ICommonService {
 				
 				//添加学生
 				try {
+					logger.info("添加学生：【params】"+student);
 					studentDao.insertSelective(student);					
 				} catch (Exception e) {
 					logger.info("插入学生失败！");
@@ -170,6 +191,7 @@ public class CommonServiceImpl implements ICommonService {
 				try {					
 					relation.setMemberid(studentId);
 					relation.setParentid(parentId);
+					logger.info("新增家长-学生关系：【params】"+relation.toString());
 					relationDao.insert(relation);
 				} catch (Exception e) {
 					logger.info("插入家长-学生关系出错！");
@@ -180,9 +202,11 @@ public class CommonServiceImpl implements ICommonService {
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
+		
 		result.put("parents", parents);
 		result.put("student", student);
 		result.put("relation", relation);
+		logger.info("返回结果："+result.toJSONString());
 		
 		return result;
 	}

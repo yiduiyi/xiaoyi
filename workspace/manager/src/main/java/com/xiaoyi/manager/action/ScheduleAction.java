@@ -109,7 +109,7 @@ public class ScheduleAction {
 			if(!CollectionUtils.isEmpty(datas)){
 				for(JSONObject data : datas){
 					//String dateTime = data.getString("createTime");					
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.DD");					
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");					
 					data.put("createTime", sdf.format(data.get("createTime")));
 					
 					Integer lessonType = data.getInteger("lessonType");
