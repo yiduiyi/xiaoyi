@@ -309,6 +309,7 @@ public class OrderServiceImpl implements IOrderService {
 			//查询关联老师			
 			if(!CollectionUtils.isEmpty(result)){
 				List<String> tIds = new ArrayList<String>();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				
 				for(JSONObject order : result){
 					String teachingIds = order.getString("teachingIds");
@@ -316,6 +317,16 @@ public class OrderServiceImpl implements IOrderService {
 						tIds.addAll(Arrays.asList(teachingIds.split(",")));
 					}
 					
+					//转换时间
+					Object purchaseTime = order.get("purchaseTime");
+					if(null != purchaseTime) {
+						try {
+							order.put("purchaseTime", dateFormat.format(purchaseTime));							
+						} catch (Exception e) {
+							logger.info("转换时间出错！");
+							logger.info(e.getMessage());
+						}
+					}
 					//转换年级代码->名称
 					Integer grade = order.getIntValue("lessonType");
 					if(null!=grade) {
