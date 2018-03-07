@@ -28,4 +28,6 @@ public interface ICustomService {
 	 * @return
 	 */
 	List<JSONObject> getMySchedules(String openId);
+	
+	int confirmTRecords(JSONObject params);
 }

@@ -7,8 +7,8 @@ import java.io.File;
  * */
 public class WChatInfo {
 	
-	/*public static String APPID = "wxd9579db73c42cf91";//服务号的应用号
-	public static String mchId = "1493091612";//商户号
+	public static String APPID = "wxd9579db73c42cf91";//服务号的应用号
+	/*public static String mchId = "1493091612";//商户号
 	public static String tradeType = "JSAPI";
 	public static String signType = "MD5";//签名加密方式
 	public static String KEY = "LiuGuo888Dai66limingY756a8nhuida";//API密钥 ed88788d15aa1982954d605f7569fe0f  N4ufMPFoicK1ewPFZbdQjGNNtFUr6SERjUMjKdU67rh

@@ -32,6 +32,8 @@ import com.xiaoyi.manager.domain.Schedule;
 import com.xiaoyi.manager.domain.Student;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.service.ICommonService;
+import com.xiaoyi.teacher.dao.ILessonTradeDao;
+import com.xiaoyi.teacher.domain.LessonTrade;
 
 @Service("customService")
 public class CumstomServiceImpl implements ICustomService{
@@ -50,6 +52,9 @@ public class CumstomServiceImpl implements ICustomService{
 	
 	@Resource
 	IStudentDao studentDao;
+	
+	@Resource 
+	ILessonTradeDao lessonTradeDao;
 	
 	@Resource
 	private ICommonService commonService;
@@ -293,6 +298,41 @@ public class CumstomServiceImpl implements ICustomService{
 			throw e;
 		}
 		return datas;
+	}
+
+	@Override
+	public int confirmTRecords(JSONObject params) {
+		String openId = params.getString("openId");
+		String lessonTradeId = params.getString("lessonTradeId");
+		
+		try {
+			if(null==openId || null==lessonTradeId) {
+				return 0;
+			}
+			
+			//校验身份（openId校验）
+			logger.info("openId:"+openId);
+			Parents parents = parentDao.selectByOpenId(openId);
+			if(null==parents) {
+				return 0;
+			}
+			LessonTrade record = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
+			if(null==record 
+					|| record.getParentid()==null
+					|| !record.getParentid().equals(parents.getParentid())) {
+				logger.info("record:"+record);
+				logger.info("parents:"+parents);
+				return 0;
+			}
+			
+			logger.info("lessonTradeId:"+lessonTradeId);			
+			record.setStatus((byte)2);
+			
+			//更新老师课时提现状态
+			return lessonTradeDao.updateByPrimaryKeySelective(record);
+		} catch (Exception e) {
+			return -1;
+		}
 	}
 
 }

@@ -35,7 +35,7 @@ public class RSAEncrypt {
     public static RSAPublicKey loadPublicKeyByStr(String publicKeyStr)  
             throws Exception {  
         try {  
-            byte[] buffer = Base64.decode(publicKeyStr.replaceAll("-----BEGIN RSA PUBLIC KEY-----", "").replaceAll("-----END RSA PUBLIC KEY-----", ""));  
+            byte[] buffer = Base64.decode(publicKeyStr);  
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");  
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);  
             return (RSAPublicKey) keyFactory.generatePublic(keySpec);  

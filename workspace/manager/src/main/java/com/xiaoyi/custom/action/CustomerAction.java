@@ -111,6 +111,48 @@ public class CustomerAction {
 		return result;
 	}
 	
+	@RequestMapping(value="/confirmTRecords",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject confirmTRecords(HttpServletRequest request
+			,HttpServletResponse response,@RequestBody JSONObject reqDate) 
+					throws UnsupportedEncodingException {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String lessonTradeId = reqDate.getString("lessonTradeId");
+		
+		String openid = (String) request.getSession().getAttribute("openid");
+    	logger.info("确认订单-openId:"+openid);
+    	if(null==openid) {	//从其他界面直接跳转的
+			logger.info("查询openId：");
+			request.setCharacterEncoding("utf-8");
+			request.setCharacterEncoding("utf-8");
+		    String code = request.getParameter("code");
+	        if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID, WeiXinConfig.SECRET , code);
+	              openid = weixinOauth2Token.getOpenId();
+	              request.getSession().setAttribute("openid", openid);
+	              logger.info("确认订单模块-查找 openid====>" + openid);	             
+	        } 	      		
+		}
+    	try {
+    		if(null!=lessonTradeId) {
+    			JSONObject reqParams = new JSONObject();
+    			reqParams.put("lessonTradeId", lessonTradeId);
+    			reqParams.put("openId",openid);
+    			if(0<customService.confirmTRecords(reqParams)) {
+    				rtCode = RtConstants.SUCCESS;    				
+    			}    			
+    		}
+    		//result.put("data", customService.getMySchedules(openid));    		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
+	
+	
 	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
 		result.put("code", code);
 		result.put("msg", rtString);
