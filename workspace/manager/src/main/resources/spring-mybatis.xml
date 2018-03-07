@@ -39,6 +39,15 @@
 		<property name="minIdle" value="${minIdle}" />
 		<!-- 获取连接最大等待时间 -->
 		<property name="maxWait" value="${maxWait}" />
+		
+		<!-- 保证使用的每个数据源都不会出现长时间没有使用中断后。出现Could not close JDBC Connection这种问题 -->
+		<property name="testOnBorrow">
+			<value>true</value>
+		</property>
+		<property name="validationQuery">
+			<value>SELECT 1 FROM DUAL</value>
+		</property>
+		
 	</bean>
 
 	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
