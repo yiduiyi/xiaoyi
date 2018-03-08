@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.domain.OrderSum;
@@ -57,7 +58,23 @@ public class TeachingRecordService implements ITeachingRecordService {
 	@Override
 	public List<JSONObject> getRecordList(JSONObject params) throws Exception {
 		try {
-			return teachingRecordDao.selectRecordsByTid(params.getString("teacherId"));
+			List<JSONObject> datas = teachingRecordDao.selectRecordsByTid(params.getString("teacherId"));
+			//转换年级代码
+			if(!CollectionUtils.isEmpty(datas)) {
+				for(JSONObject data : datas) {
+					Integer gradeId = data.getInteger("gradeId");
+					
+					if(null!=gradeId) {
+						for(Level level : Level.values()) {
+							if(level.getValue() == Math.abs(gradeId)/10) {
+								data.put("gradeName", level.toString());
+								break;
+							}
+						}
+					}
+				}
+			}
+			return datas;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -76,8 +93,14 @@ public class TeachingRecordService implements ITeachingRecordService {
 			String memberId = params.getString("memberId");
 			
 			List<TeachingRecord> teachingRecords = new ArrayList<TeachingRecord>();
-			JSONArray teachingDetails = params.getJSONArray("teachingDetails");
-			
+			JSONArray teachingDetails = null;
+			try {
+				teachingDetails = params.getJSONArray("teachingDetails");
+			}catch (Exception e) {
+				logger.info("Can not get teachingDetails");
+				logger.error(e.getMessage());
+				return -1;
+			}
 			//1.增加老师带课记录
 			int totalLessons = 0;
 			if(!CollectionUtils.isEmpty(teachingDetails)){

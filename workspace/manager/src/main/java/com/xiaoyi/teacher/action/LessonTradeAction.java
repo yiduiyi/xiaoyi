@@ -88,9 +88,10 @@ public class LessonTradeAction {
 				
 		try {
 			//result.put("data",  recordService.getRecordList(reqData));			
-			recordService.insertTeachingRecords(reqData);
+			if(recordService.insertTeachingRecords(reqData)>=0) {
+				rtCode = RtConstants.SUCCESS;											
+			}
 			
-			rtCode = RtConstants.SUCCESS;			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

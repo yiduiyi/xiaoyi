@@ -72,8 +72,7 @@ public class EnterpriceToCustomer {
 			}else{
 				//9 表示退款失败
 				//TODO 调用service的方法 ，存储失败提现的记录咯
-				//failToPayMoneyByBankCard(enterpriceToCustomerByCard,applyId);
-				
+				//failToPayMoneyByBankCard(enterpriceToCustomerByCard,applyId);	
 				
 			}
 			
