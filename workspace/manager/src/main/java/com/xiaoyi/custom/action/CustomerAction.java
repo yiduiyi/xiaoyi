@@ -152,7 +152,33 @@ public class CustomerAction {
 		return result;
 	}
 	
-	
+	//获取学情报告
+	@RequestMapping(value="/getStuTeachingReport",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getStuTeachingReport(HttpServletRequest request
+			,HttpServletResponse response,@RequestBody JSONObject reqDate) 
+					throws UnsupportedEncodingException {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String teachingId = reqDate.getString("teachingId");
+		logger.info("teachingId:"+teachingId);
+		
+		//String openid = (String) request.getSession().getAttribute("openid");
+    	//logger.info("获取学情报告-openId:"+openid);
+    	
+    	try {
+    		if(null!=teachingId) {
+    			
+    		}
+    		//result.put("data", customService.getMySchedules(openid));    		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
+	//
 	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
 		result.put("code", code);
 		result.put("msg", rtString);

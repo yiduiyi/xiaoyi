@@ -9,18 +9,22 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
+import com.xiaoyi.manager.dao.IParentsDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
+import com.xiaoyi.manager.domain.Parents;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
@@ -31,6 +35,7 @@ import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.Suggestions;
 import com.xiaoyi.teacher.domain.TeachingRecord;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 @Service("recordService")
 public class TeachingRecordService implements ITeachingRecordService {
@@ -52,6 +57,12 @@ public class TeachingRecordService implements ITeachingRecordService {
 	
 	@Resource 
 	IOrdersDao ordersDao;
+	
+	@Resource
+	IParentsDao parentDao;
+	
+	@Autowired
+	private IWechatService wechatService;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -183,6 +194,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 						throw e;
 					}
 					
+					int leftLessonCount = 0;
 					//更新用户订单课时数
 					try {
 						OrderSumKey key = new OrderSumKey();
@@ -205,9 +217,52 @@ public class TeachingRecordService implements ITeachingRecordService {
 						
 						//更新用户总课时
 						orderSumDao.updateByPrimaryKeySelective(orderSum);						
+						leftLessonCount = orderSum.getLessonleftnum();
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw e;
+					}
+					
+					try {
+						logger.info("根据家长parentId查询家长【params】："+parentId);
+						Parents parents = parentDao.selectByPrimaryKey(parentId);
+						if(null==parents || null==parents.getOpenid()){
+							logger.info("家长查询为空/家长openId为空！！");
+							return -1;
+						}
+						
+						//根据家长openId开始推送消息（确认老师提现）
+						//消息推送给家长，进行确认
+						JSONObject data = new JSONObject();
+						JSONObject first = new JSONObject();
+						first.put("value", "课时确认");
+						first.put("color", "#173177");
+						data.put("first", first);
+						
+						JSONObject keyword1 = new JSONObject();
+						keyword1.put("value", "XX老师");
+						keyword1.put("color", "#173177");		
+						data.put("keyword1", keyword1);
+						
+						JSONObject keyword2 = new JSONObject();
+						keyword2.put("value", "补习");
+						keyword2.put("color", "#173177");		
+						data.put("keyword2", keyword2);
+						params.put("data", data);
+						
+						JSONObject keyword3 = new JSONObject();
+						keyword3.put("value", leftLessonCount+" 小时");
+						keyword3.put("color", "#173177");		
+						data.put("keyword3", keyword3);						
+						String extraParams="?teachingId="+teachingId;
+						logger.info("extraParams:"+extraParams);
+						wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID, 
+								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams, 
+								parents.getOpenid(), 
+								data);
+					} catch (Exception e) {
+						logger.error("查询家长角色出错！");
+						logger.error(e.getMessage());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

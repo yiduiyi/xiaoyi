@@ -30,4 +30,9 @@ public interface ICustomService {
 	List<JSONObject> getMySchedules(String openId);
 	
 	int confirmTRecords(JSONObject params);
+	
+	/**
+	 * 获取学情分析报告
+	 */
+	JSONObject queryStuTeachingReport(JSONObject params);
 }

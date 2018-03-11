@@ -17,6 +17,37 @@ import com.xiaoyi.wechat.utils.WeixinOauth2Token;
 public class WeichatAuthAction{
  
 	private Logger log =Logger.getLogger(this.getClass().getName());
+	
+	//授权&重定向1（老师提现推送给家长确认）
+	@RequestMapping("/authWithUrl")
+	public void authWithUrl(HttpServletRequest req,
+			 HttpServletResponse res )  {
+		log.info("In authWithUrl");
+		log.info("teachingId:"+req.getParameter("teachingId"));
+		//log.info("query String:"+req.getQueryString());
+		//log.info("others:"+req.getPathInfo()+"\n"+req.getParameterNames()+"\n"+req.getRequestURI()+"\n"+req.getMethod());
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+		    log.info("code:"+code);
+	        if (code!=null && !"authdeny".equals(code)){
+	        	log.info("authing...");
+	        	WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID, WeiXinConfig.SECRET , code);
+	            String openid = weixinOauth2Token.getOpenId();
+	            req.getSession().setAttribute("openid", openid);
+	            log.error("openid====>" + openid);
+	            //定向到课时确认界面
+	            res.sendRedirect(req.getContextPath() + "/#/studyreport");
+	        } else{
+	        	log.info("redirect failed!");
+	        }
+	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@RequestMapping("/getAuth")
 	public void getAuth(HttpServletRequest req,
 			 HttpServletResponse res )  {

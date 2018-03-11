@@ -23,6 +23,10 @@ public class WeiXinConfig {
 	public static String KEY = "LiuGuo888Dai66limingY756a8nhuida";//API密钥 ed88788d15aa1982954d605f7569fe0f  N4ufMPFoicK1ewPFZbdQjGNNtFUr6SERjUMjKdU67rh
 	public static String SECRET = "2e50c7d680e6fc3efe5fc0cdf81568fd"; //AppSecret 确定正确
 	
+	public static String LESSON_CONFIRM_MSG_TEMPLETE_ID="j6cTEcD95kdxWhpA5Do1evgyk7gA23zTiG58GQABLCc";
+	public static String LEFFON_CONFIRM_REDIRECT_URL="http%3A%2F%2Ftest.yduiy.com.cn%2Fxiaoyi%2Finterface%2FauthWithUrl.do";
+
+	public static String BIND_TEACHER_MSG_TEMPLETE_ID="";
 	
 
 	 public static String getRequestXml(SortedMap<String, String> parameters) {

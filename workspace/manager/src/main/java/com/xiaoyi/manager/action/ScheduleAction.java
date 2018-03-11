@@ -1,6 +1,8 @@
 package com.xiaoyi.manager.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -106,6 +108,20 @@ public class ScheduleAction {
 		
 		try {			
 			List<JSONObject> datas = scheduleService.getScheduleList(reqData);
+			Collections.sort(datas, new Comparator<JSONObject>() {
+
+				@Override
+				public int compare(JSONObject o1, JSONObject o2) {
+					if(null!=o1 && null!=o2 
+							&& o1.getString("createTime")!=null
+							&& o2.getString("createTime")!=null){
+						//return o1.getString("createTime")>o2.getString("createTime")?0:1;
+						return o2.getString("createTime").compareTo(o1.getString("createTime"));
+					}
+					return 0;
+				}
+			});
+			
 			if(!CollectionUtils.isEmpty(datas)){
 				for(JSONObject data : datas){
 					//String dateTime = data.getString("createTime");					

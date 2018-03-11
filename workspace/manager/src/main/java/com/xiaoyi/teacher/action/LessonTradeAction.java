@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
@@ -23,7 +25,8 @@ import com.xiaoyi.teacher.service.ITeachingRecordService;
 public class LessonTradeAction {
 	@Resource
 	private ITeachingRecordService recordService;
-
+	
+	
 	@RequestMapping(value="/showTRecordsSum",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject showTRecordsSum(HttpServletRequest request
@@ -88,7 +91,7 @@ public class LessonTradeAction {
 				
 		try {
 			//result.put("data",  recordService.getRecordList(reqData));			
-			if(recordService.insertTeachingRecords(reqData)>=0) {
+			if(recordService.insertTeachingRecords(reqData)>=0) {							
 				rtCode = RtConstants.SUCCESS;											
 			}
 			

@@ -326,13 +326,23 @@ public class CumstomServiceImpl implements ICustomService{
 			}
 			
 			logger.info("lessonTradeId:"+lessonTradeId);			
-			record.setStatus((byte)2);
+			record.setStatus((byte)2);//家长已确认
 			
 			//更新老师课时提现状态
 			return lessonTradeDao.updateByPrimaryKeySelective(record);
 		} catch (Exception e) {
 			return -1;
 		}
+	}
+
+	@Override
+	public JSONObject queryStuTeachingReport(JSONObject params) {
+		try {
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 }
