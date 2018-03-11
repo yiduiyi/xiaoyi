@@ -19,6 +19,8 @@ public class TeachingRecord {
     private Short teachingnum;
 
     private Date teachingdate;
+    
+    private String lessonTradeId;
 
     public String getRecordid() {
         return recordid;
@@ -83,4 +85,12 @@ public class TeachingRecord {
     public void setTeachingdate(Date teachingdate) {
         this.teachingdate = teachingdate;
     }
+
+	public String getLessonTradeId() {
+		return lessonTradeId;
+	}
+
+	public void setLessonTradeId(String lessonTradeId) {
+		this.lessonTradeId = lessonTradeId;
+	}
 }

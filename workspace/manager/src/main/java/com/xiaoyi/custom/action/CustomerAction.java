@@ -156,11 +156,11 @@ public class CustomerAction {
 	@RequestMapping(value="/getStuTeachingReport",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject getStuTeachingReport(HttpServletRequest request
-			,HttpServletResponse response,@RequestBody JSONObject reqDate) 
+			,HttpServletResponse response,@RequestBody JSONObject reqData) 
 					throws UnsupportedEncodingException {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
-		String teachingId = reqDate.getString("teachingId");
+		String teachingId = reqData.getString("teachingId");
 		logger.info("teachingId:"+teachingId);
 		
 		//String openid = (String) request.getSession().getAttribute("openid");
@@ -168,7 +168,11 @@ public class CustomerAction {
     	
     	try {
     		if(null!=teachingId) {
-    			
+    			JSONObject data = customService.queryStuTeachingReport(reqData);
+    			if(null!=data){
+    				result.put("data", customService.queryStuTeachingReport(reqData));
+    				rtCode = RtConstants.SUCCESS;
+    			}
     		}
     		//result.put("data", customService.getMySchedules(openid));    		
 		} catch (Exception e) {

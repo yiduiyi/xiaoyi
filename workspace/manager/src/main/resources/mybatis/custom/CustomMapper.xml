@@ -38,4 +38,11 @@
 	parentId = #{parentId,jdbcType=VARCHAR}
   </select>
   
+  <!-- 根据任教关系Id （teachingId)查询相关的任课记录 -->
+  <select id="selectTeachingRecordsByTeachingId" resultType="com.xiaoyi.teacher.domain.TeachingRecord" 
+  		parameterType="java.lang.String">
+  	SELECT * FROM `teachingrecord` 
+	WHERE teachingId=#{teachingId};
+  </select>
+  
 </mapper>

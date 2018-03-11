@@ -112,6 +112,8 @@ public class TeachingRecordService implements ITeachingRecordService {
 				logger.error(e.getMessage());
 				return -1;
 			}
+			
+			String lessonTradeId = UUID.randomUUID().toString();
 			//1.增加老师带课记录
 			int totalLessons = 0;
 			if(!CollectionUtils.isEmpty(teachingDetails)){
@@ -126,6 +128,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 					record.setEndtime(teachingDetail.getString("endTime"));
 					record.setTeachingdate(teachingDetail.getDate("teachingDate"));
 					record.setTeachingnum(teachingDetail.getShort("checkNum"));
+					record.setLessonTradeId(lessonTradeId);	//关联老师提现
 					
 					teachingRecords.add(record);
 					
@@ -138,8 +141,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 					throw e;
 				}
 				
-				//2、增加提现记录
-				String lessonTradeId = UUID.randomUUID().toString();
+				//2、增加提现记录				
 				LessonTrade lessonTrade = new LessonTrade();
 				lessonTrade.setLessontradeid(lessonTradeId);
 				lessonTrade.setApplylessons((short)totalLessons);

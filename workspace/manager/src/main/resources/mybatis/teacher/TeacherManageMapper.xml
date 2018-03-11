@@ -11,10 +11,11 @@
 		<result column="endTime" property="endtime" jdbcType="TIME" />
 		<result column="teachingNum" property="teachingnum" jdbcType="SMALLINT" />
 		<result column="teachingDate" property="teachingdate" jdbcType="DATE" />
+		<result column="lessonTradeId" property="lessonTradeId" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		recordId, teachingId, orderId, teacherId, startTime, endTime, teachingNum,
-		teachingDate
+		teachingDate,lessonTradeId
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
@@ -30,11 +31,11 @@
 	<insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeachingRecord">
 		insert into teachingrecord (recordId, teachingId, orderId,
 		teacherId, startTime, endTime,
-		teachingNum, teachingDate)
+		teachingNum, teachingDate,lessonTradeId)
 		values (#{recordid,jdbcType=VARCHAR}, #{teachingid,jdbcType=VARCHAR},
 		#{orderid,jdbcType=VARCHAR},
 		#{teacherid,jdbcType=VARCHAR}, #{starttime,jdbcType=TIME}, #{endtime,jdbcType=TIME},
-		#{teachingnum,jdbcType=SMALLINT}, #{teachingdate,jdbcType=DATE})
+		#{teachingnum,jdbcType=SMALLINT}, #{teachingdate,jdbcType=DATE},#{lessonTradeId,jdbcType=VARCHAR})
 	</insert>
 	<insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeachingRecord">
 		insert into teachingrecord
@@ -63,6 +64,9 @@
 			<if test="teachingdate != null">
 				teachingDate,
 			</if>
+			<if test="lessonTradeId != null">
+				lessonTradeId,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="recordid != null">
@@ -88,6 +92,9 @@
 			</if>
 			<if test="teachingdate != null">
 				#{teachingdate,jdbcType=DATE},
+			</if>
+			<if test="lessonTradeId != null">
+				#{lessonTradeId},
 			</if>
 		</trim>
 	</insert>
@@ -115,6 +122,9 @@
 			<if test="teachingdate != null">
 				teachingDate = #{teachingdate,jdbcType=DATE},
 			</if>
+			<if test="lessonTradeId != null">
+				lessonTradeId = #{lessonTradeId},
+			</if>
 		</set>
 		where recordId = #{recordid,jdbcType=VARCHAR}
 	</update>
@@ -126,7 +136,8 @@
 		startTime = #{starttime,jdbcType=TIME},
 		endTime = #{endtime,jdbcType=TIME},
 		teachingNum = #{teachingnum,jdbcType=SMALLINT},
-		teachingDate = #{teachingdate,jdbcType=DATE}
+		teachingDate = #{teachingdate,jdbcType=DATE},
+		lessonTradeId = #{lessonTradeId}
 		where recordId = #{recordid,jdbcType=VARCHAR}
 	</update>
 	
@@ -150,11 +161,12 @@
 	<insert id="insertTeachingRecords" parameterType="java.util.List">
 		INSERT INTO teachingrecord(recordId, teachingId, orderId,
 			teacherId, startTime, endTime,
-			teachingNum, teachingDate)
+			teachingNum, teachingDate,lessonTradeId)
 		VALUES
 		<foreach collection="list" item="item" separator=",">
 			(#{item.recordid},#{item.teachingid},#{item.orderid},#{item.teacherid},
-				#{item.starttime},#{item.endtime},#{item.teachingnum},#{item.teachingdate})
+				#{item.starttime},#{item.endtime},#{item.teachingnum}
+				,#{item.teachingdate},#{item.lessonTradeId})
 		</foreach>
 	</insert>
 </mapper>

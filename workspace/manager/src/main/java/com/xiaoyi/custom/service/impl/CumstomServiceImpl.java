@@ -3,11 +3,13 @@ package com.xiaoyi.custom.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,10 @@ import com.xiaoyi.manager.domain.Student;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
+import com.xiaoyi.teacher.dao.ISuggestionsDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
+import com.xiaoyi.teacher.domain.Suggestions;
+import com.xiaoyi.teacher.domain.TeachingRecord;
 
 @Service("customService")
 public class CumstomServiceImpl implements ICustomService{
@@ -55,6 +60,9 @@ public class CumstomServiceImpl implements ICustomService{
 	
 	@Resource 
 	ILessonTradeDao lessonTradeDao;
+	
+	@Resource 
+	ISuggestionsDao suggestionDao;
 	
 	@Resource
 	private ICommonService commonService;
@@ -337,8 +345,80 @@ public class CumstomServiceImpl implements ICustomService{
 
 	@Override
 	public JSONObject queryStuTeachingReport(JSONObject params) {
+		String teachingId = params.getString("teachingId");
+		JSONObject data = null;
 		try {
-			
+			if(StringUtils.isNotEmpty(teachingId)){
+				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(teachingId);
+				if(!CollectionUtils.isEmpty(teachingRecords)){
+					data = new JSONObject();
+					//获取上课日期、时间段及上课课时数
+					JSONArray teachingDetails = new JSONArray();
+					int totalCheckLessons = 0;
+					Iterator<TeachingRecord> tRecordsIter = teachingRecords.iterator();
+					TeachingRecord tRecord = null;
+					while(tRecordsIter.hasNext()){
+						if(null==tRecord){	//去空
+							tRecordsIter.remove();
+						}
+						tRecord = tRecordsIter.next();
+						JSONObject teachingDetail = new JSONObject();
+						teachingDetail.put("teachingDate", tRecord.getTeachingdate());
+						
+						StringBuffer sb = new StringBuffer();
+						sb.append(tRecord.getStarttime());
+						sb.append(" ~ ");
+						sb.append(tRecord.getEndtime());
+						
+						teachingDetail.put("teachingTime", sb.toString());
+						teachingDetail.put("teachingNum", tRecord.getTeachingnum());
+						
+						//月提现课时总数
+						if(tRecord.getTeachingnum()!=null){
+							totalCheckLessons += tRecord.getTeachingnum();
+						}
+						
+						teachingDetails.add(teachingDetail);
+					}
+					data.put("teachingDetails", teachingDetails);
+					data.put("totalCheckLessons", totalCheckLessons);
+					
+					//补充其他信息				
+					if(null!=tRecord){
+						//获取老师姓名	
+						String teacherId = tRecord.getTeacherid();
+						if(StringUtils.isNotBlank(teacherId)){
+							Teacher teacher = null;
+							try {
+								logger.info("查询老师：{teacherId:"+teacherId+"}");
+								teacher = teacherDao.selectByPrimaryKey(teacherId);								
+							} catch (Exception e) {
+								logger.info("查询老师出错！");
+								logger.error(e.getMessage());
+							}
+							if(null!=teacher){
+									data.put("teacherName", teacher.getTeachername());
+									data.put("teacherId", teacherId);
+								}
+							}
+						//关联的课时交易Id
+						data.put("lessonTradeId", tRecord.getLessonTradeId());
+						
+						try {
+							if(null!=tRecord.getLessonTradeId()){
+								logger.info("查询建议：lessonTradeId", tRecord.getLessonTradeId());
+								Suggestions suggestions = suggestionDao.selectByPrimaryKey(tRecord.getLessonTradeId());
+								data.put("suggestions", suggestions.getSuggestions());
+								data.put("situations", suggestions.getSituations());
+							}
+						} catch (Exception e) {
+							logger.info("查询建议出错！");
+							logger.error(e.getMessage());
+						}
+						return data;
+					}
+				}
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
