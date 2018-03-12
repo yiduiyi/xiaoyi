@@ -140,6 +140,8 @@ public class CustomerAction {
     			reqParams.put("lessonTradeId", lessonTradeId);
     			reqParams.put("openId",openid);
     			if(0<customService.confirmTRecords(reqParams)) {
+    				//计算课时费-》转账-》更新老师提现状态
+    				
     				rtCode = RtConstants.SUCCESS;    				
     			}    			
     		}
