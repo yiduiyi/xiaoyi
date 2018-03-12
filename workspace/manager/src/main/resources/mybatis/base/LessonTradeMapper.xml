@@ -12,10 +12,11 @@
     <result column="applyLessons" property="applylessons" jdbcType="SMALLINT" />
     <result column="feedback" property="feedback" jdbcType="VARCHAR" />
     <result column="applyTime" property="applytime" jdbcType="TIMESTAMP" />
+    <result column="frozenLessons" property="applylessons" jdbcType="SMALLINT" />
   </resultMap>
   <sql id="Base_Column_List" >
     lessonTradeId, lessonType, teacherId, memberId, parentId, notes, status, applyLessons, 
-    feedback, applyTime
+    feedback, applyTime, frozenLessons
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -31,11 +32,11 @@
     insert into lessontrade (lessonTradeId, lessonType, teacherId, 
       memberId, parentId, notes, 
       status, applyLessons, feedback, 
-      applyTime)
+      applyTime,frozenLessons)
     values (#{lessontradeid,jdbcType=VARCHAR}, #{lessontype,jdbcType=INTEGER}, #{teacherid,jdbcType=VARCHAR}, 
       #{memberid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
       #{status,jdbcType=TINYINT}, #{applylessons,jdbcType=SMALLINT}, #{feedback,jdbcType=VARCHAR}, 
-      #{applytime,jdbcType=TIMESTAMP})
+      #{applytime,jdbcType=TIMESTAMP}, #{frozenLessons,jdbcType=SMALLINT})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
     insert into lessontrade
@@ -70,6 +71,9 @@
       <if test="applytime != null" >
         applyTime,
       </if>
+      <if test="frozenLessons != null" >
+        frozenLessons,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="lessontradeid != null" >
@@ -101,6 +105,9 @@
       </if>
       <if test="applytime != null" >
         #{applytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="frozenLessons != null" >
+        #{frozenLessons,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
@@ -134,6 +141,9 @@
       <if test="applytime != null" >
         applyTime = #{applytime,jdbcType=TIMESTAMP},
       </if>
+      <if test="frozenLessons != null" >
+       	frozenLessons = #{frozenLessons,jdbcType=SMALLINT},
+      </if>
     </set>
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </update>
@@ -147,7 +157,8 @@
       status = #{status,jdbcType=TINYINT},
       applyLessons = #{applylessons,jdbcType=SMALLINT},
       feedback = #{feedback,jdbcType=VARCHAR},
-      applyTime = #{applytime,jdbcType=TIMESTAMP}
+      applyTime = #{applytime,jdbcType=TIMESTAMP},
+      frozenLessons = #{frozenLessons,jdbcType=SMALLINT}
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </update>
 </mapper>

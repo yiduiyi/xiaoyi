@@ -37,8 +37,17 @@ public class WeichatAuthAction{
 	            String openid = weixinOauth2Token.getOpenId();
 	            req.getSession().setAttribute("openid", openid);
 	            log.error("openid====>" + openid);
+	            
+	            StringBuffer reqUrl = new StringBuffer();
+	            reqUrl.append(req.getContextPath());
+	            reqUrl.append("/#/studyreport");
+	            if(null!=req.getParameter("teachingId")){
+	            	reqUrl.append("?teachingId");
+	            	reqUrl.append(req.getParameter("teachingId"));
+	            }
+	            
 	            //定向到课时确认界面
-	            res.sendRedirect(req.getContextPath() + "/#/studyreport");
+	            res.sendRedirect(reqUrl.toString());
 	        } else{
 	        	log.info("redirect failed!");
 	        }

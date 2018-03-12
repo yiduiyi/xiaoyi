@@ -197,7 +197,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 					}
 					
 					int leftLessonCount = 0;
-					//更新用户订单课时数
+					//更新用户订单课时数（家长）
 					try {
 						OrderSumKey key = new OrderSumKey();
 						key.setOrderid(orderId);

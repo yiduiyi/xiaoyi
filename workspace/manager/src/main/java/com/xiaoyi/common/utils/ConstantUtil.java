@@ -426,5 +426,43 @@ public class ConstantUtil {
 			return null;
 		}
 	}
+	
+	public static enum FeedBack{
+		GOOD(1),NORMAL(0),BAD(-1);
+		private int feedback;
 
+		private FeedBack(int type){
+			this.feedback = type;
+		}				
+		
+		@Override
+		public String toString() {
+			switch(feedback){
+			case 1:
+				return "满意";
+			case 0: 
+				return "一般";
+			case -1:
+				return "差";
+				default :
+					return null;
+			}
+			
+		}
+
+
+
+		public static FeedBack convert(int feedback){
+			switch(feedback){
+			case 1:
+				return GOOD;
+			case 0: 
+				return NORMAL;
+			case -1:
+				return BAD;
+				default :
+					return null;
+			}
+		}
+	}
 }

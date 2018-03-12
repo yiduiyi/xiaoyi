@@ -27,6 +27,7 @@ import com.xiaoyi.manager.dao.IParentsDao;
 import com.xiaoyi.manager.dao.IScheduleDao;
 import com.xiaoyi.manager.dao.IStudentDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
+import com.xiaoyi.manager.dao.ITeacherPayListDao;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.ParentStuRelation;
 import com.xiaoyi.manager.domain.Parents;
@@ -35,8 +36,10 @@ import com.xiaoyi.manager.domain.Student;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
+import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.dao.ISuggestionsDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
+import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.Suggestions;
 import com.xiaoyi.teacher.domain.TeachingRecord;
 
@@ -61,8 +64,14 @@ public class CumstomServiceImpl implements ICustomService{
 	@Resource 
 	ILessonTradeDao lessonTradeDao;
 	
+	@Resource
+	ILessonTradeSumDao tradeSumDao;
+	
 	@Resource 
 	ISuggestionsDao suggestionDao;
+	
+	@Resource
+	ITeacherPayListDao payListDao;
 	
 	@Resource
 	private ICommonService commonService;
@@ -308,10 +317,13 @@ public class CumstomServiceImpl implements ICustomService{
 		return datas;
 	}
 
+	@Transactional
 	@Override
 	public int confirmTRecords(JSONObject params) {
 		String openId = params.getString("openId");
 		String lessonTradeId = params.getString("lessonTradeId");
+		String feedback = params.getString("feedback");
+		String notes = params.getString("notes");
 		
 		try {
 			if(null==openId || null==lessonTradeId) {
@@ -335,9 +347,51 @@ public class CumstomServiceImpl implements ICustomService{
 			
 			logger.info("lessonTradeId:"+lessonTradeId);			
 			record.setStatus((byte)2);//家长已确认
+			record.setFeedback(feedback);	//反馈
+			record.setNotes(notes);		//对老师的建议
 			
 			//更新老师课时提现状态
-			return lessonTradeDao.updateByPrimaryKeySelective(record);
+			try {
+				lessonTradeDao.updateByPrimaryKeySelective(record);
+			} catch (Exception e) {
+				logger.info("更新提现状态失败！");
+				logger.error(e.getMessage());
+				return -1;
+			}
+			
+			//更新老师提现汇总表
+			try {
+				LessonTradeSum lessonTradeSum = new LessonTradeSum();
+				lessonTradeSum = tradeSumDao.selectByPrimaryKey(record.getTeacherid());
+				
+				if(null!=lessonTradeSum){
+					lessonTradeSum.setTeacherid(record.getTeacherid());
+					//Double totalIncome = 0d;
+					Short checkedLessonNum = lessonTradeSum.getCheckedlessonnum();
+					//计算收入（移至企业付款成功界面）
+					//totalIncome = 
+					
+					//计算提现到账总课时数(家长已确认)
+					if(null!=checkedLessonNum){
+						if(null!=record.getApplylessons()){
+							checkedLessonNum = (short)(record.getApplylessons() + checkedLessonNum);   				
+						}
+					}else{
+						checkedLessonNum = record.getApplylessons();
+					}
+					
+					//lessonTradeSum.setTotalincome(null);
+					lessonTradeSum.setCheckedlessonnum(checkedLessonNum);
+					//lessonTradeSum.setWithdrawlessonnum(null);
+					
+					tradeSumDao.updateByPrimaryKeySelective(lessonTradeSum);
+				}
+			} catch (Exception e) {
+				logger.info("更新教师提现汇总表出错！");
+				logger.error(e.getMessage());
+			}
+			
+			return 1;
 		} catch (Exception e) {
 			return -1;
 		}
@@ -357,13 +411,15 @@ public class CumstomServiceImpl implements ICustomService{
 					int totalCheckLessons = 0;
 					Iterator<TeachingRecord> tRecordsIter = teachingRecords.iterator();
 					TeachingRecord tRecord = null;
+					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 					while(tRecordsIter.hasNext()){
+						tRecord = tRecordsIter.next();
 						if(null==tRecord){	//去空
 							tRecordsIter.remove();
 						}
-						tRecord = tRecordsIter.next();
+						//tRecord = tRecordsIter.next();
 						JSONObject teachingDetail = new JSONObject();
-						teachingDetail.put("teachingDate", tRecord.getTeachingdate());
+						teachingDetail.put("teachingDate", format.format(tRecord.getTeachingdate()));
 						
 						StringBuffer sb = new StringBuffer();
 						sb.append(tRecord.getStarttime());

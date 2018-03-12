@@ -22,6 +22,8 @@ public class LessonTrade {
     private String feedback;
 
     private Date applytime;
+    
+    private Short frozenLessons;
 
     public String getLessontradeid() {
         return lessontradeid;
@@ -102,4 +104,12 @@ public class LessonTrade {
     public void setApplytime(Date applytime) {
         this.applytime = applytime;
     }
+
+	public Short getFrozenLessons() {
+		return frozenLessons;
+	}
+
+	public void setFrozenLessons(Short frozenLessons) {
+		this.frozenLessons = frozenLessons;
+	}
 }

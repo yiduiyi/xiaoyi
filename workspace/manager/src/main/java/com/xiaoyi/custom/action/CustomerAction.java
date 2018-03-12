@@ -170,7 +170,7 @@ public class CustomerAction {
     		if(null!=teachingId) {
     			JSONObject data = customService.queryStuTeachingReport(reqData);
     			if(null!=data){
-    				result.put("data", customService.queryStuTeachingReport(reqData));
+    				result.put("data", data);
     				rtCode = RtConstants.SUCCESS;
     			}
     		}
