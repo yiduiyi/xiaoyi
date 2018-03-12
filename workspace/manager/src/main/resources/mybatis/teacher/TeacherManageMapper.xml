@@ -169,4 +169,17 @@
 				,#{item.teachingdate},#{item.lessonTradeId})
 		</foreach>
 	</insert>
+	
+	<!-- 查询老师提现记录 -->
+	<select id="selectLSRecordByParams" parameterType="hashmap" 
+			resultType="com.alibaba.fastjson.JSONObject">
+		SELECT b.parentName,a.`status`, b.telNum,c.`name`,a.notes,a.lessonType,a.feedback
+			,a.applyLessons,a.applyLessons-a.frozenLessons AS actualIncome
+		FROM lessontrade a LEFT JOIN parents b ON a.parentId=b.parentId 
+			LEFT JOIN student c ON a.memberId= c.memberId
+		WHERE a.teacherId=#{teacherId}
+		<if test="null!=applyDate">		
+			AND date_format(applyTime,'%Y%c')=#{applyDate}
+		</if>
+	</select>
 </mapper>
