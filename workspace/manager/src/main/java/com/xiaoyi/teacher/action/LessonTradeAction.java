@@ -103,7 +103,28 @@ public class LessonTradeAction {
 		return result;
 	}
 
-	
+	@RequestMapping(value="/showWithdrawRecords",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject showWithdrawRecords(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+				
+		try {
+			//result.put("data",  recordService.getRecordList(reqData));			
+			if(recordService.insertTeachingRecords(reqData)>=0) {							
+				rtCode = RtConstants.SUCCESS;											
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	//
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());
 		result.put("msg", rtCode.toString());
