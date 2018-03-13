@@ -450,8 +450,6 @@ public class ConstantUtil {
 			
 		}
 
-
-
 		public static FeedBack convert(int feedback){
 			switch(feedback){
 			case 1:
@@ -460,6 +458,52 @@ public class ConstantUtil {
 				return NORMAL;
 			case -1:
 				return BAD;
+				default :
+					return null;
+			}
+		}
+	}
+	
+	/**
+	 * -1：提现失败
+ 		0：已提现 1：已提交，待家长确认   2：家长已确认，待管理员审核中 
+	 * @author dengzhihua
+	 *
+	 */
+	public static enum WithdrawStatus{
+		CHECHED_FAILED(-1),CHECKED_SUCCESS(0),TEACHER_SUBMITTED(1),PARENTS_CONFIRMED(2);
+		private int status;
+
+		private WithdrawStatus(int status){
+			this.status = status;
+		}				
+		
+		@Override
+		public String toString() {
+			switch(status){
+			case -1:
+				return "提现失败";
+			case 0: 
+				return "已到账";
+			case 1:
+				return "已提交";
+			case 2:
+				return "已确认(家长)";
+				default :
+					return null;
+			}
+			
+		}
+		public static WithdrawStatus convert(int status){
+			switch(status){
+			case 1:
+				return TEACHER_SUBMITTED;
+			case 0: 
+				return CHECKED_SUCCESS;
+			case -1:
+				return CHECHED_FAILED;
+			case 2:
+				return WithdrawStatus.PARENTS_CONFIRMED;
 				default :
 					return null;
 			}

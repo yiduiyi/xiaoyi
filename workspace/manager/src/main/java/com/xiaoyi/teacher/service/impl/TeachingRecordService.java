@@ -21,6 +21,7 @@ import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Type;
+import com.xiaoyi.common.utils.ConstantUtil.WithdrawStatus;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.IParentsDao;
@@ -328,6 +329,27 @@ public class TeachingRecordService implements ITeachingRecordService {
 						LessonType lessonType = LessonType.convert(lt.getIntValue("lessonType"));
 						if(null!=lessonType){
 							lt.put("gradeName", lessonType.getGradeName(false));							
+						}
+						
+						Integer status = lt.getInteger("status");
+						if(null!=status) {
+							//计算实际到账课时数
+							Float applyLessons = lt.getFloat("applyLessons");
+							Float frozenLessons = lt.getFloat("frozenLessons");
+							if(null!=applyLessons && status.intValue()==0) {
+								if(frozenLessons==null) {
+									frozenLessons=0f;
+								}
+								lt.put("actualIncome", applyLessons-frozenLessons);
+							}else {
+								lt.put("actualIncome", 0);
+							}
+						
+							//转换提现状态  
+							WithdrawStatus withDrawStatus = WithdrawStatus.convert(lt.getIntValue("status"));
+							if(null!=withDrawStatus) {
+								lt.put("status", withDrawStatus.toString());
+							}
 						}
 					}
 					

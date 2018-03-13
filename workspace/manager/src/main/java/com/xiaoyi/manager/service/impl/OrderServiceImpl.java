@@ -3,6 +3,8 @@ package com.xiaoyi.manager.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -329,8 +331,11 @@ public class OrderServiceImpl implements IOrderService {
 					}
 					//转换年级代码->名称
 					Integer grade = order.getIntValue("lessonType");
+					if(grade.intValue()<0) {
+						grade*=-1;
+					}
 					if(null!=grade) {
-						for(Level curLevel : ConstantUtil.Level.values()) {
+						for(Level curLevel : Level.values()) {
 							if(curLevel.getValue() == grade/10) {
 								order.put("gradeName", curLevel.toString());
 								break;
@@ -382,6 +387,21 @@ public class OrderServiceImpl implements IOrderService {
 					}
 				}
 			}
+			//按照时间（最近）排序
+			Collections.sort(result, new Comparator<JSONObject>() {
+
+				@Override
+				public int compare(JSONObject o1, JSONObject o2) {
+					if(null!=o1 && null!=o2 
+							&& o1.getString("purchaseTime")!=null
+							&& o2.getString("purchaseTime")!=null){
+						
+						return o2.getString("purchaseTime").compareTo(o1.getString("purchaseTime"));
+					}
+					return 0;
+				}
+			});
+			
 			return result;
 		} catch (Exception e) {
 			// TODO: handle exception
