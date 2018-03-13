@@ -7,6 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.manager.domain.Account;
 import com.xiaoyi.manager.service.IAccountService;  
@@ -18,6 +19,7 @@ public class TestAccount {
 	
 	@Resource  
 	private IAccountService accountService;  
+	@Resource IWechatService wechatService;
 	
 	//@Test
 	public void test() {
@@ -36,6 +38,12 @@ public class TestAccount {
 		accountService.insertAccount(account);
 	}
 	
+	@Test 
+	public void testPayToTeacher(){
+		System.out.println(wechatService.payToTeacher());
+	}
+	
+	//
 	@Test
 	public void testWechatTemplateMessage(){
 		JSONObject params = new JSONObject();

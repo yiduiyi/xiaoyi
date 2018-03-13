@@ -29,15 +29,21 @@ public class MD5Util {
 		return hexDigits[d1] + hexDigits[d2];
 	}
 
-	public static String MD5Encode(String origin) {
+	public static String MD5Encode(String origin , String character) {
+		if(null==character || "".equals(character)){
+			character = "UTF-8";
+		}
 		String result = null;
 		try {
 			result = new String(origin);
 			MessageDigest md = MessageDigest.getInstance("MD5");
-			result = byteArrayToHexString(md.digest(result.getBytes("UTF-8")));
+			result = byteArrayToHexString(md.digest(result.getBytes(character)));
 		} catch (Exception exception) {
 		}
-		return result;
+		return result;		
+	}
+	public static String MD5Encode(String origin) {
+		return MD5Encode(origin, null);
 	}
 
 }

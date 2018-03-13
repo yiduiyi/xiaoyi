@@ -1,5 +1,6 @@
 package com.xiaoyi.wechat.utils;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +29,10 @@ public class WeiXinConfig {
 
 	public static String BIND_TEACHER_MSG_TEMPLETE_ID="";
 	
-
+	//证书url
+	public static final String CA_LICENSE = "F:" + File.separator + "xiaoyi"
+		+ File.separator + "cert" + File.separator + "apiclient_cert.p12";
+	
 	 public static String getRequestXml(SortedMap<String, String> parameters) {
 		   StringBuffer sb = new StringBuffer();
 		   sb.append("<xml>");
