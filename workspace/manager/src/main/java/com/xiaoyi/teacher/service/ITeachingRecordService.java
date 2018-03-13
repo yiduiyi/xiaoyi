@@ -16,4 +16,11 @@ public interface ITeachingRecordService {
 	 * @return
 	 */
 	int insertTeachingRecords(JSONObject params);
+	
+	/**
+	 * 查看老师提现记录列表
+	 * @param params
+	 * @return
+	 */
+	List<JSONObject> queryWithdrawRecords(JSONObject params);
 }

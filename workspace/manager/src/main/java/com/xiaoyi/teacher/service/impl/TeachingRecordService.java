@@ -17,7 +17,10 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
+import com.xiaoyi.common.utils.ConstantUtil;
+import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
+import com.xiaoyi.common.utils.ConstantUtil.Type;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.IParentsDao;
@@ -25,7 +28,6 @@ import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.Parents;
-import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.dao.ISuggestionsDao;
@@ -296,6 +298,46 @@ public class TeachingRecordService implements ITeachingRecordService {
 			e.printStackTrace();
 			throw e;
 		}
+	}
+
+	/**
+	 * "parentName":"王家长",
+		"status": 提现状态,
+		"telNum":"18711018800",
+		"studentName":"333333",
+		"notes": 评价,
+		"lessonType": 212,
+		"feedback": 家长反馈,
+		"applyLessons": 申请提现课时数,
+		“actualIncome”: 实际到账课时
+	 */
+	@Override
+	public List<JSONObject> queryWithdrawRecords(JSONObject params) {
+		try {
+			List<JSONObject> lessonTradeList = teachingRecordDao.selectLSRecordByParams(params);
+			if(!CollectionUtils.isEmpty(lessonTradeList)){
+				//List<JSONObject> datas = new ArrayList<JSONObject>();
+				for(JSONObject lt : lessonTradeList){
+					//补全上门类型
+					if(lt.getInteger("lessonType")!=null){
+						String type = lt.getInteger("lessonType")>0
+								?Type.STU_GO.toString():Type.TEA_GO.toString();
+						lt.put("type", type);
+						
+						//补全年级名称
+						LessonType lessonType = LessonType.convert(lt.getIntValue("lessonType"));
+						if(null!=lessonType){
+							lt.put("gradeName", lessonType.getGradeName(false));							
+						}
+					}
+					
+				}
+				return lessonTradeList;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 }

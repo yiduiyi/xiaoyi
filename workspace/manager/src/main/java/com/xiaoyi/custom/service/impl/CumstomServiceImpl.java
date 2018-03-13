@@ -361,8 +361,8 @@ public class CumstomServiceImpl implements ICustomService{
 			
 			//更新老师提现汇总表
 			try {
-				LessonTradeSum lessonTradeSum = new LessonTradeSum();
-				lessonTradeSum = tradeSumDao.selectByPrimaryKey(record.getTeacherid());
+				LessonTradeSum lessonTradeSum 
+					= tradeSumDao.selectByPrimaryKey(record.getTeacherid());
 				
 				if(null!=lessonTradeSum){
 					lessonTradeSum.setTeacherid(record.getTeacherid());
@@ -384,14 +384,14 @@ public class CumstomServiceImpl implements ICustomService{
 					lessonTradeSum.setCheckedlessonnum(checkedLessonNum);
 					//lessonTradeSum.setWithdrawlessonnum(null);
 					
-					tradeSumDao.updateByPrimaryKeySelective(lessonTradeSum);
+					return tradeSumDao.updateByPrimaryKeySelective(lessonTradeSum);
 				}
 			} catch (Exception e) {
 				logger.info("更新教师提现汇总表出错！");
 				logger.error(e.getMessage());
 			}
 			
-			return 1;
+			return -1;
 		} catch (Exception e) {
 			return -1;
 		}

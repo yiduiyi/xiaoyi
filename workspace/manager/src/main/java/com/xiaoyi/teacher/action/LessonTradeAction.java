@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -112,11 +113,16 @@ public class LessonTradeAction {
 		RtConstants rtCode = RtConstants.FAILED;
 				
 		try {
-			//result.put("data",  recordService.getRecordList(reqData));			
-			if(recordService.insertTeachingRecords(reqData)>=0) {							
-				rtCode = RtConstants.SUCCESS;											
+			String queryYear = reqData.getString("year");
+			String queryMon = reqData.getString("month");
+			if(null!=queryYear && null!=queryMon){
+				reqData.put("applyDate", queryYear+queryMon);
 			}
-			
+			List<JSONObject> datas = recordService.queryWithdrawRecords(reqData);
+			if(CollectionUtils.isNotEmpty(datas)){
+				rtCode = RtConstants.SUCCESS;
+				result.put("data", datas);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
