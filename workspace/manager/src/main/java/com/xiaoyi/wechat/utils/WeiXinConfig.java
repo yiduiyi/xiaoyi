@@ -26,7 +26,8 @@ public class WeiXinConfig {
 	
 	public static String LESSON_CONFIRM_MSG_TEMPLETE_ID="j6cTEcD95kdxWhpA5Do1evgyk7gA23zTiG58GQABLCc";
 	public static String LEFFON_CONFIRM_REDIRECT_URL="http%3A%2F%2Ftest.yduiy.com.cn%2Fxiaoyi%2Finterface%2FauthWithUrl.do";
-
+	public static final String REDIRECT_HEAD_URL="http://test.yduiy.com.cn/xiaoyi";
+	
 	public static String BIND_TEACHER_MSG_TEMPLETE_ID="";
 	
 	//证书url
