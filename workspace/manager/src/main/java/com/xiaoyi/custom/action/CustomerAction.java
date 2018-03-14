@@ -1,10 +1,13 @@
 package com.xiaoyi.custom.action;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.IWechatService;
+import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
+import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.wechat.utils.AdvancedUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 import com.xiaoyi.wechat.utils.WeixinOauth2Token;
@@ -26,6 +32,9 @@ public class CustomerAction {
 
 	@Autowired
 	ICustomService customService;
+	
+	@Autowired
+	IWechatService wechatService;
 	
 	private static Logger logger = Logger.getLogger(CustomerAction.class);
 	
@@ -139,10 +148,33 @@ public class CustomerAction {
     			JSONObject reqParams = new JSONObject();
     			reqParams.put("lessonTradeId", lessonTradeId);
     			reqParams.put("openId",openid);
-    			if(0<customService.confirmTRecords(reqParams)) {
+    			LessonTrade lessonTrade = customService.confirmTRecords(reqParams); 
+    			if(null != lessonTrade) {
     				//计算课时费-》转账-》更新老师提现状态
-    				
-    				rtCode = RtConstants.SUCCESS;    				
+    				try {
+						JSONObject resultString = wechatService.payToTeacher(lessonTrade);
+						if(null!=resultString) {
+							Map<String,String> resultMap = XMLUtil.parseXml(resultString.getString("weixinPost"));
+							
+							if("SUCCESS".equalsIgnoreCase(resultMap.get("result_code")) 
+									&& "SUCCESS".equalsIgnoreCase(resultMap.get("return_code"))){
+								//提现到账成功
+								int retCode = customService.updateLessonTrade(lessonTrade
+										, Integer.parseInt(resultMap.get("updatedFromzenLessons")));
+								if(retCode>0) {
+									setReturnMsg(result, 0, "->家长确认成功->老师提现到账成功。。。");
+								}
+								return result;
+							}
+							//表示提现失败
+							//TODO 调用service的方法 ，存储失败提现的记录咯								
+							setReturnMsg(result, -2, "->家长确认成功->老师提现到账失败！");							
+							return result;
+						}
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+    				//rtCode = RtConstants.SUCCESS;    				
     			}    			
     		}
     		//result.put("data", customService.getMySchedules(openid));    		

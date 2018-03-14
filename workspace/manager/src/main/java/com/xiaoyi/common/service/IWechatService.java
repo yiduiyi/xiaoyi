@@ -2,6 +2,7 @@ package com.xiaoyi.common.service;
 
 import javax.servlet.http.HttpServletRequest;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.teacher.domain.LessonTrade;
 
 public interface IWechatService {
 	String processRequest(HttpServletRequest request);
@@ -12,5 +13,5 @@ public interface IWechatService {
 	 * 老师提现
 	 * @return{返回结果}
 	 */
-	String payToTeacher();
+	JSONObject payToTeacher(LessonTrade lessonTrade);
 }

@@ -4,12 +4,21 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.xiaoyi.common.vo.TextMessage;
+import com.xiaoyi.manager.dao.ITeacherPayListDao;
+import com.xiaoyi.manager.domain.TeacherPayList;
+import com.xiaoyi.manager.domain.TeacherPayListKey;
+import com.xiaoyi.teacher.dao.ILessonTradeDao;
+import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
+import com.xiaoyi.teacher.domain.LessonTrade;
+import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
@@ -23,7 +32,13 @@ import com.xiaoyi.common.utils.WechatMessageUtil;
 @Service("wechatService")
 public class WechatServiceImpl implements IWechatService {
     private static Logger logger = Logger.getLogger(WechatServiceImpl.class);
-
+  
+    @Resource
+    ITeacherPayListDao payListDao;
+    
+    @Resource
+    ILessonTradeSumDao tradeSumDao;
+    
     public String processRequest(HttpServletRequest request) {
         Map<String, String> map = WechatMessageUtil.xmlToMap(request);
         logger.info(map);
@@ -89,8 +104,8 @@ public class WechatServiceImpl implements IWechatService {
 	}
 
 	@Override
-	public String payToTeacher() {
-			
+	public JSONObject payToTeacher(LessonTrade lessonTrade) {
+			JSONObject result = new JSONObject();
 			//1.0 拼凑企业支付需要的参数
 			String appid = WeiXinConfig.APPID;  //微信公众号的appid
 			String mch_id = WeiXinConfig.mchId; //商户号
@@ -118,7 +133,56 @@ public class WechatServiceImpl implements IWechatService {
 			packageParams.put("desc",desc);    			   //企业付款操作说明信息。必填。
 			packageParams.put("spbill_create_ip",spbill_create_ip); //调用接口的机器Ip地址
 			
+			//计算老师提现课时（价格）
+			try {
+				if(null!=lessonTrade) {
+					Integer lessonType = lessonTrade.getLessontype();
+					Short applylessons = lessonTrade.getApplylessons();
+					
+					//查询提现课时(价目表)
+					TeacherPayList priceList = null;
+					if(null!=lessonType && applylessons!=null) {
+						TeacherPayListKey keys = new TeacherPayListKey();
+						keys.setFeedbackid((Short.valueOf(lessonTrade.getFeedback())));
+						keys.setLessontypeid(lessonType);
+						
+						priceList = payListDao.selectByPrimaryKey(keys);
+					}
+					
+					//查询提现老师被冻结课时
+					if(null!=priceList) {
+						String teacherId = lessonTrade.getTeacherid();
+						LessonTradeSum tradeSum = null;
 
+						try {
+							tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);
+						} catch (Exception e) {
+							throw e;
+						}
+						
+						//结算时减去被冻结课时
+						int checkLessons=0;
+						if(null!=tradeSum && tradeSum.getFrozenlessonnum()!=null) {
+							checkLessons = (applylessons>tradeSum.getFrozenlessonnum())?
+									(short)(applylessons - tradeSum.getFrozenlessonnum()):0;
+							tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
+									tradeSum.getFrozenlessonnum()-applylessons));
+						}
+						result.put("updatedFromzenLessons", tradeSum.getFrozenlessonnum());
+						
+						/*//更新被冻结课时总数
+						try {
+							tradeSumDao.updateByPrimaryKeySelective(tradeSum);
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}*/
+					}
+				}
+			} catch (Exception e) {
+				logger.info("计算老师提现课时价格失败！");
+				logger.error(e.getMessage());
+			}
+			
 			//3.0 生成自己的签名
 			String sign  = SignUtils.creatSign("utf-8",packageParams);
 			
@@ -133,20 +197,9 @@ public class WechatServiceImpl implements IWechatService {
 			
 			try {
 				String weixinPost = ClientCustomSSL.doRefund(wxUrl, reuqestXml).toString();
-				return weixinPost;
-				//7.0 解析返回的xml数据
-				//EnterpriceToCustomer refundResult = EnterpricePayXmlToBeanUtils.parseXmlToMapEnterpriceToCustomer(weixinPost);
-				/*if("SUCCESS".equalsIgnoreCase(refundResult.getResult_code()) && "SUCCESS".equalsIgnoreCase(refundResult.getReturn_code())){
-					//8表示退款成功
-					//TODO 执行成功付款后的业务逻辑
-					//return successPayMoneyByBankCard(submitMoney,cmms_amt,enterpriceToCustomerByCard,applyId,companyId);
-				}else{
-					//9 表示退款失败
-					//TODO 调用service的方法 ，存储失败提现的记录咯
-					//failToPayMoneyByBankCard(enterpriceToCustomerByCard,applyId);	
-					
-				}*/
+				result.put("weixinPost", weixinPost);
 				
+				return result;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

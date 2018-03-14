@@ -319,7 +319,7 @@ public class CumstomServiceImpl implements ICustomService{
 
 	@Transactional
 	@Override
-	public int confirmTRecords(JSONObject params) {
+	public LessonTrade confirmTRecords(JSONObject params) {
 		String openId = params.getString("openId");
 		String lessonTradeId = params.getString("lessonTradeId");
 		String feedback = params.getString("feedback");
@@ -327,14 +327,14 @@ public class CumstomServiceImpl implements ICustomService{
 		
 		try {
 			if(null==openId || null==lessonTradeId) {
-				return 0;
+				return null;
 			}
 			
 			//校验身份（openId校验）
 			logger.info("openId:"+openId);
 			Parents parents = parentDao.selectByOpenId(openId);
 			if(null==parents) {
-				return 0;
+				return null;
 			}
 			LessonTrade record = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
 			if(null==record 
@@ -342,7 +342,7 @@ public class CumstomServiceImpl implements ICustomService{
 					|| !record.getParentid().equals(parents.getParentid())) {
 				logger.info("record:"+record);
 				logger.info("parents:"+parents);
-				return 0;
+				return null;
 			}
 			
 			logger.info("lessonTradeId:"+lessonTradeId);			
@@ -356,7 +356,7 @@ public class CumstomServiceImpl implements ICustomService{
 			} catch (Exception e) {
 				logger.info("更新提现状态失败！");
 				logger.error(e.getMessage());
-				return -1;
+				return null;
 			}
 			
 			//更新老师提现汇总表
@@ -384,16 +384,19 @@ public class CumstomServiceImpl implements ICustomService{
 					lessonTradeSum.setCheckedlessonnum(checkedLessonNum);
 					//lessonTradeSum.setWithdrawlessonnum(null);
 					
-					return tradeSumDao.updateByPrimaryKeySelective(lessonTradeSum);
+					if(tradeSumDao.updateByPrimaryKeySelective(lessonTradeSum)>0) {
+						return record;
+					}
+					
 				}
 			} catch (Exception e) {
 				logger.info("更新教师提现汇总表出错！");
 				logger.error(e.getMessage());
 			}
 			
-			return -1;
+			return null;
 		} catch (Exception e) {
-			return -1;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -479,6 +482,37 @@ public class CumstomServiceImpl implements ICustomService{
 			// TODO: handle exception
 		}
 		return null;
+	}
+
+	@Transactional
+	@Override
+	public int updateLessonTrade(LessonTrade record,Integer updatedFrozenLessons) {		
+		if(null==record) {
+			return 0;
+		}			
+		//设置老师提现成功
+		record.setStatus((byte)0);
+		
+		//更新老师课时提现状态		
+		try {
+			lessonTradeDao.updateByPrimaryKeySelective(record);
+		} catch (Exception e) {
+			logger.info("更新提现状态失败！");
+			logger.error(e.getMessage());
+			throw e;
+		}
+		
+		//更新老师课时提现总表
+		String teacherId = record.getTeacherid();
+		LessonTradeSum tradeSum = new LessonTradeSum();
+		try {
+			tradeSum.setFrozenlessonnum(updatedFrozenLessons.shortValue());
+			tradeSum.setTeacherid(teacherId);
+			
+			return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}			
 	}
 
 }

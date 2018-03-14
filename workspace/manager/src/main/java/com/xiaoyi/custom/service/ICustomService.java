@@ -3,6 +3,8 @@ package com.xiaoyi.custom.service;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.teacher.domain.LessonTrade;
+import com.xiaoyi.teacher.domain.LessonTradeSum;
 
 public interface ICustomService {
 	
@@ -29,10 +31,12 @@ public interface ICustomService {
 	 */
 	List<JSONObject> getMySchedules(String openId);
 	
-	int confirmTRecords(JSONObject params);
+	LessonTrade confirmTRecords(JSONObject params);
 	
 	/**
 	 * 获取学情分析报告
 	 */
 	JSONObject queryStuTeachingReport(JSONObject params);
+	
+	int updateLessonTrade(LessonTrade lessonTrade, Integer updatedFrozenLessons);
 }

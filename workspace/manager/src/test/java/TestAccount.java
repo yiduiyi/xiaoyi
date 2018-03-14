@@ -1,3 +1,5 @@
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -9,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.HttpClient;
+import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.domain.Account;
 import com.xiaoyi.manager.service.IAccountService;  
 
@@ -20,6 +23,9 @@ public class TestAccount {
 	@Resource  
 	private IAccountService accountService;  
 	@Resource IWechatService wechatService;
+	
+	@Resource 
+	XMLUtil xmlUtil;
 	
 	//@Test
 	public void test() {
@@ -39,12 +45,14 @@ public class TestAccount {
 	}
 	
 	@Test 
-	public void testPayToTeacher(){
-		System.out.println(wechatService.payToTeacher());
+	public void testPayToTeacher() throws Exception{
+		JSONObject result = wechatService.payToTeacher(null);
+		Map<String,String>resultMap = xmlUtil.parseXml(result.getString(""));
+		System.out.println(resultMap.toString());
 	}
 	
 	//
-	@Test
+	//@Test
 	public void testWechatTemplateMessage(){
 		JSONObject params = new JSONObject();
 		params.put("touser", "oVbXbw_Fz5o2-VHc5eIW5WY1JG70");

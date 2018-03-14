@@ -40,7 +40,7 @@ public class WeichatAuthAction{
 	            
 	            StringBuffer reqUrl = new StringBuffer();
 	            reqUrl.append(WeiXinConfig.REDIRECT_HEAD_URL);
-	            reqUrl.append("/#/studyreport");
+	            reqUrl.append("/wechat/#/studyreport");
 	            if(null!=req.getParameter("teachingId")){
 	            	reqUrl.append("?teachingId=");
 	            	reqUrl.append(req.getParameter("teachingId"));
