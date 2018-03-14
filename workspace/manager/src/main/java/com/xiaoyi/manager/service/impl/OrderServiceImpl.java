@@ -307,13 +307,34 @@ public class OrderServiceImpl implements IOrderService {
 				e.printStackTrace();
 				throw e;
 			}
-			
+			//查询是否有书
+			Map<String,Short> orderHasBookMap = new HashMap<String,Short>();
+			try {
+				Map<String,Object> reqParams = new HashMap<String,Object>();
+				reqParams.put("hasBook", "1");
+				List<Orders> orderList = orderManageDao.selectIfHasBookByParams(reqParams);
+				if(!CollectionUtils.isEmpty(orderList)) {
+					for(Orders orders : orderList) {																		
+						orderHasBookMap.put(orders.getOrderid(), orders.isHasBook());
+					}
+				}
+				
+			} catch (Exception e) {
+				logger.info("查询订单是否购买书籍出错！");
+				logger.error(e.getMessage());
+			}
 			//查询关联老师			
 			if(!CollectionUtils.isEmpty(result)){
 				List<String> tIds = new ArrayList<String>();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				
 				for(JSONObject order : result){
+					//加入是否购买课本
+					if(null!=orderHasBookMap.get(order.getString("orderId"))) {
+						order.put("hasBook", 1);
+					}else {
+						order.put("hasBook", 0);
+					}
 					String teachingIds = order.getString("teachingIds");
 					if(!StringUtils.isEmpty(teachingIds)){
 						tIds.addAll(Arrays.asList(teachingIds.split(",")));

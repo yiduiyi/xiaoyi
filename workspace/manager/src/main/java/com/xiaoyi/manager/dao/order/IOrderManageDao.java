@@ -10,6 +10,9 @@ public interface IOrderManageDao {
 	//查找订单列表
 	List<JSONObject> selectOrderList(Map<String,Object> params);
 	
+	//查询是否买书
+	List<Orders> selectIfHasBookByParams(Map<String,Object> params);
+	
 	//查找任教老师
     List<JSONObject> selectTeachersByConditions(Map<String,Object> params);
     

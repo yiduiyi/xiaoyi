@@ -43,6 +43,18 @@
 			</if>
 		</where>
 	</select>
+	
+	<select id="selectIfHasBookByParams" resultType="com.xiaoyi.manager.domain.Orders"	
+			parameterType="hashmap">
+		SELECT *FROM orders 	
+		<where>	
+			<if test="hasBook!=null">hasBook = #{hasBook}</if>
+			<if test="parentId!=null">AND parentId=#{parentId}</if>
+			<if test="memberId!=null">AND memberId=#{memberId}</if>
+			<if test="lessonType!=null">AND lessonType=#{lessonType}</if>
+		</where>
+	</select>
+	
 	<!-- 根据任教关系查询老师列表 -->
 	<select id="selectTeachersByTeachingIds" resultType="com.alibaba.fastjson.JSONObject" parameterType="java.util.List">
 		SELECT a.teachingId,a.lessonType,b.teacherName,a.teacherId,a.lessonType as courseId
