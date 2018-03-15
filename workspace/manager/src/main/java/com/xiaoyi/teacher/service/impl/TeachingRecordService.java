@@ -1,8 +1,11 @@
 package com.xiaoyi.teacher.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -105,6 +109,33 @@ public class TeachingRecordService implements ITeachingRecordService {
 			Integer lessontype = params.getInteger("lessonType");
 			String parentId = params.getString("parentId");
 			String memberId = params.getString("memberId");
+			
+			//判断是否已存在提现记录（当月）
+			Map<String,Object> reqParams = new HashMap<String,Object>();
+			reqParams.put("teacherId", teacherId);
+			reqParams.put("parentId", parentId);
+			reqParams.put("memberId", memberId);
+			reqParams.put("lessonType", lessontype);
+			reqParams.put("queryDate", new SimpleDateFormat("yyyyMM").format(new Date()));
+			
+			try {
+				//判断参数
+				if(StringUtils.isEmpty(teacherId) || StringUtils.isEmpty(parentId)
+						|| StringUtils.isEmpty(memberId) || StringUtils.isEmpty(lessontype)
+						|| StringUtils.isEmpty(reqParams.get("queryDate"))){
+					return -1;	//参数错误！
+				}
+				
+				List<LessonTrade>records = teachingRecordDao.selectTeacherLessonTradeByParams(reqParams);				
+				if(!CollectionUtils.isEmpty(records)){
+					return -2;	//不允许重复提交提现
+				}
+			} catch (Exception e) {
+				logger.info("查询当月提现失败！");
+				logger.error(e.getMessage());
+				return -3;
+			}
+			
 			
 			List<TeachingRecord> teachingRecords = new ArrayList<TeachingRecord>();
 			JSONArray teachingDetails = null;

@@ -115,7 +115,7 @@ public class WechatServiceImpl implements IWechatService {
 			
 			String check_name = "NO_CHECK"; //是否验证真实姓名呢
 			String re_user_name = "小郑";   //收款用户姓名
-			String amount = "100"; 				//企业付款金额，单位为分
+			float amount = 100f; 				//企业付款金额，单位为分
 			String desc = "测试开发";   //企业付款操作说明信息。必填。
 			String spbill_create_ip = "192.168.1.3";		//
 			
@@ -143,7 +143,14 @@ public class WechatServiceImpl implements IWechatService {
 					TeacherPayList priceList = null;
 					if(null!=lessonType && applylessons!=null) {
 						TeacherPayListKey keys = new TeacherPayListKey();
-						keys.setFeedbackid((Short.valueOf(lessonTrade.getFeedback())));
+						Short feedback = 1;
+						try {
+							feedback = Short.valueOf(lessonTrade.getFeedback());
+						} catch (Exception e) {
+							// 默认一般
+							logger.info("家长没有填写反馈！");
+						}
+						keys.setFeedbackid(feedback);
 						keys.setLessontypeid(lessonType);
 						
 						priceList = payListDao.selectByPrimaryKey(keys);
@@ -168,19 +175,25 @@ public class WechatServiceImpl implements IWechatService {
 							tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
 									tradeSum.getFrozenlessonnum()-applylessons));
 						}
-						result.put("updatedFromzenLessons", tradeSum.getFrozenlessonnum());
 						
-						/*//更新被冻结课时总数
-						try {
-							tradeSumDao.updateByPrimaryKeySelective(tradeSum);
-						} catch (Exception e) {
-							throw new RuntimeException(e);
-						}*/
+						//设置提现金额
+						amount = checkLessons*priceList.getReward();
+						packageParams.put("amount",amount);						
+						
+						//设置更新冻结课时数
+						result.put("updatedFromzenLessons", tradeSum.getFrozenlessonnum());
+					}else{
+						return null;
 					}
+				}else{
+					return null;
 				}
 			} catch (Exception e) {
 				logger.info("计算老师提现课时价格失败！");
+				e.printStackTrace();
 				logger.error(e.getMessage());
+				
+				return null;
 			}
 			
 			//3.0 生成自己的签名

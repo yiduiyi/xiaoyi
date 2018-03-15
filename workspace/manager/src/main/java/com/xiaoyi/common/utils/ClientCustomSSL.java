@@ -14,6 +14,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient; 
 import org.apache.http.impl.client.HttpClients; 
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.xiaoyi.wechat.utils.WeiXinConfig; 
 
@@ -25,6 +27,8 @@ import com.xiaoyi.wechat.utils.WeiXinConfig;
 */ 
 public class ClientCustomSSL { 
 
+public static	Logger logger = LoggerFactory.getLogger(ClientCustomSSL.class);
+
 @SuppressWarnings("deprecation")
 public static String doRefund(String url,String data) throws Exception { 
 		/** 
@@ -32,7 +36,15 @@ public static String doRefund(String url,String data) throws Exception {
 		*/ 
 		
 		KeyStore keyStore = KeyStore.getInstance("PKCS12"); 
-		FileInputStream instream = new FileInputStream(new File(WeiXinConfig.CA_LICENSE));//P12文件目录 
+		//System.out.println(System.getProperty("user.dir"));
+		
+		String path = ClientCustomSSL.class.getResource("/").getPath();
+		logger.info("path:"+path);
+		//path=path.substring(1, path.indexOf("classes"));
+		logger.info("replaced path:"+path);
+		logger.info("final path:"+ path+"config//apiclient_cert.p12");
+		FileInputStream instream = new FileInputStream(new File(path+"config//apiclient_cert.p12"/*WeiXinConfig.CA_LICENSE*/));//P12文件目录 
+		logger.info("fd:"+instream.getFD());
 		try { 
 		/** 
 		* 此处要改 

@@ -146,7 +146,7 @@
 	<select id="selectRecordsByTid" resultType="com.alibaba.fastjson.JSONObject"
 		parameterType="java.lang.String">
 		SELECT a.purchaseTime,a.orderId,a.parentId,a.memberId,b.teacherId,a.lessonType AS gradeId,
-		b.lessonType,b.teachingId,a.totalLessonNum,a.lessonLeftNum,c.parentName,c.telNum,d.name
+		a.lessonType,b.teachingId,a.totalLessonNum,a.lessonLeftNum,c.parentName,c.telNum,d.name
 		as studentName
 		FROM ordersum a
 		left JOIN order_teaching_r b ON a.orderId = b.orderId
@@ -181,5 +181,15 @@
 		<if test="null!=applyDate">		
 			AND date_format(applyTime,'%Y%c')=#{applyDate}
 		</if>
+	</select>
+	
+	<!-- 查询老师当月提现记录 -->
+	<select id="selectTeacherLessonTradeByParams" parameterType="hashmap"
+		resultType="com.xiaoyi.teacher.domain.LessonTrade">
+		SELECT * 
+		FROM `lessontrade`
+		WHERE teacherId=#{teacherId} AND parentId=#{parentId}
+			AND memberId=#{memberId} AND lessonType=#{lessonType}
+			AND DATE_FORMAT(applyTime,'%Y%m') = #{queryDate};
 	</select>
 </mapper>

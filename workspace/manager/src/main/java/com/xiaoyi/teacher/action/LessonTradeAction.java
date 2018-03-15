@@ -92,10 +92,20 @@ public class LessonTradeAction {
 				
 		try {
 			//result.put("data",  recordService.getRecordList(reqData));			
-			if(recordService.insertTeachingRecords(reqData)>=0) {							
-				rtCode = RtConstants.SUCCESS;											
+			switch(recordService.insertTeachingRecords(reqData)){
+			case -3:
+				result.put("msg", "查询数据库出错！");
+				return result;
+			case -2:
+				result.put("msg", "当月已提现,请勿重复提现！");
+				return result;				
+			case -1:
+				result.put("msg", "参数错误！");
+				break;
+			case 0:
+				default:
+					rtCode = RtConstants.SUCCESS;
 			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -346,6 +346,8 @@ public class CumstomServiceImpl implements ICustomService{
 			}
 			
 			logger.info("lessonTradeId:"+lessonTradeId);			
+			logger.info("feedback:"+feedback);
+			logger.info("notes:"+notes);
 			record.setStatus((byte)2);//家长已确认
 			record.setFeedback(feedback);	//反馈
 			record.setNotes(notes);		//对老师的建议
