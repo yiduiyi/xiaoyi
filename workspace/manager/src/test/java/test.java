@@ -2,6 +2,7 @@
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 
 public class test {
 
@@ -15,7 +16,7 @@ public class test {
         // };
         // HttpsURLConnection.setDefaultHostnameVerifier(hnv);
 
-        String UTF8 = "UTF-8";
+        /*String UTF8 = "UTF-8";
         String reqBody = 
         		"<xml>"
         		+ "<body>测试商家-商品类目</body>"
@@ -75,8 +76,20 @@ public class test {
             }
         }
 
-        System.out.println(resp);
-
+        System.out.println(resp);*/
+    	Calendar cal = Calendar.getInstance();
+    	//System.out.println("year:"+cal.get(Calendar.YEAR));
+    	//System.out.println("month:"+cal.get(Calendar.MONTH));
+    
+    	//Calendar cal = Calendar.getInstance();
+		StringBuffer dateTime = new StringBuffer();
+		dateTime.append(cal.get(Calendar.YEAR));
+		if(11>cal.get(Calendar.MONTH)) {
+			dateTime.append("0");
+		}
+		System.out.println(cal.get(Calendar.DAY_OF_MONTH));
+		dateTime.append(cal.get(Calendar.MONTH));	//提现上个月的课时	
+		System.out.println(dateTime.toString());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.xiaoyi.custom.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.Orders;
@@ -14,5 +15,5 @@ public interface ICustomDao {
     
     List<Schedule> selectScheduleByParentsId(String parentId);
     
-    List<TeachingRecord> selectTeachingRecordsByTeachingId(String teachingId);
+    List<TeachingRecord> selectTeachingRecordsByTeachingId(Map<String,Object> params);
 }

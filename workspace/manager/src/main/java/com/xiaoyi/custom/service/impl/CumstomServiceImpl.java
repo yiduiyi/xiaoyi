@@ -2,9 +2,12 @@ package com.xiaoyi.custom.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -408,7 +411,19 @@ public class CumstomServiceImpl implements ICustomService{
 		JSONObject data = null;
 		try {
 			if(StringUtils.isNotEmpty(teachingId)){
-				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(teachingId);
+				Map<String,Object> reqDate = new HashMap<String,Object>();
+				reqDate.put("teachingId", teachingId);
+				
+				Calendar cal = Calendar.getInstance();
+				StringBuffer dateTime = new StringBuffer();
+				dateTime.append(cal.get(Calendar.YEAR));
+				if(11>cal.get(Calendar.MONTH)) {
+					dateTime.append("0");
+				}
+				dateTime.append(cal.get(Calendar.MONTH)-1);	//提现上个月的课时				
+				reqDate.put("queryDate", dateTime.toString());
+				
+				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqDate);
 				if(!CollectionUtils.isEmpty(teachingRecords)){
 					data = new JSONObject();
 					//获取上课日期、时间段及上课课时数

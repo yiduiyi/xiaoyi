@@ -40,9 +40,12 @@
   
   <!-- 根据任教关系Id （teachingId)查询相关的任课记录 -->
   <select id="selectTeachingRecordsByTeachingId" resultType="com.xiaoyi.teacher.domain.TeachingRecord" 
-  		parameterType="java.lang.String">
+  		parameterType="hashmap">
   	SELECT * FROM `teachingrecord` 
-	WHERE teachingId=#{teachingId};
+	WHERE teachingId=#{teachingId}
+	<if test="queryDate!=null">
+		AND date_format(teachingDate,'%Y%c')=#{queryDate}
+	</if> 
   </select>
   
 </mapper>
