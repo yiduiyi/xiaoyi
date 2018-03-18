@@ -1,6 +1,9 @@
 package com.xiaoyi.teacher.service;
 
+import java.util.List;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
 
 public interface IH5PlateService {
 	
@@ -8,4 +11,8 @@ public interface IH5PlateService {
 	
 	//需先校验绑定账号
 	int bindWechat(Map<String,Object> params) throws Exception;
+	
+	int withdrawLessons(String lessonTradeId) throws Exception;
+	
+	List<JSONObject> getAvailableLessons(String teacherId) throws Exception;
 }

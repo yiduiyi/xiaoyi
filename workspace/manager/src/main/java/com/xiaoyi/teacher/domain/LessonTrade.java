@@ -24,6 +24,8 @@ public class LessonTrade {
     private Date applytime;
     
     private Short frozenLessons;
+    
+    private Float actualPay;
 
     public String getLessontradeid() {
         return lessontradeid;
@@ -111,5 +113,13 @@ public class LessonTrade {
 
 	public void setFrozenLessons(Short frozenLessons) {
 		this.frozenLessons = frozenLessons;
+	}
+
+	public Float getActualPay() {
+		return actualPay;
+	}
+
+	public void setActualPay(Float actualPay) {
+		this.actualPay = actualPay;
 	}
 }

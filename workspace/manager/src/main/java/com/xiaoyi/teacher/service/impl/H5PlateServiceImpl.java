@@ -1,20 +1,36 @@
 package com.xiaoyi.teacher.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.IWechatService;
+import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.dao.IUserDao;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.domain.UserKey;
+import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
+import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ITH5PlateDao;
+import com.xiaoyi.teacher.dao.ITeachingRecordDao;
+import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.service.IH5PlateService;
+import com.xiaoyi.teacher.service.ITeachingRecordService;
 
 @Service("h5PlateService")
 public class H5PlateServiceImpl implements IH5PlateService {
@@ -24,6 +40,16 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	
 	@Resource
 	IUserDao userDao;
+	
+	@Resource
+	ITeachingRecordDao tRecordDao;
+	
+	@Autowired
+	IWechatService wechatService;
+	
+	@Autowired
+	ITeachingRecordService tRecordService;
+
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -123,5 +149,66 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			throw new RuntimeException();
 		}
 		return 0;
+	}
+
+	@Override
+	public int withdrawLessons(String lessonTradeId) throws Exception {
+		// TODO Auto-generated method stub
+		
+		if(StringUtils.isNotEmpty(lessonTradeId)) {							
+			//计算课时费-》转账-》更新老师提现状态
+			try {
+				logger.info("开始企业付款。。。");
+				JSONObject resultString = wechatService.payToTeacher(lessonTradeId);
+				if(null!=resultString) {
+					Map<String,String> resultMap = XMLUtil.parseXml(resultString.getString("weixinPost"));
+					
+					if("SUCCESS".equalsIgnoreCase(resultMap.get("result_code")) 
+							&& "SUCCESS".equalsIgnoreCase(resultMap.get("return_code"))){
+						logger.info("付款成功！");
+						//提现到账成功(更新提现到账状态)
+						return tRecordService.updateLessonTrade(lessonTradeId
+								, resultString.getInteger("updatedFromzenLessons"));																								
+						
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.info("付款失败！");
+				return -1;
+			}			
+		}
+		
+		return 0;
+	}
+
+	@Override
+	public List<JSONObject> getAvailableLessons(String teacherId) throws Exception {
+		// TODO Auto-generated method stub
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		try {
+			List<LessonTrade> lessonTradeList = tRecordDao.selectLessonTradeByTeacherId(teacherId);
+			
+			if(CollectionUtils.isNotEmpty(lessonTradeList)) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				for(LessonTrade lessonTrade : lessonTradeList) {				
+					JSONObject record = new JSONObject();
+					Date applyTime = lessonTrade.getApplytime();
+					String time = sdf.format(applyTime);
+					
+					record.put("lessonTradeId", lessonTrade.getLessontradeid());
+					record.put("year", time.substring(0, 4));
+					record.put("month", time.substring(5,7));
+					record.put("status", lessonTrade.getStatus());
+					
+					datas.add(record);
+				}
+			}
+			return datas;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

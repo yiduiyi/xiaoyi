@@ -38,5 +38,4 @@ public interface ICustomService {
 	 */
 	JSONObject queryStuTeachingReport(JSONObject params);
 	
-	int updateLessonTrade(LessonTrade lessonTrade, Integer updatedFrozenLessons);
 }

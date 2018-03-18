@@ -37,6 +37,8 @@ import com.xiaoyi.manager.domain.Parents;
 import com.xiaoyi.manager.domain.Schedule;
 import com.xiaoyi.manager.domain.Student;
 import com.xiaoyi.manager.domain.Teacher;
+import com.xiaoyi.manager.domain.TeacherPayList;
+import com.xiaoyi.manager.domain.TeacherPayListKey;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
@@ -325,7 +327,7 @@ public class CumstomServiceImpl implements ICustomService{
 	public LessonTrade confirmTRecords(JSONObject params) {
 		String openId = params.getString("openId");
 		String lessonTradeId = params.getString("lessonTradeId");
-		String feedback = params.getString("feedback");
+		Short feedback = params.getShort("feedback");
 		String notes = params.getString("notes");
 		
 		try {
@@ -352,8 +354,13 @@ public class CumstomServiceImpl implements ICustomService{
 			logger.info("feedback:"+feedback);
 			logger.info("notes:"+notes);
 			record.setStatus((byte)2);//家长已确认
-			record.setFeedback(feedback);	//反馈
+			record.setFeedback((String.valueOf(feedback)));	//反馈
 			record.setNotes(notes);		//对老师的建议
+			
+			//计算提现金额
+			Float amount = calcTeacherPay(record.getTeacherid(), record.getApplylessons(), 
+					record.getLessontype(), feedback);			
+			record.setActualPay(amount);
 			
 			//更新老师课时提现状态
 			try {
@@ -500,36 +507,49 @@ public class CumstomServiceImpl implements ICustomService{
 		}
 		return null;
 	}
-
-	@Transactional
-	@Override
-	public int updateLessonTrade(LessonTrade record,Integer updatedFrozenLessons) {		
-		if(null==record) {
-			return 0;
-		}			
-		//设置老师提现成功
-		record.setStatus((byte)0);
+	
+	/**
+	 * 计算老师提现课时对应的报酬
+	 * @param teacherId
+	 * @param applylessons
+	 * @return
+	 */
+	private float calcTeacherPay(String teacherId,Short applylessons,Integer lessonType,Short feedback) {
+		//查询提现课时(价目表)
+		TeacherPayList priceList = null;
+		if(null!=lessonType && applylessons!=null) {
+			TeacherPayListKey keys = new TeacherPayListKey();
+			
+			//设置默认值（满意）
+			if(null==feedback) {
+				feedback = 1;				
+			}
+			keys.setFeedbackid(feedback);
+			keys.setLessontypeid(lessonType);
+			
+			priceList = payListDao.selectByPrimaryKey(keys);
+		}
 		
-		//更新老师课时提现状态		
+		//String teacherId = lessonTrade.getTeacherid();
+		LessonTradeSum tradeSum = null;
+
 		try {
-			lessonTradeDao.updateByPrimaryKeySelective(record);
+			tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);
 		} catch (Exception e) {
-			logger.info("更新提现状态失败！");
-			logger.error(e.getMessage());
 			throw e;
 		}
 		
-		//更新老师课时提现总表
-		String teacherId = record.getTeacherid();
-		LessonTradeSum tradeSum = new LessonTradeSum();
-		try {
-			tradeSum.setFrozenlessonnum(updatedFrozenLessons.shortValue());
-			tradeSum.setTeacherid(teacherId);
-			
-			return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}			
+		//结算时减去被冻结课时
+		int checkLessons=0;
+		if(null!=tradeSum && tradeSum.getFrozenlessonnum()!=null) {
+			checkLessons = (applylessons>tradeSum.getFrozenlessonnum())?
+					(applylessons - tradeSum.getFrozenlessonnum()):0;
+			tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
+					tradeSum.getFrozenlessonnum()-applylessons));
+		}
+		
+		//设置提现金额
+		return checkLessons*priceList.getReward();
 	}
 
 }

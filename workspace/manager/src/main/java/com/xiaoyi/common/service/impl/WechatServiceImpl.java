@@ -39,6 +39,9 @@ public class WechatServiceImpl implements IWechatService {
     @Resource
     ILessonTradeSumDao tradeSumDao;
     
+    @Resource
+    ILessonTradeDao lessonTradeDao;
+    
     public String processRequest(HttpServletRequest request) {
         Map<String, String> map = WechatMessageUtil.xmlToMap(request);
         logger.info(map);
@@ -104,7 +107,7 @@ public class WechatServiceImpl implements IWechatService {
 	}
 
 	@Override
-	public JSONObject payToTeacher(LessonTrade lessonTrade) {
+	public JSONObject payToTeacher(String lessonTradeId) {
 			JSONObject result = new JSONObject();
 			//1.0 拼凑企业支付需要的参数
 			String appid = WeiXinConfig.APPID;  //微信公众号的appid
@@ -135,7 +138,18 @@ public class WechatServiceImpl implements IWechatService {
 			
 			//计算老师提现课时（价格）
 			try {
-				if(null!=lessonTrade) {
+				if(null!=lessonTradeId) {
+					LessonTrade lessonTrade = null;
+					try {
+						logger.info("查询课时交易【params】："+lessonTradeId);
+						lessonTrade = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
+					} catch (Exception e) {
+						logger.info("查询可是交易出错！");
+					}
+					
+					if(null==lessonTrade) {
+						return null;
+					}
 					Integer lessonType = lessonTrade.getLessontype();
 					Short applylessons = lessonTrade.getApplylessons();
 					

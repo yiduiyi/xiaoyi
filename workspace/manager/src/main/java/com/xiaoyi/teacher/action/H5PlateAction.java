@@ -1,11 +1,15 @@
 package com.xiaoyi.teacher.action;
 
+import java.util.Map;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.IWechatService;
+import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.IPrivateDomainService;
+import com.xiaoyi.teacher.service.ITeachingRecordService;
 
 @Controller
 @RequestMapping("/teacher/h5")
@@ -24,6 +31,9 @@ public class H5PlateAction {
 	
 	@Resource
 	private IH5PlateService h5PlateService;
+	
+	@Autowired
+	ITeachingRecordService tRecordService;
 	
 	@RequestMapping(value="/getBindStatus",method=RequestMethod.POST)
 	@ResponseBody
@@ -68,6 +78,49 @@ public class H5PlateAction {
 		return result;
 	}
 	
+	@RequestMapping(value="/getAvailableLessons",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getAvailableLessons(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {
+			String teacherId = reqData.getString("teacherId");
+			if(StringUtils.isNotEmpty(teacherId)) {
+				result.put("data", h5PlateService.getAvailableLessons(teacherId));
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			logger.error("查询可用提现课时失败！");
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
+	
+	@RequestMapping(value="/withdrawLessons",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject withdrawLessons(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		
+		String lessonTradeId = reqData.getString("lessonTradeId");
+		try {
+			if(0<=h5PlateService.withdrawLessons(lessonTradeId)) {
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			logger.error("老师提现失败！");
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
 	
 	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
 		result.put("code", code);

@@ -183,7 +183,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 				lessonTrade.setParentid(parentId);
 				lessonTrade.setMemberid(memberId);
 				lessonTrade.setTeacherid(teacherId);
-				lessonTrade.setStatus((byte) 1);	//1: 已提交, 2：提现成功, -1：提现失败
+				lessonTrade.setStatus((byte) 1);	//-1：提现失败  0：已提现 1：已提交，待家长确认   2：家长已确认，待管理员审核中 
 				lessonTrade.setApplytime(new Date());
 				
 				try {
@@ -219,12 +219,12 @@ public class TeachingRecordService implements ITeachingRecordService {
 							tradeSum.setTotallessonnum((short) 0);
 							
 							tradeSumDao.insertSelective(tradeSum);
+						}else {						
+							tradeSum.setTeacherid(teacherId);
+							tradeSum.setTotallessonnum((short)(totalSubLessons+tradeSum.getTotallessonnum()));
+						
+							tradeSumDao.updateByPrimaryKeySelective(tradeSum);
 						}
-						
-						tradeSum.setTeacherid(teacherId);
-						tradeSum.setTotallessonnum((short)(totalSubLessons+tradeSum.getTotallessonnum()));
-						
-						tradeSumDao.updateByPrimaryKeySelective(tradeSum);
 					} catch (Exception e) {
 						logger.error("插入汇总表出错！");
 						throw e;
@@ -393,4 +393,46 @@ public class TeachingRecordService implements ITeachingRecordService {
 		return null;
 	}
 
+	@Transactional
+	@Override
+	public int updateLessonTrade(String lessonTradeId, Integer updatedFrozenLessons) {		
+		int rtcode = 0;
+		if(StringUtils.isEmpty(lessonTradeId)) {
+			return 0;
+		}	
+		LessonTrade record = null;
+		try {
+			logger.info("查询老师提现记录【LessonTradeId】："+lessonTradeId);
+			record = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
+		} catch (Exception e) {
+			logger.info("查询老师提现记录失败！");
+			e.printStackTrace();
+		}
+		//设置老师提现成功
+		record.setStatus((byte)0);
+		
+		//更新老师课时提现状态		
+		try {
+			rtcode = lessonTradeDao.updateByPrimaryKeySelective(record);
+		} catch (Exception e) {
+			logger.info("更新提现状态失败！");
+			logger.error(e.getMessage());
+			throw e;
+		}
+		
+		//更新老师课时提现总表
+		if(null!=updatedFrozenLessons) {
+			String teacherId = record.getTeacherid();
+			LessonTradeSum tradeSum = new LessonTradeSum();
+			try {
+				tradeSum.setFrozenlessonnum(updatedFrozenLessons.shortValue());
+				tradeSum.setTeacherid(teacherId);
+				
+				return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}			
+		}
+		return rtcode;
+	}
 }

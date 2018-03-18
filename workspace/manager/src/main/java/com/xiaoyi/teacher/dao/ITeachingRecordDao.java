@@ -40,4 +40,6 @@ public interface ITeachingRecordDao {
     int updateByPrimaryKeySelective(TeachingRecord record);
 
     int updateByPrimaryKey(TeachingRecord record);
+
+    List<LessonTrade> selectLessonTradeByTeacherId(String teacherId);
 }
