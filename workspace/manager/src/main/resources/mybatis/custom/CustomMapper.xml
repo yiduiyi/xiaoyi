@@ -44,7 +44,7 @@
   	SELECT * FROM `teachingrecord` 
 	WHERE teachingId=#{teachingId}
 	<if test="queryDate!=null">
-		AND date_format(teachingDate,'%Y%c')=#{queryDate}
+		AND date_format(teachingDate,'%Y%m')=#{queryDate}
 	</if> 
   </select>
   

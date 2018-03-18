@@ -185,7 +185,7 @@
 	
 	<!-- 查询h5老师课时记录 -->
 	<select id="selectLessonTradeByTeacherId" parameterType="java.lang.String"
-			resultType="com.xiaoyi.teacher.domain.LessonTrade">s
+			resultType="com.xiaoyi.teacher.domain.LessonTrade">
 		SELECT *
 		FROM lessontrade
 		WHERE a.teacherId=#{teacherId}

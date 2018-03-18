@@ -427,7 +427,7 @@ public class CumstomServiceImpl implements ICustomService{
 				if(11>cal.get(Calendar.MONTH)) {
 					dateTime.append("0");
 				}
-				dateTime.append(cal.get(Calendar.MONTH)-1);	//提现上个月的课时				
+				dateTime.append(cal.get(Calendar.MONTH)+1);	//提现上个月的课时				
 				reqDate.put("queryDate", dateTime.toString());
 				
 				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqDate);
