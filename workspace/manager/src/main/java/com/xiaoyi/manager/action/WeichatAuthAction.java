@@ -101,5 +101,25 @@ public class WeichatAuthAction{
 		}
 	}
 	
+	@RequestMapping("/getAuth4")
+	public void getAuth4(HttpServletRequest req,
+			 HttpServletResponse res )  {
+		 
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+	        if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID2, WeiXinConfig.SECRET_KEY2 , code);
+	              String openid = weixinOauth2Token.getOpenId();
+	              req.getSession().setAttribute("openid", openid);
+	              log.error("openid====>" + openid);
+	              res.sendRedirect( req.getContextPath() + "/wechat/index.html#/drawings");
+	        } 
+	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 }

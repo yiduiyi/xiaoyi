@@ -38,17 +38,20 @@ public class H5PlateAction {
 	@RequestMapping(value="/getBindStatus",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject getBindStatus(HttpServletRequest request
-			,HttpServletResponse response,
-			@RequestBody JSONObject reqData) {
+			,HttpServletResponse response/*,
+			@RequestBody JSONObject reqData*/) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
-		
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:"+openId);
 		try {
-			int status = h5PlateService.queryBindStatus(reqData.getString("openId"));
-			JSONObject data = new JSONObject();
-			data.put("status", status);
-			
-			rtCode = RtConstants.SUCCESS;			
+			if(StringUtils.isNotEmpty(openId)) {
+				int status = h5PlateService.queryBindStatus(openId);
+				JSONObject data = new JSONObject();
+				data.put("status", status);
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;		
+			}
 		} catch (Exception e) {
 			logger.error("获取老师账号绑定状态失败！");
 		}
