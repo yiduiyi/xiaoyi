@@ -183,6 +183,14 @@
 		</if>
 	</select>
 	
+	<!-- 查询h5老师课时记录 -->
+	<select id="selectLessonTradeByTeacherId" parameterType="java.lang.String"
+			resultType="com.xiaoyi.teacher.domain.LessonTrade">
+		SELECT *
+		FROM lessontrade
+		WHERE a.teacherId=#{teacherId}
+	</select>
+	
 	<!-- 查询老师当月提现记录 -->
 	<select id="selectTeacherLessonTradeByParams" parameterType="hashmap"
 		resultType="com.xiaoyi.teacher.domain.LessonTrade">

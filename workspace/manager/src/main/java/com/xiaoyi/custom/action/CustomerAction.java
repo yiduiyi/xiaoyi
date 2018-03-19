@@ -33,9 +33,6 @@ public class CustomerAction {
 	@Autowired
 	ICustomService customService;
 	
-	@Autowired
-	IWechatService wechatService;
-	
 	private static Logger logger = Logger.getLogger(CustomerAction.class);
 	
 	@RequestMapping(value="/getTransactionCourses",method=RequestMethod.POST)
@@ -150,34 +147,10 @@ public class CustomerAction {
     			reqParams.put("openId",openid);
     			LessonTrade lessonTrade = customService.confirmTRecords(reqParams); 
     			if(null != lessonTrade) {
-    				//计算课时费-》转账-》更新老师提现状态
-    				try {
-						JSONObject resultString = wechatService.payToTeacher(lessonTrade);
-						if(null!=resultString) {
-							Map<String,String> resultMap = XMLUtil.parseXml(resultString.getString("weixinPost"));
-							
-							if("SUCCESS".equalsIgnoreCase(resultMap.get("result_code")) 
-									&& "SUCCESS".equalsIgnoreCase(resultMap.get("return_code"))){
-								//提现到账成功
-								int retCode = customService.updateLessonTrade(lessonTrade
-										, Integer.parseInt(resultMap.get("updatedFromzenLessons")));
-								if(retCode>0) {
-									setReturnMsg(result, 0, "->家长确认成功->老师提现到账成功。。。");
-								}
-								return result;
-							}
-							//表示提现失败
-							//TODO 调用service的方法 ，存储失败提现的记录咯								
-							setReturnMsg(result, -2, "->家长确认成功->老师提现到账失败！");							
-							return result;
-						}
-					} catch (Exception e) {
-						// TODO: handle exception
-					}
-    				//rtCode = RtConstants.SUCCESS;    				
-    			}    			
-    		}
-    		//result.put("data", customService.getMySchedules(openid));    		
+    				rtCode = RtConstants.SUCCESS;
+    				logger.info("家长确认成功！");
+    			}
+    		}    		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
