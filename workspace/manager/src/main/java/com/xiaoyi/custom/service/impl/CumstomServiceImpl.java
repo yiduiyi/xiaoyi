@@ -348,6 +348,13 @@ public class CumstomServiceImpl implements ICustomService{
 				return null;
 			}
 			
+			//已确认过的订单
+			if(null!=record 
+					&& record.getStatus()!=null
+					&& record.getStatus().intValue()==2){
+				return null;
+			}
+			
 			logger.info("lessonTradeId:"+lessonTradeId);			
 			logger.info("feedback:"+feedback);
 			logger.info("notes:"+notes);
@@ -361,7 +368,7 @@ public class CumstomServiceImpl implements ICustomService{
 			} catch (Exception e) {
 				logger.info("更新提现状态失败！");
 				logger.error(e.getMessage());
-				return null;
+				throw new RuntimeException();
 			}
 			
 			//更新老师提现汇总表
@@ -397,18 +404,19 @@ public class CumstomServiceImpl implements ICustomService{
 			} catch (Exception e) {
 				logger.info("更新教师提现汇总表出错！");
 				logger.error(e.getMessage());
+				throw new RuntimeException();
 			}
 			
 			return null;
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException();
 		}
 	}
 
 	@Override
 	public JSONObject queryStuTeachingReport(JSONObject params) {
 		String teachingId = params.getString("teachingId");
-		JSONObject data = null;
+		JSONObject data = new JSONObject();
 		try {
 			if(StringUtils.isNotEmpty(teachingId)){
 				Map<String,Object> reqDate = new HashMap<String,Object>();
@@ -420,12 +428,12 @@ public class CumstomServiceImpl implements ICustomService{
 				if(11>cal.get(Calendar.MONTH)) {
 					dateTime.append("0");
 				}
-				dateTime.append(cal.get(Calendar.MONTH)-1);	//提现上个月的课时				
+				dateTime.append(cal.get(Calendar.MONTH));	//提现上个月的课时				
 				reqDate.put("queryDate", dateTime.toString());
 				
 				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqDate);
 				if(!CollectionUtils.isEmpty(teachingRecords)){
-					data = new JSONObject();
+					
 					//获取上课日期、时间段及上课课时数
 					JSONArray teachingDetails = new JSONArray();
 					int totalCheckLessons = 0;
@@ -498,7 +506,7 @@ public class CumstomServiceImpl implements ICustomService{
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		return null;
+		return data;
 	}
 
 	@Transactional
