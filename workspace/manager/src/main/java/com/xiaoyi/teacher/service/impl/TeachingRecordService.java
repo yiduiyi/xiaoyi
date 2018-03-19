@@ -2,6 +2,7 @@ package com.xiaoyi.teacher.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -289,11 +290,20 @@ public class TeachingRecordService implements ITeachingRecordService {
 						JSONObject keyword3 = new JSONObject();
 						keyword3.put("value", leftLessonCount+" 小时");
 						keyword3.put("color", "#173177");		
-						data.put("keyword3", keyword3);						
-						String extraParams="?teachingId="+teachingId;
-						logger.info("extraParams:"+extraParams);
+						data.put("keyword3", keyword3);	
+						
+						Calendar cal = Calendar.getInstance();
+						int month = cal.get(Calendar.MONTH);						
+						
+						StringBuffer extraParams= new StringBuffer();
+						extraParams.append("?teachingId="); 
+						extraParams.append(teachingId);
+						
+						extraParams.append("&month=");
+						extraParams.append(month);
+						logger.info("extraParams:"+extraParams.toString());
 						wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID, 
-								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams, 
+								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString(), 
 								parents.getOpenid(), 
 								data);
 					} catch (Exception e) {

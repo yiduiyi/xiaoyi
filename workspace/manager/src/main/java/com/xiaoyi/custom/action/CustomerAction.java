@@ -170,6 +170,8 @@ public class CustomerAction {
 		String teachingId = reqData.getString("teachingId");
 		logger.info("teachingId:"+teachingId);
 		
+		Integer queryMonth = reqData.getInteger("month");
+		logger.info("queryMonth:"+queryMonth);
 		//String openid = (String) request.getSession().getAttribute("openid");
     	//logger.info("获取学情报告-openId:"+openid);
     	
