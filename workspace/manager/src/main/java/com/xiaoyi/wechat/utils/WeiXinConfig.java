@@ -32,7 +32,7 @@ public class WeiXinConfig {
 	
 	//讲师平台微信公众号参数配置
 	public static String APPID2="wxdd97f462c846471b";
-	public static String SECRET_KEY2="";
+	public static String SECRET_KEY2="a22efaaa6dfb5498baa32ffa06ac510a";
 	//证书url
 	public static final String CA_LICENSE = "F:" + File.separator + "xiaoyi"
 		+ File.separator + "cert" + File.separator + "apiclient_cert.p12";

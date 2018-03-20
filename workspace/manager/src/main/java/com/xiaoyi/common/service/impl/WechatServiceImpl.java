@@ -132,7 +132,7 @@ public class WechatServiceImpl implements IWechatService {
 			packageParams.put("openid",openid);            // 支付给用户openid
 			packageParams.put("check_name",check_name);    //是否验证真实姓名呢
 			packageParams.put("re_user_name",re_user_name);//收款用户姓名
-			packageParams.put("amount",amount);            //企业付款金额，单位为分
+			//packageParams.put("amount",amount);            //企业付款金额，单位为分
 			packageParams.put("desc",desc);    			   //企业付款操作说明信息。必填。
 			packageParams.put("spbill_create_ip",spbill_create_ip); //调用接口的机器Ip地址
 			
