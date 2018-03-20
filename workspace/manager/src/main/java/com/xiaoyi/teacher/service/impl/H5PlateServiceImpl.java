@@ -183,10 +183,20 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	}
 
 	@Override
-	public List<JSONObject> getAvailableLessons(String teacherId) throws Exception {
+	public List<JSONObject> getAvailableLessons(String openId) throws Exception {
 		// TODO Auto-generated method stub
 		List<JSONObject> datas = new ArrayList<JSONObject>();
 		try {
+			Teacher teacher = null;
+			try {
+				logger.info("根据openId查询老师【openId】："+openId);
+				teacher = teacherH5Dao.selectTeacherByOpenId(openId);
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				logger.info("根据openId查询老师失败！");
+				return null;
+			}
+			String teacherId = teacher.getTeacherid();
 			List<LessonTrade> lessonTradeList = tRecordDao.selectLessonTradeByTeacherId(teacherId);
 			
 			if(CollectionUtils.isNotEmpty(lessonTradeList)) {
@@ -199,7 +209,14 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					record.put("lessonTradeId", lessonTrade.getLessontradeid());
 					record.put("year", time.substring(0, 4));
 					record.put("month", time.substring(5,7));
-					record.put("status", lessonTrade.getStatus());
+					record.put("fee", lessonTrade.getActualPay());
+					Byte status = lessonTrade.getStatus();
+					if(null==status) {
+						status = 1;
+					}else {
+						status = (byte) (status.intValue()==0?1:0);
+					}
+					record.put("status", status);
 					
 					datas.add(record);
 				}

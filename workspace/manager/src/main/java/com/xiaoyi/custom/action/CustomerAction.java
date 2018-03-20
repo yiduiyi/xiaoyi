@@ -145,6 +145,9 @@ public class CustomerAction {
     			JSONObject reqParams = new JSONObject();
     			reqParams.put("lessonTradeId", lessonTradeId);
     			reqParams.put("openId",openid);
+    			reqParams.put("feedback", reqDate.get("feedback"));
+    			reqParams.put("notes", reqDate.get("notes"));
+    			logger.info("in confirmTRecords:feedback="+reqDate.get("feedback")+",notes:"+reqDate.get("notes"));
     			LessonTrade lessonTrade = customService.confirmTRecords(reqParams); 
     			if(null != lessonTrade) {
     				rtCode = RtConstants.SUCCESS;

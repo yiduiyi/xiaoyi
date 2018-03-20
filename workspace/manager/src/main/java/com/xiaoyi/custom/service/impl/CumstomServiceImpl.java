@@ -526,6 +526,7 @@ public class CumstomServiceImpl implements ICustomService{
 	private float calcTeacherPay(String teacherId,Short applylessons,Integer lessonType,Short feedback) {
 		//查询提现课时(价目表)
 		TeacherPayList priceList = null;
+		logger.info("lessonType:"+lessonType+",applylessons: "+applylessons);
 		if(null!=lessonType && applylessons!=null) {
 			TeacherPayListKey keys = new TeacherPayListKey();
 			
@@ -536,28 +537,46 @@ public class CumstomServiceImpl implements ICustomService{
 			keys.setFeedbackid(feedback);
 			keys.setLessontypeid(lessonType);
 			
+			logger.info("查询priceList【keys】:"+keys.toString());
 			priceList = payListDao.selectByPrimaryKey(keys);
+			logger.info("查询结果：priceList.getReward():"+priceList.getReward());
+		}
+		
+		//价格查询出错！
+		if(null==priceList || priceList.getReward()==null) {
+			logger.info("查询priceList结果为空/没有对应价格表！");
+			return 0;
 		}
 		
 		//String teacherId = lessonTrade.getTeacherid();
 		LessonTradeSum tradeSum = null;
 
 		try {
+			logger.info("根据teacherId查询LessonTradeSum表【teacherId】:"+teacherId);
 			tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);
 		} catch (Exception e) {
+			logger.info("根据teacherId查询LessonTradeSum表失败！");
 			throw e;
 		}
 		
 		//结算时减去被冻结课时
 		int checkLessons=0;
-		if(null!=tradeSum && tradeSum.getFrozenlessonnum()!=null) {
-			checkLessons = (applylessons>tradeSum.getFrozenlessonnum())?
-					(applylessons - tradeSum.getFrozenlessonnum()):0;
-			tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
-					tradeSum.getFrozenlessonnum()-applylessons));
+		if(null!=tradeSum) {
+			if(tradeSum.getFrozenlessonnum()!=null) {
+				checkLessons = (applylessons>=tradeSum.getFrozenlessonnum())?
+						(applylessons - tradeSum.getFrozenlessonnum()):0;				
+			}else {
+				checkLessons = applylessons;
+			}
+			/*tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
+					tradeSum.getFrozenlessonnum()-applylessons));*/
+		}else {
+			logger.info("LessonTradeSum 为空(第一次提现)！");
+			checkLessons = applylessons;
 		}
 		
 		//设置提现金额
+		logger.info("提现金额："+checkLessons*priceList.getReward());
 		return checkLessons*priceList.getReward();
 	}
 

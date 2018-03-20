@@ -1,5 +1,6 @@
 package com.xiaoyi.teacher.action;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -23,109 +24,119 @@ import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.IPrivateDomainService;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
+import com.xiaoyi.wechat.utils.AdvancedUtil;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
+import com.xiaoyi.wechat.utils.WeixinOauth2Token;
 
 @Controller
 @RequestMapping("/teacher/h5")
 public class H5PlateAction {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Resource
 	private IH5PlateService h5PlateService;
-	
+
 	@Autowired
 	ITeachingRecordService tRecordService;
-	
-	@RequestMapping(value="/getBindStatus",method=RequestMethod.POST)
+
+	@RequestMapping(value = "/getBindStatus", method = RequestMethod.POST)
 	@ResponseBody
-	public  JSONObject getBindStatus(HttpServletRequest request
-			,HttpServletResponse response/*,
-			@RequestBody JSONObject reqData*/) {
+	public JSONObject getBindStatus(HttpServletRequest request,
+			HttpServletResponse response/*
+										 * ,
+										 * 
+										 * @RequestBody JSONObject reqData
+										 */) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		String openId = (String) request.getSession().getAttribute("openid");
-		logger.info("openId:"+openId);
+		logger.info("openId:" + openId);
+		
+		if (null == openId) {
+			openId = "oQHVE00HAWuiDqD8zQb1Zun4cfxo";
+			//setSessionOpenId(request);
+		}
+
 		try {
-			if(StringUtils.isNotEmpty(openId)) {
+			if (StringUtils.isNotEmpty(openId)) {
 				int status = h5PlateService.queryBindStatus(openId);
 				JSONObject data = new JSONObject();
 				data.put("status", status);
 				result.put("data", data);
-				rtCode = RtConstants.SUCCESS;		
+				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
 			logger.error("获取老师账号绑定状态失败！");
 		}
-		
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
 		return result;
 	}
-	
-	@RequestMapping(value="/bindWechat",method=RequestMethod.POST)
+
+	@RequestMapping(value = "/bindWechat", method = RequestMethod.POST)
 	@ResponseBody
-	public  JSONObject bindWechat(HttpServletRequest request
-			,HttpServletResponse response,
+	public JSONObject bindWechat(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
-		
+
 		try {
 			int code = h5PlateService.bindWechat(reqData);
-			if(code==0) {
+			if (code == 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
 			logger.error("绑定老师账号失败！");
 		}
-		
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
 		return result;
 	}
-	
-	@RequestMapping(value="/getAvailableLessons",method=RequestMethod.POST)
+
+	@RequestMapping(value = "/getAvailableLessons", method = RequestMethod.POST)
 	@ResponseBody
-	public  JSONObject getAvailableLessons(HttpServletRequest request
-			,HttpServletResponse response,
-			@RequestBody JSONObject reqData) {
+	public JSONObject getAvailableLessons(HttpServletRequest request,
+			HttpServletResponse response) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
-		
+
+		String openId = (String) request.getSession().getAttribute("openid");
 		try {
-			String teacherId = reqData.getString("teacherId");
-			if(StringUtils.isNotEmpty(teacherId)) {
-				result.put("data", h5PlateService.getAvailableLessons(teacherId));
+			//String teacherId = request.getParameter("teacherId");// reqData.getString("teacherId");
+			logger.info("query openId：" + openId);
+			if (StringUtils.isNotEmpty(openId)) {
+				result.put("data", h5PlateService.getAvailableLessons(openId));
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
 			logger.error("查询可用提现课时失败！");
 		}
-		
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
 		return result;
 	}
-	
-	@RequestMapping(value="/withdrawLessons",method=RequestMethod.POST)
+
+	@RequestMapping(value = "/withdrawLessons", method = RequestMethod.POST)
 	@ResponseBody
-	public  JSONObject withdrawLessons(HttpServletRequest request
-			,HttpServletResponse response,
+	public JSONObject withdrawLessons(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
-		
-		
+
 		String lessonTradeId = reqData.getString("lessonTradeId");
 		try {
-			if(0<=h5PlateService.withdrawLessons(lessonTradeId)) {
+			if (0 <= h5PlateService.withdrawLessons(lessonTradeId)) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
 			logger.error("老师提现失败！");
 		}
-		
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
 		return result;
 	}
-	
-	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
+
+	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {
 		result.put("code", code);
 		result.put("msg", rtString);
 		return result;

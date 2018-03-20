@@ -188,7 +188,7 @@
 			resultType="com.xiaoyi.teacher.domain.LessonTrade">
 		SELECT *
 		FROM lessontrade
-		WHERE a.teacherId=#{teacherId}
+		WHERE teacherId=#{teacherId}
 	</select>
 	
 	<!-- 查询老师当月提现记录 -->

@@ -95,12 +95,15 @@ public class LessonTradeAction {
 			switch(recordService.insertTeachingRecords(reqData)){
 			case -3:
 				result.put("msg", "查询数据库出错！");
+				result.put("code", -1);
 				return result;
 			case -2:
 				result.put("msg", "当月已提现,请勿重复提现！");
+				result.put("code", -1);
 				return result;				
 			case -1:
 				result.put("msg", "参数错误！");
+				result.put("code", -1);
 				break;
 			case 0:
 				default:
