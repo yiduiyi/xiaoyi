@@ -12,7 +12,7 @@
     <result column="applyLessons" property="applylessons" jdbcType="SMALLINT" />
     <result column="feedback" property="feedback" jdbcType="VARCHAR" />
     <result column="applyTime" property="applytime" jdbcType="TIMESTAMP" />
-    <result column="frozenLessons" property="applylessons" jdbcType="SMALLINT" />
+    <result column="frozenLessons" property="frozenLessons" jdbcType="SMALLINT" />
     <result column="actualPay" property="actualPay"/>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -20,7 +20,7 @@
     feedback, applyTime, frozenLessons,actualPay
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
+    select applyLessons,
     <include refid="Base_Column_List" />
     from lessontrade
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}

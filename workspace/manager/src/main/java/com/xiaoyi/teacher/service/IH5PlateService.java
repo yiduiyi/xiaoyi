@@ -12,7 +12,7 @@ public interface IH5PlateService {
 	//需先校验绑定账号
 	int bindWechat(Map<String,Object> params) throws Exception;
 	
-	int withdrawLessons(String lessonTradeId) throws Exception;
+	int withdrawLessons(JSONObject params) throws Exception;
 	
 	List<JSONObject> getAvailableLessons(String teacherId) throws Exception;
 }

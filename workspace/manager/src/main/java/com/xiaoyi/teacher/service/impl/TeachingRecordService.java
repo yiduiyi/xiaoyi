@@ -30,6 +30,7 @@ import com.xiaoyi.common.utils.ConstantUtil.WithdrawStatus;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.IParentsDao;
+import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
@@ -68,6 +69,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 	
 	@Resource
 	IParentsDao parentDao;
+	
+	@Resource
+	ITeacherDao teacherDao;
 	
 	@Autowired
 	private IWechatService wechatService;
@@ -127,7 +131,11 @@ public class TeachingRecordService implements ITeachingRecordService {
 					return -1;	//参数错误！
 				}
 				
-				List<LessonTrade>records = teachingRecordDao.selectTeacherLessonTradeByParams(reqParams);				
+				//避免重复提交
+				List<LessonTrade>records =null;
+				synchronized (this) {
+					records = teachingRecordDao.selectTeacherLessonTradeByParams(reqParams);									
+				}
 				if(!CollectionUtils.isEmpty(records)){
 					return -2;	//不允许重复提交提现
 				}
@@ -268,29 +276,36 @@ public class TeachingRecordService implements ITeachingRecordService {
 							return -1;
 						}
 						
+						String teacherName = null;
+						try {
+							teacherDao.selectByPrimaryKey(teacherId);
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+						
 						//根据家长openId开始推送消息（确认老师提现）
 						//消息推送给家长，进行确认
 						JSONObject data = new JSONObject();
 						JSONObject first = new JSONObject();
-						first.put("value", "课时确认");
+						first.put("value", "家长您好：");
 						first.put("color", "#173177");
 						data.put("first", first);
 						
 						JSONObject keyword1 = new JSONObject();
-						keyword1.put("value", "XX老师");
+						keyword1.put("value", "您有新的课时需要确认！");
 						keyword1.put("color", "#173177");		
 						data.put("keyword1", keyword1);
 						
 						JSONObject keyword2 = new JSONObject();
-						keyword2.put("value", "补习");
+						keyword2.put("value",new Date());
 						keyword2.put("color", "#173177");		
 						data.put("keyword2", keyword2);
 						params.put("data", data);
 						
 						JSONObject keyword3 = new JSONObject();
-						keyword3.put("value", leftLessonCount+" 小时");
-						keyword3.put("color", "#173177");		
-						data.put("keyword3", keyword3);	
+						keyword3.put("value", "点击查看授课详情...");
+						keyword3.put("color", "#FF4500");		
+						data.put("remark", keyword3);	
 						
 						Calendar cal = Calendar.getInstance();
 						int month = cal.get(Calendar.MONTH);						
@@ -405,8 +420,8 @@ public class TeachingRecordService implements ITeachingRecordService {
 
 	@Transactional
 	@Override
-	public int updateLessonTrade(String lessonTradeId, Integer updatedFrozenLessons) {		
-		int rtcode = 0;
+	public int updateLessonTrade(String lessonTradeId/*, Integer updatedFrozenLessons*/) {		
+		//int rtcode = 0;
 		if(StringUtils.isEmpty(lessonTradeId)) {
 			return 0;
 		}	
@@ -423,26 +438,25 @@ public class TeachingRecordService implements ITeachingRecordService {
 		
 		//更新老师课时提现状态		
 		try {
-			rtcode = lessonTradeDao.updateByPrimaryKeySelective(record);
+			lessonTradeDao.updateByPrimaryKeySelective(record);
 		} catch (Exception e) {
 			logger.info("更新提现状态失败！");
 			logger.error(e.getMessage());
 			throw e;
 		}
 		
-		//更新老师课时提现总表
-		if(null!=updatedFrozenLessons) {
-			String teacherId = record.getTeacherid();
-			LessonTradeSum tradeSum = new LessonTradeSum();
-			try {
-				tradeSum.setFrozenlessonnum(updatedFrozenLessons.shortValue());
-				tradeSum.setTeacherid(teacherId);
-				
-				return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}			
-		}
-		return rtcode;
+		//更新老师实际到账数额
+		String teacherId = record.getTeacherid();
+		LessonTradeSum tradeSum = new LessonTradeSum();
+		try {
+			//tradeSum.setFrozenlessonnum(updatedFrozenLessons.shortValue());
+			tradeSum.setTeacherid(teacherId);
+			tradeSum.setTotalincome(record.getActualPay()+tradeSum.getTotalincome());
+			
+			return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}			
 	}
+	
 }

@@ -19,6 +19,7 @@ import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
+import com.xiaoyi.wechat.utils.UUIDUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
@@ -107,19 +108,20 @@ public class WechatServiceImpl implements IWechatService {
 	}
 
 	@Override
-	public JSONObject payToTeacher(String lessonTradeId) {
+	public JSONObject payToTeacher(JSONObject params) {
+			String lessonTradeId = params.getString("lessonTradeId");
 			JSONObject result = new JSONObject();
 			//1.0 拼凑企业支付需要的参数
 			String appid = WeiXinConfig.APPID;  //微信公众号的appid
 			String mch_id = WeiXinConfig.mchId; //商户号
-			String nonce_str = "ryoMIHOmJxkmsuJ3Di2S22SgqyMLw21x";//RandomStringGenerator.getRandomStringByLength(32); //生成随机数
-			String partner_trade_no =  "tydlg2c8PICxOlrnEZCqIALfVGAKHFoj";//RandomStringGenerator.getRandomStringByLength(32); //生成商户订单号
-			String openid = "oVbXbw_Fz5o2-VHc5eIW5WY1JG70"; // 支付给用户openid
+			String nonce_str = UUIDUtil.getUUID();/*"ryoMIHOmJxkmsuJ3Di2S22SgqyMLw21x";*///RandomStringGenerator.getRandomStringByLength(32); //生成随机数
+			String partner_trade_no = UUIDUtil.getUUID(); /*"tydlg2c8PICxOlrnEZCqIALfVGAKHFoj";//RandomStringGenerator.getRandomStringByLength(32); //生成商户订单号
+*/			String openid = params.getString("openId");/*"oVbXbw_Fz5o2-VHc5eIW5WY1JG70"; */// 支付给用户openid
 			
 			String check_name = "NO_CHECK"; //是否验证真实姓名呢
-			String re_user_name = "小郑";   //收款用户姓名
-			float amount = 100f; 				//企业付款金额，单位为分
-			String desc = "测试开发";   //企业付款操作说明信息。必填。
+			String re_user_name = "老师";   //收款用户姓名
+			float amount = 0f; 				//企业付款金额，单位为分
+			String desc = "小易网络科技-老师课时费";   //企业付款操作说明信息。必填。
 			String spbill_create_ip = "192.168.1.3";		//
 			
 			//2.0 生成map集合

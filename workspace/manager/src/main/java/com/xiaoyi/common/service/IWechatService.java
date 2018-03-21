@@ -13,5 +13,5 @@ public interface IWechatService {
 	 * 老师提现
 	 * @return{返回结果}
 	 */
-	JSONObject payToTeacher(String lessonTradeId);
+	JSONObject payToTeacher(JSONObject params);
 }

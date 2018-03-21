@@ -364,6 +364,7 @@ public class CumstomServiceImpl implements ICustomService{
 			record.setFeedback((String.valueOf(feedback)));	//反馈
 			record.setNotes(notes);		//对老师的建议
 			
+<<<<<<< HEAD
 			//计算提现金额
 			logger.info("teacherId:"+record.getTeacherid());
 			logger.info("applylessons:"+record.getApplylessons());
@@ -372,11 +373,12 @@ public class CumstomServiceImpl implements ICustomService{
 			Float amount = calcTeacherPay(record.getTeacherid(), record.getApplylessons(), 
 					record.getLessontype(), feedback);			
 			record.setActualPay(amount);
-
+=======
 			//计算提现金额&解冻课时数
 			/*Float amount = */
 			calcTeacherPay(record);			
 			//record.setActualPay(amount);
+>>>>>>> b15429959002dc7a10f0364d8a6a05774e9f3e7d
 			
 			//更新老师课时提现状态
 			try {
