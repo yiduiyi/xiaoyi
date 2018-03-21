@@ -317,7 +317,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 						extraParams.append("&month=");
 						extraParams.append(month);
 						logger.info("extraParams:"+extraParams.toString());
-						wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID2, 
+						wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID, 
 								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString(), 
 								parents.getOpenid(), 
 								data);
