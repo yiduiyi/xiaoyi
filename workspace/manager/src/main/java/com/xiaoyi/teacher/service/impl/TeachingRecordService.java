@@ -405,8 +405,8 @@ public class TeachingRecordService implements ITeachingRecordService {
 
 	@Transactional
 	@Override
-	public int updateLessonTrade(String lessonTradeId, Integer updatedFrozenLessons) {		
-		int rtcode = 0;
+	public int updateLessonTrade(String lessonTradeId/*, Integer updatedFrozenLessons*/) {		
+		//int rtcode = 0;
 		if(StringUtils.isEmpty(lessonTradeId)) {
 			return 0;
 		}	
@@ -423,26 +423,25 @@ public class TeachingRecordService implements ITeachingRecordService {
 		
 		//更新老师课时提现状态		
 		try {
-			rtcode = lessonTradeDao.updateByPrimaryKeySelective(record);
+			lessonTradeDao.updateByPrimaryKeySelective(record);
 		} catch (Exception e) {
 			logger.info("更新提现状态失败！");
 			logger.error(e.getMessage());
 			throw e;
 		}
 		
-		//更新老师课时提现总表
-		if(null!=updatedFrozenLessons) {
-			String teacherId = record.getTeacherid();
-			LessonTradeSum tradeSum = new LessonTradeSum();
-			try {
-				tradeSum.setFrozenlessonnum(updatedFrozenLessons.shortValue());
-				tradeSum.setTeacherid(teacherId);
-				
-				return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}			
-		}
-		return rtcode;
+		//更新老师实际到账数额
+		String teacherId = record.getTeacherid();
+		LessonTradeSum tradeSum = new LessonTradeSum();
+		try {
+			//tradeSum.setFrozenlessonnum(updatedFrozenLessons.shortValue());
+			tradeSum.setTeacherid(teacherId);
+			tradeSum.setTotalincome(record.getActualPay()+tradeSum.getTotalincome());
+			
+			return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}			
 	}
+	
 }

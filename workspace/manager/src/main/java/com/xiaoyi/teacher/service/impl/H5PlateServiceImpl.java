@@ -168,7 +168,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						logger.info("付款成功！");
 						//提现到账成功(更新提现到账状态)
 						return tRecordService.updateLessonTrade(lessonTradeId
-								, resultString.getInteger("updatedFromzenLessons"));																								
+								/*, resultString.getInteger("updatedFromzenLessons")*/);																								
 						
 					}
 				}

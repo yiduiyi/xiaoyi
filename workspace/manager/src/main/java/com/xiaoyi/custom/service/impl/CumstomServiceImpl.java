@@ -364,10 +364,10 @@ public class CumstomServiceImpl implements ICustomService{
 			record.setFeedback((String.valueOf(feedback)));	//反馈
 			record.setNotes(notes);		//对老师的建议
 			
-			//计算提现金额
-			Float amount = calcTeacherPay(record.getTeacherid(), record.getApplylessons(), 
-					record.getLessontype(), feedback);			
-			record.setActualPay(amount);
+			//计算提现金额&解冻课时数
+			/*Float amount = */
+			calcTeacherPay(record);			
+			//record.setActualPay(amount);
 			
 			//更新老师课时提现状态
 			try {
@@ -399,8 +399,13 @@ public class CumstomServiceImpl implements ICustomService{
 						checkedLessonNum = record.getApplylessons();
 					}
 					
-					//lessonTradeSum.setTotalincome(null);
+					//更新冻结课时总数
 					lessonTradeSum.setCheckedlessonnum(checkedLessonNum);
+					if(record.getFrozenLessons()>0){
+						int curFromzenLessons = (lessonTradeSum.getFrozenlessonnum()>record.getFrozenLessons())?
+								lessonTradeSum.getFrozenlessonnum():0;
+						lessonTradeSum.setFrozenlessonnum((short)curFromzenLessons);
+					}
 					//lessonTradeSum.setWithdrawlessonnum(null);
 					
 					if(tradeSumDao.updateByPrimaryKeySelective(lessonTradeSum)>0) {
@@ -523,7 +528,12 @@ public class CumstomServiceImpl implements ICustomService{
 	 * @param applylessons
 	 * @return
 	 */
-	private float calcTeacherPay(String teacherId,Short applylessons,Integer lessonType,Short feedback) {
+	private LessonTrade calcTeacherPay(LessonTrade trade) {
+		String teacherId = trade.getTeacherid();
+		Short applylessons = trade.getApplylessons();
+		Integer lessonType = trade.getLessontype();
+		Short feedback=Short.valueOf(trade.getFeedback());
+		
 		//查询提现课时(价目表)
 		TeacherPayList priceList = null;
 		logger.info("lessonType:"+lessonType+",applylessons: "+applylessons);
@@ -545,7 +555,7 @@ public class CumstomServiceImpl implements ICustomService{
 		//价格查询出错！
 		if(null==priceList || priceList.getReward()==null) {
 			logger.info("查询priceList结果为空/没有对应价格表！");
-			return 0;
+			return null;
 		}
 		
 		//String teacherId = lessonTrade.getTeacherid();
@@ -575,9 +585,13 @@ public class CumstomServiceImpl implements ICustomService{
 			checkLessons = applylessons;
 		}
 		
+		//设置解冻课时
+		trade.setFrozenLessons((short)(applylessons-checkLessons));
+		
 		//设置提现金额
 		logger.info("提现金额："+checkLessons*priceList.getReward());
-		return checkLessons*priceList.getReward();
+		trade.setActualPay(checkLessons*priceList.getReward());
+		return trade;
 	}
 
 }

@@ -13,7 +13,9 @@ import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.domain.Account;
-import com.xiaoyi.manager.service.IAccountService;  
+import com.xiaoyi.manager.service.IAccountService;
+import com.xiaoyi.teacher.dao.ILessonTradeDao;
+import com.xiaoyi.teacher.domain.LessonTrade;  
 
 @RunWith(JUnit4ClassRunner.class)     //表示继承了SpringJUnit4ClassRunner类  
 @ContextConfiguration(locations = {"classpath:spring-mybatis.xml"})
@@ -27,6 +29,8 @@ public class TestAccount {
 	@Resource 
 	XMLUtil xmlUtil;
 	
+	@Resource 
+	ILessonTradeDao lessonTradeDao;
 	//@Test
 	public void test() {
 		 Account account = accountService.getAccountById("testtesttest"); 
@@ -44,7 +48,18 @@ public class TestAccount {
 		accountService.insertAccount(account);
 	}
 	
-	@Test 
+	@Test
+	public void testLessonTradeDao(){
+		try {
+			
+			LessonTrade record = lessonTradeDao.selectByPrimaryKey("ac9b3943-237c-4427-b80d-df0433a55710");
+			System.out.println(record);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//@Test 
 	public void testPayToTeacher() throws Exception{
 		JSONObject result = wechatService.payToTeacher(null);
 		Map<String,String>resultMap = xmlUtil.parseXml(result.getString(""));

@@ -22,7 +22,7 @@ public interface ITeachingRecordService {
 	 * @param params
 	 * @return
 	 */
-	List<JSONObject> queryWithdrawRecords(JSONObject params);	
+	List<JSONObject> queryWithdrawRecords(JSONObject params);		
 
-	int updateLessonTrade(String lessonTradeId, Integer updatedFrozenLessons);
+	int updateLessonTrade(String lessonTradeId);
 }
