@@ -365,6 +365,10 @@ public class CumstomServiceImpl implements ICustomService{
 			record.setNotes(notes);		//对老师的建议
 			
 			//计算提现金额
+			logger.info("teacherId:"+record.getTeacherid());
+			logger.info("applylessons:"+record.getApplylessons());
+			logger.info("lessontype:"+record.getLessontype());
+			logger.info("feedback:"+feedback);
 			Float amount = calcTeacherPay(record.getTeacherid(), record.getApplylessons(), 
 					record.getLessontype(), feedback);			
 			record.setActualPay(amount);
