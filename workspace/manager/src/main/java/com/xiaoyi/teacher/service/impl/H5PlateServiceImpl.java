@@ -152,14 +152,17 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	}
 
 	@Override
-	public int withdrawLessons(String lessonTradeId) throws Exception {
+	public int withdrawLessons(JSONObject params) throws Exception {
 		// TODO Auto-generated method stub
-		
+		if(null==params){
+			return -1;
+		}
+		String lessonTradeId = params.getString("lessonTradeId");
 		if(StringUtils.isNotEmpty(lessonTradeId)) {							
 			//计算课时费-》转账-》更新老师提现状态
 			try {
 				logger.info("开始企业付款。。。");
-				JSONObject resultString = wechatService.payToTeacher(lessonTradeId);
+				JSONObject resultString = wechatService.payToTeacher(params);
 				if(null!=resultString) {
 					Map<String,String> resultMap = XMLUtil.parseXml(resultString.getString("weixinPost"));
 					

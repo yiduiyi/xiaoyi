@@ -28,6 +28,11 @@ public class WeiXinConfig {
 	public static String LEFFON_CONFIRM_REDIRECT_URL="http%3A%2F%2Ftest.yduiy.com.cn%2Fxiaoyi%2Finterface%2FauthWithUrl.do";
 	public static final String REDIRECT_HEAD_URL="http://test.yduiy.com.cn/xiaoyi";
 	
+	
+	//月初老师课时提现提醒通知
+	public static String LESSON_CONFIRM_MSG_TEMPLETE_ID2="pI6-2--I0NO5neAgyTyZwBvMgjuTlwa0mkUecM1xKQc";
+	public static String LEFFON_CONFIRM_REDIRECT_URL2="http%3A%2F%2Ftest.yduiy.com.cn%2Fxiaoyi%2Finterface%2FauthWithUrl.do";
+	
 	public static String BIND_TEACHER_MSG_TEMPLETE_ID="";
 	
 	//讲师平台微信公众号参数配置

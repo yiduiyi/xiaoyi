@@ -125,7 +125,11 @@ public class H5PlateAction {
 
 		String lessonTradeId = reqData.getString("lessonTradeId");
 		try {
-			if (0 <= h5PlateService.withdrawLessons(lessonTradeId)) {
+			JSONObject reqParams = new JSONObject();
+			reqParams.put("lessonTradeId", lessonTradeId);
+			reqParams.put("openId", request.getSession().getAttribute("openid"));
+			
+			if (0 <= h5PlateService.withdrawLessons(reqParams)) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
