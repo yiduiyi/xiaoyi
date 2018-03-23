@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+	default-lazy-init="false">
+
+
+	<!-- 定义目标bean和bean中的方法 -->  
+    <!-- =====================日常任务job========================== -->
+    
+    <bean id="MyTask" class="com.xiaoyi.teacher.service.impl.H5PlateServiceImpl">
+    </bean>  
+     
+    <bean id="MyTaskMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+        <property name="targetObject">  
+            <ref bean="MyTask"/>  
+        </property>  
+        <property name="targetMethod">  <!-- 要执行的方法名称 -->  
+            <value>send</value>  
+        </property>  
+    </bean> 
+
+    
+   
+    <!-- ======================== 调度触发器 ======================== -->  
+  <bean id="DailyTaskCronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+        <property name="jobDetail" ref="MyTaskMethod"></property>  
+        <!-- 每月一号   -->
+        <property name="cronExpression" value="30 30 8 1 * ?"></property>
+         <!-- 每小时的第一分钟触发  -->
+       <!--  <property name="cronExpression" value="0 1 * * * ?"></property>  -->
+    </bean>         
+   
+    <!-- ======================== 调度工厂 ======================== -->  
+    <bean id="SpringJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+        <property name="triggers">  
+            <list>   
+                <ref bean="DailyTaskCronTriggerBean"/> 
+            </list>  
+        </property>  
+    </bean>   
+    
+
+</beans>

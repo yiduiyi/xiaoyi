@@ -15,4 +15,10 @@ public interface IH5PlateService {
 	int withdrawLessons(JSONObject params) throws Exception;
 	
 	List<JSONObject> getAvailableLessons(String teacherId) throws Exception;
+	
+	/**
+	 * 每月发送定时提现消息
+	 * @return
+	 */
+	int send();
 }

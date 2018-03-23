@@ -22,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
-import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.service.ICustomService;
@@ -175,7 +174,7 @@ public class CumstomServiceImpl implements ICustomService{
 		Integer subjectId = params.getInteger("subjectId");
 		String studentName = params.getString("studentName");
 		String telNum = params.getString("telphone");
-		String weixin = params.getString("weixin");
+		//String weixin = params.getString("weixin");
 		String openId = params.getString("openId");
 		
 		try {
@@ -369,9 +368,9 @@ public class CumstomServiceImpl implements ICustomService{
 			logger.info("applylessons:"+record.getApplylessons());
 			logger.info("lessontype:"+record.getLessontype());
 			logger.info("feedback:"+feedback);
-			Float amount = calcTeacherPay(record.getTeacherid(), record.getApplylessons(), 
-					record.getLessontype(), feedback);			
-			record.setActualPay(amount);
+			/*Float amount = */calcTeacherPay(record/*record.getTeacherid(), record.getApplylessons(), 
+					record.getLessontype(), feedback*/);			
+			//record.setActualPay(amount);
 
 			//计算提现金额&解冻课时数
 			/*Float amount = */

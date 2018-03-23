@@ -231,4 +231,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		
 		return null;
 	}
+
+	@Override
+	public int send() {
+		logger.info("进入定时任务。。。");
+		return 0;
+	}
 }

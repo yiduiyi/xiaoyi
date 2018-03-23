@@ -11,8 +11,9 @@
                         http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 	
 	<!-- 开启注解 -->  
-    <mvc:annotation-driven/> 
-    
+    <mvc:annotation-driven/>
+    <import resource="classpath:spring-quartz.xml" /> 
+
     <!-- session 拦截器 -->
    <!--  <mvc:interceptors>
     	<mvc:interceptor>
