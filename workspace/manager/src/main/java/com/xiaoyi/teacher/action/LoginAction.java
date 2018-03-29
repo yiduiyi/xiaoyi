@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,7 @@ import com.xiaoyi.manager.service.ILoginService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.LoginConstants;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
+@CrossOrigin
 @Controller
 @RequestMapping("/teacher/identity")
 public class LoginAction {
