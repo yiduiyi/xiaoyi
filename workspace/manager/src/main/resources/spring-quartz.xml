@@ -15,7 +15,7 @@
 	<!-- 定义目标bean和bean中的方法 -->  
     <!-- =====================日常任务job========================== -->
     
-    <bean id="MyTask" class="com.xiaoyi.teacher.service.impl.H5PlateServiceImpl">
+    <bean id="MyTask" class="com.xiaoyi.common.service.impl.WechatServiceImpl">
     </bean>  
      
     <bean id="MyTaskMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  

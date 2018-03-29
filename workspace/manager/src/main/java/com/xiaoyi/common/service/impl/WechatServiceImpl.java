@@ -236,4 +236,10 @@ public class WechatServiceImpl implements IWechatService {
 		return null;
 	}
 
+	@Override
+	public int sendQuarzMsg() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
