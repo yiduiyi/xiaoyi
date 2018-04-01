@@ -2,6 +2,7 @@ package com.xiaoyi.custom.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import com.xiaoyi.manager.dao.IScheduleDao;
 import com.xiaoyi.manager.dao.IStudentDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.dao.ITeacherPayListDao;
+import com.xiaoyi.manager.dao.ITradeComplainsDao;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.ParentStuRelation;
 import com.xiaoyi.manager.domain.Parents;
@@ -38,6 +40,7 @@ import com.xiaoyi.manager.domain.Student;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.TeacherPayList;
 import com.xiaoyi.manager.domain.TeacherPayListKey;
+import com.xiaoyi.manager.domain.TradeComplains;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
@@ -79,6 +82,8 @@ public class CumstomServiceImpl implements ICustomService{
 	
 	@Resource
 	private ICommonService commonService;
+	
+	@Resource ITradeComplainsDao tradeCompainsDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -440,17 +445,28 @@ public class CumstomServiceImpl implements ICustomService{
 		try {
 			if(StringUtils.isNotEmpty(teachingId)){
 				Map<String,Object> reqDate = new HashMap<String,Object>();
+								
 				reqDate.put("teachingId", teachingId);
 				
 				Calendar cal = Calendar.getInstance();
 				StringBuffer dateTime = new StringBuffer();
 				dateTime.append(cal.get(Calendar.YEAR));
 				if(11>cal.get(Calendar.MONTH)) {
-					dateTime.append("0");
+					if(1==cal.get(Calendar.MONTH)){
+						dateTime.append(12);
+					}else{
+						dateTime.append("0");
+					}
 				}
-				dateTime.append(cal.get(Calendar.MONTH)+1);	//提现上个月的课时				
+				dateTime.append(cal.get(Calendar.MONTH)/*+1*/);	//提现上个月的课时				
 
-				reqDate.put("queryDate", dateTime.toString());
+				logger.info("teachingId:"+teachingId);
+				logger.info("month:"+params.get("month"));
+				logger.info("lessonTradeId:"+params.get("lessonTradeId"));
+				
+				reqDate.put("queryDate", params.get("month"));/*dateTime.toString()*///);
+				reqDate.put("lessonTradeId", params.get("lessonTradeId"));
+				
 				
 				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqDate);
 				if(!CollectionUtils.isEmpty(teachingRecords)){
@@ -513,8 +529,26 @@ public class CumstomServiceImpl implements ICustomService{
 							if(null!=tRecord.getLessonTradeId()){
 								logger.info("查询建议：lessonTradeId", tRecord.getLessonTradeId());
 								Suggestions suggestions = suggestionDao.selectByPrimaryKey(tRecord.getLessonTradeId());
-								data.put("suggestions", suggestions.getSuggestions());
-								data.put("situations", suggestions.getSituations());
+								logger.info("convert string to array...");
+								try {
+									
+									logger.info("parse suggetions string to array[original]:"+suggestions.getSuggestions());
+									//logger.info("parsed array:"+JSONObject.parseArray(suggestions.getSuggestions()));
+									StringBuffer tt = new StringBuffer();
+							    	tt.append(suggestions.getSuggestions());
+							    	String ttString = tt.subSequence(1, tt.length()-1).toString();
+							    	//System.out.println(ttString);							    	
+							    	
+									data.put("suggestions", Arrays.asList(ttString.split(",")));
+									
+									tt.delete(0, tt.length());
+									tt.append(suggestions.getSituations());
+									ttString = tt.subSequence(1, tt.length()-1).toString();
+									data.put("situations", Arrays.asList(ttString.split(",")));									
+								} catch (Exception e) {
+									logger.info("parse Suggestions erro!");
+									e.printStackTrace();
+								}
 							}
 						} catch (Exception e) {
 							logger.info("查询建议出错！");
@@ -600,6 +634,23 @@ public class CumstomServiceImpl implements ICustomService{
 		logger.info("提现金额："+checkLessons*priceList.getReward());
 		trade.setActualPay(checkLessons*priceList.getReward());
 		return trade;
+	}
+
+	@Override
+	public int insertComplains(JSONObject params) {
+		try {
+			TradeComplains record = new TradeComplains();
+			record.setComplainContent(params.getString("complaintContent"));
+			record.setComplainTime(new Date());
+			record.setTeacherid(params.getString("teacherId"));
+			record.setLessontradeid(params.getString("lessonTradeId"));
+			
+			return tradeCompainsDao.insertSelective(record);
+		} catch (Exception e) {
+			logger.info("插入投诉失败！");
+			logger.error(e.getMessage());
+			return 0;
+		}
 	}
 
 }

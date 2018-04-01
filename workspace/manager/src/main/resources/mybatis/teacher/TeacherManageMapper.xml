@@ -198,6 +198,12 @@
 		FROM `lessontrade`
 		WHERE teacherId=#{teacherId} AND parentId=#{parentId}
 			AND memberId=#{memberId} AND lessonType=#{lessonType}
-			AND DATE_FORMAT(applyTime,'%Y%m') = #{queryDate};
+			<if test="queryDates!=null and queryDates.size>0">
+				AND DATE_FORMAT(applyTime,'%Y%m') in
+				<foreach collection="queryDates" item="item" open="(" close=")" separator=",">
+					#{item}
+				</foreach>
+			</if>
+			<!-- = #{queryDate}; -->
 	</select>
 </mapper>

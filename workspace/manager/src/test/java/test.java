@@ -2,7 +2,13 @@
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class test {
 
@@ -76,11 +82,23 @@ public class test {
             }
         }
 
+		
         System.out.println(resp);*/
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+    	String t = sdf.format(new Date(1519833600000l));
+    	System.out.println(t);
     	Calendar cal = Calendar.getInstance();
     	//System.out.println("year:"+cal.get(Calendar.YEAR));
     	//System.out.println("month:"+cal.get(Calendar.MONTH));
-    
+    	StringBuffer tt = new StringBuffer();
+    	tt.append("[wefa, , , , , ]");
+    	String ttString = tt.subSequence(1, tt.length()-1).toString();
+    	System.out.println(ttString);
+    	Arrays.asList(ttString.split(","));
+    	
+    	
+    	//JSONArray.parseArray("[wefa, , , , , ]");
+    	//JSONObject.parse("[wefa, , , , , ]");
     	//Calendar cal = Calendar.getInstance();
 		StringBuffer dateTime = new StringBuffer();
 		dateTime.append(cal.get(Calendar.YEAR));

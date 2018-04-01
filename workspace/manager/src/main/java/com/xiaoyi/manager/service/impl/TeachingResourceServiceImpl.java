@@ -246,9 +246,9 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 				
 				//课时操作
 				if(0==operateType) { //冻结					
-					if(operateNum>record.getWithdrawlessonnum()) {
+					/*if(operateNum>record.getWithdrawlessonnum()) {
 						return 0;
-					}
+					}*/
 					
 					record.setFrozenlessonnum((short)(record.getFrozenlessonnum()+operateNum));
 				}else {	//解冻

@@ -38,4 +38,8 @@ public interface ICustomService {
 	 */
 	JSONObject queryStuTeachingReport(JSONObject params);
 	
+	/**
+	 * 家长投诉
+	 */
+	int insertComplains(JSONObject params);
 }

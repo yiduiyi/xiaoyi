@@ -55,8 +55,7 @@ public class H5PlateAction {
 		logger.info("openId:" + openId);
 		
 		if (null == openId) {
-			openId = "oQHVE00HAWuiDqD8zQb1Zun4cfxo";
-			//setSessionOpenId(request);
+			openId = setSessionOpenId(request);
 		}
 
 		try {
@@ -82,8 +81,20 @@ public class H5PlateAction {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 
+		
 		try {
+			String openId = (String) request.getSession().getAttribute("openid");
+			logger.info("openId:" + openId);
+			
+			if (null == openId) {
+				openId = setSessionOpenId(request);
+			}
+			reqData.put("openId", openId);
+			
 			int code = h5PlateService.bindWechat(reqData);
+			if(code==3){
+				logger.error("当前老师已绑定！");
+			}
 			if (code == 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
@@ -142,6 +153,32 @@ public class H5PlateAction {
 		return result;
 	}
 
+	/**
+	 * 获取用户openId
+	 * @param req
+	 */
+	private String setSessionOpenId(HttpServletRequest req){
+		logger.info("In common get openId method...");
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+		    logger.info("code[in common]:"+code);
+		    if (code!=null && !"authdeny".equals(code)){
+	        	logger.info("authing..."); 
+		    	WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID2, WeiXinConfig.SECRET_KEY2 , code);
+	            String openid = weixinOauth2Token.getOpenId();
+	            req.getSession().setAttribute("openid", openid);
+	            logger.error("openid====>" + openid);
+	              //res.sendRedirect( req.getContextPath() + "/wechat/index.html#/drawings");
+	            return openid;
+		    } 	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {
 		result.put("code", code);
 		result.put("msg", rtString);

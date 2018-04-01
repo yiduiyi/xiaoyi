@@ -41,9 +41,23 @@ public class WeichatAuthAction{
 	            StringBuffer reqUrl = new StringBuffer();
 	            reqUrl.append(WeiXinConfig.REDIRECT_HEAD_URL);
 	            reqUrl.append("/wechat/#/studyreport");
+	           
+	            log.info("teachingId:"+req.getParameter("teachingId"));
 	            if(null!=req.getParameter("teachingId")){
 	            	reqUrl.append("?teachingId=");
 	            	reqUrl.append(req.getParameter("teachingId"));
+	            }
+	           
+	            log.info("month:"+req.getParameter("month"));
+	            if(null!=req.getParameter("month")){
+	            	reqUrl.append("?month=");
+	            	reqUrl.append(req.getParameter("month"));
+	            }
+	            
+	            log.info("lessonTradeId:"+req.getParameter("lessonTradeId"));
+	            if(null!=req.getParameter("lessonTradeId")){
+	            	reqUrl.append("?lessonTradeId=");
+	            	reqUrl.append(req.getParameter("lessonTradeId"));
 	            }
 	            
 	            //定向到课时确认界面

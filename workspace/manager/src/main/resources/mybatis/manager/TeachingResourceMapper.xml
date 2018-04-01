@@ -111,12 +111,12 @@
 
 	<!-- 获取师资列表（课时） -->
 	<select id="selectTeachingsByParams" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT a.teacherId,a.checkedLessonNum,a.withDrawLessonNum,a.frozenLessonNum,b.teacherName,b.sex,
+		SELECT a.teacherId,a.checkedLessonNum as withDrawLessonNum,a.withDrawLessonNum as checkedLessonNum,a.frozenLessonNum,b.teacherName,b.sex,
 			b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName
 		FROM teacher b
 			LEFT JOIN lessontradesum a  ON a.teacherId=b.teacherId
 			LEFT JOIN school c ON b.schoolId=c.schoolId
-		WHERE b.signed=1 AND a.totalLessonNum &gt; 0
+		<!-- WHERE b.signed=1 AND a.totalLessonNum &gt; 0 -->
 		<!-- <if test="totalLessonNum!=null">
 			AND a.totalLessonNum &lt; #{totalLessonNum}	
 		</if> -->

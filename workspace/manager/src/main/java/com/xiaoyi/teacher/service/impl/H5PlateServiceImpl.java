@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -79,7 +80,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				//数据库没有匹配的用户（电话号码+用户名）
 				if(null==teacher) {
 					return 2;
-				}								
+				}	
+				
+				if(teacher.getSigned()==1){
+					return 3;
+				}
 			} catch (Exception e) {
 				logger.error("查询老师失败！【params】："+params.toString());
 				e.printStackTrace();
@@ -87,8 +92,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			}
 			
 			//查询登录user表
-			UserKey userKey = new UserKey();
-			userKey.setUserid(teacher.getTelnumber());//初始化账号-手机号码			
+			User userKey = new User();
+			userKey.setUsername(teacher.getTelnumber());
+			//userKey.setUserid(teacher.getTelnumber());//初始化账号-手机号码			
 			
 			User user = null;
 			try {				
@@ -122,7 +128,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				
 				String telNum = teacher.getTelnumber();
 				if(null!=telNum) {
-					user.setUserid(teacher.getTelnumber());
+					user.setUserid(UUID.randomUUID().toString()/*teacher.getTelnumber()*/);
 					user.setUsername(teacher.getTelnumber());
 					user.setPassword(telNum.substring(telNum.length()-6, telNum.length()));
 				}

@@ -242,4 +242,7 @@ public class WechatServiceImpl implements IWechatService {
 		return 0;
 	}
 
+	public int send(){
+		return 0;
+	}
 }

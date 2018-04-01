@@ -1,5 +1,8 @@
 package com.xiaoyi.manager.action;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,10 +19,62 @@ import com.xiaoyi.manager.domain.Account;
 import com.xiaoyi.manager.service.IAccountService;
 
 @Controller
-@RequestMapping("/account")
+@RequestMapping("/order")
 public class AccountAction {
 	@Resource
 	private IAccountService accountService;
+	
+	@RequestMapping(value="/sendPurchaseLink",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject sendPurchaseLink(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		String msg = "发送失败！";
+		int code = -1;
+		
+		if(0<=accountService.sendPurchaseLink(reqData)){
+			code = 0;
+			msg = "发送中...";
+		}
+		
+		return setReturnMsg(result, code, msg);		
+	}
+	
+	@RequestMapping(value="/getComplainList",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getComplainList(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		String msg = "获取投诉列表失败！";
+		int code = -1;
+		try {
+			List<JSONObject> datas = accountService.getComplainList(null);
+			if(null!=datas){
+				if(datas.size()>0){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						for(JSONObject data : datas){
+							data.put("time", sdf.format(data.getString("complain_time")));
+						}						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				result.put("data", datas);
+				
+				code = 0;
+				msg = "获取投诉列表成功！";
+			}			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+			
+		return setReturnMsg(result, code, msg);
+	}
+	
 	
 	@RequestMapping(value="/showAccountName",method=RequestMethod.POST)
 	@ResponseBody
@@ -42,5 +97,9 @@ public class AccountAction {
         return "index";  
 	}
 
-    
+	private JSONObject setReturnMsg(JSONObject result,int code, String msg){
+		result.put("code", code);
+		result.put("msg", msg);
+		return result;
+	}
 }

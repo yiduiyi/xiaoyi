@@ -46,6 +46,9 @@
 	<if test="queryDate!=null">
 		AND date_format(teachingDate,'%Y%m')=#{queryDate}
 	</if> 
+ 	<if test="lessonTradeId!=null">
+ 		AND lessonTradeId = #{lessonTradeId}
+ 	</if>
   </select>
   
 </mapper>
