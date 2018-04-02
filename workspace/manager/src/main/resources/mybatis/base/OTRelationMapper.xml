@@ -30,4 +30,18 @@
 		SELECT *FROM order_teaching_r
 		WHERE orderId=#{orderId}	
 	</select>
+	
+	<select id="selectOTRelationsByParams" parameterType="hashmap"
+		resultType="com.xiaoyi.manager.domain.OrderTeachingRelation">
+		SELECT *
+		FROM order_teaching_r
+		<where>
+			<if test="orderId!=null">
+				orderId=#{orderId}
+			</if>
+			<if test="teacherId!=null">
+				and teacherId = #{teacherId}
+			</if>
+		</where>	 	
+	</select>
 </mapper>

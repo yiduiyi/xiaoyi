@@ -575,20 +575,28 @@ public class OrderServiceImpl implements IOrderService {
 			} catch (Exception e) {
 				logger.error("删除老师任教关系出错！");
 				e.printStackTrace();
-				return 0;
+				throw e;
 			}
 			//otRelationDao.selectOTRelationsByOrderId(params.getString("orderId"));
-			
+			//查询任教Id
 			String deleteTeachingId = null;
+			try {
+				OrderTeachingRelation otr = otRelationDao.selectOTRelationsByParams(reqParams);
+				deleteTeachingId = otr.getTeachingId();
+			} catch (Exception e) {
+				logger.error("查询任教Id失败！");
+				return -1;
+			}
+			
 			//删除教师教学任务
 			try {
 				TeacherLesRelationKey tlRelationKey = new TeacherLesRelationKey();
 				tlRelationKey.setLessontype(params.getInteger("courseId"));
 				tlRelationKey.setTeacherid(params.getString("teacherId"));
 			
-				//补充 teachingId
-				tlRelationKey = tlRelationDao.selectTLRelationByParams(tlRelationKey);
-				deleteTeachingId = tlRelationKey.getTeachingid();
+				//补充 teachingId				
+				//tlRelationKey = tlRelationDao.selectTLRelationByParams(tlRelationKey);
+				//deleteTeachingId = tlRelationKey.getTeachingid();
 				
 				tlRelationDao.deleteByPrimaryKey(tlRelationKey);
 			} catch (Exception e) {
@@ -613,8 +621,7 @@ public class OrderServiceImpl implements IOrderService {
 						}
 					}
 					
-					orderSum.setTeachingids(sb.substring(0,sb.length()-1));
-					
+					orderSum.setTeachingids(sb.substring(0,sb.length()-1));					
 					orderSumDao.updateByPrimaryKeySelective(orderSum);
 				}
 			} catch (Exception e) {
@@ -623,7 +630,8 @@ public class OrderServiceImpl implements IOrderService {
 			}
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			return -1;
 		}
 		return 0;
 	}

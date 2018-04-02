@@ -10,4 +10,7 @@ public interface IOTRelationDao {
 	int deleteOTRelations(Map<String,Object> parmas);
 	
 	List<OrderTeachingRelation> selectOTRelationsByOrderId(String orderId);
+	
+	
+	OrderTeachingRelation selectOTRelationsByParams(Map<String,Object> params);
 }

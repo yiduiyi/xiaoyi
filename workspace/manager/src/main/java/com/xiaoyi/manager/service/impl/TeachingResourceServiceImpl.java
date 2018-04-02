@@ -212,6 +212,8 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	public List<JSONObject> queryTeachingList(JSONObject params) {
 		try {
 			List<JSONObject> result = teachingResourceDao.selectTeachingsByParams(params);
+			
+			sortJsonList(result, "regDate", false);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();			
@@ -224,20 +226,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 		try {
 			List<JSONObject> result = teachingResourceDao.selectTeachersByParams(params);
 			
-			Collections.sort(result, new Comparator<JSONObject>() {
-
-				@Override
-				public int compare(JSONObject o1, JSONObject o2) {
-					if(null!=o1 && null!=o2 
-							&& o1.getString("regDate")!=null
-							&& o2.getString("regDate")!=null){
-						
-						//return o1.getString("createTime")>o2.getString("createTime")?0:1;
-						return o2.getString("regDate").compareTo(o1.getString("regDate"));
-					}
-					return 0;
-				}
-			});
+			sortJsonList(result, "regDate", false);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -295,4 +284,33 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 		return -1;
 	}
 	
+	/**
+	 * json list sort
+	 * @param datas
+	 * @param key
+	 * @param asc
+	 * @return
+	 */
+	private List<JSONObject> sortJsonList(List<JSONObject> datas, final String key, final boolean asc){
+		Collections.sort(datas, new Comparator<JSONObject>() {
+
+			@Override
+			public int compare(JSONObject o1, JSONObject o2) {
+				if(null!=o1 && null!=o2 
+						&& o1.getString(key)!=null
+						&& o2.getString(key)!=null){
+					
+					//return o1.getString("createTime")>o2.getString("createTime")?0:1;
+					if(!asc){
+						return o2.getString(key).compareTo(o1.getString(key));				
+					}else{
+						return o1.getString(key).compareTo(o2.getString(key));
+					}
+				}
+				return 0;
+			}
+		});
+		
+		return datas;
+	}
 }
