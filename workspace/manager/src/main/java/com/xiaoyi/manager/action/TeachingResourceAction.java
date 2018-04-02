@@ -112,7 +112,7 @@ public class TeachingResourceAction {
 			List<JSONObject> teachers = tResourceService.queryTeacherList(reqData);
 			
 			if(!CollectionUtils.isEmpty(teachers)) {
-				SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.DD");
+				SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd");
 				for(JSONObject teaching : teachers) {
 					Object regDate = teaching.get("regDate");
 					if(null!=regDate) {

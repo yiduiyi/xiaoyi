@@ -188,7 +188,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 					logger.info("teaching date:" + sdf.format(teachingDate));
 					try {
 						if (queryDates.contains(sdf.format(teachingDate))) {
-							continue;
+							//continue;
 						}
 					} catch (Exception e) {
 						logger.info("适配日期失败,自动忽略该条记录！");

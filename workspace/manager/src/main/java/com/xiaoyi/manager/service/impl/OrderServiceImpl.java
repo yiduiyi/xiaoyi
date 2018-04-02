@@ -570,7 +570,13 @@ public class OrderServiceImpl implements IOrderService {
 			reqParams.put("courseId", params.get("courseId"));
 			reqParams.put("teacherId", params.get("teacherId"));
 			
-			otRelationDao.deleteOTRelations(reqParams);	
+			try {				
+				otRelationDao.deleteOTRelations(reqParams);	
+			} catch (Exception e) {
+				logger.error("删除老师任教关系出错！");
+				e.printStackTrace();
+				return 0;
+			}
 			//otRelationDao.selectOTRelationsByOrderId(params.getString("orderId"));
 			
 			String deleteTeachingId = null;
@@ -598,7 +604,16 @@ public class OrderServiceImpl implements IOrderService {
 				OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
 				if(null!=orderSum && !StringUtils.isEmpty(orderSum.getTeachingids())) {
 					String teachingIds = orderSum.getTeachingids();
-					orderSum.setTeachingids(teachingIds.replaceFirst(deleteTeachingId+",", ""));
+					StringBuffer sb = new StringBuffer();
+					List<String> teachingIdList = Arrays.asList(teachingIds.split(","));
+					for(String teachingId : teachingIdList){
+						if(!teachingId.equals(deleteTeachingId)){
+							sb.append(teachingId);
+							sb.append(",");
+						}
+					}
+					
+					orderSum.setTeachingids(sb.substring(0,sb.length()-1));
 					
 					orderSumDao.updateByPrimaryKeySelective(orderSum);
 				}

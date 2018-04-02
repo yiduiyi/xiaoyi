@@ -1,6 +1,8 @@
 package com.xiaoyi.manager.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -221,6 +223,21 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	public List<JSONObject> queryTeacherList(JSONObject params) {
 		try {
 			List<JSONObject> result = teachingResourceDao.selectTeachersByParams(params);
+			
+			Collections.sort(result, new Comparator<JSONObject>() {
+
+				@Override
+				public int compare(JSONObject o1, JSONObject o2) {
+					if(null!=o1 && null!=o2 
+							&& o1.getString("regDate")!=null
+							&& o2.getString("regDate")!=null){
+						
+						//return o1.getString("createTime")>o2.getString("createTime")?0:1;
+						return o2.getString("regDate").compareTo(o1.getString("regDate"));
+					}
+					return 0;
+				}
+			});
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
