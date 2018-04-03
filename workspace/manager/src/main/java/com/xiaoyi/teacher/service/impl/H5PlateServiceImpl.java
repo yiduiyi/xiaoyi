@@ -82,7 +82,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					return 2;
 				}	
 				
-				if(teacher.getSigned()==1){
+				if(teacher.getSigned()==0){
+					return 4;
+				}
+				
+				if(StringUtils.isNotEmpty(teacher.getOpenId())){
 					return 3;
 				}
 			} catch (Exception e) {

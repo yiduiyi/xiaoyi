@@ -79,8 +79,9 @@ public class H5PlateAction {
 	public JSONObject bindWechat(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
-
+		//RtConstants rtCode = RtConstants.FAILED;
+		int code =0;
+		String msg = "";
 		
 		try {
 			String openId = (String) request.getSession().getAttribute("openid");
@@ -91,18 +92,28 @@ public class H5PlateAction {
 			}
 			reqData.put("openId", openId);
 			
-			int code = h5PlateService.bindWechat(reqData);
+			code = h5PlateService.bindWechat(reqData);
+			if(code==2){
+				msg = "数据库没有匹配的用户";
+				logger.error("数据库没有匹配的用户");
+			}
 			if(code==3){
+				msg = "当前老师已绑定！";
 				logger.error("当前老师已绑定！");
 			}
+			if(code==4){
+				msg = "该老师未签约！";
+				logger.error("该老师未签约！");
+			}
+			
 			if (code == 0) {
-				rtCode = RtConstants.SUCCESS;
+				msg = RtConstants.SUCCESS.toString();
 			}
 		} catch (Exception e) {
 			logger.error("绑定老师账号失败！");
 		}
 
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
+		setReturnMsg(result, code, msg);
 		return result;
 	}
 

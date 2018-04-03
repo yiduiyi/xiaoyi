@@ -201,8 +201,16 @@ public class OrderServiceImpl implements IOrderService {
 				orderSumKey.setOrderid(orderId);
 				oldOrderSum = orderSumDao.selectByPrimaryKey(orderSumKey);
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
+				logger.info("获取元订单详情失败！");
+				throw e;
 			}
+			
+			//
+			if(null==oldOrderSum){
+				return 0;
+			}
+			logger.info("oldOrderSum lessonType:"+oldOrderSum.getLessontype());
 			
 			//查看是否存在重复录入情况（订单下存在相同的老师Id和科目Id）
 			try {
@@ -215,11 +223,17 @@ public class OrderServiceImpl implements IOrderService {
 					for(int i=0; i<teacherList.size(); i++) {
 						int courseId = Integer.parseInt(courseList.get(i));
 						String teacherId = teacherList.get(i);
-												
+						logger.info("to be inserted courseId:"+courseId);
+						logger.info("to be inserted teacherId:"+teacherId);
+						logger.info("");
+						
 						//过滤重复教学任务
 						if(otRelations!=null) {
 							for(int j=0; j<otRelations.size(); j++) {
 								OrderTeachingRelation otRelation = otRelations.get(j);
+								
+								logger.info("otr courseId:"+otRelation.getLessonType());
+								logger.info("otr teacherId"+otRelation.getTeacherId());
 								if(courseId==otRelation.getLessonType()
 										&& teacherId.equals(otRelation.getTeacherId())) {
 									continue next;
@@ -570,6 +584,60 @@ public class OrderServiceImpl implements IOrderService {
 			reqParams.put("courseId", params.get("courseId"));
 			reqParams.put("teacherId", params.get("teacherId"));
 			
+			//查询任教Id
+			String deleteTeachingId = null;
+			try {
+				OrderTeachingRelation otr = otRelationDao.selectOTRelationsByParams(reqParams);
+				if(null==otr){
+					//误删之后,清理教学任务对应的表数据 
+					try {
+						OrderSumKey key = new OrderSumKey();
+						
+						key.setOrderid(params.getString("orderId"));
+						OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
+						
+						if(null==orderSum){
+							logger.info("orderSum is null!");
+							return 0;
+						}
+						
+						String teachingIds = orderSum.getTeachingids();
+						if(!StringUtils.isEmpty(teachingIds)){
+							List<String> teachingIdList = Arrays.asList(teachingIds.split(","));
+							
+							//查找无效的教学任务
+							logger.info("query tlRelations[params]:"+teachingIdList.toString());
+							List<TeacherLesRelationKey> tlrs = tlRelationDao.selectTLRelationsById(teachingIdList);
+							if(!CollectionUtils.isEmpty(teachingIdList) 
+									&& !CollectionUtils.isEmpty(tlrs)){
+								logger.info("query deprecated teachingId");
+								for(TeacherLesRelationKey tlr : tlrs){
+									if(teachingIdList.contains(tlr.getTeachingid())){
+										deleteTeachingId = tlr.getTeachingid();
+										break;
+									}
+								}
+							}
+						}
+					} catch (Exception e) {
+						logger.info("清理教学任务对应的表数据出错！");
+						e.printStackTrace();
+					}
+					
+				}else{
+					deleteTeachingId = otr.getTeachingId();
+				}
+								
+				logger.info("deleteTeachignId:"+deleteTeachingId);
+				if(StringUtils.isEmpty(deleteTeachingId)){
+					return 0;
+				}
+			} catch (Exception e) {
+				logger.error("查询任教Id失败！");
+				e.printStackTrace();
+				return -1;
+			}
+
 			try {				
 				otRelationDao.deleteOTRelations(reqParams);	
 			} catch (Exception e) {
@@ -578,22 +646,14 @@ public class OrderServiceImpl implements IOrderService {
 				throw e;
 			}
 			//otRelationDao.selectOTRelationsByOrderId(params.getString("orderId"));
-			//查询任教Id
-			String deleteTeachingId = null;
-			try {
-				OrderTeachingRelation otr = otRelationDao.selectOTRelationsByParams(reqParams);
-				deleteTeachingId = otr.getTeachingId();
-			} catch (Exception e) {
-				logger.error("查询任教Id失败！");
-				return -1;
-			}
 			
 			//删除教师教学任务
 			try {
 				TeacherLesRelationKey tlRelationKey = new TeacherLesRelationKey();
 				tlRelationKey.setLessontype(params.getInteger("courseId"));
 				tlRelationKey.setTeacherid(params.getString("teacherId"));
-			
+				tlRelationKey.setTeachingid(deleteTeachingId);
+				
 				//补充 teachingId				
 				//tlRelationKey = tlRelationDao.selectTLRelationByParams(tlRelationKey);
 				//deleteTeachingId = tlRelationKey.getTeachingid();
@@ -612,6 +672,7 @@ public class OrderServiceImpl implements IOrderService {
 				OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
 				if(null!=orderSum && !StringUtils.isEmpty(orderSum.getTeachingids())) {
 					String teachingIds = orderSum.getTeachingids();
+					logger.info("teachingIds:"+teachingIds);
 					StringBuffer sb = new StringBuffer();
 					List<String> teachingIdList = Arrays.asList(teachingIds.split(","));
 					for(String teachingId : teachingIdList){
@@ -620,9 +681,10 @@ public class OrderServiceImpl implements IOrderService {
 							sb.append(",");
 						}
 					}
-					
-					orderSum.setTeachingids(sb.substring(0,sb.length()-1));					
-					orderSumDao.updateByPrimaryKeySelective(orderSum);
+					if(sb.length()>1){
+						orderSum.setTeachingids(sb.substring(0,sb.length()-1));					
+						orderSumDao.updateByPrimaryKeySelective(orderSum);
+					}
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -57,10 +57,14 @@ public class TeachingResourceAction {
 			List<JSONObject> teachers = new ArrayList<JSONObject>();
 			teachers.add(reqData);
 			
-			tResourceService.addTeachingTeacher(teachers);
-			
-			rtCode = RtConstants.SUCCESS;
-			
+			int addedColums = tResourceService.addTeachingTeacher(teachers);
+			switch(addedColums){
+			case 0:
+				result.put("code", 1);
+				result.put("msg", "插入失败,号码已重复！");
+				return result;			
+			}
+			rtCode = RtConstants.SUCCESS;			
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}

@@ -76,6 +76,10 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 				throw e;
 			}
 			
+			if(CollectionUtils.isEmpty(telNums)){
+				return 0;
+			}
+			
 			//学校Id-name map
 			Map<String,String> schooIdNameMap = new HashMap<String,String>();
 			for(School sch : hasRecordedSchool) {

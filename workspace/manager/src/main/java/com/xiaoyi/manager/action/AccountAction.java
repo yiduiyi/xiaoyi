@@ -56,7 +56,7 @@ public class AccountAction {
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					try {
 						for(JSONObject data : datas){
-							data.put("time", sdf.format(data.getString("complain_time")));
+							data.put("complain_time", sdf.format(data.getString("complain_time")));
 						}						
 					} catch (Exception e) {
 						e.printStackTrace();
