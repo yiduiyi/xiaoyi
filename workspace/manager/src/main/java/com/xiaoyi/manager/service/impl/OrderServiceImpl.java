@@ -168,19 +168,17 @@ public class OrderServiceImpl implements IOrderService {
 	@Transactional
 	@Override
 	public int updateOrder(JSONObject params) {
+		int updatedColums = 0;
 		try {
 			String teacherIds = params.getString("teacherIds");
 			String courseIds = params.getString("courseIds");
 			String orderId = params.getString("orderId");
 			
-			List<String> newTeachingIds = new ArrayList<String>();
-			List<String> oldTeachingIds = null;
-			
+			logger.info("teacherIds"+teacherIds);
+			logger.info("courseIds"+courseIds);
+			logger.info("orderId"+orderId);
 			List<String> courseList = null;
-			List<String> teacherList = null;
-			
-			Map<String,String> teacherTeachingMap = new HashMap<String,String>();
-			Map<String,Integer> teachingIdCourseMap = new HashMap<String,Integer>();			
+			List<String> teacherList = null;			
 			
 			//待匹配老师
 			if(null==teacherIds) {
@@ -208,7 +206,7 @@ public class OrderServiceImpl implements IOrderService {
 			
 			//
 			if(null==oldOrderSum){
-				return 0;
+				return updatedColums;
 			}
 			logger.info("oldOrderSum lessonType:"+oldOrderSum.getLessontype());
 			
@@ -225,7 +223,7 @@ public class OrderServiceImpl implements IOrderService {
 						String teacherId = teacherList.get(i);
 						logger.info("to be inserted courseId:"+courseId);
 						logger.info("to be inserted teacherId:"+teacherId);
-						logger.info("");
+						//logger.info("");
 						
 						//过滤重复教学任务
 						if(otRelations!=null) {
@@ -274,7 +272,9 @@ public class OrderServiceImpl implements IOrderService {
 				//订单-教学任务入库
 				try {
 					if(!CollectionUtils.isEmpty(newOTRelations)) {
-						otRelationDao.insertOTRelations(newOTRelations);
+						updatedColums = otRelationDao.insertOTRelations(newOTRelations);
+					}else{
+						return updatedColums;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -298,13 +298,14 @@ public class OrderServiceImpl implements IOrderService {
 				
 			//更新订单的任教关系
 			try {
+				//if()
 				orderSumDao.updateByPrimaryKeySelective(oldOrderSum);				
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
 			}
 			
-			return 0;
+			return updatedColums;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException();

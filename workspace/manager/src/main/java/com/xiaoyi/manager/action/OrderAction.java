@@ -5,26 +5,15 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.utils.ConstantUtil;
-import com.xiaoyi.common.utils.ConstantUtil.Education;
-import com.xiaoyi.manager.domain.Account;
-import com.xiaoyi.manager.domain.User;
-import com.xiaoyi.manager.service.IAccountService;
-import com.xiaoyi.manager.service.ILoginService;
 import com.xiaoyi.manager.service.IOrderService;
-import com.xiaoyi.manager.service.IScheduleService;
-import com.xiaoyi.manager.utils.constant.ResponseConstants.LoginConstants;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 /**
@@ -57,7 +46,7 @@ public class OrderAction {
 			e.printStackTrace();
 		}
 		
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());		
 		return result;
 	}
 	//月订单
@@ -79,7 +68,7 @@ public class OrderAction {
 			e.printStackTrace();
 		}
 		
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());		
 		return result;
 	}
 	
@@ -108,7 +97,7 @@ public class OrderAction {
 		}
 		
 		
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());		
 		return result;
 	}
 	
@@ -145,7 +134,7 @@ public class OrderAction {
 			e.printStackTrace();
 		}
 	
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());		
 		return result;
 	}
 	
@@ -167,7 +156,7 @@ public class OrderAction {
 			e.printStackTrace();
 		}
 	
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());		
 		return result;
 	}
 	@RequestMapping(value="/teaching/saveTeaching",method=RequestMethod.POST)
@@ -176,19 +165,23 @@ public class OrderAction {
 			,HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
+		
+		int code = 0;
+		String msg = "操作成功！";
 		
 		try {			
-			//List<JSONObject> data = orderService.queryCourseList(reqData);						
-			if(-1!=orderService.updateOrder(reqData)){
-				rtCode = RtConstants.SUCCESS;
+			switch (orderService.updateOrder(reqData)) {
+			case 0:
+				code = -1;
+				msg = "已存在该教学任务！";
+				break;
 			}
-			//result.put("data", data);			
+					
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}
 	
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, code, msg);		
 		return result;
 	}
 	
@@ -210,7 +203,7 @@ public class OrderAction {
 			e.printStackTrace();
 		}
 	
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());		
 		return result;
 	}
 	
@@ -232,7 +225,7 @@ public class OrderAction {
 			e.printStackTrace();
 		}
 	
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());		
 		return result;
 	}
 	
@@ -242,27 +235,30 @@ public class OrderAction {
 			,HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
+		int code = -1;
+		String msg = "获取失败！";
 		
 		try {			
 			List<JSONObject> data = orderService.queryMTeachings(reqData);
 			if(null!=data){
 				result.put("data", data);
-				rtCode = RtConstants.SUCCESS;
+				
+				code = 0;
+				msg="获取月课时账单成功！";
 			}
 			
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}
 	
-		setReturnMsg(result, rtCode);		
+		setReturnMsg(result, code, msg);		
 		return result;
 	}
 	
 	///
-	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
-		result.put("code", rtCode.getCode());
-		result.put("msg", rtCode.toString());
+	private JSONObject setReturnMsg(JSONObject result,int code, String msg){
+		result.put("code", code);
+		result.put("msg", msg);
 		return result;
 	}
 }
