@@ -145,22 +145,29 @@ public class H5PlateAction {
 	public JSONObject withdrawLessons(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
-
+		//RtConstants rtCode = RtConstants.FAILED;
+		int code = 0;
+		String msg="提交成功,等待入账...";
+		
 		String lessonTradeId = reqData.getString("lessonTradeId");
 		try {
 			JSONObject reqParams = new JSONObject();
 			reqParams.put("lessonTradeId", lessonTradeId);
 			reqParams.put("openId", request.getSession().getAttribute("openid"));
 			
-			if (0 <= h5PlateService.withdrawLessons(reqParams)) {
-				rtCode = RtConstants.SUCCESS;
+			logger.info("in withdraw lessons action...");
+			logger.info("lessonTradeId:"+lessonTradeId);
+			logger.info("openId:"+request.getSession().getAttribute("openid"));
+			if (0 < h5PlateService.withdrawLessons(reqParams)) {
+				msg = "提款成功！";						
 			}
 		} catch (Exception e) {
-			logger.error("老师提现失败！");
+			code = -1;
+			msg = "老师提现失败！";
+			logger.error(msg);
 		}
 
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
+		setReturnMsg(result, code, msg);
 		return result;
 	}
 

@@ -152,11 +152,11 @@ public class WechatServiceImpl implements IWechatService {
 					if(null==lessonTrade) {
 						return null;
 					}
-					Integer lessonType = lessonTrade.getLessontype();
-					Short applylessons = lessonTrade.getApplylessons();
+					//Integer lessonType = lessonTrade.getLessontype();
+					//Short applylessons = lessonTrade.getApplylessons();
 					
 					//查询提现课时(价目表)
-					TeacherPayList priceList = null;
+					/*TeacherPayList priceList = null;
 					if(null!=lessonType && applylessons!=null) {
 						TeacherPayListKey keys = new TeacherPayListKey();
 						Short feedback = 1;
@@ -170,37 +170,42 @@ public class WechatServiceImpl implements IWechatService {
 						keys.setLessontypeid(lessonType);
 						
 						priceList = payListDao.selectByPrimaryKey(keys);
-					}
+					}*/
 					
 					//查询提现老师被冻结课时
-					if(null!=priceList) {
-						String teacherId = lessonTrade.getTeacherid();
-						LessonTradeSum tradeSum = null;
+					//if(null!=priceList) {
+					/*String teacherId = lessonTrade.getTeacherid();
+					LessonTradeSum tradeSum = null;
 
-						try {
-							tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);
-						} catch (Exception e) {
-							throw e;
-						}
-						
-						//结算时减去被冻结课时
-						int checkLessons=0;
-						if(null!=tradeSum && tradeSum.getFrozenlessonnum()!=null) {
-							checkLessons = (applylessons>tradeSum.getFrozenlessonnum())?
-									(short)(applylessons - tradeSum.getFrozenlessonnum()):0;
-							tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
-									tradeSum.getFrozenlessonnum()-applylessons));
-						}
-						
-						//设置提现金额
-						amount = checkLessons*priceList.getReward();
-						packageParams.put("amount",amount);						
-						
-						//设置更新冻结课时数
-						result.put("updatedFromzenLessons", tradeSum.getFrozenlessonnum());
-					}else{
+					try {
+						tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);
+					} catch (Exception e) {
+						throw e;
+					}*/
+					
+					//结算时减去被冻结课时
+					/*int checkLessons=0;
+					if(null!=tradeSum && tradeSum.getFrozenlessonnum()!=null) {
+						checkLessons = (applylessons>tradeSum.getFrozenlessonnum())?
+								(short)(applylessons - tradeSum.getFrozenlessonnum()):0;
+						tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
+								tradeSum.getFrozenlessonnum()-applylessons));
+					}*/
+					
+					//设置提现金额
+					logger.info("actual pay: "+lessonTrade.getActualPay());
+					if(null==lessonTrade.getActualPay()){
+						//amount = 0;
 						return null;
 					}
+					amount = lessonTrade.getActualPay() * 100;//checkLessons*priceList.getReward();
+					packageParams.put("amount",String.valueOf(amount));						
+					
+					//设置更新冻结课时数
+					//result.put("updatedFromzenLessons", tradeSum.getFrozenlessonnum());
+						/*}else{ 
+						return null;
+					}*/
 				}else{
 					return null;
 				}

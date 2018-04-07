@@ -185,9 +185,10 @@
 	
 	<!-- 查询h5老师课时记录 -->
 	<select id="selectLessonTradeByTeacherId" parameterType="java.lang.String"
-			resultType="com.xiaoyi.teacher.domain.LessonTrade">
-		SELECT *
-		FROM lessontrade
+			resultType="com.alibaba.fastjson.JSONObject">
+		SELECT a.*,b.parentName
+		FROM lessontrade a left join parents b
+			on a.parentId = b.parentId
 		WHERE teacherId=#{teacherId}
 	</select>
 	

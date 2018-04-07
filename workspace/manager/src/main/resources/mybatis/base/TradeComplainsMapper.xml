@@ -32,17 +32,20 @@
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </select>
   
-  <select id="selectAllByPrimaryKeys" parameterType="java.util.List" resultType="hashmap">
+  <select id="selectAllByPrimaryKeys" parameterType="hashmap" resultType="hashmap">
   	SELECT a.teacherId,b.teacherName, a.complain_content, a.complain_time,b.telNumber AS teacherTel,d.parentName,d.telNum AS parentsTel
 	FROM tradecomplains a left JOIN teacher b
 		ON a.teacherId=b.teacherId
 		LEFT JOIN lessontrade c ON a.lessonTradeId=c.lessonTradeId
 		LEFT JOIN parents d ON c.parentId=d.parentId
-    <if test="list!=null">
+    <!-- <if test="list!=null">
 	    where lessonTradeId in
 	    <foreach collection="list" open="(" close=")" separator="," item="item">
 	    	#{item}
 	    </foreach> 
+    </if> -->
+    <if test="teacherName!=null">
+    	b.teacherName=#{teacherName}
     </if>
   </select>
   

@@ -3,6 +3,7 @@ package com.xiaoyi.teacher.action;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.service.IPrivateDomainService;
 
@@ -62,6 +64,12 @@ public class PrivateDomainAction {
 		
 		try {
 			domainService.setAgreement(reqData);
+			
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("userBean");
+			if(null!=user){
+				user.setUserprivilege((byte)1);
+			}
 			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {			
 			logger.error("获取老师签约状态失败！");
