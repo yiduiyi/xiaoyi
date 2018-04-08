@@ -60,7 +60,7 @@ public class TeachingResourceAction {
 			int addedColums = tResourceService.addTeachingTeacher(teachers);
 			switch(addedColums){
 			case 0:
-				result.put("code", 1);
+				result.put("code", -1);
 				result.put("msg", "插入失败,号码已重复！");
 				return result;			
 			}
@@ -129,6 +129,7 @@ public class TeachingResourceAction {
 					if(null!=education) {
 						for(Education value : Education.values()) {
 							if(education==value.getValue()) {
+								teaching.put("educationId", education);
 								teaching.put("education", value.toString());
 								break;
 							}
@@ -192,6 +193,27 @@ public class TeachingResourceAction {
 		try {			
 			tResourceService.deleteTeachingTeacher(reqData.getString("teacherId"));
 			rtCode = RtConstants.SUCCESS;			
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
+	
+	@RequestMapping(value="/updateTeachingTeachers",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject updateTeachingTeachers(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			if(0<tResourceService.updateTeachingTeacher(reqData)){				
+				rtCode = RtConstants.SUCCESS;			
+			}
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}

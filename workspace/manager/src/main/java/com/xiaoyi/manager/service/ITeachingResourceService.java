@@ -34,4 +34,11 @@ public interface ITeachingResourceService {
 	int operateTeacherLessons(JSONObject params);
 	
 	int deleteTeachingTeacher(String teacherId);
+	
+	/**
+	 * 编辑老师
+	 * @param params
+	 * @return
+	 */
+	int updateTeachingTeacher(JSONObject params);
 }

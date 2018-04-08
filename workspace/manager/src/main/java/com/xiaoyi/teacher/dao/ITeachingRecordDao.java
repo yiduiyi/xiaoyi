@@ -41,5 +41,5 @@ public interface ITeachingRecordDao {
 
     int updateByPrimaryKey(TeachingRecord record);
 
-    List<LessonTrade> selectLessonTradeByTeacherId(String teacherId);
+    List<JSONObject> selectLessonTradeByTeacherId(String teacherId);
 }

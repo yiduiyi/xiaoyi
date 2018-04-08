@@ -210,20 +210,22 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				return null;
 			}
 			String teacherId = teacher.getTeacherid();
-			List<LessonTrade> lessonTradeList = tRecordDao.selectLessonTradeByTeacherId(teacherId);
+			List<JSONObject> lessonTradeList = tRecordDao.selectLessonTradeByTeacherId(teacherId);
 			
 			if(CollectionUtils.isNotEmpty(lessonTradeList)) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				for(LessonTrade lessonTrade : lessonTradeList) {				
+				for(JSONObject lessonTrade : lessonTradeList) {				
 					JSONObject record = new JSONObject();
-					Date applyTime = lessonTrade.getApplytime();
+					Date applyTime = lessonTrade.getDate("applyTime");/*.getApplytime();*/
 					String time = sdf.format(applyTime);
 					
-					record.put("lessonTradeId", lessonTrade.getLessontradeid());
+					record.put("lessonTradeId", lessonTrade.get("lessonTradeId")/*.getLessontradeid()*/);
 					record.put("year", time.substring(0, 4));
 					record.put("month", time.substring(5,7));
-					record.put("fee", lessonTrade.getActualPay());
-					Byte status = lessonTrade.getStatus();
+					record.put("fee", lessonTrade.get("actualPay")/*.getActualPay()*/);
+					record.put("parentName", lessonTrade.get("parentName"));
+					
+					Byte status = lessonTrade.getByte("status")/*.getStatus()*/;
 					if(null==status) {
 						status = 1;
 					}else {

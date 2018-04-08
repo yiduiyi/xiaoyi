@@ -29,11 +29,12 @@ public class EnterpriceToCustomer {
 		String openid = "oVbXbw_Fz5o2-VHc5eIW5WY1JG70"; // 支付给用户openid
 		
 		String check_name = "NO_CHECK"; //是否验证真实姓名呢
-		String re_user_name = "小郑";   //收款用户姓名
+		String re_user_name = "小邓";   //收款用户姓名
 		String amount = "100"; 				//企业付款金额，单位为分
-		String desc = "测试开发";   //企业付款操作说明信息。必填。
+		String desc = "测试开发【老师提现】";   //企业付款操作说明信息。必填。
 		String spbill_create_ip = "192.168.1.3";		//
 		
+
 		//2.0 生成map集合
 		SortedMap<Object, Object> packageParams = new TreeMap<Object, Object>(); 
 		packageParams.put("mch_appid", appid);         //微信公众号的appid

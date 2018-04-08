@@ -77,7 +77,7 @@ public class AccountServiceImpl implements IAccountService{
 	public List<JSONObject> getComplainList(JSONObject params) {		
 		
 		try {
-			return tradeCompainsDao.selectAllByPrimaryKeys(null);			
+			return tradeCompainsDao.selectAllByPrimaryKeys(params);			
 		} catch (Exception e) {
 			logger.info("查询投诉记录失败！");
 			logger.error(e.getMessage());

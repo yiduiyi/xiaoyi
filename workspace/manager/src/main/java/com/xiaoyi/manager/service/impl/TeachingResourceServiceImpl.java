@@ -11,6 +11,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -18,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IPictureDao;
+import com.xiaoyi.manager.dao.ISchoolDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.dao.order.ITeachingDao;
 import com.xiaoyi.manager.dao.teaching.ITeachingResourceDao;
@@ -31,11 +34,16 @@ import com.xiaoyi.teacher.domain.LessonTradeSum;
 
 @Service("teachingResourceService")
 public class TeachingResourceServiceImpl implements ITeachingResourceService {
+	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Resource
 	ITeachingDao teachingDao;
 	
 	@Resource
 	ITeacherDao teacherDao;
+	@Resource
+	ISchoolDao schoolDao;
 	
 	@Resource
 	IPictureDao pictureDao;
@@ -49,6 +57,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	@Transactional
 	@Override
 	public int addTeachingTeacher(List<JSONObject> datas) {
+		int retCode = 0;
 		//校验导入数据
 		try {
 			//去重
@@ -192,7 +201,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 								userList.add(user);
 							}
 							if(!CollectionUtils.isEmpty(userList)) {
-								teachingResourceDao.insertTUserList(userList);
+								retCode = teachingResourceDao.insertTUserList(userList);
 							}
 						}
 						
@@ -209,7 +218,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 			throw new RuntimeException();
 		}
 		
-		return 0;
+		return retCode;
 	}
 
 	@Override
@@ -316,5 +325,101 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 		});
 		
 		return datas;
+	}
+
+	@Transactional
+	@Override
+	public int updateTeachingTeacher(JSONObject params) {
+		String teacherId = params.getString("teacherId");
+		String updatedTelNum = params.getString("telNumber");
+		String addedSchoolName = params.getString("schoolName");
+		
+		
+		logger.info("teacherId:"+teacherId);
+		logger.info("updatedTelNum:"+updatedTelNum);
+		logger.info("addedSchoolName:"+addedSchoolName);
+		if(StringUtils.isEmpty(teacherId) || StringUtils.isEmpty(updatedTelNum)){
+			logger.info("参数错误！");
+			return -1;
+		}
+		
+		try {			
+			List<School> hasRecordedSchool;
+			List<String> schoolNames = null;
+			try {
+				schoolNames = new ArrayList<String>();							
+				
+				//判断是否号码已重复
+				logger.info("根据号码查询老师列表【params】："+ updatedTelNum);				
+				Teacher curTeacher = teacherDao.selectByPrimaryKey(teacherId);
+				if(null!=curTeacher && !updatedTelNum.equals(curTeacher.getTelnumber())){
+					logger.info("更新老师信息失败【号码已存在】！");
+					return -2;
+				}												
+				
+				String schoolId = params.getString("schoolId");
+				School school = null;
+				if(StringUtils.isEmpty(schoolId)){
+					logger.info("根据schoolId查询学校【params】："+schoolId);
+					school = schoolDao.selectByPrimaryKey(schoolId);
+				}
+				//新增学校
+				if(null==school){
+					//新增学校
+					if(!StringUtils.isEmpty(addedSchoolName)){
+						schoolNames.add(addedSchoolName);
+					}
+					//根据学校名称查找学校
+					hasRecordedSchool = teachingResourceDao.selectSchoolByNames(schoolNames);			
+					if(null==hasRecordedSchool || hasRecordedSchool.size()==1){
+						School addedSchool = new School();
+						schoolId = UUID.randomUUID().toString();
+						addedSchool.setSchoolid(schoolId);
+						addedSchool.setSchoolname(addedSchoolName);
+						try {	
+							logger.info("新增学校入库【params】:"+addedSchool);
+							schoolDao.insertSelective(addedSchool);
+						} catch (Exception e) {
+							e.printStackTrace();
+							logger.error("插入学校失败！");
+						}
+					}
+				}				 
+					
+				Teacher updatedTeacher = new Teacher();
+				updatedTeacher.setTeacherid(teacherId);
+				updatedTeacher.setTeachername(params.getString("teacherName"));
+				if(null!=params.getByte("educationId")){
+					updatedTeacher.setEducation(params.getByte("educationId"));
+				}
+				updatedTeacher.setSchoolid(schoolId);
+				if(null!=params.getString("graduation")){
+					updatedTeacher.setGradeid(params.getString("graduation"));							
+				}
+				updatedTeacher.setNotes(params.getString("notes"));				
+				if(null!=params.getInteger("sex")){
+					updatedTeacher.setSex(params.getInteger("sex")==0?true:false);
+				}
+				if(null!=params.getByte("teachingLevel")){
+					updatedTeacher.setTeachinglevel(params.getByteValue("teachingLevel"));
+				}
+				updatedTeacher.setTelnumber(updatedTelNum);
+				//更新老师入库
+				try {
+					logger.info("更新老师信息【params】："+updatedTeacher.toString());
+					return teacherDao.updateByPrimaryKeySelective(updatedTeacher);
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw e;
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw e;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info("内部错误！");
+		}
+		return 0;
 	}
 }

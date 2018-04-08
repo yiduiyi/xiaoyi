@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,18 +51,18 @@ public class AccountAction {
 		String msg = "获取投诉列表失败！";
 		int code = -1;
 		try {
-			List<JSONObject> datas = accountService.getComplainList(null);
-			if(null!=datas){
-				if(datas.size()>0){
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					try {
-						for(JSONObject data : datas){
-							data.put("complain_time", sdf.format(data.getString("complain_time")));
-						}						
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+			List<JSONObject> datas = accountService.getComplainList(reqData);
+			if(CollectionUtils.isNotEmpty(datas)){
+				//if(datas.size()>0){
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					for(JSONObject data : datas){
+						data.put("complain_time", sdf.format(data.getString("complain_time")));
+					}						
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+				//}
 				
 				result.put("data", datas);
 				
