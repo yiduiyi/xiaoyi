@@ -45,7 +45,7 @@
 	    </foreach> 
     </if> -->
     <if test="teacherName!=null">
-    	b.teacherName=#{teacherName}
+    	b.teacherName like '%${teacherName}%'
     </if>
   </select>
   

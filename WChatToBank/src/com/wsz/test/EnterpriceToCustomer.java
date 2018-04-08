@@ -34,6 +34,7 @@ public class EnterpriceToCustomer {
 		String desc = "测试开发【老师提现】";   //企业付款操作说明信息。必填。
 		String spbill_create_ip = "192.168.1.3";		//
 		
+
 		//2.0 生成map集合
 		SortedMap<Object, Object> packageParams = new TreeMap<Object, Object>(); 
 		packageParams.put("mch_appid", appid);         //微信公众号的appid

@@ -26,6 +26,14 @@
     from teacher
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </select>
+  <!-- 根据老师号码查找老师 -->
+   <select id="selectByTelNum" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher
+    where telNumber = #{telNumber,jdbcType=VARCHAR}
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from teacher
     where teacherId = #{teacherid,jdbcType=VARCHAR}

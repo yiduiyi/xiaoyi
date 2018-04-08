@@ -86,7 +86,24 @@ public class TeachingRecordService implements ITeachingRecordService {
 			if (!CollectionUtils.isEmpty(datas)) {
 				for (JSONObject data : datas) {
 					Integer gradeId = data.getInteger("gradeId");
-
+					
+					//判断当前月份是否已提现
+					try {
+						List<Date> queryDates = new ArrayList<Date>();
+						queryDates.add(new Date());
+						JSONObject reqParams = new JSONObject();
+						reqParams.putAll(data);
+						reqParams.put("queryDates", queryDates);
+						List<LessonTrade> lts = teachingRecordDao.selectTeacherLessonTradeByParams(data);
+						int status = 0;
+						if(!CollectionUtils.isEmpty(lts)){
+							status = 1;
+						}
+						data.put("status", status);
+					} catch (Exception e) {
+						e.printStackTrace();
+						logger.info("查询当月是否提现失败！");
+					}
 					if (null != gradeId) {
 						for (Level level : Level.values()) {
 							if (level.getValue() == Math.abs(gradeId) / 10) {
@@ -469,6 +486,10 @@ public class TeachingRecordService implements ITeachingRecordService {
 				}
 				return lessonTradeList;
 			}
+			if(null==lessonTradeList){
+				lessonTradeList = new ArrayList<JSONObject>();
+			}
+			return lessonTradeList;
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.dao.IPictureDao;
 import com.xiaoyi.manager.dao.ISchoolDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
+import com.xiaoyi.manager.dao.IUserDao;
 import com.xiaoyi.manager.dao.order.ITeachingDao;
 import com.xiaoyi.manager.dao.teaching.ITeachingResourceDao;
 import com.xiaoyi.manager.domain.Picture;
@@ -47,6 +48,9 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	
 	@Resource
 	IPictureDao pictureDao;
+	
+	@Resource
+	IUserDao userDao;
 	
 	@Resource
 	ITeachingResourceDao teachingResourceDao;
@@ -351,8 +355,8 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 				
 				//判断是否号码已重复
 				logger.info("根据号码查询老师列表【params】："+ updatedTelNum);				
-				Teacher curTeacher = teacherDao.selectByPrimaryKey(teacherId);
-				if(null!=curTeacher && !updatedTelNum.equals(curTeacher.getTelnumber())){
+				Teacher curTeacher = teacherDao.selectByTelNum(updatedTelNum);//selectByPrimaryKey(teacherId);
+				if(null!=curTeacher/* && !updatedTelNum.equals(curTeacher.getTelnumber())*/){
 					logger.info("更新老师信息失败【号码已存在】！");
 					return -2;
 				}												
@@ -407,11 +411,26 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 				//更新老师入库
 				try {
 					logger.info("更新老师信息【params】："+updatedTeacher.toString());
-					return teacherDao.updateByPrimaryKeySelective(updatedTeacher);
+					teacherDao.updateByPrimaryKeySelective(updatedTeacher);
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw e;
-				}				
+				}	
+				
+				//更新登录信息
+				try {
+					User user = new User();
+					user.setUserid(updatedTeacher.getTeacherid());
+					user.setUseraccountid(updatedTeacher.getTeacherid());
+					user.setUsername(updatedTelNum);
+					if( updatedTelNum.length()>6){
+						user.setPassword(updatedTelNum.substring(updatedTelNum.length()-6, updatedTelNum.length()));
+					}
+					
+					return userDao.updateByPrimaryKeySelective(user);
+				} catch (Exception e) {
+					logger.info("更新老师对应的登录信息失败！");
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
