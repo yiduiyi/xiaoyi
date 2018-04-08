@@ -162,7 +162,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	}
 
 	@Override
-	public int withdrawLessons(JSONObject params) throws Exception {
+	public synchronized int withdrawLessons(JSONObject params) throws Exception {
 		// TODO Auto-generated method stub
 		if(null==params){
 			return -1;

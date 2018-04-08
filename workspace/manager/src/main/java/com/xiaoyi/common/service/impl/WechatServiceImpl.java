@@ -146,17 +146,19 @@ public class WechatServiceImpl implements IWechatService {
 			try {
 				if(null!=lessonTradeId) {
 					LessonTrade lessonTrade = null;
-					try {
-						logger.info("查询课时交易【params】："+lessonTradeId);
-						lessonTrade = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
-					} catch (Exception e) {
-						logger.info("查询可是交易出错！");
+						synchronized(lessonTradeId){
+						try {
+							logger.info("查询课时交易【params】："+lessonTradeId);
+							lessonTrade = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
+						} catch (Exception e) {
+							logger.info("查询可是交易出错！");
+						}
+						
+						if(null==lessonTrade || lessonTrade.getStatus()!=2) {
+							logger.info("不满足提现要求！");
+							return null;
+						}
 					}
-					
-					if(null==lessonTrade) {
-						return null;
-					}
-					
 					//设置提现金额
 					logger.info("actual pay: "+lessonTrade.getActualPay());
 					if(null==lessonTrade.getActualPay()){
