@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,6 +52,9 @@ public class AccountAction {
 		String msg = "获取投诉列表失败！";
 		int code = -1;
 		try {
+			if(StringUtils.isEmpty(reqData.getString("teacherName"))){
+				reqData.remove("teacherName");
+			}
 			List<JSONObject> datas = accountService.getComplainList(reqData);
 			if(CollectionUtils.isNotEmpty(datas)){
 				//if(datas.size()>0){

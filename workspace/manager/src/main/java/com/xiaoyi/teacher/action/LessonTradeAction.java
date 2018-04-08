@@ -134,7 +134,7 @@ public class LessonTradeAction {
 				reqData.put("applyDate", queryYear+queryMon);
 			}
 			List<JSONObject> datas = recordService.queryWithdrawRecords(reqData);
-			if(CollectionUtils.isNotEmpty(datas)){
+			if(null!=datas){
 				rtCode = RtConstants.SUCCESS;
 				result.put("data", datas);
 			}

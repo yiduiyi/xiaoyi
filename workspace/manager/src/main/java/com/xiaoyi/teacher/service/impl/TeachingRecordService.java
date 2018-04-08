@@ -486,6 +486,10 @@ public class TeachingRecordService implements ITeachingRecordService {
 				}
 				return lessonTradeList;
 			}
+			if(null==lessonTradeList){
+				lessonTradeList = new ArrayList<JSONObject>();
+			}
+			return lessonTradeList;
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

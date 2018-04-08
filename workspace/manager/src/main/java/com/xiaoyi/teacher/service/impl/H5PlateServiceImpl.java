@@ -216,20 +216,20 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				for(JSONObject lessonTrade : lessonTradeList) {				
 					JSONObject record = new JSONObject();
-					Date applyTime = lessonTrade.getDate("applyTime");/*.getApplytime();*/
+					Date applyTime = lessonTrade.getDate("applyTime");
 					String time = sdf.format(applyTime);
 					
-					record.put("lessonTradeId", lessonTrade.get("lessonTradeId")/*.getLessontradeid()*/);
+					record.put("lessonTradeId", lessonTrade.get("lessonTradeId"));
 					record.put("year", time.substring(0, 4));
 					record.put("month", time.substring(5,7));
-					record.put("fee", lessonTrade.get("actualPay")/*.getActualPay()*/);
+					record.put("fee", lessonTrade.get("actualPay"));
 					record.put("parentName", lessonTrade.get("parentName"));
 					
-					Byte status = lessonTrade.getByte("status")/*.getStatus()*/;
+					Byte status = lessonTrade.getByte("status");
 					if(null==status) {
 						status = 1;
 					}else {
-						status = (byte) (status.intValue()==0?1:0);
+						status = (byte) (status.intValue()==0?0:1);
 					}
 					record.put("status", status);
 					
