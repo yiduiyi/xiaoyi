@@ -7,6 +7,7 @@ import java.io.File;
  * */
 public class WChatInfo {
 	
+	public static String APPID2 = "wxdd97f462c846471b";//服务号的应用号
 	public static String APPID = "wxd9579db73c42cf91";//服务号的应用号
 	/*public static String mchId = "1493091612";//商户号
 	public static String tradeType = "JSAPI";

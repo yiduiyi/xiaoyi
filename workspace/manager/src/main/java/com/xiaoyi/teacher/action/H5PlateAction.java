@@ -146,7 +146,7 @@ public class H5PlateAction {
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		//RtConstants rtCode = RtConstants.FAILED;
-		int code = 0;
+		int code = 1;
 		String msg="提交成功,等待入账...";
 		
 		String lessonTradeId = reqData.getString("lessonTradeId");
@@ -159,6 +159,7 @@ public class H5PlateAction {
 			logger.info("lessonTradeId:"+lessonTradeId);
 			logger.info("openId:"+request.getSession().getAttribute("openid"));
 			if (0 < h5PlateService.withdrawLessons(reqParams)) {
+				code = 0;
 				msg = "提款成功！";						
 			}
 		} catch (Exception e) {

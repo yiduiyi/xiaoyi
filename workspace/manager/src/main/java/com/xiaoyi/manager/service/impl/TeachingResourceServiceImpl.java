@@ -389,8 +389,8 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 				Teacher updatedTeacher = new Teacher();
 				updatedTeacher.setTeacherid(teacherId);
 				updatedTeacher.setTeachername(params.getString("teacherName"));
-				if(null!=params.getByte("educationId")){
-					updatedTeacher.setEducation(params.getByte("educationId"));
+				if(null!=params.getByte("education")){
+					updatedTeacher.setEducation(params.getByte("education"));
 				}
 				updatedTeacher.setSchoolid(schoolId);
 				if(null!=params.getString("graduation")){

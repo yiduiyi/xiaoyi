@@ -31,6 +31,12 @@ public class TestAccount {
 	
 	@Resource 
 	ILessonTradeDao lessonTradeDao;
+	
+/*	@Test
+	public void testPayToTeacher(){
+		
+	}*/
+	
 	//@Test
 	public void test() {
 		 Account account = accountService.getAccountById("testtesttest"); 
@@ -48,7 +54,7 @@ public class TestAccount {
 		accountService.insertAccount(account);
 	}
 	
-	@Test
+	//@Test
 	public void testLessonTradeDao(){
 		try {
 			
@@ -59,10 +65,14 @@ public class TestAccount {
 		}
 	}
 	
-	//@Test 
+	@Test 
 	public void testPayToTeacher() throws Exception{
-		JSONObject result = wechatService.payToTeacher(null);
-		Map<String,String>resultMap = xmlUtil.parseXml(result.getString(""));
+		JSONObject reqParams = new JSONObject();
+		reqParams.put("lessonTradeId", "ae779e32-4ea9-43da-8ef7-9d05a2995bd8");
+		reqParams.put("openId", "oQHVE00HAWuiDqD8zQb1Zun4cfxo");
+		
+		JSONObject result = wechatService.payToTeacher(reqParams);
+		Map<String,String>resultMap = xmlUtil.parseXml(result.getString("weixinPost"));
 		System.out.println(resultMap.toString());
 	}
 	

@@ -1,5 +1,8 @@
 package com.xiaoyi.common.service.impl;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -8,17 +11,18 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.xml.sax.InputSource;
 
 import com.xiaoyi.common.vo.TextMessage;
 import com.xiaoyi.manager.dao.ITeacherPayListDao;
-import com.xiaoyi.manager.domain.TeacherPayList;
-import com.xiaoyi.manager.domain.TeacherPayListKey;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
-import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.wechat.utils.UUIDUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 import com.alibaba.fastjson.JSONObject;
@@ -112,10 +116,10 @@ public class WechatServiceImpl implements IWechatService {
 			String lessonTradeId = params.getString("lessonTradeId");
 			JSONObject result = new JSONObject();
 			//1.0 拼凑企业支付需要的参数
-			String appid = WeiXinConfig.APPID;  //微信公众号的appid
+			String appid = WeiXinConfig.APPID2;  //微信公众号的appid
 			String mch_id = WeiXinConfig.mchId; //商户号
-			String nonce_str = UUIDUtil.getUUID();/*"ryoMIHOmJxkmsuJ3Di2S22SgqyMLw21x";*///RandomStringGenerator.getRandomStringByLength(32); //生成随机数
-			String partner_trade_no = UUIDUtil.getUUID(); /*"tydlg2c8PICxOlrnEZCqIALfVGAKHFoj";//RandomStringGenerator.getRandomStringByLength(32); //生成商户订单号
+			String nonce_str = UUIDUtil.getUUID().substring(0, 32);/*"ryoMIHOmJxkmsuJ3Di2S22SgqyMLw21x";*///RandomStringGenerator.getRandomStringByLength(32); //生成随机数
+			String partner_trade_no = UUIDUtil.getUUID().substring(0,32); /*"tydlg2c8PICxOlrnEZCqIALfVGAKHFoj";//RandomStringGenerator.getRandomStringByLength(32); //生成商户订单号
 */			String openid = params.getString("openId");/*"oVbXbw_Fz5o2-VHc5eIW5WY1JG70"; */// 支付给用户openid
 			
 			String check_name = "NO_CHECK"; //是否验证真实姓名呢
@@ -152,45 +156,6 @@ public class WechatServiceImpl implements IWechatService {
 					if(null==lessonTrade) {
 						return null;
 					}
-					//Integer lessonType = lessonTrade.getLessontype();
-					//Short applylessons = lessonTrade.getApplylessons();
-					
-					//查询提现课时(价目表)
-					/*TeacherPayList priceList = null;
-					if(null!=lessonType && applylessons!=null) {
-						TeacherPayListKey keys = new TeacherPayListKey();
-						Short feedback = 1;
-						try {
-							feedback = Short.valueOf(lessonTrade.getFeedback());
-						} catch (Exception e) {
-							// 默认一般
-							logger.info("家长没有填写反馈！");
-						}
-						keys.setFeedbackid(feedback);
-						keys.setLessontypeid(lessonType);
-						
-						priceList = payListDao.selectByPrimaryKey(keys);
-					}*/
-					
-					//查询提现老师被冻结课时
-					//if(null!=priceList) {
-					/*String teacherId = lessonTrade.getTeacherid();
-					LessonTradeSum tradeSum = null;
-
-					try {
-						tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);
-					} catch (Exception e) {
-						throw e;
-					}*/
-					
-					//结算时减去被冻结课时
-					/*int checkLessons=0;
-					if(null!=tradeSum && tradeSum.getFrozenlessonnum()!=null) {
-						checkLessons = (applylessons>tradeSum.getFrozenlessonnum())?
-								(short)(applylessons - tradeSum.getFrozenlessonnum()):0;
-						tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
-								tradeSum.getFrozenlessonnum()-applylessons));
-					}*/
 					
 					//设置提现金额
 					logger.info("actual pay: "+lessonTrade.getActualPay());
@@ -199,13 +164,9 @@ public class WechatServiceImpl implements IWechatService {
 						return null;
 					}
 					amount = lessonTrade.getActualPay() * 100;//checkLessons*priceList.getReward();
-					packageParams.put("amount",String.valueOf(amount));						
-					
-					//设置更新冻结课时数
-					//result.put("updatedFromzenLessons", tradeSum.getFrozenlessonnum());
-						/*}else{ 
-						return null;
-					}*/
+					logger.info("final amount:"+(int)amount);
+					packageParams.put("amount",String.valueOf((int)amount));						
+
 				}else{
 					return null;
 				}
@@ -232,7 +193,7 @@ public class WechatServiceImpl implements IWechatService {
 			try {
 				String weixinPost = ClientCustomSSL.doRefund(wxUrl, reuqestXml).toString();
 				result.put("weixinPost", weixinPost);
-				
+				parseXmlToMapEnterpriceToCustomer(weixinPost);
 				return result;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -241,6 +202,41 @@ public class WechatServiceImpl implements IWechatService {
 		return null;
 	}
 
+	/**
+	 * 显示支付返回结果
+	 * @param xml
+	 */
+	private void parseXmlToMapEnterpriceToCustomer(String xml){ 
+		
+		try { 
+				StringReader read = new StringReader(xml); 
+				// 创建新的输入源SAX 解析器将使用 InputSource 对象来确定如何读取 XML 输入 
+				InputSource source = new InputSource(read); 
+				// 创建一个新的SAXBuilder 
+				SAXBuilder sb = new SAXBuilder(); 
+				// 通过输入源构造一个Document 
+				Document doc; 
+				doc = (Document) sb.build(source); 
+			
+				Element root = doc.getRootElement();// 指向根节点 
+				List<Element> list = root.getChildren(); 
+			
+				if(list!=null&&list.size()>0){ 
+				for (Element element : list) { 
+					String text = "key是："+element.getName()+"，值是："+element.getText();
+					logger.info(text);
+					//System.out.println(text); 							
+				}
+			}
+		} catch (JDOMException e) { 
+		e.printStackTrace(); 
+		} catch (IOException e) { 
+		e.printStackTrace(); 
+		}catch (Exception e) { 
+		e.printStackTrace(); 
+		} 
+	} 
+	
 	@Override
 	public int sendQuarzMsg() {
 		// TODO Auto-generated method stub

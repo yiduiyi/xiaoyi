@@ -22,11 +22,11 @@ public class EnterpriceToCustomer {
 	@Test
 	public void OldBook(){
 		//1.0 拼凑企业支付需要的参数
-		String appid = WChatInfo.APPID;  //微信公众号的appid
+		String appid = WChatInfo.APPID2;  //微信公众号的appid
 		String mch_id = WChatInfo.MCH_ID; //商户号
-		String nonce_str = "ryoMIHOmJxkmsuJ3Di2S22SgqyMLw21x";//RandomStringGenerator.getRandomStringByLength(32); //生成随机数
-		String partner_trade_no =  "tydlg2c8PICxOlrnEZCqIALfVGAKHFoj";//RandomStringGenerator.getRandomStringByLength(32); //生成商户订单号
-		String openid = "oVbXbw_Fz5o2-VHc5eIW5WY1JG70"; // 支付给用户openid
+		String nonce_str = "ryoMIHOmJxkmsuJ3Di2S22SgqyMLw211";//RandomStringGenerator.getRandomStringByLength(32); //生成随机数
+		String partner_trade_no =  "tydlg2c8PICxOlrnEZCqIALfVGAKHFo1";//RandomStringGenerator.getRandomStringByLength(32); //生成商户订单号
+		String openid = "oQHVE00HAWuiDqD8zQb1Zun4cfxo"/*"oVbXbw_Fz5o2-VHc5eIW5WY1JG70"*/; // 支付给用户openid
 		
 		String check_name = "NO_CHECK"; //是否验证真实姓名呢
 		String re_user_name = "小邓";   //收款用户姓名
