@@ -10,6 +10,7 @@ public interface ITeacherDao {
     int insertSelective(Teacher record);
 
     Teacher selectByPrimaryKey(String teacherid);
+    Teacher selectByTelNum(String telNumber);
 
     int updateByPrimaryKeySelective(Teacher record);
 
