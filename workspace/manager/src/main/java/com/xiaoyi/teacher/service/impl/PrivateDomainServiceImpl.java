@@ -84,11 +84,23 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 				String schoolId = result.getString("schoolId");
 				String gradeId = result.getString("gradeId");				
 				
+				//转换性别
+				try {
+					if(true == (boolean)(result.get("sex"))){
+						result.put("sex", false);
+					}else{
+						result.put("sex", true);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.info("转换性别出错！");
+				}
+				
 				try {
 					List<Map<String, Object>> schoolGradeList = domainDao.selectSchoolDetailById(params);
 					
 					if(!CollectionUtils.isEmpty(schoolGradeList)){
-						for(Map<String,Object> schoolGrade : schoolGradeList){
+						for(Map<String,Object> schoolGrade : schoolGradeList){							
 							result.put("schoolName", schoolGrade.get(schoolId));
 							result.put("gradeName", "");
 						}

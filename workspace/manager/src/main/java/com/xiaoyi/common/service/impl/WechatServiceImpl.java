@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
 
 import com.xiaoyi.common.vo.TextMessage;
+import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.ITeacherPayListDao;
+import com.xiaoyi.manager.domain.OrderSum;
+import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
@@ -43,6 +46,8 @@ public class WechatServiceImpl implements IWechatService {
     
     @Resource
     ILessonTradeSumDao tradeSumDao;
+    
+    @Resource IOrderSumDao orderSumDao;
     
     @Resource
     ILessonTradeDao lessonTradeDao;
@@ -150,6 +155,32 @@ public class WechatServiceImpl implements IWechatService {
 						try {
 							logger.info("查询课时交易【params】："+lessonTradeId);
 							lessonTrade = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
+						
+							logger.info("查询家长订单...");
+							try {
+								OrderSumKey key = new OrderSumKey();
+								key.setMemberid(lessonTrade.getMemberid());
+								key.setParentid(lessonTrade.getParentid());
+								key.setLessontype(lessonTrade.getLessontype());
+								
+								OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
+								if(null==orderSum){
+									logger.info("没有找到对应的家长订单！");
+									return null;
+								}
+								//判断家长课时是否满足提现课时
+								logger.info("家长剩余课时："+orderSum.getLessonleftnum());
+								logger.info("老师预提现课时："+lessonTrade.getApplylessons());
+								if(orderSum.getLessonleftnum()<lessonTrade.getApplylessons()){
+									logger.info("家长课时不足！");
+									result.put("code", -5);
+									return result;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+								logger.info("查询家长订单失败！");
+								return null;
+							}
 						} catch (Exception e) {
 							logger.info("查询可是交易出错！");
 						}

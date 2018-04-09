@@ -93,7 +93,6 @@ public class ScheduleAction {
 			e.printStackTrace();
 		}
 		
-		
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
