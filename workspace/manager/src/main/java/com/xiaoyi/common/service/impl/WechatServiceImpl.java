@@ -189,6 +189,17 @@ public class WechatServiceImpl implements IWechatService {
 							logger.info("不满足提现要求！");
 							return null;
 						}
+						
+						//社会哨兵（不允许重复提现）
+						try {
+							logger.info("设置哨兵...");
+							lessonTrade.setStatus((byte)3);
+							lessonTradeDao.updateByPrimaryKeySelective(lessonTrade);
+						} catch (Exception e) {
+							logger.info("哨兵设置失败！");
+							e.printStackTrace();
+							return null; 
+						}
 					}
 					//设置提现金额
 					logger.info("actual pay: "+lessonTrade.getActualPay());
