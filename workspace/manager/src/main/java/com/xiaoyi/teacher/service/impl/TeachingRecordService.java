@@ -525,12 +525,34 @@ public class TeachingRecordService implements ITeachingRecordService {
 
 		// 更新老师实际到账数额
 		String teacherId = record.getTeacherid();
-		LessonTradeSum tradeSum = new LessonTradeSum();
+		LessonTradeSum tradeSum = null;
 		try {
+			tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);			
 			// tradeSum.setFrozenlessonnum(updatedFrozenLessons.shortValue());
+			if(null==tradeSum){
+				tradeSum = new LessonTradeSum();
+				tradeSum.setTotalincome(0d);
+				
+				short applyLessons = (short)0;
+				if(record.getApplylessons()!=null){
+					applyLessons = record.getApplylessons();
+				}
+				tradeSum.setTotallessonnum(applyLessons);
+				tradeSum.setCheckedlessonnum(applyLessons);
+				tradeSum.setFrozenlessonnum((short)0);
+				tradeSum.setWithdrawlessonnum(applyLessons);
+			}
+			
 			tradeSum.setTeacherid(teacherId);
+			if(tradeSum.getTotalincome()==null){
+				tradeSum.setTotalincome(0d);
+			}
 			tradeSum.setTotalincome(record.getActualPay() + tradeSum.getTotalincome());
-
+			if(tradeSum.getWithdrawlessonnum()==null){
+				tradeSum.setWithdrawlessonnum((short)0);
+			}
+			tradeSum.setWithdrawlessonnum((short)(record.getApplylessons()+tradeSum.getWithdrawlessonnum()));
+			
 			return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -157,18 +157,26 @@ public class H5PlateAction {
 			
 			logger.info("in withdraw lessons action...");
 			logger.info("lessonTradeId:"+lessonTradeId);
-
+			logger.info("openId:"+request.getSession().getAttribute("openid"));
+<<<<<<< HEAD
+=======
+			
+>>>>>>> 582ce5cc3c01f059399b04d82fe09a9f0f1398d7
 			int rtCode = h5PlateService.withdrawLessons(reqParams);
 			if (0 < rtCode) {
 				code = 0;
-
+				msg = "提款成功！";						
+			}
+<<<<<<< HEAD
 			if(rtCode==0){
 				code = -1;
 				msg = "不满足提现条件！";
+=======
 			
 			if(-5==rtCode){
 				code = -1;
 				msg = "家长课时不足！";
+>>>>>>> 582ce5cc3c01f059399b04d82fe09a9f0f1398d7
 			}
 		} catch (Exception e) {
 			code = -1;

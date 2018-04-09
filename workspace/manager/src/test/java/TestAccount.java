@@ -68,7 +68,7 @@ public class TestAccount {
 	@Test 
 	public void testPayToTeacher() throws Exception{
 		JSONObject reqParams = new JSONObject();
-		reqParams.put("lessonTradeId", "ae779e32-4ea9-43da-8ef7-9d05a2995bd8");
+		reqParams.put("lessonTradeId", "797426a4-6322-4a8f-99f0-196d0d1f4421");
 		reqParams.put("openId", "oQHVE00HAWuiDqD8zQb1Zun4cfxo");
 		
 		JSONObject result = wechatService.payToTeacher(reqParams);

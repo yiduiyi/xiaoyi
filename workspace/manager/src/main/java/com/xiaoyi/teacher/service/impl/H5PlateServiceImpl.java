@@ -168,12 +168,17 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			return -1;
 		}
 		String lessonTradeId = params.getString("lessonTradeId");
-		if(StringUtils.isNotEmpty(lessonTradeId)) {							
+		if(StringUtils.isNotEmpty(lessonTradeId)) {				
+			
 			//计算课时费-》转账-》更新老师提现状态
 			try {
 				logger.info("开始企业付款。。。");
 				JSONObject resultString = wechatService.payToTeacher(params);
 				if(null!=resultString) {
+					//课时不足情况
+					if(null!=resultString.getInteger("code") && -5==resultString.getIntValue("code")){
+						return -5;
+					}
 					Map<String,String> resultMap = XMLUtil.parseXml(resultString.getString("weixinPost"));
 					
 					if("SUCCESS".equalsIgnoreCase(resultMap.get("result_code")) 
