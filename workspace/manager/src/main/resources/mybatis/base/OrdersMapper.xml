@@ -13,8 +13,8 @@
       parentId, createTime, purchaseNum,orderType,hasBook
       )
     values (#{lessontype,jdbcType=INTEGER}, #{memberid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
-      #{parentid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{purchasenum,jdbcType=SMALLINT}
-      , #{orderType,jdbcType=SMALLINT}, #{hasBook,jdbcType=SMALLINT})
+      #{parentid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{purchasenum}
+      , #{orderType}, #{hasBook})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Orders" >
     insert into orders
@@ -61,7 +61,7 @@
         #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="purchasenum != null" >
-        #{purchasenum,jdbcType=SMALLINT},
+        #{purchasenum},
       </if>
       <if test="orderType != null" >
         #{orderType},
@@ -78,7 +78,7 @@
         createTime = #{createtime,jdbcType=TIMESTAMP},
       </if>
       <if test="purchasenum != null" >
-        purchaseNum = #{purchasenum,jdbcType=SMALLINT},
+        purchaseNum = #{purchasenum},
       </if>
       <if test="orderType != null" >
         orderType=#{orderType},
@@ -95,7 +95,7 @@
   <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Orders" >
     update orders
     set createTime = #{createtime,jdbcType=TIMESTAMP},
-      purchaseNum = #{purchasenum,jdbcType=SMALLINT},
+      purchaseNum = #{purchasenum},
       orderType=#{orderType},
       hasBook=#{hasBook}
     where lessonType = #{lessontype,jdbcType=INTEGER}

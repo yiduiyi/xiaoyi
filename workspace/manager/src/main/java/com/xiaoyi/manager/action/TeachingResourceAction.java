@@ -211,7 +211,7 @@ public class TeachingResourceAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		
 		try {			
-			if(0<tResourceService.updateTeachingTeacher(reqData)){				
+			if(0<=tResourceService.updateTeachingTeacher(reqData)){				
 				rtCode = RtConstants.SUCCESS;			
 			}
 		} catch (Exception e) {			

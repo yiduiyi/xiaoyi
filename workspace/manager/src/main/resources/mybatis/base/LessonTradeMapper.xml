@@ -3,16 +3,16 @@
 <mapper namespace="com.xiaoyi.teacher.dao.ILessonTradeDao" >
   <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.LessonTrade" >
     <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
-    <result column="lessonType" property="lessontype" jdbcType="INTEGER" />
+    <result column="lessonType" property="lessontype"  />
     <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
     <result column="memberId" property="memberid" jdbcType="VARCHAR" />
     <result column="parentId" property="parentid" jdbcType="VARCHAR" />
     <result column="notes" property="notes" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT" />
-    <result column="applyLessons" property="applylessons" jdbcType="SMALLINT" />
+    <result column="applyLessons" property="applylessons"  />
     <result column="feedback" property="feedback" jdbcType="VARCHAR" />
     <result column="applyTime" property="applytime" jdbcType="TIMESTAMP" />
-    <result column="frozenLessons" property="frozenLessons" jdbcType="SMALLINT" />
+    <result column="frozenLessons" property="frozenLessons"  />
     <result column="actualPay" property="actualPay"/>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -36,8 +36,8 @@
       applyTime,frozenLessons,actualPay)
     values (#{lessontradeid,jdbcType=VARCHAR}, #{lessontype,jdbcType=INTEGER}, #{teacherid,jdbcType=VARCHAR}, 
       #{memberid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{applylessons,jdbcType=SMALLINT}, #{feedback,jdbcType=VARCHAR}, 
-      #{applytime,jdbcType=TIMESTAMP}, #{frozenLessons,jdbcType=SMALLINT},#{actualPay})
+      #{status,jdbcType=TINYINT}, #{applylessons}, #{feedback,jdbcType=VARCHAR}, 
+      #{applytime,jdbcType=TIMESTAMP}, #{frozenLessons},#{actualPay})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
     insert into lessontrade
@@ -102,7 +102,7 @@
         #{status,jdbcType=TINYINT},
       </if>
       <if test="applylessons != null" >
-        #{applylessons,jdbcType=SMALLINT},
+        #{applylessons},
       </if>
       <if test="feedback != null" >
         #{feedback,jdbcType=VARCHAR},
@@ -111,7 +111,7 @@
         #{applytime,jdbcType=TIMESTAMP},
       </if>
       <if test="frozenLessons != null" >
-        #{frozenLessons,jdbcType=SMALLINT},
+        #{frozenLessons},
       </if>
       <if test="actualPay!=null">
       	#{actualPay},
@@ -140,7 +140,7 @@
         status = #{status,jdbcType=TINYINT},
       </if>
       <if test="applylessons != null" >
-        applyLessons = #{applylessons,jdbcType=SMALLINT},
+        applyLessons = #{applylessons},
       </if>
       <if test="feedback != null" >
         feedback = #{feedback,jdbcType=VARCHAR},
@@ -149,7 +149,7 @@
         applyTime = #{applytime,jdbcType=TIMESTAMP},
       </if>
       <if test="frozenLessons != null" >
-       	frozenLessons = #{frozenLessons,jdbcType=SMALLINT},
+       	frozenLessons = #{frozenLessons},
       </if>
       <if test="actualPay!=null">
       	actualPay = #{actualPay}
@@ -165,10 +165,10 @@
       parentId = #{parentid,jdbcType=VARCHAR},
       notes = #{notes,jdbcType=VARCHAR},
       status = #{status,jdbcType=TINYINT},
-      applyLessons = #{applylessons,jdbcType=SMALLINT},
+      applyLessons = #{applylessons},
       feedback = #{feedback,jdbcType=VARCHAR},
       applyTime = #{applytime,jdbcType=TIMESTAMP},
-      frozenLessons = #{frozenLessons,jdbcType=SMALLINT},
+      frozenLessons = #{frozenLessons},
       actualPay = #{actualPay}
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </update>

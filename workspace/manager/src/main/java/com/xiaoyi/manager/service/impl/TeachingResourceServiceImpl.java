@@ -273,13 +273,13 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 						return 0;
 					}*/
 					
-					record.setFrozenlessonnum((short)(record.getFrozenlessonnum()+operateNum));
+					record.setFrozenlessonnum(record.getFrozenlessonnum()+operateNum);
 				}else {	//解冻
 					if(operateNum>record.getFrozenlessonnum()) {
 						return 0;
 					}
 					
-					record.setFrozenlessonnum((short)(record.getFrozenlessonnum()-operateNum));
+					record.setFrozenlessonnum(record.getFrozenlessonnum()-operateNum);
 				}
 												
 				return lessonTradeSumDao.updateByPrimaryKeySelective(record);				
@@ -354,12 +354,20 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 				schoolNames = new ArrayList<String>();							
 				
 				//判断是否号码已重复
-				logger.info("根据号码查询老师列表【params】："+ updatedTelNum);				
-				Teacher curTeacher = teacherDao.selectByTelNum(updatedTelNum);//selectByPrimaryKey(teacherId);
-				if(null!=curTeacher/* && !updatedTelNum.equals(curTeacher.getTelnumber())*/){
-					logger.info("更新老师信息失败【号码已存在】！");
-					return -2;
-				}												
+				logger.info("根据号码查询老师列表【params】："+ updatedTelNum);	
+				try {
+					Teacher oldTeacher = teacherDao.selectByPrimaryKey(teacherId);
+					Teacher curTeacher = teacherDao.selectByTelNum(updatedTelNum);//selectByPrimaryKey(teacherId);
+					if(null!=curTeacher && oldTeacher!=null 
+							&& !updatedTelNum.equals(oldTeacher.getTelnumber())){
+						logger.info("更新老师信息失败【号码已存在】！");
+						return -2;
+					}												
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.info("查询老师失败！");
+				}
 				
 				String schoolId = params.getString("schoolId");
 				School school = null;
@@ -439,6 +447,6 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 			e.printStackTrace();
 			logger.info("内部错误！");
 		}
-		return 0;
+		return -1;		
 	}
 }

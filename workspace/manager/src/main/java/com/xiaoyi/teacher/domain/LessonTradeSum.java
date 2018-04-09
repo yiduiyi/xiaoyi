@@ -3,13 +3,13 @@ package com.xiaoyi.teacher.domain;
 public class LessonTradeSum {
     private String teacherid;
 
-    private Short checkedlessonnum;
+    private Float checkedlessonnum;
 
-    private Short withdrawlessonnum;
+    private Float withdrawlessonnum;
 
-    private Short frozenlessonnum;
+    private Float frozenlessonnum;
 
-    private Short totallessonnum;
+    private Float totallessonnum;
 
     private Double totalincome;
 
@@ -21,35 +21,35 @@ public class LessonTradeSum {
         this.teacherid = teacherid == null ? null : teacherid.trim();
     }
 
-    public Short getCheckedlessonnum() {
+    public Float getCheckedlessonnum() {
         return checkedlessonnum;
     }
 
-    public void setCheckedlessonnum(Short checkedlessonnum) {
+    public void setCheckedlessonnum(Float checkedlessonnum) {
         this.checkedlessonnum = checkedlessonnum;
     }
 
-    public Short getWithdrawlessonnum() {
+    public Float getWithdrawlessonnum() {
         return withdrawlessonnum;
     }
 
-    public void setWithdrawlessonnum(Short withdrawlessonnum) {
+    public void setWithdrawlessonnum(Float withdrawlessonnum) {
         this.withdrawlessonnum = withdrawlessonnum;
     }
 
-    public Short getFrozenlessonnum() {
+    public Float getFrozenlessonnum() {
         return frozenlessonnum;
     }
 
-    public void setFrozenlessonnum(Short frozenlessonnum) {
+    public void setFrozenlessonnum(Float frozenlessonnum) {
         this.frozenlessonnum = frozenlessonnum;
     }
 
-    public Short getTotallessonnum() {
+    public Float getTotallessonnum() {
         return totallessonnum;
     }
 
-    public void setTotallessonnum(Short totallessonnum) {
+    public void setTotallessonnum(Float totallessonnum) {
         this.totallessonnum = totallessonnum;
     }
 

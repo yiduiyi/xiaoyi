@@ -17,13 +17,13 @@ public class LessonTrade {
 
     private Byte status;
 
-    private Short applylessons;
+    private Float applylessons;
 
     private String feedback;
 
     private Date applytime;
     
-    private Short frozenLessons;
+    private Float frozenLessons;
     
     private Float actualPay;
 
@@ -83,11 +83,11 @@ public class LessonTrade {
         this.status = status;
     }
 
-    public Short getApplylessons() {
+    public Float getApplylessons() {
         return applylessons;
     }
 
-    public void setApplylessons(Short applylessons) {
+    public void setApplylessons(Float applylessons) {
         this.applylessons = applylessons;
     }
 
@@ -107,11 +107,11 @@ public class LessonTrade {
         this.applytime = applytime;
     }
 
-	public Short getFrozenLessons() {
+	public Float getFrozenLessons() {
 		return frozenLessons;
 	}
 
-	public void setFrozenLessons(Short frozenLessons) {
+	public void setFrozenLessons(Float frozenLessons) {
 		this.frozenLessons = frozenLessons;
 	}
 

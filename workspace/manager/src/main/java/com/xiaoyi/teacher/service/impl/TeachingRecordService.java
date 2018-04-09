@@ -22,7 +22,6 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
-import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Type;
@@ -192,7 +191,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 
 			// String lessonTradeId = UUID.randomUUID().toString();
 			// 1.增加老师带课记录
-			int totalLessons = 0;
+			Float totalLessons = 0f;
 			List<Date> addedRecordDates = new ArrayList<Date>();
 			Map<String, Date> lessonTradeIdDateMap = new HashMap<String, Date>();			
 
@@ -229,7 +228,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 					record.setStarttime(teachingDetail.getString("startTime"));
 					record.setEndtime(teachingDetail.getString("endTime"));
 					record.setTeachingdate(teachingDate);
-					record.setTeachingnum(teachingDetail.getShort("checkNum"));
+					record.setTeachingnum(teachingDetail.getFloat("checkNum"));
 					record.setLessonTradeId(lessonTradeId); // 关联老师提现
 
 					teachingRecords.add(record);
@@ -237,7 +236,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 					addedRecordDates.add(teachingDate);
 					lessonTradeIdDateMap.put(lessonTradeId, teachingDate);
 					// 提现课时数
-					totalLessons += teachingDetail.getInteger("checkNum");
+					totalLessons += teachingDetail.getFloat("checkNum");
 				}
 				try {
 					// 已经提现
@@ -252,7 +251,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 				// 2、增加提现记录
 				LessonTrade lessonTrade = new LessonTrade();
 				lessonTrade.setLessontradeid(lessonTradeId);
-				lessonTrade.setApplylessons((short) totalLessons);
+				lessonTrade.setApplylessons(totalLessons);
 				lessonTrade.setLessontype(lessontype);
 				lessonTrade.setParentid(parentId);
 				lessonTrade.setMemberid(memberId);
@@ -288,19 +287,19 @@ public class TeachingRecordService implements ITeachingRecordService {
 					// 提现汇总表
 					try {
 						LessonTradeSum tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);
-						int totalSubLessons = totalLessons;
+						Float totalSubLessons = totalLessons;
 						if (null == tradeSum) {
 							tradeSum = new LessonTradeSum();
 							tradeSum.setTeacherid(teacherId);
-							tradeSum.setTotallessonnum((short) totalSubLessons);
+							tradeSum.setTotallessonnum(totalSubLessons);
 							
 							tradeSumDao.insertSelective(tradeSum);
 						} else {
 							tradeSum.setTeacherid(teacherId);
 							if(null!=tradeSum.getTotallessonnum()){
-								tradeSum.setTotallessonnum((short) (totalSubLessons + tradeSum.getTotallessonnum()));								
+								tradeSum.setTotallessonnum(totalSubLessons + tradeSum.getTotallessonnum());								
 							} else {
-								tradeSum.setTotallessonnum((short)totalSubLessons);
+								tradeSum.setTotallessonnum(totalSubLessons);
 							}
 
 							tradeSumDao.updateByPrimaryKeySelective(tradeSum);
@@ -310,13 +309,13 @@ public class TeachingRecordService implements ITeachingRecordService {
 						throw e;
 					}
 
-					int leftLessonCount = 0;
+					//Float leftLessonCount = 0f;
 					// 更新用户订单课时数（家长）
 					try {
 						OrderSumKey key = new OrderSumKey();
 						key.setOrderid(orderId);
 						OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
-						orderSum.setLessonleftnum((short) (orderSum.getLessonleftnum() - totalLessons));
+						orderSum.setLessonleftnum((orderSum.getLessonleftnum() - totalLessons));
 
 						// 新增家长端老师提现记录
 						Orders order = new Orders();
@@ -326,14 +325,14 @@ public class TeachingRecordService implements ITeachingRecordService {
 						order.setMemberid(orderSum.getMemberid());
 						order.setOrderType(-1);
 						order.setParentid(orderSum.getParentid());
-						order.setPurchasenum((short) -totalLessons);
+						order.setPurchasenum(-totalLessons);
 
 						// 提现记录入库
 						ordersDao.insert(order);
 
 						// 更新用户总课时
 						orderSumDao.updateByPrimaryKeySelective(orderSum);
-						leftLessonCount = orderSum.getLessonleftnum();
+						//leftLessonCount = orderSum.getLessonleftnum();
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw e;
@@ -347,9 +346,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 							return -1;
 						}
 
-						String teacherName = null;
+						//String teacherName = null;
 						try {
-							teacherDao.selectByPrimaryKey(teacherId);
+							//teacherDao.selectByPrimaryKey(teacherId);
 						} catch (Exception e) {
 							// TODO: handle exception
 						}
@@ -384,14 +383,14 @@ public class TeachingRecordService implements ITeachingRecordService {
 						int month = cal.get(Calendar.MONTH);
 
 						StringBuffer extraParams = new StringBuffer();
-						extraParams.append("?teachingId=");
-						extraParams.append(teachingId);
+						extraParams.append("?lessonTradeId=");
+						extraParams.append(lessonTradeId);
 
 						extraParams.append("&month=");
 						extraParams.append(month);
 						// 需联系前台更改
-						extraParams.append("&lessonTradeId=");
-						extraParams.append(lessonTradeId);
+						extraParams.append("&teachingId=");
+						extraParams.append(teachingId);
 
 						logger.info("extraParams:" + extraParams.toString());
 						wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID,

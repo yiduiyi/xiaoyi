@@ -3,10 +3,10 @@
 <mapper namespace="com.xiaoyi.teacher.dao.ILessonTradeSumDao" >
   <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.LessonTradeSum" >
     <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
-    <result column="checkedLessonNum" property="checkedlessonnum" jdbcType="SMALLINT" />
-    <result column="withDrawLessonNum" property="withdrawlessonnum" jdbcType="SMALLINT" />
-    <result column="frozenLessonNum" property="frozenlessonnum" jdbcType="SMALLINT" />
-    <result column="totalLessonNum" property="totallessonnum" jdbcType="SMALLINT" />
+    <result column="checkedLessonNum" property="checkedlessonnum"  />
+    <result column="withDrawLessonNum" property="withdrawlessonnum"  />
+    <result column="frozenLessonNum" property="frozenlessonnum"  />
+    <result column="totalLessonNum" property="totallessonnum"  />
     <result column="totalIncome" property="totalincome" jdbcType="DOUBLE" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -27,8 +27,8 @@
     insert into lessontradesum (teacherId, checkedLessonNum, withDrawLessonNum, 
       frozenLessonNum, totalLessonNum, totalIncome
       )
-    values (#{teacherid,jdbcType=VARCHAR}, #{checkedlessonnum,jdbcType=SMALLINT}, #{withdrawlessonnum,jdbcType=SMALLINT}, 
-      #{frozenlessonnum,jdbcType=SMALLINT}, #{totallessonnum,jdbcType=SMALLINT}, #{totalincome,jdbcType=DOUBLE}
+    values (#{teacherid,jdbcType=VARCHAR}, #{checkedlessonnum}, #{withdrawlessonnum}, 
+      #{frozenlessonnum}, #{totallessonnum}, #{totalincome,jdbcType=DOUBLE}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTradeSum" >
@@ -58,16 +58,16 @@
         #{teacherid,jdbcType=VARCHAR},
       </if>
       <if test="checkedlessonnum != null" >
-        #{checkedlessonnum,jdbcType=SMALLINT},
+        #{checkedlessonnum},
       </if>
       <if test="withdrawlessonnum != null" >
-        #{withdrawlessonnum,jdbcType=SMALLINT},
+        #{withdrawlessonnum},
       </if>
       <if test="frozenlessonnum != null" >
-        #{frozenlessonnum,jdbcType=SMALLINT},
+        #{frozenlessonnum},
       </if>
       <if test="totallessonnum != null" >
-        #{totallessonnum,jdbcType=SMALLINT},
+        #{totallessonnum},
       </if>
       <if test="totalincome != null" >
         #{totalincome,jdbcType=DOUBLE},
@@ -78,16 +78,16 @@
     update lessontradesum
     <set >
       <if test="checkedlessonnum != null" >
-        checkedLessonNum = #{checkedlessonnum,jdbcType=SMALLINT},
+        checkedLessonNum = #{checkedlessonnum},
       </if>
       <if test="withdrawlessonnum != null" >
-        withDrawLessonNum = #{withdrawlessonnum,jdbcType=SMALLINT},
+        withDrawLessonNum = #{withdrawlessonnum},
       </if>
       <if test="frozenlessonnum != null" >
-        frozenLessonNum = #{frozenlessonnum,jdbcType=SMALLINT},
+        frozenLessonNum = #{frozenlessonnum},
       </if>
       <if test="totallessonnum != null" >
-        totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
+        totalLessonNum = #{totallessonnum},
       </if>
       <if test="totalincome != null" >
         totalIncome = #{totalincome,jdbcType=DOUBLE},
@@ -97,10 +97,10 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.LessonTradeSum" >
     update lessontradesum
-    set checkedLessonNum = #{checkedlessonnum,jdbcType=SMALLINT},
-      withDrawLessonNum = #{withdrawlessonnum,jdbcType=SMALLINT},
-      frozenLessonNum = #{frozenlessonnum,jdbcType=SMALLINT},
-      totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
+    set checkedLessonNum = #{checkedlessonnum},
+      withDrawLessonNum = #{withdrawlessonnum},
+      frozenLessonNum = #{frozenlessonnum},
+      totalLessonNum = #{totallessonnum},
       totalIncome = #{totalincome,jdbcType=DOUBLE}
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>

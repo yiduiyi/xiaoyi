@@ -16,7 +16,7 @@ public class TeachingRecord {
 
     private String endtime;
 
-    private Short teachingnum;
+    private Float teachingnum;
 
     private Date teachingdate;
     
@@ -70,11 +70,11 @@ public class TeachingRecord {
         this.endtime = endtime;
     }
 
-    public Short getTeachingnum() {
+    public Float getTeachingnum() {
         return teachingnum;
     }
 
-    public void setTeachingnum(Short teachingnum) {
+    public void setTeachingnum(Float teachingnum) {
         this.teachingnum = teachingnum;
     }
 

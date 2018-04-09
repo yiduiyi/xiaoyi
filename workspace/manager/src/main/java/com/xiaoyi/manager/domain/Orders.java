@@ -5,7 +5,7 @@ import java.util.Date;
 public class Orders extends OrdersKey {
     private Date createtime;
 
-    private Short purchasenum;
+    private Float purchasenum;
 
     private int orderType;
     
@@ -27,11 +27,11 @@ public class Orders extends OrdersKey {
         this.createtime = createtime;
     }
 
-    public Short getPurchasenum() {
+    public Float getPurchasenum() {
         return purchasenum;
     }
 
-    public void setPurchasenum(Short purchasenum) {
+    public void setPurchasenum(Float purchasenum) {
         this.purchasenum = purchasenum;
     }
 

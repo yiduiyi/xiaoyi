@@ -399,14 +399,14 @@ public class CumstomServiceImpl implements ICustomService{
 				if(null!=lessonTradeSum){
 					lessonTradeSum.setTeacherid(record.getTeacherid());
 					//Double totalIncome = 0d;
-					Short checkedLessonNum = lessonTradeSum.getCheckedlessonnum();
+					Float checkedLessonNum = lessonTradeSum.getCheckedlessonnum();
 					//计算收入（移至企业付款成功界面）
 					//totalIncome = 
 					
 					//计算提现到账总课时数(家长已确认)
 					if(null!=checkedLessonNum){
 						if(null!=record.getApplylessons()){
-							checkedLessonNum = (short)(record.getApplylessons() + checkedLessonNum);   				
+							checkedLessonNum = (record.getApplylessons() + checkedLessonNum);   				
 						}
 					}else{
 						checkedLessonNum = record.getApplylessons();
@@ -415,9 +415,9 @@ public class CumstomServiceImpl implements ICustomService{
 					//更新冻结课时总数
 					lessonTradeSum.setCheckedlessonnum(checkedLessonNum);
 					if(record.getFrozenLessons()>0){
-						int curFromzenLessons = (lessonTradeSum.getFrozenlessonnum()>record.getFrozenLessons())?
+						Float curFromzenLessons = (lessonTradeSum.getFrozenlessonnum()>record.getFrozenLessons())?
 								lessonTradeSum.getFrozenlessonnum():0;
-						lessonTradeSum.setFrozenlessonnum((short)curFromzenLessons);
+						lessonTradeSum.setFrozenlessonnum(curFromzenLessons);
 					}
 					//lessonTradeSum.setWithdrawlessonnum(null);
 					
@@ -443,7 +443,7 @@ public class CumstomServiceImpl implements ICustomService{
 		String teachingId = params.getString("teachingId");
 		JSONObject data = new JSONObject();
 		try {
-			if(StringUtils.isNotEmpty(teachingId)){
+			if(/*StringUtils.isNotEmpty(teachingId)*/true){
 				Map<String,Object> reqDate = new HashMap<String,Object>();
 								
 				reqDate.put("teachingId", teachingId);
@@ -473,7 +473,7 @@ public class CumstomServiceImpl implements ICustomService{
 					
 					//获取上课日期、时间段及上课课时数
 					JSONArray teachingDetails = new JSONArray();
-					int totalCheckLessons = 0;
+					Float totalCheckLessons = 0f;
 					Iterator<TeachingRecord> tRecordsIter = teachingRecords.iterator();
 					TeachingRecord tRecord = null;
 					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -572,7 +572,7 @@ public class CumstomServiceImpl implements ICustomService{
 	 */
 	private LessonTrade calcTeacherPay(LessonTrade trade) {
 		String teacherId = trade.getTeacherid();
-		Short applylessons = trade.getApplylessons();
+		Float applylessons = trade.getApplylessons();
 		Integer lessonType = trade.getLessontype();
 		Short feedback=Short.valueOf(trade.getFeedback());
 		
@@ -612,7 +612,7 @@ public class CumstomServiceImpl implements ICustomService{
 		}
 		
 		//结算时减去被冻结课时
-		int checkLessons=0;
+		Float checkLessons=0f;
 		if(null!=tradeSum) {
 			if(tradeSum.getFrozenlessonnum()!=null) {
 				checkLessons = (applylessons>=tradeSum.getFrozenlessonnum())?
@@ -628,7 +628,7 @@ public class CumstomServiceImpl implements ICustomService{
 		}
 		
 		//设置解冻课时
-		trade.setFrozenLessons((short)(applylessons-checkLessons));
+		trade.setFrozenLessons(applylessons-checkLessons);
 		
 		//设置提现金额
 		logger.info("提现金额："+checkLessons*priceList.getReward());

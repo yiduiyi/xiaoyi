@@ -8,6 +8,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
@@ -48,6 +49,7 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 		return -1;
 	}
 
+	@Transactional
 	@Override
 	public int setAgreement(JSONObject params)  throws Exception{
 		String teacherId = params.getString("teacherId");

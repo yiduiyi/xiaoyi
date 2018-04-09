@@ -158,9 +158,14 @@ public class H5PlateAction {
 			logger.info("in withdraw lessons action...");
 			logger.info("lessonTradeId:"+lessonTradeId);
 			logger.info("openId:"+request.getSession().getAttribute("openid"));
-			if (0 < h5PlateService.withdrawLessons(reqParams)) {
+			int rtCode = h5PlateService.withdrawLessons(reqParams);
+			if (0 < rtCode) {
 				code = 0;
 				msg = "提款成功！";						
+			}
+			if(rtCode==0){
+				code = -1;
+				msg = "不满足提现条件！";
 			}
 		} catch (Exception e) {
 			code = -1;

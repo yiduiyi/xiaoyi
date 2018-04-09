@@ -7,8 +7,8 @@
     <id column="orderId" property="orderid" jdbcType="VARCHAR" />
     <id column="parentId" property="parentid" jdbcType="VARCHAR" />
     <result column="purchaseTime" property="purchasetime" jdbcType="TIMESTAMP" />
-    <result column="totalLessonNum" property="totallessonnum" jdbcType="SMALLINT" />
-    <result column="lessonLeftNum" property="lessonleftnum" jdbcType="SMALLINT" />
+    <result column="totalLessonNum" property="totallessonnum"  />
+    <result column="lessonLeftNum" property="lessonleftnum"  />
     <result column="teachingIds" property="teachingids" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -42,13 +42,17 @@
   <select id="selectTeachingRecordsByTeachingId" resultType="com.xiaoyi.teacher.domain.TeachingRecord" 
   		parameterType="hashmap">
   	SELECT * FROM `teachingrecord` 
-	WHERE teachingId=#{teachingId}
-	<if test="queryDate!=null">
-		AND date_format(teachingDate,'%Y%m')=#{queryDate}
-	</if> 
- 	<if test="lessonTradeId!=null">
- 		AND lessonTradeId = #{lessonTradeId}
- 	</if>
+	<where>
+		<if test="teachingId!=null">
+			teachingId=#{teachingId}
+		</if>
+		<if test="queryDate!=null">
+			AND date_format(teachingDate,'%Y%m')=#{queryDate}
+		</if> 
+	 	<if test="lessonTradeId!=null">
+	 		AND lessonTradeId = #{lessonTradeId}
+	 	</if>
+	</where>
   </select>
   
 </mapper>

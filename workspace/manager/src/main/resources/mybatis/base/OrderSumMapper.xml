@@ -7,8 +7,8 @@
     <id column="orderId" property="orderid" jdbcType="VARCHAR" />
     <id column="parentId" property="parentid" jdbcType="VARCHAR" />
     <result column="purchaseTime" property="purchasetime" jdbcType="TIMESTAMP" />
-    <result column="totalLessonNum" property="totallessonnum" jdbcType="SMALLINT" />
-    <result column="lessonLeftNum" property="lessonleftnum" jdbcType="SMALLINT" />
+    <result column="totalLessonNum" property="totallessonnum" />
+    <result column="lessonLeftNum" property="lessonleftnum" />
     <result column="teachingIds" property="teachingids" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -45,8 +45,8 @@
       parentId, purchaseTime, totalLessonNum, 
       lessonLeftNum, teachingIds)
     values (#{lessontype,jdbcType=INTEGER}, #{memberid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
-      #{parentid,jdbcType=VARCHAR}, #{purchasetime,jdbcType=TIMESTAMP}, #{totallessonnum,jdbcType=SMALLINT}, 
-      #{lessonleftnum,jdbcType=SMALLINT}, #{teachingids,jdbcType=VARCHAR})
+      #{parentid,jdbcType=VARCHAR}, #{purchasetime,jdbcType=TIMESTAMP}, #{totallessonnum}, 
+      #{lessonleftnum}, #{teachingids,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.OrderSum" >
     insert into ordersum
@@ -93,10 +93,10 @@
         #{purchasetime,jdbcType=TIMESTAMP},
       </if>
       <if test="totallessonnum != null" >
-        #{totallessonnum,jdbcType=SMALLINT},
+        #{totallessonnum},
       </if>
       <if test="lessonleftnum != null" >
-        #{lessonleftnum,jdbcType=SMALLINT},
+        #{lessonleftnum},
       </if>
       <if test="teachingids != null" >
         #{teachingids,jdbcType=VARCHAR},
@@ -110,10 +110,10 @@
         purchaseTime = #{purchasetime,jdbcType=TIMESTAMP},
       </if>
       <if test="totallessonnum != null" >
-        totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
+        totalLessonNum = #{totallessonnum},
       </if>
       <if test="lessonleftnum != null" >
-        lessonLeftNum = #{lessonleftnum,jdbcType=SMALLINT},
+        lessonLeftNum = #{lessonleftnum},
       </if>
       <if test="teachingids != null" >
         teachingIds = #{teachingids,jdbcType=VARCHAR},
@@ -135,8 +135,8 @@
   <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.OrderSum" >
     update ordersum
     set purchaseTime = #{purchasetime,jdbcType=TIMESTAMP},
-      totalLessonNum = #{totallessonnum,jdbcType=SMALLINT},
-      lessonLeftNum = #{lessonleftnum,jdbcType=SMALLINT},
+      totalLessonNum = #{totallessonnum},
+      lessonLeftNum = #{lessonleftnum},
       teachingIds = #{teachingids,jdbcType=VARCHAR}
     where lessonType = #{lessontype,jdbcType=INTEGER}
       and memberId = #{memberid,jdbcType=VARCHAR}

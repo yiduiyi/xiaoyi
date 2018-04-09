@@ -109,8 +109,8 @@ public class OrderServiceImpl implements IOrderService {
 				}
 				
 				//添加订单条目
-				Short purchaseNum = params.getShort("purchaseNum")==null?
-						0:params.getShort("purchaseNum");	
+				Float purchaseNum = params.getFloat("purchaseNum")==null?
+						0:params.getFloat("purchaseNum");	
 				
 				Orders order = new Orders();				
 				try {
@@ -144,7 +144,7 @@ public class OrderServiceImpl implements IOrderService {
 					orderSum.setParentid(parentId);
 					orderSum.setPurchasetime(new Date());
 					orderSum.setLessontype(lessonType/*/100*/);
-					orderSum.setLessonleftnum(isNewOrder?purchaseNum:(short)(orderSum.getLessonleftnum()+purchaseNum));
+					orderSum.setLessonleftnum(isNewOrder?purchaseNum:(orderSum.getLessonleftnum()+purchaseNum));
 					orderSum.setTotallessonnum(isNewOrder?purchaseNum:(short)(orderSum.getTotallessonnum()+purchaseNum));
 					
 					if(isNewOrder){
@@ -475,7 +475,7 @@ public class OrderServiceImpl implements IOrderService {
 			
 			//0：结算、1：充值
 			int type = params.getIntValue("operateType");
-			int operateNum = params.getIntValue("operateNum");
+			Float operateNum = params.getFloat("operateNum");
 			
 			operateNum = (type==0)?-operateNum:operateNum;
 			
@@ -486,8 +486,8 @@ public class OrderServiceImpl implements IOrderService {
 				e.printStackTrace();
 				throw e;
 			}
-			record.setTotallessonnum((short) (record.getTotallessonnum()+operateNum));
-			record.setLessonleftnum((short)(record.getLessonleftnum()+operateNum));
+			record.setTotallessonnum((record.getTotallessonnum()+operateNum));
+			record.setLessonleftnum((record.getLessonleftnum()+operateNum));
 			
 			try {
 				orderSumDao.updateByPrimaryKeySelective(record);				
@@ -505,7 +505,7 @@ public class OrderServiceImpl implements IOrderService {
 				order.setLessontype(record.getLessontype());
 				order.setMemberid(record.getMemberid());
 				order.setParentid(record.getParentid());
-				order.setPurchasenum((short)operateNum);				
+				order.setPurchasenum(operateNum);				
 				
 				order.setOrderType(/*++*/type);
 				orderDao.insertSelective(order);

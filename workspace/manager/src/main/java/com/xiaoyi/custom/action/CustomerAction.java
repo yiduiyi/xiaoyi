@@ -185,12 +185,10 @@ public class CustomerAction {
 		// logger.info("获取学情报告-openId:"+openid);
 
 		try {
-			if (null != teachingId) {
-				JSONObject data = customService.queryStuTeachingReport(reqData);
-				if (null != data) {
-					result.put("data", data);
-					rtCode = RtConstants.SUCCESS;
-				}
+			JSONObject data = customService.queryStuTeachingReport(reqData);
+			if (null != data) {
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
 			}
 			// result.put("data", customService.getMySchedules(openid));
 		} catch (Exception e) {

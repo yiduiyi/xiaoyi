@@ -5,9 +5,9 @@ import java.util.Date;
 public class OrderSum extends OrderSumKey {
     private Date purchasetime;
 
-    private Short totallessonnum;
+    private Float totallessonnum;
 
-    private Short lessonleftnum;
+    private Float lessonleftnum;
 
     private String teachingids;
 
@@ -19,19 +19,19 @@ public class OrderSum extends OrderSumKey {
         this.purchasetime = purchasetime;
     }
 
-    public Short getTotallessonnum() {
+    public Float getTotallessonnum() {
         return totallessonnum;
     }
 
-    public void setTotallessonnum(Short totallessonnum) {
+    public void setTotallessonnum(Float totallessonnum) {
         this.totallessonnum = totallessonnum;
     }
 
-    public Short getLessonleftnum() {
+    public Float getLessonleftnum() {
         return lessonleftnum;
     }
 
-    public void setLessonleftnum(Short lessonleftnum) {
+    public void setLessonleftnum(Float lessonleftnum) {
         this.lessonleftnum = lessonleftnum;
     }
 
