@@ -161,11 +161,11 @@ public class H5PlateAction {
 			int rtCode = h5PlateService.withdrawLessons(reqParams);
 			if (0 < rtCode) {
 				code = 0;
-
+			}
 			if(rtCode==0){
 				code = -1;
 				msg = "不满足提现条件！";
-			
+			}
 			if(-5==rtCode){
 				code = -1;
 				msg = "家长课时不足！";
