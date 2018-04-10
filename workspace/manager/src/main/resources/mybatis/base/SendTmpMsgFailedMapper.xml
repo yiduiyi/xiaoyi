@@ -22,6 +22,24 @@
     from send_tmp_msg_failed
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </select>
+  
+  <!--  -->
+  <select id="selectByRepeatTimes">
+  	SELECT *FROM send_tmp_msg_failed 
+	WHERE repeated_times>=5 AND lessonTradeId IN (
+		SELECT lessonTradeId FROM lessontrade 
+		WHERE `status`=1
+	)
+  </select>
+  
+  <!-- 更新最近五天记录的repeatTimes -->
+  <update id="updateRepeatTimes">
+  	UPDATE send_tmp_msg_failed 
+  	SET repeated_times=repeated_times+1
+	WHERE repeated_times&lt;5 AND TO_DAYS( NOW( ) ) - TO_DAYS( createTime) &gt; 5
+  </update>
+  
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from send_tmp_msg_failed
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}

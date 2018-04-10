@@ -16,7 +16,7 @@ public interface IWechatService {
 	JSONObject payToTeacher(JSONObject params);
 	
 	/**
-	 * 发送定时任务（老师提现提醒）
+	 * 发送定时任务（更新老师提现日期间隔,重传失败消息提醒）
 	 */
 	int sendQuarzMsg();
 }

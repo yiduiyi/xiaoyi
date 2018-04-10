@@ -48,6 +48,12 @@
 				<ref bean="DailyTaskCronTriggerBean" />
 			</list>
 		</property>
+		<property name="quartzProperties"> 
+			<props>
+				<!-- 不更新 -->
+				<prop key="org.quartz.scheduler.skipUpdateCheck">true</prop> 
+			</props>
+		</property>
 	</bean>
 
 

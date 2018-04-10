@@ -2,6 +2,7 @@ package com.xiaoyi.common.service.impl;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -20,6 +21,7 @@ import org.xml.sax.InputSource;
 
 import com.xiaoyi.common.vo.TextMessage;
 import com.xiaoyi.manager.dao.IOrderSumDao;
+import com.xiaoyi.manager.dao.ISendTmpMsgFailedDao;
 import com.xiaoyi.manager.dao.ITeacherPayListDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
@@ -48,6 +50,9 @@ public class WechatServiceImpl implements IWechatService {
     ILessonTradeSumDao tradeSumDao;
     
     @Resource IOrderSumDao orderSumDao;
+    
+    @Resource
+    ISendTmpMsgFailedDao msgFailedDao;
     
     @Resource
     ILessonTradeDao lessonTradeDao;
@@ -284,6 +289,19 @@ public class WechatServiceImpl implements IWechatService {
 	@Override
 	public int sendQuarzMsg() {
 		// TODO Auto-generated method stub
+		logger.info("in quarz job...");
+		logger.info("current time:"+new Date());
+		
+		//更新最近5天消息的重复更新次数
+		try {
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		//查找repeatTimes大于等于5的记录
+		
+		
 		return 0;
 	}
 
