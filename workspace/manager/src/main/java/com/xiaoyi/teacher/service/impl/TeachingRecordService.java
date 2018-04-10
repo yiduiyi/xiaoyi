@@ -398,34 +398,48 @@ public class TeachingRecordService implements ITeachingRecordService {
 						extraParams.append(teachingId);
 
 						logger.info("extraParams:" + extraParams.toString());
+						//已捕获异常
 						String result = wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID,
 								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString(), parents.getOpenid(),
 								data);
 						
-						//解析模板消息发送结果
+						//存储模板消息发送结果
+						SendTmpMsgFailed msgFailed = new SendTmpMsgFailed();
+						msgFailed.setLessontradeid(lessonTradeId);
+						msgFailed.setOpenid(parents.getOpenid());
+						msgFailed.setCreatetime(new Date());
+						msgFailed.setMsgContent(data.toJSONString());
+						msgFailed.setTargetUrl(WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString());
+						msgFailed.setTempletId(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID);
+						msgFailed.setRepeatedTimes((byte)0);
+					
+						//默认失败
+						msgFailed.setStatus((byte)-1);
 						if(null!=result){
+							//解析结果
 							try {
 								JSONObject rtJSON = JSONObject.parseObject(result);
-								if(null==rtJSON || (rtJSON.get("errcode")!=null
-										&& 0!=rtJSON.getIntValue("errcode"))){
-									SendTmpMsgFailed msgFailed = new SendTmpMsgFailed();
-									msgFailed.setLessontradeid(lessonTradeId);
-									msgFailed.setOpenid(parents.getOpenid());
-									msgFailed.setSendtime(new Date());
-									msgFailed.setMsgid(rtJSON!=null?rtJSON.getString("msgid"):"");
-									
-									//插入发送失败模板表
-									msgFaildDao.insertSelective(msgFailed );
+								
+								if(null!=rtJSON){									
+									msgFailed.setMsgid(rtJSON.getString("msgid"));	
+									msgFailed.setStatus((byte)(rtJSON.getIntValue("errcode")==0?0:-1));
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
 								logger.info("解析模板消息发送结果失败！");
 							}
 						}
-						
+												
+						//插入发送失败模板表
+						try {							
+							msgFaildDao.insertSelective(msgFailed);
+						} catch (Exception e) {
+							logger.info("插入模板消息失败！");
+							e.printStackTrace();
+						}
 					} catch (Exception e) {
 						logger.error("查询家长角色出错！");
-						logger.error(e.getMessage());
+						logger.error(e.getMessage());						
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
