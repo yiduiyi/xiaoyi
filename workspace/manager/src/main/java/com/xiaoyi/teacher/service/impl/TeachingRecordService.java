@@ -29,11 +29,13 @@ import com.xiaoyi.common.utils.ConstantUtil.WithdrawStatus;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.IParentsDao;
+import com.xiaoyi.manager.dao.ISendTmpMsgFailedDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.Parents;
+import com.xiaoyi.manager.domain.SendTmpMsgFailed;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.dao.ISuggestionsDao;
@@ -72,6 +74,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 	@Resource
 	ITeacherDao teacherDao;
 
+	@Resource
+	ISendTmpMsgFailedDao msgFaildDao;
+	
 	@Autowired
 	private IWechatService wechatService;
 
@@ -393,9 +398,31 @@ public class TeachingRecordService implements ITeachingRecordService {
 						extraParams.append(teachingId);
 
 						logger.info("extraParams:" + extraParams.toString());
-						wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID,
+						String result = wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID,
 								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString(), parents.getOpenid(),
 								data);
+						
+						//解析模板消息发送结果
+						if(null!=result){
+							try {
+								JSONObject rtJSON = JSONObject.parseObject(result);
+								if(null==rtJSON || (rtJSON.get("errcode")!=null
+										&& 0!=rtJSON.getIntValue("errcode"))){
+									SendTmpMsgFailed msgFailed = new SendTmpMsgFailed();
+									msgFailed.setLessontradeid(lessonTradeId);
+									msgFailed.setOpenid(parents.getOpenid());
+									msgFailed.setSendtime(new Date());
+									msgFailed.setMsgid(rtJSON!=null?rtJSON.getString("msgid"):"");
+									
+									//插入发送失败模板表
+									msgFaildDao.insertSelective(msgFailed );
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+								logger.info("解析模板消息发送结果失败！");
+							}
+						}
+						
 					} catch (Exception e) {
 						logger.error("查询家长角色出错！");
 						logger.error(e.getMessage());
@@ -533,13 +560,13 @@ public class TeachingRecordService implements ITeachingRecordService {
 				tradeSum = new LessonTradeSum();
 				tradeSum.setTotalincome(0d);
 				
-				short applyLessons = (short)0;
+				Float applyLessons = 0f;
 				if(record.getApplylessons()!=null){
 					applyLessons = record.getApplylessons();
 				}
 				tradeSum.setTotallessonnum(applyLessons);
 				tradeSum.setCheckedlessonnum(applyLessons);
-				tradeSum.setFrozenlessonnum((short)0);
+				tradeSum.setFrozenlessonnum(0f);
 				tradeSum.setWithdrawlessonnum(applyLessons);
 			}
 			
@@ -549,9 +576,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 			}
 			tradeSum.setTotalincome(record.getActualPay() + tradeSum.getTotalincome());
 			if(tradeSum.getWithdrawlessonnum()==null){
-				tradeSum.setWithdrawlessonnum((short)0);
+				tradeSum.setWithdrawlessonnum(0f);
 			}
-			tradeSum.setWithdrawlessonnum((short)(record.getApplylessons()+tradeSum.getWithdrawlessonnum()));
+			tradeSum.setWithdrawlessonnum((record.getApplylessons()+tradeSum.getWithdrawlessonnum()));
 			
 			return tradeSumDao.updateByPrimaryKeySelective(tradeSum);
 		} catch (Exception e) {
