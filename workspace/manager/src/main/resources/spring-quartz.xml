@@ -34,10 +34,10 @@
 	<bean id="DailyTaskCronTriggerBean"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod" />
-		<!-- 每月一号 -->
-		<property name="cronExpression" value="30 30 8 1 * ?" />
+		<!-- 每天一点出发一次 -->
+		<property name="cronExpression" value="0 0 1 * * ?" />
 		<!-- 每小时的第一分钟触发 -->
-		<!-- <property name="cronExpression" value="0 1 * * * ?"></property> -->
+		<!-- <property name="cronExpression" value="0 * * * * ?"></property> -->
 	</bean>
 
 	<!-- ======================== 调度工厂 ======================== -->

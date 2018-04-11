@@ -1,172 +1,180 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.manager.dao.ISendTmpMsgFailedDao" >
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.SendTmpMsgFailed" >
-    <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
-    <result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
-    <result column="openId" property="openid" jdbcType="VARCHAR" />
-    <result column="msgId" property="msgid" jdbcType="VARCHAR" />
-    <result column="repeated_times" property="repeatedTimes" jdbcType="TINYINT" />
-    <result column="status" property="status" jdbcType="TINYINT" />
-    <result column="msg_content" property="msgContent" jdbcType="VARCHAR" />
-    <result column="templet_id" property="templetId" jdbcType="VARCHAR" />
-    <result column="target_url" property="targetUrl" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    lessonTradeId, createTime, openId, msgId, repeated_times, status, msg_content, templet_id, 
-    target_url
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from send_tmp_msg_failed
-    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
-  </select>
-  
-  <!-- 查找重复次数大于等于5的记录  -->
-  <select id="selectByRepeatTimes" resultMap="BaseResultMap" >
-  	SELECT *FROM send_tmp_msg_failed 
-	WHERE repeated_times>=5 AND lessonTradeId IN (
-		SELECT lessonTradeId FROM lessontrade 
+<mapper namespace="com.xiaoyi.manager.dao.ISendTmpMsgFailedDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.SendTmpMsgFailed">
+		<id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
+		<result column="createTime" property="createtime" jdbcType="TIMESTAMP" />
+		<result column="openId" property="openid" jdbcType="VARCHAR" />
+		<result column="msgId" property="msgid" jdbcType="VARCHAR" />
+		<result column="repeated_times" property="repeatedTimes"
+			jdbcType="TINYINT" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="msg_content" property="msgContent" jdbcType="VARCHAR" />
+		<result column="templet_id" property="templetId" jdbcType="VARCHAR" />
+		<result column="target_url" property="targetUrl" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		lessonTradeId, createTime, openId, msgId, repeated_times, status, msg_content,
+		templet_id,
+		target_url
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from send_tmp_msg_failed
+		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+	</select>
+
+	<!-- 查找重复次数大于等于5的记录 -->
+	<select id="selectByRepeatTimes" resultMap="BaseResultMap">
+		SELECT *FROM send_tmp_msg_failed
+		WHERE repeated_times>=5 AND lessonTradeId IN (
+		SELECT lessonTradeId FROM
+		lessontrade
 		WHERE `status`=1 OR (`status` &lt;&gt; 0 AND repeated_times &lt; 5)
-	)
-  </select>
-  
-  <!-- 更新最近五天记录的repeatTimes -->
-  <update id="updateRepeatTimes">
-  	UPDATE send_tmp_msg_failed 
-  	SET repeated_times=repeated_times+1
-	WHERE repeated_times&lt;5 AND TO_DAYS( NOW( ) ) - TO_DAYS( createTime) &gt;= 5
-  </update>
-  
-  <!-- 更新重传成功后消息状态  -->
-  <update id="updateRepeatTimesByIds" parameterType="java.util.List">
-  	UPDATE send_tmp_msg_failed SET `status`=0 
-  	WHERE 
-  	<if test="list!=null and list.size>0">
-  		lessonTradeId IN 
-  		<foreach collection="list" item="item" open="(" close=")" separator=",">
-  			#{item}
-  		</foreach>
-  	</if>
-  </update>
-  
-  
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from send_tmp_msg_failed
-    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.SendTmpMsgFailed" >
-    insert into send_tmp_msg_failed (lessonTradeId, createTime, openId, 
-      msgId, repeated_times, status, 
-      msg_content, templet_id, target_url
-      )
-    values (#{lessontradeid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{openid,jdbcType=VARCHAR}, 
-      #{msgid,jdbcType=VARCHAR}, #{repeatedTimes,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
-      #{msgContent,jdbcType=VARCHAR}, #{templetId,jdbcType=VARCHAR}, #{targetUrl,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.SendTmpMsgFailed" >
-    insert into send_tmp_msg_failed
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="lessontradeid != null" >
-        lessonTradeId,
-      </if>
-      <if test="createtime != null" >
-        createTime,
-      </if>
-      <if test="openid != null" >
-        openId,
-      </if>
-      <if test="msgid != null" >
-        msgId,
-      </if>
-      <if test="repeatedTimes != null" >
-        repeated_times,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="msgContent != null" >
-        msg_content,
-      </if>
-      <if test="templetId != null" >
-        templet_id,
-      </if>
-      <if test="targetUrl != null" >
-        target_url,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="lessontradeid != null" >
-        #{lessontradeid,jdbcType=VARCHAR},
-      </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="openid != null" >
-        #{openid,jdbcType=VARCHAR},
-      </if>
-      <if test="msgid != null" >
-        #{msgid,jdbcType=VARCHAR},
-      </if>
-      <if test="repeatedTimes != null" >
-        #{repeatedTimes,jdbcType=TINYINT},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="msgContent != null" >
-        #{msgContent,jdbcType=VARCHAR},
-      </if>
-      <if test="templetId != null" >
-        #{templetId,jdbcType=VARCHAR},
-      </if>
-      <if test="targetUrl != null" >
-        #{targetUrl,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.SendTmpMsgFailed" >
-    update send_tmp_msg_failed
-    <set >
-      <if test="createtime != null" >
-        createTime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="openid != null" >
-        openId = #{openid,jdbcType=VARCHAR},
-      </if>
-      <if test="msgid != null" >
-        msgId = #{msgid,jdbcType=VARCHAR},
-      </if>
-      <if test="repeatedTimes != null" >
-        repeated_times = #{repeatedTimes,jdbcType=TINYINT},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="msgContent != null" >
-        msg_content = #{msgContent,jdbcType=VARCHAR},
-      </if>
-      <if test="templetId != null" >
-        templet_id = #{templetId,jdbcType=VARCHAR},
-      </if>
-      <if test="targetUrl != null" >
-        target_url = #{targetUrl,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.SendTmpMsgFailed" >
-    update send_tmp_msg_failed
-    set createTime = #{createtime,jdbcType=TIMESTAMP},
-      openId = #{openid,jdbcType=VARCHAR},
-      msgId = #{msgid,jdbcType=VARCHAR},
-      repeated_times = #{repeatedTimes,jdbcType=TINYINT},
-      status = #{status,jdbcType=TINYINT},
-      msg_content = #{msgContent,jdbcType=VARCHAR},
-      templet_id = #{templetId,jdbcType=VARCHAR},
-      target_url = #{targetUrl,jdbcType=VARCHAR}
-    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
-  </update>
+		)
+	</select>
+
+	<!-- 更新最近五天记录的repeatTimes -->
+	<update id="updateRepeatTimes">
+		UPDATE send_tmp_msg_failed
+		SET repeated_times=repeated_times+1
+		WHERE repeated_times&lt;5 AND TO_DAYS( NOW( ) ) - TO_DAYS( createTime)
+		&lt;= 5
+	</update>
+
+	<!-- 更新重传成功后消息状态 -->
+	<update id="updateRepeatTimesByIds" parameterType="java.util.List">
+		UPDATE send_tmp_msg_failed SET `status`=0
+		WHERE
+		<if test="list!=null and list.size&gt;0">
+			lessonTradeId IN
+			<foreach collection="list" item="item" open="(" close=")"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+	</update>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from send_tmp_msg_failed
+		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.xiaoyi.manager.domain.SendTmpMsgFailed">
+		insert into send_tmp_msg_failed (lessonTradeId, createTime, openId,
+		msgId, repeated_times, status,
+		msg_content, templet_id, target_url
+		)
+		values (#{lessontradeid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP},
+		#{openid,jdbcType=VARCHAR},
+		#{msgid,jdbcType=VARCHAR}, #{repeatedTimes,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
+		#{msgContent,jdbcType=VARCHAR}, #{templetId,jdbcType=VARCHAR},
+		#{targetUrl,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.SendTmpMsgFailed">
+		insert into send_tmp_msg_failed
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lessontradeid != null">
+				lessonTradeId,
+			</if>
+			<if test="createtime != null">
+				createTime,
+			</if>
+			<if test="openid != null">
+				openId,
+			</if>
+			<if test="msgid != null">
+				msgId,
+			</if>
+			<if test="repeatedTimes != null">
+				repeated_times,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="msgContent != null">
+				msg_content,
+			</if>
+			<if test="templetId != null">
+				templet_id,
+			</if>
+			<if test="targetUrl != null">
+				target_url,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="lessontradeid != null">
+				#{lessontradeid,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="openid != null">
+				#{openid,jdbcType=VARCHAR},
+			</if>
+			<if test="msgid != null">
+				#{msgid,jdbcType=VARCHAR},
+			</if>
+			<if test="repeatedTimes != null">
+				#{repeatedTimes,jdbcType=TINYINT},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="msgContent != null">
+				#{msgContent,jdbcType=VARCHAR},
+			</if>
+			<if test="templetId != null">
+				#{templetId,jdbcType=VARCHAR},
+			</if>
+			<if test="targetUrl != null">
+				#{targetUrl,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.SendTmpMsgFailed">
+		update send_tmp_msg_failed
+		<set>
+			<if test="createtime != null">
+				createTime = #{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="openid != null">
+				openId = #{openid,jdbcType=VARCHAR},
+			</if>
+			<if test="msgid != null">
+				msgId = #{msgid,jdbcType=VARCHAR},
+			</if>
+			<if test="repeatedTimes != null">
+				repeated_times = #{repeatedTimes,jdbcType=TINYINT},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="msgContent != null">
+				msg_content = #{msgContent,jdbcType=VARCHAR},
+			</if>
+			<if test="templetId != null">
+				templet_id = #{templetId,jdbcType=VARCHAR},
+			</if>
+			<if test="targetUrl != null">
+				target_url = #{targetUrl,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.SendTmpMsgFailed">
+		update send_tmp_msg_failed
+		set createTime = #{createtime,jdbcType=TIMESTAMP},
+		openId = #{openid,jdbcType=VARCHAR},
+		msgId = #{msgid,jdbcType=VARCHAR},
+		repeated_times = #{repeatedTimes,jdbcType=TINYINT},
+		status = #{status,jdbcType=TINYINT},
+		msg_content = #{msgContent,jdbcType=VARCHAR},
+		templet_id = #{templetId,jdbcType=VARCHAR},
+		target_url = #{targetUrl,jdbcType=VARCHAR}
+		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+	</update>
 </mapper>

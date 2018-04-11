@@ -354,43 +354,45 @@ public class CumstomServiceImpl implements ICustomService{
 				return null;
 			}
 			
-			//已确认过的订单
-			if(null!=record 
-					&& record.getStatus()!=null
-					&& record.getStatus().intValue()==2){
-				return null;
+			//同步更新订单（避免重复点击确认）
+			synchronized (this) {							
+				//已确认过的订单
+				if(null!=record 
+						&& record.getStatus()!=null
+						&& record.getStatus().intValue()==2){
+					return null;
+				}
+				
+				logger.info("lessonTradeId:"+lessonTradeId);			
+				logger.info("feedback:"+feedback);
+				logger.info("notes:"+notes);
+				record.setStatus((byte)2);//家长已确认
+				record.setFeedback((String.valueOf(feedback)));	//反馈
+				record.setNotes(notes);		//对老师的建议
+				
+				//计算提现金额
+				logger.info("teacherId:"+record.getTeacherid());
+				logger.info("applylessons:"+record.getApplylessons());
+				logger.info("lessontype:"+record.getLessontype());
+				logger.info("feedback:"+feedback);
+				/*Float amount = */calcTeacherPay(record/*record.getTeacherid(), record.getApplylessons(), 
+						record.getLessontype(), feedback*/);			
+				//record.setActualPay(amount);
+	
+				//计算提现金额&解冻课时数
+				/*Float amount = */
+				calcTeacherPay(record);			
+				//record.setActualPay(amount);
+				
+				//更新老师课时提现状态
+				try {
+					lessonTradeDao.updateByPrimaryKeySelective(record);
+				} catch (Exception e) {
+					logger.info("更新提现状态失败！");
+					logger.error(e.getMessage());
+					throw new RuntimeException();
+				}
 			}
-			
-			logger.info("lessonTradeId:"+lessonTradeId);			
-			logger.info("feedback:"+feedback);
-			logger.info("notes:"+notes);
-			record.setStatus((byte)2);//家长已确认
-			record.setFeedback((String.valueOf(feedback)));	//反馈
-			record.setNotes(notes);		//对老师的建议
-			
-			//计算提现金额
-			logger.info("teacherId:"+record.getTeacherid());
-			logger.info("applylessons:"+record.getApplylessons());
-			logger.info("lessontype:"+record.getLessontype());
-			logger.info("feedback:"+feedback);
-			/*Float amount = */calcTeacherPay(record/*record.getTeacherid(), record.getApplylessons(), 
-					record.getLessontype(), feedback*/);			
-			//record.setActualPay(amount);
-
-			//计算提现金额&解冻课时数
-			/*Float amount = */
-			calcTeacherPay(record);			
-			//record.setActualPay(amount);
-			
-			//更新老师课时提现状态
-			try {
-				lessonTradeDao.updateByPrimaryKeySelective(record);
-			} catch (Exception e) {
-				logger.info("更新提现状态失败！");
-				logger.error(e.getMessage());
-				throw new RuntimeException();
-			}
-			
 			//更新老师提现汇总表
 			try {
 				LessonTradeSum lessonTradeSum 
