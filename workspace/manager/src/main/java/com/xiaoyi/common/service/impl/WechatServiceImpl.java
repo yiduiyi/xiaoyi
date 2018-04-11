@@ -2,6 +2,7 @@ package com.xiaoyi.common.service.impl;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import java.util.TreeMap;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -25,6 +28,7 @@ import com.xiaoyi.manager.dao.ISendTmpMsgFailedDao;
 import com.xiaoyi.manager.dao.ITeacherPayListDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
+import com.xiaoyi.manager.domain.SendTmpMsgFailed;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
@@ -291,18 +295,95 @@ public class WechatServiceImpl implements IWechatService {
 		// TODO Auto-generated method stub
 		logger.info("in quarz job...");
 		logger.info("current time:"+new Date());
-		
-		//更新最近5天消息的重复更新次数
+		int updatedColumns = 0;
 		try {
+			//更新最近5天消息的重复更新次数
+			try {
+				msgFailedDao.updateRepeatTimes();
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.info("更新提现repeatedTime失败！");
+			}
+			
+			//查找repeatTimes大于等于5的记录
+			List<SendTmpMsgFailed> msgFailedList = null;
+			try {
+				msgFailedList = msgFailedDao.selectByRepeatTimes();
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.info("查找大于5天的记录失败！");
+			}
+			
+			//更新提现大于5天的lessonTrade提现记录状态
+			if(CollectionUtils.isNotEmpty(msgFailedList)){
+				final List<String> lessonTradeIds = new ArrayList<String>();
+				final List<SendTmpMsgFailed> sendFailedMsgs = new ArrayList<SendTmpMsgFailed>();
+				for(SendTmpMsgFailed msg : msgFailedList){
+					if(5<=msg.getRepeatedTimes()){
+						lessonTradeIds.add(msg.getLessontradeid());
+					}else if(msg.getStatus()!=0) {
+						sendFailedMsgs.add(msg);
+					}
+				}
+				//更新入库（5天自动确认）
+				try {					
+					updatedColumns = lessonTradeDao.updateStatusByLessonTradeIds(lessonTradeIds);
+				} catch (Exception e) {
+					logger.info("更新lessonTrade状态失败！");
+					e.printStackTrace();
+				}
+				
+				//重发失败记录
+				if(CollectionUtils.isNotEmpty(sendFailedMsgs)){
+					new Thread(new Runnable() {
+						public void run() {
+							//统计重发成功的消息（lessonTradeId）
+							List<String> successMsgs = new ArrayList<String>();
+							for(SendTmpMsgFailed msg : sendFailedMsgs){								
+								try {								
+									String result = sendTempletMsg(msg.getTempletId(), msg.getTargetUrl(), 
+											msg.getOpenid(), JSONObject.parseObject(msg.getMsgContent()));
+									if(StringUtils.isNotEmpty(result)){
+										JSONObject jsonRS = JSONObject.parseObject(result);
+										if(jsonRS.getInteger("errcode")!=null && 0==jsonRS.getInteger("errcode")){
+											successMsgs.add(msg.getLessontradeid());
+										}
+									}								
+								} catch (Exception e) {
+									logger.info("转换json string 失败！");
+									e.printStackTrace();
+								}
+								
+								//5s 一条
+								try {
+									Thread.sleep(5000);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+							
+							//更改重传成功的消息发送状态
+							if(CollectionUtils.isNotEmpty(sendFailedMsgs)){
+								try {
+									msgFailedDao.updateRepeatTimesByIds(lessonTradeIds);									
+								} catch (Exception e) {
+									logger.info("设置重传成功的消息状态失败！");
+									e.printStackTrace();
+								}
+							}
+						}						
+					});
+				}
+				
+			}
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			logger.info("内部错误！");
 		}
-		
-		//查找repeatTimes大于等于5的记录
-		
-		
-		return 0;
+
+		return updatedColumns;
 	}
 
 	public int send(){

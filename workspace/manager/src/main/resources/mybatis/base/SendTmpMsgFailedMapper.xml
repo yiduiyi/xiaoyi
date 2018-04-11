@@ -23,12 +23,12 @@
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </select>
   
-  <!--  -->
-  <select id="selectByRepeatTimes">
+  <!-- 查找重复次数大于等于5的记录  -->
+  <select id="selectByRepeatTimes" resultMap="BaseResultMap" >
   	SELECT *FROM send_tmp_msg_failed 
 	WHERE repeated_times>=5 AND lessonTradeId IN (
 		SELECT lessonTradeId FROM lessontrade 
-		WHERE `status`=1
+		WHERE `status`=1 OR (`status` &lt;&gt; 0 AND repeated_times &lt; 5)
 	)
   </select>
   
@@ -36,7 +36,19 @@
   <update id="updateRepeatTimes">
   	UPDATE send_tmp_msg_failed 
   	SET repeated_times=repeated_times+1
-	WHERE repeated_times&lt;5 AND TO_DAYS( NOW( ) ) - TO_DAYS( createTime) &gt; 5
+	WHERE repeated_times&lt;5 AND TO_DAYS( NOW( ) ) - TO_DAYS( createTime) &gt;= 5
+  </update>
+  
+  <!-- 更新重传成功后消息状态  -->
+  <update id="updateRepeatTimesByIds" parameterType="java.util.List">
+  	UPDATE send_tmp_msg_failed SET `status`=0 
+  	WHERE 
+  	<if test="list!=null and list.size>0">
+  		lessonTradeId IN 
+  		<foreach collection="list" item="item" open="(" close=")" separator=",">
+  			#{item}
+  		</foreach>
+  	</if>
   </update>
   
   

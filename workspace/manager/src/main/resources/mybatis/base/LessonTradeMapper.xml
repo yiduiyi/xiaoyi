@@ -172,4 +172,16 @@
       actualPay = #{actualPay}
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </update>
+  
+  <!-- 更新老师提现状态（提现大于5天的记录） -->
+  <update id="updateStatusByLessonTradeIds" parameterType="java.util.List">
+  	UPDATE lessontrade SET `status`=0 
+  	WHERE 
+  	<if test="list!=null and list.size>0">
+  		lessonTradeId IN 
+  		<foreach collection="list" item="item" open="(" close=")" separator=",">
+  			#{item}
+  		</foreach>
+  	</if>
+  </update>
 </mapper>

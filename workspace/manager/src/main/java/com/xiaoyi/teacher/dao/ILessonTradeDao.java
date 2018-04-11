@@ -1,5 +1,7 @@
 package com.xiaoyi.teacher.dao;
 
+import java.util.List;
+
 import com.xiaoyi.teacher.domain.LessonTrade;
 
 public interface ILessonTradeDao {
@@ -14,4 +16,6 @@ public interface ILessonTradeDao {
     int updateByPrimaryKeySelective(LessonTrade record);
 
     int updateByPrimaryKey(LessonTrade record);
+    
+    int updateStatusByLessonTradeIds(List<String> lessonTradeIds);
 }
