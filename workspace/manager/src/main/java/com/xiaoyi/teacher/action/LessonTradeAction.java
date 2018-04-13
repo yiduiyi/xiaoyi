@@ -91,7 +91,7 @@ public class LessonTradeAction {
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
-				
+			
 		try {
 			//result.put("data",  recordService.getRecordList(reqData));			
 			switch(recordService.insertTeachingRecords(reqData)){
