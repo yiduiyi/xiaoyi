@@ -29,11 +29,11 @@
 	<!-- 查找重复次数大于等于5的记录 -->
 	<select id="selectByRepeatTimes" resultMap="BaseResultMap">
 		SELECT *FROM send_tmp_msg_failed
-		WHERE repeated_times>=5 AND lessonTradeId IN (
+		WHERE (repeated_times &gt;=5 OR `status`&lt;&gt;0) AND lessonTradeId IN (
 		SELECT lessonTradeId FROM
 		lessontrade
-		WHERE `status`=1 OR (`status` &lt;&gt; 0 AND repeated_times &lt; 5)
-		)
+		WHERE `status`=1
+		) 
 	</select>
 
 	<!-- 更新最近五天记录的repeatTimes -->

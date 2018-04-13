@@ -294,8 +294,8 @@ public class WechatServiceImpl implements IWechatService {
 	public int sendQuarzMsg() {
 		// TODO Auto-generated method stub
 		logger.info("in quarz job...");
-		logger.info("current time:"+new Date());
-		int updatedColumns = 0;
+		logger.info("current time:"+new Date());return 0;
+		/*int updatedColumns = 0;
 		try {
 			//更新最近5天消息的重复更新次数
 			try {
@@ -383,7 +383,7 @@ public class WechatServiceImpl implements IWechatService {
 			logger.info("内部错误！");
 		}
 
-		return updatedColumns;
+		return updatedColumns;*/
 	}
 
 	public int send(){
