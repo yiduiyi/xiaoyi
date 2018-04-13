@@ -638,9 +638,28 @@ public class CumstomServiceImpl implements ICustomService{
 		return trade;
 	}
 
+	@Transactional
 	@Override
 	public int insertComplains(JSONObject params) {
 		try {
+			String lessonTradeId = params.getString("lessonTradeId");
+			if(StringUtils.isEmpty(lessonTradeId)){
+				return 0;
+			}
+			
+			//更新提现状态（4：老师被家长投诉）
+			try {
+				LessonTrade tradeRecord = new LessonTrade();
+				tradeRecord.setLessontradeid(lessonTradeId);
+				tradeRecord.setStatus((byte)4);				
+				
+				lessonTradeDao.updateByPrimaryKeySelective(tradeRecord);
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.info("更新提现状态失败！");
+				return 0;
+			}
+			
 			TradeComplains record = new TradeComplains();
 			record.setComplainContent(params.getString("complaintContent"));
 			record.setComplainTime(new Date());
