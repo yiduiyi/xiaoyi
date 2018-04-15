@@ -89,9 +89,9 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 				//转换性别
 				try {
 					if(true == (boolean)(result.get("sex"))){
-						result.put("sex", false);
-					}else{
 						result.put("sex", true);
+					}else{
+						result.put("sex", false);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

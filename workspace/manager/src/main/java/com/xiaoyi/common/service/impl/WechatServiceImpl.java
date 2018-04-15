@@ -2,6 +2,7 @@ package com.xiaoyi.common.service.impl;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
 
 import com.xiaoyi.common.vo.TextMessage;
+import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.ISendTmpMsgFailedDao;
 import com.xiaoyi.manager.dao.ITeacherPayListDao;
@@ -60,6 +62,9 @@ public class WechatServiceImpl implements IWechatService {
     
     @Resource
     ILessonTradeDao lessonTradeDao;
+    
+    @Resource
+    ICustomService customService;
     
     public String processRequest(HttpServletRequest request) {
         Map<String, String> map = WechatMessageUtil.xmlToMap(request);
@@ -180,7 +185,7 @@ public class WechatServiceImpl implements IWechatService {
 								//判断家长课时是否满足提现课时
 								logger.info("家长剩余课时："+orderSum.getLessonleftnum());
 								logger.info("老师预提现课时："+lessonTrade.getApplylessons());
-								if(orderSum.getLessonleftnum()<lessonTrade.getApplylessons()){
+								if(orderSum.getLessonleftnum()<0){
 									logger.info("家长课时不足！");
 									result.put("code", -5);
 									return result;
@@ -290,12 +295,24 @@ public class WechatServiceImpl implements IWechatService {
 		} 
 	} 
 	
+	
+	private String jobDateStr = "";
 	@Override
 	public int sendQuarzMsg() {
 		// TODO Auto-generated method stub
 		logger.info("in quarz job...");
-		logger.info("current time:"+new Date());return 0;
-		/*int updatedColumns = 0;
+		
+		synchronized (this) {
+			Date d = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd");
+			if(jobDateStr.equals(sdf.format(d))){
+				return 0;
+			}
+			jobDateStr = sdf.format(d);
+			logger.info("current time:"+d);
+		}
+		
+		int updatedColumns = 0;
 		try {
 			//更新最近5天消息的重复更新次数
 			try {
@@ -320,19 +337,25 @@ public class WechatServiceImpl implements IWechatService {
 				final List<SendTmpMsgFailed> sendFailedMsgs = new ArrayList<SendTmpMsgFailed>();
 				for(SendTmpMsgFailed msg : msgFailedList){
 					if(5<=msg.getRepeatedTimes()){
-						lessonTradeIds.add(msg.getLessontradeid());
+						//后期需要优化（不能循环操作数据库）
+						//五天后自动确认
+						try {
+							JSONObject reqParams =new JSONObject();
+							reqParams.put("lessonTradeId", msg.getLessontradeid());
+							reqParams.put("openId", msg.getOpenid());
+							reqParams.put("feedback", "1");
+							reqParams.put("notes", "5天后,系统默认好评！");
+							
+							customService.confirmTRecords(reqParams);
+						} catch (Exception e) {
+							logger.info("5天后自动确认订单失败！【lessonTradeId】:"+msg.getLessontradeid());
+							e.printStackTrace();
+						}					
 					}else if(msg.getStatus()!=0) {
 						sendFailedMsgs.add(msg);
 					}
 				}
-				//更新入库（5天自动确认）
-				try {					
-					updatedColumns = lessonTradeDao.updateStatusByLessonTradeIds(lessonTradeIds);
-				} catch (Exception e) {
-					logger.info("更新lessonTrade状态失败！");
-					e.printStackTrace();
-				}
-				
+
 				//重发失败记录
 				if(CollectionUtils.isNotEmpty(sendFailedMsgs)){
 					new Thread(new Runnable() {
@@ -383,7 +406,7 @@ public class WechatServiceImpl implements IWechatService {
 			logger.info("内部错误！");
 		}
 
-		return updatedColumns;*/
+		return updatedColumns;
 	}
 
 	public int send(){

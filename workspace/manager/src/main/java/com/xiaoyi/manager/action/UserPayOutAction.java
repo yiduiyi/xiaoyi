@@ -64,16 +64,20 @@ public class UserPayOutAction {
 		String courseType = request.getString("lessonType");
 		String parentName = request.getString("parentName");
 		String stuName = request.getString("studentName");
-		Integer purchaseNum = request.getInteger("purchaseNum");
+		//Integer purchaseNum = request.getInteger("purchaseNum");
 		String lessonId = request.getString("lessonId");
 		Integer hasBook = request.getInteger("hasBook");
 		
 		JSONObject attach = new JSONObject();
+		JSONObject body = new JSONObject();
 		if(StringUtils.isEmpty(stuName)) {
 			attach.put("studentName", "未登记");
 		}
-		attach.put("studentName", stuName);
-		attach.put("parentName", parentName);
+		body.put("studentName", stuName);
+		//attach.put("studentName", stuName);
+		//attach.put("parentName", parentName);
+		body.put("parentName", parentName);
+		
 		attach.put("lessonType", courseType);
 		attach.put("hasBook", hasBook);
 		attach.put("telNum", telphone);
@@ -128,11 +132,12 @@ public class UserPayOutAction {
 		parameters.put("mch_id", WeiXinConfig.mchId);
 		parameters.put("sign_type", WeiXinConfig.signType);
 		parameters.put("nonce_str", nonceStr);
-		parameters.put("body", "\u6613\u5bf9\u6613\u7f51\u7edc\u7f34\u8d39");// 易对易网络缴费
+		//parameters.put("body", "\u6613\u5bf9\u6613\u7f51\u7edc\u7f34\u8d39");// 易对易网络缴费
 		parameters.put("out_trade_no", order);// 订单号
 		parameters.put("total_fee", amounts + "");// 总金额单位为分
 		parameters.put("spbill_create_ip", ip);
 		parameters.put("attach", attach.toJSONString());
+		parameters.put("body", body.toJSONString());
 		
 		//到账通知地址
 		parameters.put("notify_url", "http://test.yduiy.com.cn/xiaoyi/interface/notice.do");
@@ -196,9 +201,10 @@ public class UserPayOutAction {
 			 parm.put("orderNum", jsonObject.getString("out_trade_no"));
 			 parm.put("status", 1l);
 			 net.sf.json.JSONObject attach = jsonObject.getJSONObject("attach");
+			 net.sf.json.JSONObject body = jsonObject.getJSONObject("body");
 			 
-			 parm.put("studentName", attach.get("studentName"));
-			 parm.put("parentName", attach.get("parentName"));
+			 parm.put("studentName", body.get("studentName"));
+			 parm.put("parentName", body.get("parentName"));
 			 parm.put("lessonType", attach.get("lessonType"));
 			 parm.put("purchaseNum", attach.get("purchaseNum"));
 			 parm.put("hasBook", attach.get("hasBook"));
