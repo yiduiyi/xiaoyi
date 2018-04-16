@@ -165,7 +165,7 @@ public class WechatServiceImpl implements IWechatService {
 			try {
 				if(null!=lessonTradeId) {
 					LessonTrade lessonTrade = null;
-						synchronized(lessonTradeId){
+						synchronized(this){
 						try {
 							logger.info("查询课时交易【params】："+lessonTradeId);
 							lessonTrade = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
@@ -198,17 +198,20 @@ public class WechatServiceImpl implements IWechatService {
 						} catch (Exception e) {
 							logger.info("查询可是交易出错！");
 						}
-						
-						if(null==lessonTrade || lessonTrade.getStatus()!=2) {
+						//家长确认成功 or 之前提现失败课时才能提现
+						if(null==lessonTrade || 
+								(lessonTrade.getStatus()!=2 && lessonTrade.getStatus()!=3)) {
 							logger.info("不满足提现要求！");
 							return null;
 						}
 						
-						//社会哨兵（不允许重复提现）
+						//提前设置提现失败
 						try {
 							logger.info("设置哨兵...");
-							lessonTrade.setStatus((byte)3);
-							lessonTradeDao.updateByPrimaryKeySelective(lessonTrade);
+							if(lessonTrade.getStatus()!=3){
+								lessonTrade.setStatus((byte)3);
+								lessonTradeDao.updateByPrimaryKeySelective(lessonTrade);
+							}
 						} catch (Exception e) {
 							logger.info("哨兵设置失败！");
 							e.printStackTrace();

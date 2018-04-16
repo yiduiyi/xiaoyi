@@ -189,7 +189,7 @@
 		SELECT a.*,b.parentName
 		FROM lessontrade a left join parents b
 			on a.parentId = b.parentId
-		WHERE teacherId=#{teacherId} AND a.status=2
+		WHERE teacherId=#{teacherId} AND (a.status=2 OR a.status=3)
 	</select>
 	
 	<!-- 查询老师当月提现记录 -->
