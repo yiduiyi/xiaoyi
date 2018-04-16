@@ -32,7 +32,7 @@
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </select>
   
-  <select id="selectAllByPrimaryKeys" parameterType="hashmap" resultType="hashmap">
+  <select id="selectAllByPrimaryKeys" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
   	SELECT a.teacherId,b.teacherName, a.complain_content, a.complain_time,b.telNumber AS teacherTel,d.parentName,d.telNum AS parentsTel
 	FROM tradecomplains a left JOIN teacher b
 		ON a.teacherId=b.teacherId

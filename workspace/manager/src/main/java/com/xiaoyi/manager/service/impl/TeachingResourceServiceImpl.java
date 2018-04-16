@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.hamcrest.core.IsInstanceOf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -409,8 +410,12 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					updatedTeacher.setGradeid(params.getString("graduation"));							
 				}
 				updatedTeacher.setNotes(params.getString("notes"));				
-				if(null!=params.getInteger("sex")){
-					updatedTeacher.setSex(params.getInteger("sex")==0?true:false);
+				if(null!=params.get("sex")){
+					if((params.get("sex") instanceof Boolean)){
+						updatedTeacher.setSex(params.getBoolean("sex"));
+					}else if ((params.get("sex") instanceof Integer)) {
+						updatedTeacher.setSex(params.getInteger("sex")==0?true:false);
+					}
 				}
 				if(null!=params.getByte("teachingLevel")){
 					updatedTeacher.setTeachinglevel(params.getByteValue("teachingLevel"));
