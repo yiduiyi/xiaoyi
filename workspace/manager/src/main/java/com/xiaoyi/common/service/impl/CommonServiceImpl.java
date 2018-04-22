@@ -25,7 +25,7 @@ import com.xiaoyi.manager.domain.LessonType;
 
 @Service("commonDataService")
 public class CommonServiceImpl implements ICommonDataService {
-    private static Logger logger = Logger.getLogger(WechatServiceImpl.class);
+    private static Logger logger = Logger.getLogger(CommonServiceImpl.class);
 
     @Resource
     ILessonTypeDao lessonTypeDao;

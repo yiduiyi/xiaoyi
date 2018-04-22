@@ -60,14 +60,15 @@ public class ConstantUtil {
 	
 	/**
 	 * 教师等级（-1：黑名单
-            1:普通
-            2：金牌
+            0: 普通
+            1:中等
+            2：优秀
                     ）
 	 * @author dengzhihua
 	 *
 	 */
 	public static enum TeachingLevel{
-		BLACK_LIST(-1),NORMAL(1),GOLD(2);
+		BLACK_LIST(-1),DEFAULT(0),NORMAL(1),GOLD(2);
 		
 		private int teachingLevel;
 		private TeachingLevel(int level) {
@@ -82,8 +83,9 @@ public class ConstantUtil {
 		public String toString(){
 			switch(teachingLevel) {
 			case -1: return "黑名单";
-			case 1:	return "普通";
-			case 2: return "金牌";
+			case 0: return "普通";
+			case 1:	return "中等";
+			case 2: return "优秀";
 			}
 			
 			return null;		

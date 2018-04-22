@@ -1,5 +1,8 @@
 package com.xiaoyi.common.intercept;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -66,18 +69,22 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
         log.info("url:"+url);
 
         HttpSession session = request.getSession();
+        
         if(null!=session){
         	User user =  (User) session.getAttribute("userBean");
-
 	        if(user == null){
 	            response.setCharacterEncoding("UTF-8");
 	            log.info("Interceptor：跳转到login页面！");
-	            response.sendRedirect("/xiaoyi");
+	            //toAlert(response,"用户登录session过期！！");
+	            //response.sendRedirect("/xiaoyi");
 	            //request.getd
-	            return false;
+	            return true;
+//	            return false;
 	        }else{
 	            return true;
 	        }
+        }else{
+        	toAlert(response,"获取session出错！");
         }
         return false;
     }
@@ -108,4 +115,29 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
         log.info("==============执行顺序: 3、afterCompletion================");
     }
 
+    
+  //前台弹出alert框
+    public void toAlert( HttpServletResponse response,String msg){
+           
+        try {
+             response.setContentType("text/html;charset=UTF-8");
+             response.setCharacterEncoding("UTF-8");
+                
+             OutputStreamWriter out=new OutputStreamWriter(response.getOutputStream());   
+             
+             //String msg="由于您长时间没有操作，session已过期，请重新登录！";
+             msg=new String(msg.getBytes("UTF-8"));
+             
+             out.write("<meta http-equiv='Content-Type' content='text/html';charset='UTF-8'>");
+             out.write("<script>");
+             out.write("alert('"+msg+"');");
+             out.write("top.location.href = '/index.html'; ");
+             out.write("</script>");
+             out.flush();
+             out.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

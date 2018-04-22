@@ -42,6 +42,9 @@
 			<if test="teacherId!=null">
 				and teacherId = #{teacherId}
 			</if>
+			<if test="courseId!=null">
+				and lessonType = #{courseId}
+			</if>
 		</where>	 	
 	</select>
 </mapper>

@@ -15,16 +15,16 @@
     <import resource="classpath:spring-quartz.xml" /> 
 
     <!-- session 拦截器 -->
-   <!--  <mvc:interceptors>
+    <mvc:interceptors>
     	<mvc:interceptor>
-        	匹配的是url路径， 如果不配置或/**,将拦截所有的Controller
+        	<!-- 匹配的是url路径， 如果不配置或/**,将拦截所有的Controller -->
         	<mvc:mapping path="/**" />
-        	不拦截的连接  
+        	<!-- 不拦截的连接   -->
         	<mvc:exclude-mapping path="/identify/login"/>
         	<bean class="com.xiaoyi.common.intercept.CommonInterceptor"/>
    	 	</mvc:interceptor>
-    	当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法	
-	</mvc:interceptors>      -->   
+    	<!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 -->	
+	</mvc:interceptors>        
     
 	<!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
 	<context:component-scan base-package="com.xiaoyi.manager.action" />
