@@ -37,7 +37,7 @@ public class CustomerAction {
 
 	@RequestMapping(value = "/getTransactionCourses", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject getUserInfo(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject getTransactionCourses(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqDate) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
