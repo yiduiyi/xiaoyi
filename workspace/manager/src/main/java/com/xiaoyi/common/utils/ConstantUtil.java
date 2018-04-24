@@ -221,7 +221,7 @@ public class ConstantUtil {
 	}
 	
 	public static enum Course{
-		CHN(1),MATH(2),ENG(3)/*,POL(4),HIS(5),GEO(6)*/,PHY(7),CHE(8),BIO(9);
+		CHN(1),MATH(2),ENG(3),POL(4),HIS(5),GEO(6),PHY(7),CHE(8),BIO(9);
 		private int courseId;
 		private Course(int courseId){
 			this.courseId = courseId;

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Education;
 import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.manager.dao.ITeacherDao;
@@ -123,6 +124,27 @@ public class TeachingResourceAction {
 						teaching.put("regDate", format.format(regDate));
 					}
 					teaching.put("graduation", teaching.get("gradeId"));
+					
+					//转换擅长科目名称Course.BIO.toString();
+					String goodAt = teaching.getString("goodAt");
+					if(!StringUtils.isEmpty(goodAt)){
+						String[] subjectIds = goodAt.split(",");
+						if(null!=subjectIds && subjectIds.length>0){
+							StringBuffer goodAtName = new StringBuffer();
+							next:
+							for(String subjectId : subjectIds){
+								for(Course c: Course.values()){
+									if(c.getValue() == Integer.parseInt(subjectId)){
+										goodAtName.append(c.toString()+",");																				
+										continue next;
+									}
+								}
+							}
+							if(goodAtName.length()>0){
+								teaching.put("goodAtName", goodAtName.subSequence(0, goodAtName.length()-1));
+							}
+						}
+					}
 					
 					//转换学历 -> 名称
 					Integer education = teaching.getInteger("education");

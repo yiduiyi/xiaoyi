@@ -78,8 +78,8 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 	            //toAlert(response,"用户登录session过期！！");
 	            //response.sendRedirect("/xiaoyi");
 	            //request.getd
-	            return true;
-//	            return false;
+	           // return true;
+	            return false;
 	        }else{
 	            return true;
 	        }

@@ -17,3 +17,4 @@ workspace/manager/src/main/webapp/WEB-INF/web.xml
 workspace/manager/.classpath
 workspace/manager/.classpath
 workspace/manager/.classpath
+workspace/manager/src/main/resources/config/jdbc.properties

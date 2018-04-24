@@ -16,12 +16,13 @@
 		<result column="notes" property="notes" jdbcType="VARCHAR" />
 		<result column="openId" property="openId" jdbcType="VARCHAR" />
 		<result column="signed" property="signed" jdbcType="BIT" />
+		<result column="good_at" property="goodAt" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		teacherId, teacherName, picId, schoolId, gradeId, sex,
 		education, telNumber,
 		teachingLevel,
-		regDate, notes, openId, signed
+		regDate, notes, openId, signed, good_at
 	</sql>
 	<!-- i. 查询教员信息列表 -->
 	<select id="selectTeachingResourceList" parameterType="java.util.List"
@@ -41,13 +42,13 @@
 		insert
 		into teacher (teacherId, teacherName, picId, schoolId, gradeId,
 		sex,
-		education, telNumber, teachingLevel, regDate, notes,openId,signed)
+		education, telNumber, teachingLevel, regDate, notes,openId,signed,good_at)
 		values
 		<foreach collection="list" item="item" separator=",">
 			(#{item.teacherid}, #{item.teachername},#{item.picid},
 			#{item.schoolid}, #{item.gradeid},
 			#{item.sex},#{item.education},#{item.telnumber},#{item.teachinglevel},
-			#{item.regdate}, #{item.notes},#{item.openId},#{item.signed})
+			#{item.regdate}, #{item.notes},#{item.openId},#{item.signed},#{item.goodAt})
 		</foreach>
 	</insert>
 
@@ -130,7 +131,7 @@
 	
 	<select id="selectTeachersByParams" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
 		SELECT b.teacherName,b.teacherId,b.sex,b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName,d.picUrl,
-			b.teachingLevel,b.education,b.notes,b.gradeId,b.signed
+			b.teachingLevel,b.education,b.notes,b.gradeId,b.signed,b.good_at as goodAt
 		FROM teacher b 
 			LEFT JOIN school c ON b.schoolId=c.schoolId
 			LEFT JOIN picture d ON b.picId=d.picId
@@ -152,6 +153,9 @@
 			</if>
 			<if test="teachingLevel!=null">
 				AND b.teachingLevel=#{teachingLevel}
+			</if>
+			<if test="goodAt!=null">
+				AND b.goodAt LIKE '%${goodAt}%'	
 			</if>
 		</where>
 	</select>

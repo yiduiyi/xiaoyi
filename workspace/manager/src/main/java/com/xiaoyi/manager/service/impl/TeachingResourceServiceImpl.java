@@ -122,6 +122,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 						String picId = UUID.randomUUID().toString();
 						teacher.setPicid(picId);
 						teacher.setRegdate(new Date());
+						teacher.setGoodAt(data.getString("goodAt"));
 						
 						String schoolId = null;
 						if(schooIdNameMap.containsKey(data.getString("schoolName"))) {

@@ -43,6 +43,18 @@
       <if test="hasBook!= null" >
         hasBook,
       </if>
+      <if test="singleLessonPrice!= null" >
+        singleLessonPrice,
+      </if>
+      <if test="totalLessonPrice!= null" >
+        totalLessonPrice,
+      </if>
+      <if test="actualPay!= null" >
+        actualPay,
+      </if>
+      <if test="orderStatus!= null" >
+        orderStatus,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="lessontype != null" >
@@ -68,6 +80,18 @@
       </if>
       <if test="hasBook!= null" >
        #{hasBook},
+      </if>
+      <if test="singleLessonPrice!= null" >
+        #{singleLessonPrice},
+      </if>
+      <if test="totalLessonPrice!= null" >
+        #{totalLessonPrice},
+      </if>
+      <if test="actualPay!= null" >
+        #{actualPay},
+      </if>
+      <if test="orderStatus!= null" >
+        #{orderStatus},
       </if>
     </trim>
   </insert>

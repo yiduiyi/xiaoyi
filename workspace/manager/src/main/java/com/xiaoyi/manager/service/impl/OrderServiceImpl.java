@@ -25,11 +25,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
+import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOTRelationDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.ITeacherLesRelationDao;
 import com.xiaoyi.manager.dao.order.IOrderManageDao;
+import com.xiaoyi.manager.domain.LessonType;
+import com.xiaoyi.manager.domain.LessonTypeKey;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.OrderTeachingRelation;
@@ -58,6 +61,8 @@ public class OrderServiceImpl implements IOrderService {
 	
 	@Resource
 	private ITeacherLesRelationDao tlRelationDao;
+	
+	@Resource ILessonTypeDao lessonTypeDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -111,6 +116,7 @@ public class OrderServiceImpl implements IOrderService {
 				//添加订单条目
 				Float purchaseNum = params.getFloat("purchaseNum")==null?
 						0:params.getFloat("purchaseNum");	
+				Short hasBook = params.getShort("hasBook");
 				
 				Orders order = new Orders();				
 				try {
@@ -121,8 +127,33 @@ public class OrderServiceImpl implements IOrderService {
 					order.setMemberid(studentId);
 					order.setParentid(parentId);
 					order.setPurchasenum(purchaseNum);				
-					order.setHasBook(params.getShort("hasBook"));
+					order.setHasBook(hasBook );
 					order.setOrderType(params.getInteger("orderType"));
+					
+					//=================== 2018-04-25 added ==============
+					//补充订单付款详细信息
+					try {
+						LessonTypeKey key = new LessonTypeKey();
+						key.setCoursecnt(purchaseNum.shortValue());
+						key.setLessontype(lessonType);
+						
+						LessonType lesson = lessonTypeDao.selectByPrimaryKey(key);
+					
+						if(null!=lesson){
+							float actualPay = lesson.getDiscountprice();
+							if(hasBook == 1){
+								actualPay += 50 ;
+							}							
+							order.setActualPay(actualPay);
+							order.setOrderStatus(null);
+							order.setSingleLessonPrice(lesson.getSinglecourseprice());
+							order.setTotalLessonPrice(lesson.getLessonprice());
+						}
+					} catch (Exception e) {
+						logger.info("查询购买课程类型出错！");
+						e.printStackTrace();
+					}					
+					//========================= end =====================
 					
 					orderDao.insertSelective(order);
 				} catch (Exception e) {

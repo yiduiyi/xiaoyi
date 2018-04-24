@@ -28,6 +28,8 @@ public class Teacher {
     private String openId;
     
     private Short signed;
+    
+    private String goodAt;
     public String getTeacherid() {
         return teacherid;
     }
@@ -130,5 +132,13 @@ public class Teacher {
 
 	public void setSigned(Short signed) {
 		this.signed = signed;
+	}
+
+	public String getGoodAt() {
+		return goodAt;
+	}
+
+	public void setGoodAt(String goodAt) {
+		this.goodAt = goodAt;
 	}
 }

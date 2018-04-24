@@ -11,6 +11,54 @@ public class Orders extends OrdersKey {
     
     private Short hasBook;
     
+    /**
+     * ==================  added 2018-04-25 ==========
+     */
+    private Float singleLessonPrice;
+    private Float totalLessonPrice;
+
+	private Float actualPay;
+    private Short orderStatus;
+    
+    public Float getSingleLessonPrice() {
+		return singleLessonPrice;
+	}
+
+	public void setSingleLessonPrice(Float singleLessonPrice) {
+		this.singleLessonPrice = singleLessonPrice;
+	}
+
+	public Float getTotalLessonPrice() {
+		return totalLessonPrice;
+	}
+
+	public void setTotalLessonPrice(Float totalLessonPrice) {
+		this.totalLessonPrice = totalLessonPrice;
+	}
+
+	public Float getActualPay() {
+		return actualPay;
+	}
+
+	public void setActualPay(Float actualPay) {
+		this.actualPay = actualPay;
+	}
+
+	public Short getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(Short orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+
+	public Short getHasBook() {
+		return hasBook;
+	}
+    
+    /**
+     * ===================  end  =================
+     */
     public Short isHasBook() {
 		return hasBook;
 	}

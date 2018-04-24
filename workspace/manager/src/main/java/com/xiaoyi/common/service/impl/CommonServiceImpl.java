@@ -83,7 +83,7 @@ public class CommonServiceImpl implements ICommonDataService {
 				
 				//排序
 				//TreeSet<Integer> sortedKeys = new TreeSet<Integer>(gradeCoursesMap.keySet());			
-				Integer[] sortedGrade = new Integer[]{23,21,31,33,11,16};
+				Integer[] sortedGrade = new Integer[]{33,31,23,21,11,16};
 				for(Integer gradeId : sortedGrade) {
 					if(!gradeCoursesMap.containsKey(gradeId)) {
 						gradeId *=-1;
