@@ -42,9 +42,21 @@ public class ScheduleAction {
 		
 		try {			
 			int rt = scheduleService.addSchedule(reqData);
-			if(rt>=0){
+			String msg = rtCode.toString();
+			switch(rt){
+			case -2:
+				msg = "请勿重复提交！";
+				break;
+			case -1:
+				msg = "内部错误！";
+				break;
+			case 0:
 				rtCode = RtConstants.SUCCESS;
+				break;
 			}
+			result.put("code", rt);
+			result.put("msg", msg);
+			return result;
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}

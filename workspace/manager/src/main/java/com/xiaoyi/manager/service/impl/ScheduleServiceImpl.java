@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -53,12 +54,24 @@ public class ScheduleServiceImpl implements IScheduleService {
 			//添加预约条目
 			try {
 				Schedule newSchedule = new Schedule();
-				newSchedule.setCreatetime(new Date());
-				newSchedule.setScheduleid(UUID.randomUUID().toString());
 				newSchedule.setParentid(parentId);
-				newSchedule.setMemberid(studentId);
 				newSchedule.setLessontype(schedule.getInteger("lessonType"));
+				newSchedule.setMemberid(studentId);
+				//获取之前的预约记录
+				try {
+					//newSchedule.setStatus((byte)1);
+					List<Schedule> scheduledList = scheduleDao.selectScheduleListByConditions(newSchedule);
+					if(CollectionUtils.isNotEmpty(scheduledList)){						
+						return -2;
+					}
+				} catch (Exception e) {
+					logger.info("查询历史预约记录失败！");
+					e.printStackTrace();
+				}
+				//newSchedule.setStatus((byte)0);
+				newSchedule.setScheduleid(UUID.randomUUID().toString());
 				newSchedule.setNotes("未处理");
+				newSchedule.setCreatetime(new Date());
 				
 				scheduleDao.insertSelective(newSchedule);
 			} catch (Exception e) {

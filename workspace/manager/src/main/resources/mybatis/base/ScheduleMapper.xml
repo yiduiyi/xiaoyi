@@ -14,6 +14,31 @@
   <sql id="Base_Column_List" >
     scheduleId, teacherId, memberId, parentId, lessonType, createTime, status, notes
   </sql>
+  
+  <!-- 老师重复提交判断 -->
+  <select id="selectScheduleListByConditions" resultMap="BaseResultMap" parameterType="com.xiaoyi.manager.domain.Schedule" >
+    select 
+    <include refid="Base_Column_List" />
+    from schedule
+    <where>
+      <if test="memberid != null" >
+        memberId = #{memberid,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+       	AND parentId = #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="lessontype != null" >
+        AND lessonType = #{lessontype,jdbcType=INTEGER},
+      </if>
+      <!-- <if test="createtime != null" >
+        AND createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        AND #{status,jdbcType=TINYINT}
+      </if> -->
+    </where>    
+  </select>
+ 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />

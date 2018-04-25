@@ -15,6 +15,8 @@ public interface IScheduleDao {
 
     Schedule selectByPrimaryKey(String scheduleid);
     List<JSONObject> selectListByConditions(Map<String,Object> params);
+    //判重
+    List<Schedule> selectScheduleListByConditions(Schedule schedule);    
     
     int updateByPrimaryKeySelective(Schedule record);
 
