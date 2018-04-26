@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import javax.annotation.Resource;
@@ -86,6 +87,10 @@ public class TeachingRecordService implements ITeachingRecordService {
 	public List<JSONObject> getRecordList(JSONObject params) throws Exception {
 		try {
 			List<JSONObject> datas = teachingRecordDao.selectRecordsByTid(params.getString("teacherId"));
+			//每月1-10号提现,其他时间不允许提现
+			Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));    //获取东八区时间
+	        int day = c.get(Calendar.DAY_OF_MONTH);	        
+	        int status = (day<=10 && 1<=day)?0:2;
 			// 转换年级代码
 			if (!CollectionUtils.isEmpty(datas)) {
 				for (JSONObject data : datas) {
@@ -99,7 +104,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 						reqParams.putAll(data);
 						reqParams.put("queryDates", queryDates);
 						List<LessonTrade> lts = teachingRecordDao.selectTeacherLessonTradeByParams(data);
-						int status = 0;
+						
 						if(!CollectionUtils.isEmpty(lts)){
 							status = 1;
 						}

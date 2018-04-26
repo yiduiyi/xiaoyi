@@ -129,6 +129,14 @@
 		</if>
 	</select>
 	
+	<!-- 查询老师当前接单量 -->
+	<select id="selectTeacherCurOrdering" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT a.teacherId,count(*)
+		FROM order_teaching_r a LEFT JOIN ordersum b 
+			ON a.orderId = b.orderId AND b.lessonLeftNum &gt; 0
+		GROUP BY teacherId
+	</select>
+	
 	<select id="selectTeachersByParams" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
 		SELECT b.teacherName,b.teacherId,b.sex,b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName,d.picUrl,
 			b.teachingLevel,b.education,b.notes,b.gradeId,b.signed,b.good_at as goodAt

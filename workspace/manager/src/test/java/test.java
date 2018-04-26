@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -84,6 +85,18 @@ public class test {
 
 		
         System.out.println(resp);*/
+
+    	
+    	Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));    //获取东八区时间
+
+        //获取年
+        int year = c.get(Calendar.YEAR);
+        //获取月份，0表示1月份
+        int month = c.get(Calendar.MONTH) + 1;
+        //获取当前天数
+        int day = c.get(Calendar.DAY_OF_MONTH);
+    	
+    	
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
     	String t = sdf.format(new Date(1519833600000l));
     	System.out.println(t);

@@ -83,9 +83,9 @@ public class ConstantUtil {
 		public String toString(){
 			switch(teachingLevel) {
 			case -1: return "黑名单";
-			case 0: return "普通";
-			case 1:	return "中等";
-			case 2: return "优秀";
+			case 1: return "普通";
+			case 2:	return "金牌";
+			//case 2: return "优秀";
 			}
 			
 			return null;		

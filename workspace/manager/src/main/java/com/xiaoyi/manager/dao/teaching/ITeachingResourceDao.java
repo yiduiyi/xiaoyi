@@ -25,4 +25,7 @@ public interface ITeachingResourceDao {
 	List<JSONObject> selectTeachingsByParams(Map<String,Object> params);
 	
 	List<JSONObject> selectTeachersByParams(Map<String,Object> params);
+	
+	//查询老师当前接单量
+	List<JSONObject> selectTeacherCurOrdering();
 }
