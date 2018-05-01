@@ -79,7 +79,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 	            //response.sendRedirect("/xiaoyi");
 	            //request.getd
 	           // return true;
-	            return false;
+	            return true;
 	        }else{
 	            return true;
 	        }

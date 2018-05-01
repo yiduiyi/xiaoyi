@@ -59,9 +59,6 @@ public class Orders extends OrdersKey {
     /**
      * ===================  end  =================
      */
-    public Short isHasBook() {
-		return hasBook;
-	}
 
 	public void setHasBook(Short hasBook) {
 		this.hasBook = hasBook;

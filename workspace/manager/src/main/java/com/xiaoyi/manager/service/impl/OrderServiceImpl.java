@@ -361,7 +361,7 @@ public class OrderServiceImpl implements IOrderService {
 				List<Orders> orderList = orderManageDao.selectIfHasBookByParams(reqParams);
 				if(!CollectionUtils.isEmpty(orderList)) {
 					for(Orders orders : orderList) {																		
-						orderHasBookMap.put(orders.getOrderid(), orders.isHasBook());
+						orderHasBookMap.put(orders.getOrderid(), orders.getHasBook());
 					}
 				}
 				

@@ -33,6 +33,10 @@ public class WeiXinConfig {
 	public static String LESSON_CONFIRM_MSG_TEMPLETE_ID2="pI6-2--I0NO5neAgyTyZwBvMgjuTlwa0mkUecM1xKQc";
 	public static String LEFFON_CONFIRM_REDIRECT_URL2="http%3A%2F%2Ftest.yduiy.com.cn%2Fxiaoyi%2Finterface%2FauthWithUrl.do";
 	
+	//家长课时确认提醒
+	public static final String CUSTOM_LESSON_CONFIRM_MSG_TEMPLETE_ID = "j6cTEcD95kdxWhpA5Do1evgyk7gA23zTiG58GQABLCc";
+	
+	
 	//public 
 	//
 	public static String BIND_TEACHER_MSG_TEMPLETE_ID="";

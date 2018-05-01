@@ -103,7 +103,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 						JSONObject reqParams = new JSONObject();
 						reqParams.putAll(data);
 						reqParams.put("queryDates", queryDates);
-						List<LessonTrade> lts = teachingRecordDao.selectTeacherLessonTradeByParams(data);
+						List<LessonTrade> lts = teachingRecordDao.selectTeacherLessonTradeByParams(reqParams);
 						
 						if(!CollectionUtils.isEmpty(lts)){
 							status = 1;
