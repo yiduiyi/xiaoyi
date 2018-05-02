@@ -80,8 +80,8 @@ public class UserPayOutAction {
 		/*attach.put("studentName", stuName);
 		attach.put("parentName", parentName);*/		
 		
-		attach.put("lessonType", courseType);
-		attach.put("hasBook", hasBook);
+		attach.put("lesType", courseType);
+		attach.put("book", hasBook);
 		/*attach.put("telNum", telphone)*/;
 		attach.put("tel", telphone);
 		
@@ -209,9 +209,9 @@ public class UserPayOutAction {
 			 
 			 parm.put("studentName", attach.get("stu"));
 			 parm.put("parentName", attach.get("parent"));
-			 parm.put("lessonType", attach.get("lessonType"));
+			 parm.put("lessonType", attach.get("lesType"));
 			 parm.put("purchaseNum", attach.get("courseCnt"));
-			 parm.put("hasBook", attach.get("hasBook"));
+			 parm.put("hasBook", attach.get("book"));
 			 parm.put("orderType", 2);	//家长支付
 			 parm.put("telNum", attach.get("tel"));
 			 

@@ -21,6 +21,8 @@
         	<mvc:mapping path="/**" />
         	<!-- 不拦截的连接   -->
         	<mvc:exclude-mapping path="/identify/login"/>
+        	<mvc:exclude-mapping path="/index.html"/>
+        	<mvc:exclude-mapping path="xiaoyi/index.html"/>
         	<bean class="com.xiaoyi.common.intercept.CommonInterceptor"/>
    	 	</mvc:interceptor>
     	<!-- 当设置多个拦截器时，先按顺序调用preHandle方法，然后逆序调用每个拦截器的postHandle和afterCompletion方法 -->	
