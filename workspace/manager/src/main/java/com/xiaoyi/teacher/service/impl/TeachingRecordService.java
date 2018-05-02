@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
+import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Type;
@@ -37,6 +38,7 @@ import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.Parents;
 import com.xiaoyi.manager.domain.SendTmpMsgFailed;
+import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.dao.ISuggestionsDao;
@@ -361,11 +363,13 @@ public class TeachingRecordService implements ITeachingRecordService {
 							return -1;
 						}
 
-						//String teacherName = null;
+						String teacherName = null;
 						try {
-							//teacherDao.selectByPrimaryKey(teacherId);
+							Teacher teacher = teacherDao.selectByPrimaryKey(teacherId);
+							teacherName = teacher.getTeachername();
 						} catch (Exception e) {
-							// TODO: handle exception
+							logger.info("查询老师失败！");
+							e.printStackTrace();
 						}
 
 						// SimpleDateFormat sdf = new
@@ -379,20 +383,33 @@ public class TeachingRecordService implements ITeachingRecordService {
 						data.put("first", first);
 
 						JSONObject keyword1 = new JSONObject();
-						keyword1.put("value", "您有新的课时需要确认！");
+						keyword1.put("value", teacherName);
 						keyword1.put("color", "#173177");
 						data.put("keyword1", keyword1);
 
+						LessonType lt = LessonType.convert(lessontype);
 						JSONObject keyword2 = new JSONObject();
-						keyword2.put("value", sdf.format(new Date()));
+						keyword2.put("value", lt.getGradeName(false));
 						keyword2.put("color", "#173177");
 						data.put("keyword2", keyword2);
 						params.put("data", data);
-
+						
 						JSONObject keyword3 = new JSONObject();
-						keyword3.put("value", "点击查看授课详情...");
-						keyword3.put("color", "#FF4500");
-						data.put("remark", keyword3);
+						keyword3.put("value", totalLessons);
+						keyword3.put("color", "#173177");
+						data.put("keyword3", keyword3);
+						params.put("data", data);
+
+						JSONObject keyword4 = new JSONObject();
+						keyword4.put("value", sdf.format(new Date()));
+						keyword4.put("color", "#173177");
+						data.put("keyword4", keyword4);
+						params.put("data", data);
+						
+						JSONObject remark = new JSONObject();
+						remark.put("value", "点击查看授课详情...");
+						remark.put("color", "#FF4500");
+						data.put("remark", remark);
 
 						Calendar cal = Calendar.getInstance();
 						int month = cal.get(Calendar.MONTH);
@@ -409,7 +426,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 
 						logger.info("extraParams:" + extraParams.toString());
 						//已捕获异常
-						String result = wechatService.sendTempletMsg(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID,
+						String result = wechatService.sendTempletMsg(WeiXinConfig.CUSTOM_LESSON_CONFIRM_MSG_TEMPLETE_ID/*LESSON_CONFIRM_MSG_TEMPLETE_ID*/,
 								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString(), parents.getOpenid(),
 								data);
 						
@@ -420,7 +437,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 						msgFailed.setCreatetime(new Date());
 						msgFailed.setMsgContent(data.toJSONString());
 						msgFailed.setTargetUrl(WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString());
-						msgFailed.setTempletId(WeiXinConfig.LESSON_CONFIRM_MSG_TEMPLETE_ID);
+						msgFailed.setTempletId(WeiXinConfig.CUSTOM_LESSON_CONFIRM_MSG_TEMPLETE_ID/*LESSON_CONFIRM_MSG_TEMPLETE_ID*/);
 						msgFailed.setRepeatedTimes((byte)0);
 					
 						//默认失败
