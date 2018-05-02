@@ -375,8 +375,8 @@ public class CumstomServiceImpl implements ICustomService{
 				logger.info("applylessons:"+record.getApplylessons());
 				logger.info("lessontype:"+record.getLessontype());
 				logger.info("feedback:"+feedback);
-				/*Float amount = */calcTeacherPay(record/*record.getTeacherid(), record.getApplylessons(), 
-						record.getLessontype(), feedback*/);			
+				/*Float amount = *//*calcTeacherPay(record);*//*record.getTeacherid(), record.getApplylessons(), 
+						record.getLessontype(), feedback*/			
 				//record.setActualPay(amount);
 	
 				//计算提现金额&解冻课时数

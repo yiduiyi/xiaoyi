@@ -93,20 +93,25 @@ public class TeachingRecordService implements ITeachingRecordService {
 	        int status = (day<=10 && 1<=day)?0:2;
 			// 转换年级代码
 			if (!CollectionUtils.isEmpty(datas)) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
 				for (JSONObject data : datas) {
 					Integer gradeId = data.getInteger("gradeId");
 					
 					//判断当前月份是否已提现
 					try {
-						List<Date> queryDates = new ArrayList<Date>();
-						queryDates.add(new Date());
-						JSONObject reqParams = new JSONObject();
-						reqParams.putAll(data);
-						reqParams.put("queryDates", queryDates);
-						List<LessonTrade> lts = teachingRecordDao.selectTeacherLessonTradeByParams(reqParams);
-						
-						if(!CollectionUtils.isEmpty(lts)){
-							status = 1;
+						if(status!=2){
+							List<String> queryDates = new ArrayList<String>();
+							queryDates.add(sdf.format(new Date()));
+							JSONObject reqParams = new JSONObject();
+							reqParams.putAll(data);
+							reqParams.put("queryDates", queryDates);
+							List<LessonTrade> lts = teachingRecordDao.selectTeacherLessonTradeByParams(reqParams);
+							
+							if(!CollectionUtils.isEmpty(lts)){
+								status = 1;
+							}else{
+								status = 0;
+							}
 						}
 						data.put("status", status);
 					} catch (Exception e) {

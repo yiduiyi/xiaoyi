@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -247,30 +248,30 @@
 			<artifactId>wxpay-sdk</artifactId>
 			<version>0.0.3</version>
 		</dependency>
-		
-		<dependency>  
-	    	<groupId>net.sf.json-lib</groupId>  
-	   		<artifactId>json-lib</artifactId>  
-	   		<version>2.4</version>  
-	    <classifier>jdk15</classifier>  
-	</dependency>
-	
-	<!-- quarz定时任务 -->
-	<dependency>  
-    	<groupId>org.quartz-scheduler</groupId>  
-    	<artifactId>quartz</artifactId>  
-    	<version>2.2.0</version>  
-	</dependency>
 
-	<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
-	<dependency>
-    	<groupId>org.apache.poi</groupId>
-    	<artifactId>poi-ooxml</artifactId>
-    	<version>3.17</version>
-	</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+
+		<!-- quarz定时任务 -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.17</version>
+		</dependency>
 	</dependencies>
 
-	
+
 
 
 	<build>
