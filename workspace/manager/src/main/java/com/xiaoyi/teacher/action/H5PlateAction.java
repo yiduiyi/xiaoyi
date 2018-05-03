@@ -94,15 +94,18 @@ public class H5PlateAction {
 			
 			code = h5PlateService.bindWechat(reqData);
 			if(code==2){
-				msg = "数据库没有匹配的用户";
+				code =1;
+				msg = "教师信息未录入,请联系课程顾问!";
 				logger.error("数据库没有匹配的用户");
 			}
 			if(code==3){
-				msg = "当前老师已绑定！";
+				code =2;
+				msg = "账号已被绑定,请联系课程顾问!";
 				logger.error("当前老师已绑定！");
 			}
 			if(code==4){
-				msg = "该老师未签约！";
+				code =3;
+				msg = "请先前往讲师PC端登录签约!";
 				logger.error("该老师未签约！");
 			}
 			

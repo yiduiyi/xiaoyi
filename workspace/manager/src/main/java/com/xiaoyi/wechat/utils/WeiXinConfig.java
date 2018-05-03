@@ -36,6 +36,8 @@ public class WeiXinConfig {
 	//家长课时确认提醒
 	public static final String CUSTOM_LESSON_CONFIRM_MSG_TEMPLETE_ID = "j6cTEcD95kdxWhpA5Do1evgyk7gA23zTiG58GQABLCc";
 	
+	//家长课时不足提醒
+	public static final String CUSTOM_LESSON_SHORTAGE_REMAINDER_TEMPLETE_ID ="N6tayHg61jtqaB49apOzXi8DWaU5jPmb0uTs6OEnsWM";
 	
 	//public 
 	//
