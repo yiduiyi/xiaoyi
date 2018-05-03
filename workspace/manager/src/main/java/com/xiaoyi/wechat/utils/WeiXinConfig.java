@@ -38,6 +38,11 @@ public class WeiXinConfig {
 	
 	//家长课时不足提醒
 	public static final String CUSTOM_LESSON_SHORTAGE_REMAINDER_TEMPLETE_ID ="N6tayHg61jtqaB49apOzXi8DWaU5jPmb0uTs6OEnsWM";
+	public static final String CUSTOM_LESSON_SHORTAGE_REMAINDER_REDIRECT_URL="";
+	
+	//家长欠费提醒
+	public static final String CUSTOM_ARREARAGE_REMAINDER_TEMPLETE_ID="neucPdllvXDtnD0bRkkZgllrFJkq1l7Pp60Uf609zGg";
+	public static final String CUSTOM_ARREARAGE_REMAINDER_REDIRECT_URL="";
 	
 	//public 
 	//

@@ -13,4 +13,11 @@ public interface IAccountService {
 	List<JSONObject> getComplainList(JSONObject params);
 	
 	int sendPurchaseLink(JSONObject params);
+	
+	/**
+	 * 发送课时不足提醒消息
+	 * @return
+	 */
+	int sendNotEnoughLessonMsgToCustom();
+	int sendSingleNotEnoughLessonMsg(String openId,JSONObject data);
 }
