@@ -326,13 +326,14 @@ public class TeachingRecordService implements ITeachingRecordService {
 						throw e;
 					}
 
-					//Float leftLessonCount = 0f;
+					Float leftLessonCount = 0f;
 					// 更新用户订单课时数（家长）
 					try {
 						OrderSumKey key = new OrderSumKey();
 						key.setOrderid(orderId);
 						OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
-						orderSum.setLessonleftnum((orderSum.getLessonleftnum() - totalLessons));
+						leftLessonCount = orderSum.getLessonleftnum() - totalLessons;
+						orderSum.setLessonleftnum(leftLessonCount);
 
 						// 新增家长端老师提现记录
 						Orders order = new Orders();
@@ -395,7 +396,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 						params.put("data", data);
 						
 						JSONObject keyword3 = new JSONObject();
-						keyword3.put("value", totalLessons);
+						keyword3.put("value", totalLessons+"(剩余："+leftLessonCount+")");
 						keyword3.put("color", "#173177");
 						data.put("keyword3", keyword3);
 						params.put("data", data);

@@ -39,7 +39,7 @@ public class SessionFilter implements Filter {
         }
         
         // 登陆url
-        String loginUrl = httpRequest.getContextPath() + "/xiaoyi/index.jsp";
+        String loginUrl = httpRequest.getContextPath() + "/index.jsp";
         String url = httpRequest.getRequestURI();
         String path = url.substring(url.lastIndexOf("/"));
         // 超时处理，ajax请求超时设置超时状态，页面请求超时则返回提示并重定向

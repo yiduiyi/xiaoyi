@@ -27,5 +27,5 @@ public interface IOrderManageDao {
     //查询管理员手动充值、结算订单
     List<Orders> selectMOrdersByParams(Map<String,Object> params);
     
-    List<JSONObject> selectLessonShortageRecords();
+    List<JSONObject> selectLessonShortageRecords(Map<String,Object> params);
 }

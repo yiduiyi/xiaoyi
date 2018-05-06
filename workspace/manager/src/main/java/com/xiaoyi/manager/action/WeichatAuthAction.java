@@ -136,4 +136,54 @@ public class WeichatAuthAction{
 		}
 	}
 	
+	//http://test.yduiy.com.cn/wechat/index.html#/buyClass
+	@RequestMapping("/authWithRedirectUrl")
+	public void authWithRedirectUrl(HttpServletRequest req,
+			 HttpServletResponse res )  {
+		log.info("In authWithRedirectUrl...");
+		String redirectUrl = req.getParameter("redirect_url");
+		log.info("redirect url:" + redirectUrl);
+		redirectUrl = "/wechat/index.html#/buyClass";
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+	        if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID, WeiXinConfig.SECRET , code);
+	              String openid = weixinOauth2Token.getOpenId();
+	              req.getSession().setAttribute("openid", openid);
+	              log.error("openid====>" + openid);
+	              res.sendRedirect( req.getContextPath() + redirectUrl);
+	        } 
+	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping("/authAndPay")
+	public void authAndPay(HttpServletRequest req,
+			 HttpServletResponse res )  {
+		log.info("In authWithRedirectUrl...");
+		String redirectUrl = req.getParameter("redirect_url");
+		String orderId = req.getParameter("orderId");
+		log.info("orderId:" + orderId);
+		redirectUrl = "/wechat/index.html#/paydebt?orderId="+orderId;
+		log.info("redirect Url:"+redirectUrl);
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+	        if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID, WeiXinConfig.SECRET , code);
+	              String openid = weixinOauth2Token.getOpenId();
+	              req.getSession().setAttribute("openid", openid);
+	              log.error("openid====>" + openid);
+	              res.sendRedirect( req.getContextPath() + redirectUrl);
+	        } 
+	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
