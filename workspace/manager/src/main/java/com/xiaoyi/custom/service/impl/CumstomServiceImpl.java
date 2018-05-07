@@ -23,15 +23,21 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
+import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.service.ICustomService;
+import com.xiaoyi.manager.dao.ILessonTypeDao;
+import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IParentsDao;
 import com.xiaoyi.manager.dao.IScheduleDao;
 import com.xiaoyi.manager.dao.IStudentDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.dao.ITeacherPayListDao;
 import com.xiaoyi.manager.dao.ITradeComplainsDao;
+import com.xiaoyi.manager.domain.LessonTypeKey;
+import com.xiaoyi.manager.domain.OrderSum;
+import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.ParentStuRelation;
 import com.xiaoyi.manager.domain.Parents;
@@ -79,6 +85,12 @@ public class CumstomServiceImpl implements ICustomService{
 	
 	@Resource
 	ITeacherPayListDao payListDao;
+	
+	@Resource
+	IOrderSumDao orderSumDao;
+	
+	@Resource
+	ILessonTypeDao lessonTypeDao;
 	
 	@Resource
 	private ICommonService commonService;
@@ -672,6 +684,46 @@ public class CumstomServiceImpl implements ICustomService{
 			logger.error(e.getMessage());
 			return 0;
 		}
+	}
+
+	@Override
+	public JSONObject getDebt(JSONObject params) {
+		JSONObject result = new JSONObject();
+		String orderId = params.getString("orderId");
+		if(StringUtils.isEmpty(orderId)){
+			logger.info("参数错误,orderId为空！");
+			return null;
+		}
+		try {
+			OrderSumKey key = new OrderSumKey();
+			key.setOrderid(orderId);
+			OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
+			
+			if(null!=orderSum && orderSum.getLessontype()!=null){
+				LessonTypeKey lessonTypeKey = new LessonTypeKey();
+				lessonTypeKey.setCoursecnt((short)30);
+				lessonTypeKey.setLessontype(orderSum.getLessontype());
+				com.xiaoyi.manager.domain.LessonType lessonType = lessonTypeDao.selectByPrimaryKey(lessonTypeKey);
+				
+				float ownLessonNum = orderSum.getLessonleftnum();
+				logger.info("补缴课时数："+ownLessonNum);
+				float amount = ownLessonNum;
+				if(ownLessonNum>0){
+					return result;
+				}
+				ownLessonNum *= -1;
+				amount = ownLessonNum * (lessonType.getDiscountprice()/30);
+				logger.info("家长应付金额：" + amount);
+				
+				result.put("shouldPay", amount);
+				result.put("ownLessonNum", ownLessonNum);
+			}
+		} catch (Exception e) {
+			logger.info("查询家长欠费课时详情失败！");
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 
 }

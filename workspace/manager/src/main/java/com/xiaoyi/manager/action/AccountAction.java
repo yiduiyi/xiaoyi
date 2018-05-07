@@ -1,6 +1,7 @@
 package com.xiaoyi.manager.action;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -34,12 +35,22 @@ public class AccountAction {
 		JSONObject result = new JSONObject();
 		String msg = "发送失败！";
 		int code = -1;
+		Integer type = reqData.getInteger("type");
 		
-		if(0<=accountService.sendPurchaseLink(reqData)){
-			code = 0;
-			msg = "发送中...";
+		int sendCount = -1;
+		switch (type) {
+		case 1:	//一键催费
+			sendCount = accountService.sendMsgsToSelectedCustom(reqData);
+			break;
+		case 2:	//发送补缴链接
+			sendCount = accountService.sendPurchaseLink(reqData);
+			break;
 		}
 		
+		if(sendCount>=0){
+			code = 0;
+			msg = "发送成功！";
+		}
 		return setReturnMsg(result, code, msg);		
 	}
 	

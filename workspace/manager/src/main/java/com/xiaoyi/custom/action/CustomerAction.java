@@ -221,6 +221,30 @@ public class CustomerAction {
 		return result;
 	}
 
+	// 查询家长欠费详单
+	@RequestMapping(value = "/getArrearageDetail", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getArrearageDetail(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) throws UnsupportedEncodingException {
+		JSONObject result = new JSONObject();
+		//RtConstants rtCode = RtConstants.FAILED;
+		int code = -1;
+		String msg = "查询家长欠费课时详情失败！";
+		try {
+			JSONObject data = customService.getDebt(reqData);
+			if(null != data){
+				code = 0;
+				msg = "查询成功！";
+			}
+			result.put("data", data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		setReturnMsg(result, code, msg);
+		return result;
+	}
+	
 	//
 	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {
 		result.put("code", code);

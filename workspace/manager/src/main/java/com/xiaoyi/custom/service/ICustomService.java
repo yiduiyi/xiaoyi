@@ -42,4 +42,9 @@ public interface ICustomService {
 	 * 家长投诉
 	 */
 	int insertComplains(JSONObject params);
+	
+	/**
+	 * 获取补缴金额
+	 */
+	JSONObject getDebt(JSONObject params);
 }

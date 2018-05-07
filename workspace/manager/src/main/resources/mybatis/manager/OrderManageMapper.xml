@@ -120,4 +120,17 @@
 		</if>
 	</select>
 	
+	<!-- 查询课时不足6的记录 -->
+	<select id="selectLessonShortageRecords" resultType="com.alibaba.fastjson.JSONObject" parameterType="hashmap">
+		SELECT openId,lessonType,parentName,c.`name` as studentName,totalLessonNum,lessonLeftNum 
+		FROM ordersum a LEFT JOIN parents b ON a.parentId = b.parentId
+			LEFT JOIN student c ON a.memberId=c.memberId
+		WHERE lessonLeftNum &lt;= 6 AND teachingIds IS NOT NULL
+		<if test="orderIdList!=null and orderIdList.size()>0">
+			AND a.orderId IN 
+			<foreach collection="orderIdList" open="(" close=")" item="item" separator=",">
+				#{item}
+		</foreach>	
+		</if>
+	</select>
 </mapper>

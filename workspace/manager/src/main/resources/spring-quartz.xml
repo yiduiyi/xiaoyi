@@ -14,10 +14,7 @@
 
 	<!-- 定义目标bean和bean中的方法 -->
 	<!-- =====================日常任务job========================== -->
-
 	<bean id="MyTask" class="com.xiaoyi.common.service.impl.WechatServiceImpl" />
-
-
 	<bean id="MyTaskMethod"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
@@ -28,9 +25,19 @@
 		</property>
 	</bean>
 
-
+	<bean id="MyTask2" class="com.xiaoyi.manager.service.impl.AccountServiceImpl" />
+	<bean id="MyTaskMethod2"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="MyTask2" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>sendNotEnoughLessonQuarzMsgToCustom</value>
+		</property>
+	</bean>
 
 	<!-- ======================== 调度触发器 ======================== -->
+	<!-- 更新提现状态 -->
 	<bean id="DailyTaskCronTriggerBean"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod" />
@@ -40,12 +47,23 @@
 		<property name="cronExpression" value="0 0 1 1-11 * ?"></property>
 	</bean>
 
+	<!-- 更新提现状态 -->
+	<bean id="DailyTaskCronTriggerBean2"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="MyTaskMethod2" />
+		<!-- 每天一点出发一次 -->
+		<!-- <property name="cronExpression" value="0 0 1 * * ?" /> -->
+		<!-- 每个月15号凌晨1点触发 -->
+		<property name="cronExpression" value="0 0 1 15 * ?"></property>
+	</bean>
+
 	<!-- ======================== 调度工厂 ======================== -->
 	<bean id="SpringJobSchedulerFactoryBean"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="DailyTaskCronTriggerBean" />
+				<ref bean="DailyTaskCronTriggerBean2" />
 			</list>
 		</property>
 		<property name="quartzProperties"> 

@@ -108,8 +108,9 @@ public class WechatServiceImpl implements IWechatService {
 			
 			url.append("&response_type=code&scope=snsapi_base&state=123#wechat_redirect");
 			params.put("url", url.toString());
-			
-			params.put("data", reqDatas);
+			if(null!=reqDatas && reqDatas.size()>0){
+				params.put("data", reqDatas);
+			}
 			
 			
 			String result = null;
