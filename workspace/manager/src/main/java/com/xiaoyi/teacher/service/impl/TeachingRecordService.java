@@ -39,6 +39,7 @@ import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.Parents;
 import com.xiaoyi.manager.domain.SendTmpMsgFailed;
 import com.xiaoyi.manager.domain.Teacher;
+import com.xiaoyi.manager.service.IAccountService;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.dao.ISuggestionsDao;
@@ -83,6 +84,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 	@Autowired
 	private IWechatService wechatService;
 
+	@Autowired
+	private IAccountService accountService;
+	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -351,6 +355,14 @@ public class TeachingRecordService implements ITeachingRecordService {
 						// 更新用户总课时
 						orderSumDao.updateByPrimaryKeySelective(orderSum);
 						//leftLessonCount = orderSum.getLessonleftnum();
+						
+						//剩余课时小于6个小时,自动触发缴费提醒
+						if(orderSum.getLessonleftnum()<=6){
+							Map<String,Object> obj = new HashMap<String,Object>();
+							obj.put("orderIds", orderId);
+							accountService.sendMsgsToSelectedCustom(obj);
+						}
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw e;
