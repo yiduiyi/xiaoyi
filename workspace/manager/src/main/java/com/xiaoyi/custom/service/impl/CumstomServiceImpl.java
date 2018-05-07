@@ -359,7 +359,7 @@ public class CumstomServiceImpl implements ICustomService{
 				//已确认过的订单
 				if(null!=record 
 						&& record.getStatus()!=null
-						&& record.getStatus().intValue()==2){
+						&& record.getStatus().intValue()!=1){
 					return null;
 				}
 				
