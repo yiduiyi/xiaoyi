@@ -114,9 +114,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 							List<LessonTrade> lts = teachingRecordDao.selectTeacherLessonTradeByParams(reqParams);
 							
 							if(!CollectionUtils.isEmpty(lts)){
-								status = 1;
+								status = 1;	//已提现
 							}else{
-								status = 0;
+								status = 0;	//可提现
 							}
 						}
 						data.put("status", status);
@@ -152,6 +152,21 @@ public class TeachingRecordService implements ITeachingRecordService {
 			String parentId = params.getString("parentId");
 			String memberId = params.getString("memberId");
 
+			//处理代买的情况（家长不一样）
+			try {
+				OrderSumKey key = new OrderSumKey();
+				key.setOrderid(orderId);
+				OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
+				if(null!=orderSum && !parentId.equals(orderSum.getParentid())){
+					parentId = orderSum.getParentid();
+				}
+			} catch (Exception e) {
+				logger.info("查询订单汇总表失败！");
+				e.printStackTrace();
+				return -1;
+			}
+			
+			
 			// 判断是否已存在提现记录（当月）
 			Map<String, Object> reqParams = new HashMap<String, Object>();
 			reqParams.put("teacherId", teacherId);

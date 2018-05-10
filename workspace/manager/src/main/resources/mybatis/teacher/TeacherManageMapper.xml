@@ -197,7 +197,7 @@
 		resultType="com.xiaoyi.teacher.domain.LessonTrade">
 		SELECT * 
 		FROM `lessontrade`
-		WHERE teacherId=#{teacherId} AND parentId=#{parentId}
+		WHERE teacherId=#{teacherId} <!-- AND parentId=#{parentId} -->
 			AND memberId=#{memberId} AND lessonType=#{lessonType}
 			<if test="queryDates!=null and queryDates.size>0">
 				AND DATE_FORMAT(applyTime,'%Y%m') in

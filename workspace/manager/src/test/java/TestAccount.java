@@ -17,7 +17,7 @@ import com.xiaoyi.manager.service.IAccountService;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.domain.LessonTrade;  
 
-@RunWith(JUnit4ClassRunner.class)     //表示继承了SpringJUnit4ClassRunner类  
+@RunWith(JUnit4ClassRunner.class)     //琛ㄧず缁ф壙浜哠pringJUnit4ClassRunner绫�  
 @ContextConfiguration(locations = {"classpath:spring-mybatis.xml"})
 public class TestAccount {
 	private static Logger logger = Logger.getLogger(TestAccount.class);  
@@ -65,7 +65,7 @@ public class TestAccount {
 		}
 	}
 	
-	@Test 
+	//@Test 
 	public void testPayToTeacher() throws Exception{
 		JSONObject reqParams = new JSONObject();
 		reqParams.put("lessonTradeId", "797426a4-6322-4a8f-99f0-196d0d1f4421");
@@ -86,23 +86,23 @@ public class TestAccount {
 
 		JSONObject data = new JSONObject();
 		JSONObject first = new JSONObject();
-		first.put("value", "家长您好,请确认课时！");
+		first.put("value", "瀹堕暱鎮ㄥソ,璇风‘璁よ鏃讹紒");
 		first.put("color", "#173177");
 		data.put("first", first);
 		
 		JSONObject keyword1 = new JSONObject();
-		keyword1.put("value", "张三老师");
+		keyword1.put("value", "寮犱笁鑰佸笀");
 		keyword1.put("color", "#173177");		
 		data.put("keyword1", keyword1);
 		
 		JSONObject keyword2 = new JSONObject();
-		keyword2.put("value", "数学补习");
+		keyword2.put("value", "鏁板琛ヤ範");
 		keyword2.put("color", "#173177");		
 		data.put("keyword2", keyword2);
 		params.put("data", data);
 		
 		JSONObject keyword3 = new JSONObject();
-		keyword3.put("value", "10 小时");
+		keyword3.put("value", "10 灏忔椂");
 		keyword3.put("color", "#173177");		
 		data.put("keyword3", keyword3);
 		params.put("data", data);

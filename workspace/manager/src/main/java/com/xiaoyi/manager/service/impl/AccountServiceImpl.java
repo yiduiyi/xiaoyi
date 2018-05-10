@@ -233,7 +233,7 @@ public class AccountServiceImpl implements IAccountService{
 					data.put("keyword1", keyword1);
 					
 					JSONObject keyword2 = new JSONObject();
-					keyword2.put("value", new Date()+"(截止时间)");
+					keyword2.put("value", new Date()+"(截至时间)");
 					keyword2.put("color", "#173177");		
 					data.put("keyword2", keyword2);
 					
@@ -247,8 +247,8 @@ public class AccountServiceImpl implements IAccountService{
 					}
 					
 					JSONObject keyword4 = new JSONObject();
-					keyword2.put("value",leftLessonNum);
-					keyword2.put("color", "#173177");		
+					keyword4.put("value",leftLessonNum);
+					keyword4.put("color", "#173177");		
 					data.put("keyword4", keyword4);
 					
 					JSONObject remark = new JSONObject();
