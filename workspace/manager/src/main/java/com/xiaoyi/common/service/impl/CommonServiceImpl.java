@@ -49,6 +49,9 @@ public class CommonServiceImpl implements ICommonDataService {
 					if(null!=lessonType && lessonType.getLessontype()!=null) {
 						//等级+年级
 						Integer levelGrade = lessonType.getLessontype()/10;
+						if(levelGrade>40){
+							levelGrade -= 30;
+						}
 						JSONObject gradeLessonsMap = null;
 						if(gradeCoursesMap.containsKey(levelGrade)) {
 							gradeLessonsMap = gradeCoursesMap.get(levelGrade);

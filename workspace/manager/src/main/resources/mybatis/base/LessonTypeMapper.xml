@@ -214,10 +214,13 @@
 			</if>
 			<if test="teachingWay!=null">
 				<if test="teachingWay==0">
-					lessonType &gt; 0
-				</if>
+					teachingWay = 0
+				</if> 
 				<if test="teachingWay==1">
-					lessonType &lt; 0
+					teachingWay = 1
+				</if>
+				<if test="teachingWay==2">
+					teachingWay=2
 				</if>
 			</if>
 		</where>
