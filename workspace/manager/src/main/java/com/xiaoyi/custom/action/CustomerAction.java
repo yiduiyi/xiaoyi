@@ -126,7 +126,9 @@ public class CustomerAction {
 	public JSONObject confirmTRecords(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqDate) throws UnsupportedEncodingException {
 		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
+		//RtConstants rtCode = RtConstants.FAILED;
+		int resultCode = -1;
+		String msg = "确认失败！";
 		String lessonTradeId = reqDate.getString("lessonTradeId");
 
 		String openid = (String) request.getSession().getAttribute("openid");
@@ -153,17 +155,34 @@ public class CustomerAction {
 				reqParams.put("notes", reqDate.get("notes"));
 				logger.info(
 						"in confirmTRecords:feedback=" + reqDate.get("feedback") + ",notes:" + reqDate.get("notes"));
-				LessonTrade lessonTrade = customService.confirmTRecords(reqParams);
-				if (null != lessonTrade) {
-					rtCode = RtConstants.SUCCESS;
-					logger.info("家长确认成功！");
+				
+				resultCode = customService.confirmTRecords(reqParams);
+				if (0 == resultCode) {
+					switch (resultCode) {
+					case 0:
+						msg="确认成功！";
+						break;
+					case -1:
+						msg="确认失败,参数错误！";
+						break;
+					case -2:
+						msg="确认失败,获取家长身份失败！";
+						break;
+					case -3:
+						msg="确认失败,已确认过订单！";
+						break;
+					default:
+						break;
+					}					
+					logger.info(msg);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("内部错误,确认失败！");
 		}
 
-		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
+		setReturnMsg(result, resultCode, msg);
 		return result;
 	}
 

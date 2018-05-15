@@ -36,12 +36,12 @@
 		) 
 	</select>
 
-	<!-- 更新最近五天记录的repeatTimes -->
+	<!-- 更新最近十天记录的repeatTimes -->
 	<update id="updateRepeatTimes">
 		UPDATE send_tmp_msg_failed
 		SET repeated_times=repeated_times+1
 		WHERE repeated_times&lt;5 AND TO_DAYS( NOW( ) ) - TO_DAYS( createTime)
-		&lt;= 5
+		&lt;= 10
 	</update>
 
 	<!-- 更新重传成功后消息状态 -->

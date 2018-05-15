@@ -43,16 +43,14 @@
 		<property name="jobDetail" ref="MyTaskMethod" />
 		<!-- 每天一点出发一次 -->
 		<!-- <property name="cronExpression" value="0 0 1 * * ?" /> -->
-		<!-- 每个月1-10号凌晨1点触发 -->
-		<property name="cronExpression" value="0 0 1 1-11 * ?"></property>
+		<!-- 每个月10-15号凌晨1点触发 -->
+		<property name="cronExpression" value="0 0 1 10-15 * ?"></property>
 	</bean>
 
-	<!-- 更新提现状态 -->
+	<!-- 每月十五号发送课时不足提醒消息 -->
 	<bean id="DailyTaskCronTriggerBean2"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod2" />
-		<!-- 每天一点出发一次 -->
-		<!-- <property name="cronExpression" value="0 0 1 * * ?" /> -->
 		<!-- 每个月15号凌晨1点触发 -->
 		<property name="cronExpression" value="0 0 1 15 * ?"></property>
 	</bean>
