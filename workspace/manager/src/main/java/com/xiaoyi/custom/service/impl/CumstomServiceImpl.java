@@ -456,6 +456,7 @@ public class CumstomServiceImpl implements ICustomService{
 	public JSONObject queryStuTeachingReport(JSONObject params) {
 		String teachingId = params.getString("teachingId");
 		String queryDate = params.getString("queryDate");
+		String lessonTradeId = params.getString("lessonTradeId");
 		
 		JSONObject data = new JSONObject();
 		try {
@@ -480,10 +481,10 @@ public class CumstomServiceImpl implements ICustomService{
 
 				logger.info("teachingId:"+teachingId);
 				logger.info("month:"+params.get("month"));
-				logger.info("lessonTradeId:"+params.get("lessonTradeId"));
+				logger.info("lessonTradeId:"+lessonTradeId);
 				
 				reqData.put("queryDate", params.get("month"));
-				reqData.put("lessonTradeId", params.get("lessonTradeId"));
+				reqData.put("lessonTradeId", lessonTradeId);
 				
 				
 				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqData);
