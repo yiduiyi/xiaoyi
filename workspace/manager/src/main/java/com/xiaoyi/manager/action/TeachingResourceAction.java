@@ -168,6 +168,7 @@ public class TeachingResourceAction {
 							}
 						}
 					}
+					
 				}
 			}
 			result.put("data", teachers);

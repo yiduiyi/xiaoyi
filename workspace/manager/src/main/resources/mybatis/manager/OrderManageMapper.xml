@@ -35,10 +35,13 @@
 			<!-- 学生、老师上门 -->
 			<if test="lessonType!=null">
 				 <if test="lessonType==0">
-				 	and a.lessonType&gt;0
+				 	and a.lessonType&gt;0 and a.lessonType &lt; 332
 				 </if>
 				 <if test="lessonType==1">
 				 	and a.lessonType&lt;0
+				 </if>
+				 <if test="lessonType==2">
+				 	and a.lessonType &gt; 331
 				 </if>
 			</if>
 		</where>

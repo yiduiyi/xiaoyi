@@ -20,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.manager.dao.IPictureDao;
 import com.xiaoyi.manager.dao.ISchoolDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
@@ -378,14 +379,15 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					school = schoolDao.selectByPrimaryKey(schoolId);
 				}
 				//新增学校
-				if(null==school){
+				if(null==school 
+						|| (school.getSchoolname()!=null && !school.getSchoolname().equals(addedSchoolName))){
 					//新增学校
 					if(!StringUtils.isEmpty(addedSchoolName)){
 						schoolNames.add(addedSchoolName);
 					}
 					//根据学校名称查找学校
 					hasRecordedSchool = teachingResourceDao.selectSchoolByNames(schoolNames);			
-					if(null==hasRecordedSchool || hasRecordedSchool.size()==1){
+					//if(null==hasRecordedSchool || hasRecordedSchool.size()==1){
 						School addedSchool = new School();
 						schoolId = UUID.randomUUID().toString();
 						addedSchool.setSchoolid(schoolId);
@@ -397,7 +399,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 							e.printStackTrace();
 							logger.error("插入学校失败！");
 						}
-					}
+					//}
 				}				 
 					
 				Teacher updatedTeacher = new Teacher();
@@ -415,7 +417,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					if((params.get("sex") instanceof Boolean)){
 						updatedTeacher.setSex(params.getBoolean("sex"));
 					}else if ((params.get("sex") instanceof Integer)) {
-						updatedTeacher.setSex(params.getInteger("sex")==0?true:false);
+						updatedTeacher.setSex(params.getInteger("sex")==0?false:true);
 					}
 				}
 				if(null!=params.getByte("teachingLevel")){

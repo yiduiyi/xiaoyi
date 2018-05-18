@@ -132,7 +132,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				
 				String telNum = teacher.getTelnumber();
 				if(null!=telNum) {
-					user.setUserid(UUID.randomUUID().toString()/*teacher.getTelnumber()*/);
+					user.setUserid(teacher.getTeacherid());
 					user.setUsername(teacher.getTelnumber());
 					user.setPassword(telNum.substring(telNum.length()-6, telNum.length()));
 				}
