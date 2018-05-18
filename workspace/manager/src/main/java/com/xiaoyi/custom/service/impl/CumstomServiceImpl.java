@@ -340,7 +340,7 @@ public class CumstomServiceImpl implements ICustomService{
 
 	@Transactional
 	@Override
-	public LessonTrade confirmTRecords(JSONObject params) {
+	public int confirmTRecords(JSONObject params) {
 		String openId = params.getString("openId");
 		String lessonTradeId = params.getString("lessonTradeId");
 		Short feedback = params.getShort("feedback");
@@ -348,14 +348,14 @@ public class CumstomServiceImpl implements ICustomService{
 		
 		try {
 			if(null==openId || null==lessonTradeId) {
-				return null;
+				return -1;
 			}
 			
 			//校验身份（openId校验）
 			logger.info("openId:"+openId);
 			Parents parents = parentDao.selectByOpenId(openId);
 			if(null==parents) {
-				return null;
+				return -2;
 			}
 			LessonTrade record = lessonTradeDao.selectByPrimaryKey(lessonTradeId);
 			if(null==record 
@@ -363,7 +363,7 @@ public class CumstomServiceImpl implements ICustomService{
 					|| !record.getParentid().equals(parents.getParentid())) {
 				logger.info("record:"+record);
 				logger.info("parents:"+parents);
-				return null;
+				return -2;
 			}
 			
 			//同步更新订单（避免重复点击确认）
@@ -372,7 +372,7 @@ public class CumstomServiceImpl implements ICustomService{
 				if(null!=record 
 						&& record.getStatus()!=null
 						&& record.getStatus().intValue()!=1){
-					return null;
+					return -3;
 				}
 				
 				logger.info("lessonTradeId:"+lessonTradeId);			
@@ -436,7 +436,7 @@ public class CumstomServiceImpl implements ICustomService{
 					//lessonTradeSum.setWithdrawlessonnum(null);
 					
 					if(tradeSumDao.updateByPrimaryKeySelective(lessonTradeSum)>0) {
-						return record;
+						return 0;
 					}
 					
 				}
@@ -446,7 +446,7 @@ public class CumstomServiceImpl implements ICustomService{
 				throw new RuntimeException();
 			}
 			
-			return null;
+			return 0;
 		} catch (Exception e) {
 			throw new RuntimeException();
 		}
@@ -455,34 +455,39 @@ public class CumstomServiceImpl implements ICustomService{
 	@Override
 	public JSONObject queryStuTeachingReport(JSONObject params) {
 		String teachingId = params.getString("teachingId");
+		String queryDate = params.getString("queryDate");
+		String lessonTradeId = params.getString("lessonTradeId");
+		
 		JSONObject data = new JSONObject();
 		try {
 			if(/*StringUtils.isNotEmpty(teachingId)*/true){
-				Map<String,Object> reqDate = new HashMap<String,Object>();
+				Map<String,Object> reqData = new HashMap<String,Object>();
 								
-				reqDate.put("teachingId", teachingId);
+				reqData.put("teachingId", teachingId);
 				
-				Calendar cal = Calendar.getInstance();
+				//(默认)提现上个月的课时	
+				boolean isConfirmed = false;
 				StringBuffer dateTime = new StringBuffer();
-				dateTime.append(cal.get(Calendar.YEAR));
-				if(11>cal.get(Calendar.MONTH)) {
-					if(1==cal.get(Calendar.MONTH)){
-						dateTime.append(12);
-					}else{
-						dateTime.append("0");
-					}
-				}
-				dateTime.append(cal.get(Calendar.MONTH)/*+1*/);	//提现上个月的课时				
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+				if(StringUtils.isEmpty(queryDate)){
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(new Date());
+					cal.add(Calendar.MONTH, -1);
+					dateTime.append(sdf.format(cal.getTime()));								
+				}else{
+					dateTime.append(sdf.format(queryDate));
+					isConfirmed = true;
+				}				
 
 				logger.info("teachingId:"+teachingId);
 				logger.info("month:"+params.get("month"));
-				logger.info("lessonTradeId:"+params.get("lessonTradeId"));
+				logger.info("lessonTradeId:"+lessonTradeId);
 				
-				reqDate.put("queryDate", params.get("month"));/*dateTime.toString()*///);
-				reqDate.put("lessonTradeId", params.get("lessonTradeId"));
+				reqData.put("queryDate", params.get("month"));
+				reqData.put("lessonTradeId", lessonTradeId);
 				
 				
-				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqDate);
+				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqData);
 				if(!CollectionUtils.isEmpty(teachingRecords)){
 					
 					//获取上课日期、时间段及上课课时数

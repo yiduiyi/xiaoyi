@@ -52,6 +52,9 @@
 	 	<if test="lessonTradeId!=null">
 	 		AND lessonTradeId = #{lessonTradeId}
 	 	</if>
+	 	<if test="teacherId!=null">
+	 		AND teacherId = #{teacherId}
+	 	</if>
 	</where>
   </select>
   

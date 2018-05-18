@@ -31,7 +31,7 @@ public interface ICustomService {
 	 */
 	List<JSONObject> getMySchedules(String openId);
 	
-	LessonTrade confirmTRecords(JSONObject params);
+	int confirmTRecords(JSONObject params);
 	
 	/**
 	 * 获取学情分析报告

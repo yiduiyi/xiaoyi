@@ -25,6 +25,28 @@
     from lessontrade
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </select>
+  
+  <!-- 查询学情报告 -->
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="hashmap" >
+    select 
+    <include refid="Base_Column_List" />
+    from lessontrade
+    <where>
+    	<if test="queryDate!=null">
+    		applyTime = #{queryDate}
+    	</if>
+    	<if test="parentId!=null">
+    		AND parentId = #{parentId}
+    	</if>
+    	<if test="memberId!=null">
+    		AND memberId = #{memberId}
+    	</if>
+    	<if test="lessonTradeId">
+    		AND lessonTradeId = #{lessonTradeId}
+    	</if>
+    </where>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from lessontrade
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}

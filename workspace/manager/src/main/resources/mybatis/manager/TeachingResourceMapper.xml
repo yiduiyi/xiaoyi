@@ -112,7 +112,7 @@
 
 	<!-- 获取师资列表（课时） -->
 	<select id="selectTeachingsByParams" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT a.teacherId,a.checkedLessonNum as withDrawLessonNum,a.withDrawLessonNum as checkedLessonNum,a.frozenLessonNum,b.teacherName,b.sex,
+		SELECT b.teacherId,a.checkedLessonNum as withDrawLessonNum,a.withDrawLessonNum as checkedLessonNum,a.frozenLessonNum,b.teacherName,b.sex,
 			b.telNumber,b.regDate,b.schoolId,b.openId,c.schoolName
 		FROM teacher b
 			LEFT JOIN lessontradesum a  ON a.teacherId=b.teacherId
@@ -167,4 +167,22 @@
 			</if>
 		</where>
 	</select>
+	
+	<!-- 查询老师当前接单量 -->
+	<select id="selectCurrentOrdersOfTeacher" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT teacherId,COUNT(teachingId)  AS teachingCount
+		FROM order_teaching_r a LEFT JOIN ordersum b ON a.orderId=b.orderId
+		WHERE b.lessonLeftNum &gt; 0
+		GROUP BY teacherId
+	</select>
+	
+	<!-- 查询老师上月提现课时数 -->
+	<select id="selectLatestMonthApplyLessons" resultType="com.alibaba.fastjson.JSONObject"
+			parameterType="java.lang.String">
+		SELECT teacherId,sum(applyLessons) AS applyLessons
+		FROM lessontrade 
+		WHERE DATE_FORMAT(applyTime,"%Y%m") = #{queryDate}
+		GROUP BY teacherId
+	</select>
+	
 </mapper>

@@ -27,5 +27,10 @@ public interface ITeachingResourceDao {
 	List<JSONObject> selectTeachersByParams(Map<String,Object> params);
 	
 	//查询老师当前接单量
-	List<JSONObject> selectTeacherCurOrdering();
+	//List<JSONObject> selectTeacherCurOrdering();
+	List<JSONObject> selectCurrentOrdersOfTeacher();
+	
+	//查询老师上月提现课时总数
+	List<JSONObject> selectLatestMonthApplyLessons(String queryDate);
+	
 }

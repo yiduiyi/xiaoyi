@@ -1,6 +1,8 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -231,10 +233,63 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	@Override
 	public List<JSONObject> queryTeachingList(JSONObject params) {
 		try {
-			List<JSONObject> result = teachingResourceDao.selectTeachingsByParams(params);
+			List<JSONObject> result = null;
+			try {
+				result = teachingResourceDao.selectTeachingsByParams(params);				
+			} catch (Exception e) {
+				logger.info("查询老师课时出错！");
+				e.printStackTrace();
+			}
 			
-			sortJsonList(result, "regDate", false);
-			return result;
+			if(!CollectionUtils.isEmpty(result)){
+				Map<String,Object> teachingCountMap = new HashMap<String,Object>();
+				Map<String,Object> latestLessonTradeCountMap = new HashMap<String,Object>();
+				
+				//查询老师当前接单数
+				try {
+					List<JSONObject> teacherOrderList = teachingResourceDao.selectCurrentOrdersOfTeacher();
+					
+					if(null!=teacherOrderList){
+						for(JSONObject order : teacherOrderList){
+							teachingCountMap.put(order.getString("teacherId"), order.get("teachingCount"));
+						}
+					}
+				} catch (Exception e) {
+					logger.info("查询老师当前接单失败！");
+					e.printStackTrace();
+				}	
+			
+				//查询老师上月提现课时数
+				try {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+					Calendar cal = Calendar.getInstance();
+					cal.setTime(new Date());
+					cal.add(Calendar.MONTH, -1);
+					
+					List<JSONObject> teacherLessonTradeList = teachingResourceDao.selectLatestMonthApplyLessons(sdf.format(cal.getTime()));
+					for(JSONObject order : teacherLessonTradeList){
+						latestLessonTradeCountMap.put(order.getString("teacherId"), order.get("applyLessons"));
+					}					
+				} catch (Exception e) {
+					logger.info("查询老师上月提现课时失败！");
+					e.printStackTrace();
+				}
+			
+				//增加上月提现课时、绑定订单数字段
+				for(JSONObject singleResult : result){
+					String teacherId = singleResult.getString("teacherId");
+					if(null!=teacherId){
+						singleResult.put("latestMonthApplyLessons", latestLessonTradeCountMap.get(teacherId)==null
+								?0:latestLessonTradeCountMap.get(teacherId));
+						singleResult.put("curBondedOrders", teachingCountMap.get(teacherId)==null
+								?0:teachingCountMap.get(teacherId));
+					}
+				}
+				
+				
+				sortJsonList(result, "regDate", false);
+				return result;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();			
 		}

@@ -318,7 +318,7 @@ public class WechatServiceImpl implements IWechatService {
 		
 		int updatedColumns = 0;
 		try {
-			//更新最近5天消息的重复更新次数
+			//更新最近15天消息的重复更新次数
 			try {
 				msgFailedDao.updateRepeatTimes();
 			} catch (Exception e) {
