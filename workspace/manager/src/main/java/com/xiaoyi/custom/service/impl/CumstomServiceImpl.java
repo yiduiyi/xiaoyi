@@ -475,8 +475,10 @@ public class CumstomServiceImpl implements ICustomService{
 					cal.add(Calendar.MONTH, -1);
 					dateTime.append(sdf.format(cal.getTime()));								
 				}else{
+					//Calendar cal = Calendar.getInstance();
+					//cal.setTime(new Date(queryDate));
 					dateTime.append(sdf.format(queryDate));
-					isConfirmed = true;
+					//isConfirmed = true;
 				}				
 
 				logger.info("teachingId:"+teachingId);
@@ -568,6 +570,29 @@ public class CumstomServiceImpl implements ICustomService{
 									logger.info("parse Suggestions erro!");
 									e.printStackTrace();
 								}
+								
+								//查询订单当前状态
+								try {
+									LessonTrade lessonTrade = lessonTradeDao.selectByPrimaryKey(tRecord.getLessonTradeId());						
+									if(null!=lessonTrade){
+										Byte status = lessonTrade.getStatus();
+										if(null!=status && (status.intValue() == 0 || status.intValue()==2)){	//已经确认
+											isConfirmed = true;
+											status = 2;
+										}else{
+											status = 1;
+										}
+										//已经确认-补充家长评价
+										if(isConfirmed){
+											data.put("status", status);
+											data.put("notes", lessonTrade.getNotes());
+											data.put("feedback", lessonTrade.getFeedback());
+										}
+									}
+								} catch (Exception e) {
+									logger.info("查询当前订单状态出错！");
+									e.printStackTrace();
+								}	
 							}
 						} catch (Exception e) {
 							logger.info("查询建议出错！");
@@ -575,10 +600,13 @@ public class CumstomServiceImpl implements ICustomService{
 						}
 						return data;
 					}
+					
+					
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			logger.info("内部错误！");
 		}
 		return data;
 	}
