@@ -85,7 +85,8 @@ public class test {
 
 		
         System.out.println(resp);*/
-
+    	Date d2 = new SimpleDateFormat("yyyy-MM").parse("2016-5");
+    	
     	
     	Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));    //获取东八区时间
 
