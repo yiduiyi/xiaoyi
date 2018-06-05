@@ -164,40 +164,44 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Override
 	public synchronized int withdrawLessons(JSONObject params) throws Exception {
 		// TODO Auto-generated method stub
-		if(null==params){
+		String lessonTradeId = params.getString("lessonTradeId");
+		if(null==params || StringUtils.isNotEmpty(lessonTradeId)){
+			logger.info("参数错误！");
 			return -1;
 		}
-		String lessonTradeId = params.getString("lessonTradeId");
-		if(StringUtils.isNotEmpty(lessonTradeId)) {				
-			
-			//计算课时费-》转账-》更新老师提现状态
-			try {
-				logger.info("开始企业付款。。。");
-				JSONObject resultString = wechatService.payToTeacher(params);
-				if(null!=resultString) {
-					//课时不足情况
-					if(null!=resultString.getInteger("code") && -5==resultString.getIntValue("code")){
-						return -5;
-					}
-					Map<String,String> resultMap = XMLUtil.parseXml(resultString.getString("weixinPost"));
-					
-					if("SUCCESS".equalsIgnoreCase(resultMap.get("result_code")) 
-							&& "SUCCESS".equalsIgnoreCase(resultMap.get("return_code"))){
-						logger.info("付款成功！");
-						//提现到账成功(更新提现到账状态)
-						return tRecordService.updateLessonTrade(lessonTradeId
-								/*, resultString.getInteger("updatedFromzenLessons")*/);																								
-						
-					}
+				
+		//计算课时费-》转账-》更新老师提现状态
+		try {
+			logger.info("开始企业付款。。。");
+			JSONObject resultString = wechatService.payToTeacher(params);
+			if(null!=resultString) {
+				//课时不足情况
+				if(null!=resultString.getInteger("code") && -5==resultString.getIntValue("code")){
+					return -5;
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				logger.info("付款失败！");
-				return -1;
-			}			
-		}
+				Map<String,String> resultMap = XMLUtil.parseXml(resultString.getString("weixinPost"));
+				
+				if("SUCCESS".equalsIgnoreCase(resultMap.get("result_code")) 
+						&& "SUCCESS".equalsIgnoreCase(resultMap.get("return_code"))){
+					logger.info("付款成功！");
+					
+					//提现到账成功(更新提现到账状态)
+					return tRecordService.updateLessonTrade(lessonTradeId);																														
+				} else{
+					logger.info("提现失败, 商户号余额（可能）不足, 请稍后重试！");
+					return -2;
+				}
+			} else{
+				logger.info("系统内部错误, 请稍后重试！");
+				return -3;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info("系统内部错误, 请稍后重试！");
+			return -3;
+		}			
+
 		
-		return 0;
 	}
 
 	@Override

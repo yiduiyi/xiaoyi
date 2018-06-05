@@ -33,7 +33,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="H:/yduiy/jar/dom4j-2.0.2.jar"/>
-	<classpathentry kind="lib" path="H:/yduiy/jar/jdom-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="F:/xiaoyi/dom4j-2.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="F:/xiaoyi/jdom-1.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

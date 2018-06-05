@@ -162,20 +162,27 @@ public class H5PlateAction {
 			logger.info("lessonTradeId:"+lessonTradeId);
 
 			int rtCode = h5PlateService.withdrawLessons(reqParams);
-			if (0 < rtCode) {
-				code = 0;
-			}
-			if(rtCode==0){
-				code = -1;
-				msg = "不满足提现条件！";
-			}
-			if(-5==rtCode){
+			switch(rtCode){
+			case -5:
 				code = -1;
 				msg = "家长课时不足！";
-			}
+				break;
+			case -3:
+				msg = "系统内部错误, 请联系课程助理！";
+				break;
+			case -2:
+				msg = "提现失败！需系统审核，请稍后重试！";
+				break;
+			case -1:
+				msg = "请求参数错误！";
+				break;
+			case 0:
+				default:
+					msg = "提现成功！";
+			}			
 		} catch (Exception e) {
 			code = -1;
-			msg = "老师提现失败！";
+			msg = "系统内部错误, 请联系课程助理！！";
 			logger.error(msg);
 		}
 

@@ -322,7 +322,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 				
 				//record.setTeacherid(teacherId);
 				
-				int operateNum = params.getIntValue("operateNum");
+				float operateNum = params.getFloatValue("operateNum");
 				int operateType = params.getIntValue("operateType");
 				
 				//课时操作
