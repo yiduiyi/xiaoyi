@@ -286,8 +286,25 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					}
 				}
 				
-				
+				//时间排序
 				sortJsonList(result, "regDate", false);
+				
+				//按接单量和消课量排序
+				Integer sortType = params.getInteger("sortType");
+				if(sortType != null){
+					switch(sortType){
+					case 3: 
+					case 1:
+						sortJsonList(result, "curBondedOrders", false);
+						if(1==sortType){
+							break;
+						}
+					case 2:
+						sortJsonList(result, "latestMonthApplyLessons", false);
+						break;
+					}
+				}
+				
 				return result;
 			}
 		} catch (Exception e) {

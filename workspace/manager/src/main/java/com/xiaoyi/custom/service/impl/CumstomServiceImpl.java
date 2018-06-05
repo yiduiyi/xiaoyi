@@ -469,15 +469,17 @@ public class CumstomServiceImpl implements ICustomService{
 				boolean isConfirmed = false;
 				StringBuffer dateTime = new StringBuffer();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+				Calendar cal = Calendar.getInstance();
 				if(StringUtils.isEmpty(queryDate)){
-					Calendar cal = Calendar.getInstance();
 					cal.setTime(new Date());
 					cal.add(Calendar.MONTH, -1);
 					dateTime.append(sdf.format(cal.getTime()));								
 				}else{
 					//Calendar cal = Calendar.getInstance();
 					//cal.setTime(new Date(queryDate));
-					dateTime.append(sdf.format(queryDate));
+					Date d2 = sdf.parse(queryDate);
+					cal.setTime(d2);
+					dateTime.append(sdf.format(cal.getTime()));
 					//isConfirmed = true;
 				}				
 

@@ -122,11 +122,14 @@
 			AND a.totalLessonNum &lt; #{totalLessonNum}	
 		</if> -->
 		<where>
+			<if test="isAll!=null and isAll==1">
+				a.checkedLessonNum &gt; 0
+			</if>
 			<if test="teacherName!=null">
 				AND b.teacherName LIKE '%${teacherName}%' 
 			</if>
 			<if test="telNumber!=null">
-				AND b.telNumber LIKE '%${telNumber}%'	
+				AND b.telNumber LIKE '%${telNumber}%'
 			</if>
 		</where>
 	</select>
