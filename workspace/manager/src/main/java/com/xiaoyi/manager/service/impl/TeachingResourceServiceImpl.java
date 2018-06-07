@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.manager.dao.IPictureDao;
 import com.xiaoyi.manager.dao.ISchoolDao;
@@ -515,9 +516,19 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 						user.setPassword(updatedTelNum.substring(updatedTelNum.length()-6, updatedTelNum.length()));
 					}
 					
-					return userDao.updateByPrimaryKeySelective(user);
+					int updatedColumn = userDao.updateByPrimaryKeySelective(user);
+					if(0==updatedColumn){	//没有时,新增用户
+						user.setHeadimgurl(updatedTeacher.getPicid());
+						user.setLoginstatus(false);
+						user.setNickname(updatedTeacher.getTeachername());
+						user.setOpenid(updatedTeacher.getOpenId());
+						user.setUserprivilege((byte)3);
+						user.setUsertype((byte)1);
+						userDao.insertSelective(user);
+					}
 				} catch (Exception e) {
 					logger.info("更新老师对应的登录信息失败！");
+					throw new CommonRunException(-1, "更新老师对应的登录信息失败！");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
