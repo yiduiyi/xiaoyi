@@ -134,8 +134,13 @@ public class TeachingResourceAction {
 							next:
 							for(String subjectId : subjectIds){
 								for(Course c: Course.values()){
-									if(c.getValue() == Integer.parseInt(subjectId)){
-										goodAtName.append(c.toString()+",");																				
+									try {
+										if(c.getValue() == Integer.parseInt(subjectId)){
+											goodAtName.append(c.toString()+",");																				
+											continue next;
+										}										
+									} catch (Exception e) {	//前端传递的非数字
+										goodAtName.append(subjectId + ",");																				
 										continue next;
 									}
 								}

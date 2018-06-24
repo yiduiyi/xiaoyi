@@ -56,6 +56,7 @@ public class CommonServiceImpl implements ICommonService {
 			String wechatNum = params.getString("wechatNum") ;
 			
 			boolean hasRelation = false;			
+			StringBuffer sb =new StringBuffer();
 			try {
 				List<ParentStuRelation> relations = null;
 				
@@ -71,30 +72,34 @@ public class CommonServiceImpl implements ICommonService {
 					if(null!=parents){
 						parentId = parents.getParentid();
 						
-						//更新联系方式
+						//代买
 						if(null!=params.getString("telNum") 
 								&& !params.getString("telNum").equals(parents.getTelnum())
 								&& null!=parentsDao.selectByTelNum(params.getString("telNum"))){
-							parents.setTelnum(params.getString("telNum"));
+							//parents.setTelnum(params.getString("telNum"));
+							sb.append("(");
+							sb.append(params.getString("telNum"));
+							sb.append("-");
+							
+							//代买（家长姓名）
+							if(StringUtils.isEmpty(parents.getParentname())
+									&& params.get("parentName")!=null){
+								sb.append(params.get("parentName"));
+								sb.append(")");
+							}
 						}
 
 						//更新微信号
 						if(null!=wechatNum 
 								&& !wechatNum.trim().equals(parents.getWechatnum())) {
 							parents.setWechatnum(wechatNum);
-						}
-						
-						//更新家长信息（名字）
-						if(StringUtils.isEmpty(parents.getParentname())
-								&& params.get("parentName")!=null){
-							parents.setParentname(params.getString("parentName"));
 							try {
-								parentsDao.updateByPrimaryKeySelective(parents);								
+								parentsDao.updateByPrimaryKeySelective(parents);
 							} catch (Exception e) {
-								logger.info("查询家长出错！");
-								throw e;
+								logger.info("更新家长微信号出错！");
 							}
 						}
+												
 						try {
 							relations = relationDao.selectRelationsByParentId(parentId);							
 						} catch (Exception e) {
@@ -174,7 +179,7 @@ public class CommonServiceImpl implements ICommonService {
 				logger.info("之前没有添加过该家长-学生的对应关系（添加关系）");
 				studentId = UUID.randomUUID().toString();													
 				student.setMemberid(studentId);
-				student.setName(stuName);
+				student.setName(stuName + sb.toString());
 				student.setMemberid(studentId);
 				
 				

@@ -32,7 +32,7 @@
 		WHERE (repeated_times &gt;=5 OR `status`&lt;&gt;0) AND lessonTradeId IN (
 		SELECT lessonTradeId FROM
 		lessontrade
-		WHERE `status`=1 
+		WHERE `status`=1 OR `status`=3
 		) 
 	</select>
 
