@@ -203,7 +203,7 @@ public class H5PlateAction {
 		    logger.info("code[in common]:"+code);
 		    if (code!=null && !"authdeny".equals(code)){
 	        	logger.info("authing..."); 
-		    	WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID2, WeiXinConfig.SECRET_KEY2 , code);
+		    	WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.TEACHER_PLATE_APPID, WeiXinConfig.TEACHER_PLATE_SECRET_KEY , code);
 	            String openid = weixinOauth2Token.getOpenId();
 	            req.getSession().setAttribute("openid", openid);
 	            logger.error("openid====>" + openid);

@@ -136,7 +136,7 @@ public class WechatServiceImpl implements IWechatService {
 			String lessonTradeId = params.getString("lessonTradeId");
 			JSONObject result = new JSONObject();
 			//1.0 拼凑企业支付需要的参数
-			String appid = WeiXinConfig.APPID2;  //微信公众号的appid
+			String appid = WeiXinConfig.TEACHER_PLATE_APPID;  //微信公众号的appid
 			String mch_id = WeiXinConfig.mchId; //商户号
 			String nonce_str = UUIDUtil.getUUID().substring(0, 32);/*"ryoMIHOmJxkmsuJ3Di2S22SgqyMLw21x";*///RandomStringGenerator.getRandomStringByLength(32); //生成随机数
 			String partner_trade_no = UUIDUtil.getUUID().substring(0,32); /*"tydlg2c8PICxOlrnEZCqIALfVGAKHFoj";//RandomStringGenerator.getRandomStringByLength(32); //生成商户订单号
