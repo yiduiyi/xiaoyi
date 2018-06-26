@@ -60,7 +60,7 @@
 	
 	<!-- 根据任教关系查询老师列表 -->
 	<select id="selectTeachersByTeachingIds" resultType="com.alibaba.fastjson.JSONObject" parameterType="java.util.List">
-		SELECT a.teachingId,a.lessonType,b.teacherName,a.teacherId,a.lessonType as courseId
+		SELECT a.teachingId,a.lessonType,b.teacherName,a.teacherId,a.lessonType as courseId, b.telNumber as teacherTelNum
 		FROM teacher_les_r a 
 			INNER JOIN teacher b ON a.teacherId=b.teacherId
 		WHERE a.teachingId IN 
@@ -102,9 +102,9 @@
 	
 	<!-- 获取当月老师授课记录 -->
 	<select id="selectMTeachingsByParams" resultType="hashmap" parameterType="hashmap">
-		SELECT DATE_FORMAT(teachingDate,'%Y年%m月') months, SUM(teachingNum) monthOfLessons
-		FROM teachingrecord a
-		WHERE orderId=#{orderId} AND teacherId=#{teacherId}
+		SELECT DATE_FORMAT(teachingDate,'%Y年%m月') months, SUM(teachingNum) monthOfLessons, b.feedback
+		FROM teachingrecord a LEFT JOIN lessontrade b ON a.lessonTradeId=b.lessonTradeId
+		WHERE a.orderId=#{orderId} AND a.teacherId=#{teacherId}
 		GROUP BY months
 	</select>
 	
