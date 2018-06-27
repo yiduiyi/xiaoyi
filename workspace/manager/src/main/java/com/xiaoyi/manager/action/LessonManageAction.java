@@ -95,6 +95,29 @@ public class LessonManageAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
+	
+	@RequestMapping(value="/updateParentOrder",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject updateParentOrder(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			int rt = lessonManageService.updateLessonType(reqData);
+						
+			if(rt >= 0){
+				rtCode = RtConstants.SUCCESS;		
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
 	///
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());
