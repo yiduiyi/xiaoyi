@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.lesson.ILessonManageDao">
+	<!-- 课时包组map -->
+	<resultMap type="com.alibaba.fastjson.JSONObject" id="lessonTypeGroup">
+		<result column="lessonType" property="lessonType" />
+		<result column="teachingWay" property="teachingWay" />
+		<collection property="gradeList" resultMap="gradeList"
+			javaType="java.util.List" />
+	</resultMap>
+	<resultMap type="com.alibaba.fastjson.JSONObject" id="gradeList">
+		<result column="gradeId" property="gradeId" />
+		<result column="gradeName" property="gradeName" />
+		<collection property="packages" resultMap="packages"
+			javaType="java.util.List" />
+	</resultMap>
+	<resultMap type="com.alibaba.fastjson.JSONObject" id="packages">
+		<result column="lessonId" property="lessonId" />
+		<result column="courseCnt" property="courseCnt" />
+		<result column="lessonPrice" property="lessonPrice" />
+		<result column="discountPrice" property="discountPrice" />
+		<result column="needBook" property="needBook" javaType="java.lang.Integer" />
+	</resultMap>
+
+	<select id="selectLessonTypeGroups" resultMap="lessonTypeGroup">
+		SELECT *FROM
+		lessontype
+	</select>
+
+	<!-- 新增/更新课时包 -->
+	<insert id="updateLessonType" parameterType="com.alibaba.fastjson.JSONObject">
+		insert into
+		lessontype
+		(lessonId,courseCnt, lessonType, teachingWay,
+		gradeId,
+		lessonPrice, lessonName,
+		gradeName, needBook, discountPrice,
+		isholiday,
+		singleCoursePrice)
+		values (#{lessonId,jdbcType=VARCHAR},
+		#{courseCnt,jdbcType=SMALLINT},
+		#{lessonType,jdbcType=INTEGER},
+		#{teachingWay,jdbcType=TINYINT},
+		#{gradeId,jdbcType=SMALLINT},
+		#{lessonPrice,jdbcType=REAL},
+		#{lessonName,jdbcType=VARCHAR},
+		#{gradeName,jdbcType=VARCHAR},
+		#{needBook,jdbcType=BIT},
+		#{discountPrice,jdbcType=REAL},
+		#{isholiday,jdbcType=TINYINT},
+		#{singleCoursePrice,jdbcType=REAL})
+		ON DUPLICATE KEY UPDATE
+		courseCnt=VALUES(courseCnt),lessonPrice=VALUES(lessonPrice),gradeId=VALUES(gradeId),gradeName=VALUES(gradeName),
+		discountPrice=VALUES(discountPrice),singleCoursePrice=VALUES(singleCoursePrice)
+	</insert>
+
+	<!-- 查找家长购买订单课时 -->
+	<select id="selectParentOrders" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT a.lessonType,a.orderId,a.createTime , a.memberId, c.`name`, 
+			a.parentId, b.parentName, b.telNum, a.purchaseNum
+		FROM orders a 
+			LEFT JOIN parents b ON a.parentId = b.parentId
+			LEFT JOIN student c ON a.memberId = c.memberId
+		WHERE a.orderType = 2; 
+	</select>
+</mapper>
