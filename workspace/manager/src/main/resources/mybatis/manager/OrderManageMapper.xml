@@ -55,6 +55,7 @@
 			<if test="parentId!=null">AND parentId=#{parentId}</if>
 			<if test="memberId!=null">AND memberId=#{memberId}</if>
 			<if test="lessonType!=null">AND lessonType=#{lessonType}</if>
+			<if test="orderId!=null">AND orderId=#{orderId}</if>
 		</where>
 	</select>
 	
@@ -136,4 +137,17 @@
 		</foreach>	
 		</if>
 	</select>
+	
+	<!-- 家长订单课时管理 -->
+	<update id="updateParentOrderByOrderId" parameterType="com.alibaba.fastjson.JSONObject">
+		UPDATE orders 
+		SET lessonType=#{lessonType} AND purchaseNum=#{purchaseNum}
+		WHERE orderId=#{orderID}
+	</update>
+	
+	<!-- 更新家长订单总表 -->
+	<update id="insertOrUpdateParentOrderSumByParams" parameterType="com.alibaba.fastjson.JSONObject">
+		
+	</update>
+	
 </mapper>

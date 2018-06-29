@@ -86,8 +86,10 @@ public class ConstantCommonAction {
     		case "grade":
     			for(Grade grade : Grade.values()) {
     				JSONObject data = new JSONObject();
-    				data.put(grade.toString(), grade.getValue());
-    				datas.add(data);
+    				if(null!=grade.toString()){
+    					data.put(grade.toString(), grade.getValue());
+    					datas.add(data);
+    				}
     			}
     			break;
     		case "course":
@@ -104,6 +106,14 @@ public class ConstantCommonAction {
     				datas.add(data);
     			}
     			break;
+    		case "full_grade":
+    			for(Grade grade : Grade.values()) {
+    				JSONObject data = new JSONObject();
+    				if(grade.getFullGradeName()!=null){
+    					data.put(grade.getFullGradeName(), grade.getValue());
+    					datas.add(data);
+    				}
+    			}
     		}
     		
     		if(!CollectionUtils.isEmpty(datas)) {

@@ -110,6 +110,9 @@
       <if test="hasBook!= null" >
         hasBook=#{hasBook},
       </if>
+      <if test="orderStatus!=null">
+      	orderStatus=#{orderStatus},
+      </if>
     </set>
     where lessonType = #{lessontype,jdbcType=INTEGER}
       and memberId = #{memberid,jdbcType=VARCHAR}

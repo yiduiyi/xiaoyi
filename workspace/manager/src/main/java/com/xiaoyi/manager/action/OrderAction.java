@@ -115,7 +115,7 @@ public class OrderAction {
 			Integer gradeId = reqData.getInteger("gradeId");
 			Integer courseId = reqData.getInteger("courseId");
 			if(null!=level) {
-				reqData.put("level", level/*reqData.getInteger("lessonType")/100*/);
+				reqData.put("level", level/*reqData.getInteger("lessonType ")/100*/);
 			}
 			if(null!=gradeId) {
 				reqData.put("gradeId", gradeId);
