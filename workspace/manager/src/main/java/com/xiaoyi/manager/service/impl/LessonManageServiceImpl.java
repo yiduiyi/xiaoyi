@@ -20,10 +20,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
+import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.lesson.ILessonManageDao;
 import com.xiaoyi.manager.dao.order.IOrderManageDao;
+import com.xiaoyi.manager.domain.LessonTypeKey;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
@@ -35,6 +37,9 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 	
 	@Autowired
 	private ILessonManageDao lessonManageDao;
+	
+	@Autowired
+	private ILessonTypeDao lessonTypeDao;
 	
 	@Autowired
 	private IOrdersDao ordersDao;
@@ -300,6 +305,20 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 			throw new RuntimeException();
 		}
 
+		return 0;
+	}
+
+	@Override
+	public int deleteLessonPackage(String lessonId) {
+		try {
+			LessonTypeKey key = new LessonTypeKey();
+			key.setLessonId(lessonId);
+			logger.error("删除课时包失败【params】:"+key);
+			return lessonTypeDao.deleteByPrimaryKey(key );
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("删除课时包失败!");
+		}
 		return 0;
 	}
 	

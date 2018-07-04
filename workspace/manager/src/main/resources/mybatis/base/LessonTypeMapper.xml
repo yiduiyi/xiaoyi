@@ -43,9 +43,16 @@
 	<delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonTypeKey">
 		delete from
 		lessontype
-		where courseCnt = #{coursecnt,jdbcType=SMALLINT}
-		and
-		lessonType = #{lessontype,jdbcType=INTEGER}
+		<where>
+		<if test="lessonId!=null">
+			lessonId = #{lessonId}
+		</if>
+		<if test="coursecnt != null and lessontype!=null">
+			courseCnt = #{coursecnt,jdbcType=SMALLINT}
+			and
+			lessonType = #{lessontype,jdbcType=INTEGER}	
+		</if>
+		</where>
 	</delete>
 	<insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonType">
 		insert into lessontype

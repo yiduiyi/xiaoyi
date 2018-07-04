@@ -12,6 +12,8 @@ public interface ILessonManageServer {
 	
 	int updateLessonType(JSONObject params);
 	
+	int deleteLessonPackage(String lessonId);
+	
 	/**
 	 * 查询家长订单课时
 	 * @return
