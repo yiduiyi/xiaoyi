@@ -56,7 +56,7 @@
 
 	<!-- 查找家长购买订单课时 -->
 	<select id="selectParentOrders" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT a.lessonType,a.orderId,a.createTime , a.memberId, c.`name`, 
+		SELECT a.lessonType,a.orderId,a.createTime , a.memberId, c.`name` as studentName, 
 			a.parentId, b.parentName, b.telNum, a.purchaseNum
 		FROM orders a 
 			LEFT JOIN parents b ON a.parentId = b.parentId

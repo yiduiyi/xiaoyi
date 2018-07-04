@@ -1,6 +1,7 @@
 package com.xiaoyi.manager.service.impl;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -125,6 +126,14 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 						}
 						oriData.put("gradeId", lt.getGradeId(false));
 					}
+					
+					//转换时间
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date createTime = oriData.getDate("createTime");
+					if(null!=createTime){
+						oriData.put("purchaseDate", sdf.format(createTime));
+					}
+					
 					orders.add(oriData);
 				}
 				
