@@ -68,7 +68,7 @@ public class LoginAction {
 		if(null!=session){
 			User user = (User) session.getAttribute("userBean");
 			
-			if(user.getUsername()==null 
+			if(null==user || user.getUsername()==null 
 					|| !user.getUsername().equals(userName)){
 				LoginConstants loginStatus = LoginConstants.INVALIDE_USERNAME;
 				setReturnMsg(result, loginStatus.getCode(), loginStatus.toString());
@@ -85,6 +85,28 @@ public class LoginAction {
 		}
 		
 		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
+		return result;
+	}
+	
+	
+	@RequestMapping(value="/changePassword",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject changePassword(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			int rs = loginService.changePassword(reqData);
+			if(rs>=0){
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
 		return result;
 	}
 	

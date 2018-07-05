@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.User;
 
 public interface ILoginService {
@@ -7,4 +8,6 @@ public interface ILoginService {
 	public User userIdentify(User user);
 	
 	int userLogout(User user);
+	
+	int changePassword(JSONObject reqParams);
 }
