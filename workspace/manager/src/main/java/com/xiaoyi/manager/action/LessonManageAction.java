@@ -73,6 +73,30 @@ public class LessonManageAction {
 		return result;
 	}
 	
+	@RequestMapping(value="/deleteLessonPackage",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject deleteLessonPackage(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {			
+			String lessonId = reqData.getString("lessonId");
+			int rt = lessonManageService.deleteLessonPackage(lessonId);
+						
+			if(rt >= 0){
+				rtCode = RtConstants.SUCCESS;		
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	
+	
 	@RequestMapping(value="/getOrderList",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject getOrderList(HttpServletRequest request
@@ -103,9 +127,10 @@ public class LessonManageAction {
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
-		
+
+
 		try {			
-			int rt = lessonManageService.updateLessonType(reqData);
+			int rt = lessonManageService.updateParentOrder(reqData);
 						
 			if(rt >= 0){
 				rtCode = RtConstants.SUCCESS;		

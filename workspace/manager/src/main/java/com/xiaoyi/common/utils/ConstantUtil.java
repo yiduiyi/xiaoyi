@@ -157,11 +157,11 @@ public class ConstantUtil {
 		
 		public String getSimpleName(){
 			switch(level){
-			case 1:
+			case 1:case 11:case 12:case 13:case 14:case 15:case 16:
 				return "小";
-			case 2: 
+			case 2: case 21:case 22:case 23:
 				return "初";
-			case 3: 
+			case 3: case 31:case 32:case 33:
 				return "高";
 			}
 			return "null";
@@ -169,7 +169,11 @@ public class ConstantUtil {
 	}
 	
 	public static enum Grade{
-		ONE(1),TWO(2),THREE(3),FOUR(4),FIVE(5),SIX(6);
+		ONE(1),TWO(2),THREE(3),FOUR(4),FIVE(5),SIX(6)
+		,
+		PRIMARY_ONE(11),PRIMARY_TWO(12),PRIMARY_THREE(13),PRIMARY_FOUR(14),PRIMARY_FIVE(15),PRIMARY_SIX(16),
+		MIDDLE_TWO(22),MIDDLE_ONE(21),MIDDLE_THREE(23),
+		HIGH_ONE(31),HIGH_TWO(32),HIGH_THREE(33);
 		
 		private int grade;
 		
@@ -182,21 +186,44 @@ public class ConstantUtil {
 		
 		public String getSimpleName(){
 			switch(grade){
-			case 1:
+			case 1:case 11: case 21: case 31:
 				return "一";
-			case 2:
+			case 2:case 12: case 22: case 32:
 				return "二";
-			case 3:
+			case 3:case 13: case 23: case 33: 
 				return "三";
-			case 4:
+			case 4:case 14:
 				return "四";
-			case 5:
+			case 5:case 15:
 				return "五";
-			case 6: 
+			case 6: case 16:
 				return "六";
 			}
 		
 			return "null";
+		}
+		
+		public String getFullGradeName(){
+			switch(grade){
+			case 11:case 12:case 13:case 14:case 15:case 16:
+			case 21:case 22:case 23:
+			case 31:case 32:case 33:
+				StringBuffer levelName = new StringBuffer();
+				for(Level l : Level.values()) {
+					if(grade == l.getValue()) {
+						levelName.append(l.getSimpleName());
+						break;
+					}
+				}
+				for(Grade g : Grade.values()) {
+					if(grade == g.getValue()) {
+						levelName.append(g.getSimpleName());
+					}
+				}
+				return levelName.toString();
+			}
+			
+			return null;
 		}
 		
 		@Override
@@ -216,7 +243,7 @@ public class ConstantUtil {
 				return "六年级";
 			}
 		
-			return "null";
+			return null;
 		}
 	}
 	
@@ -334,12 +361,11 @@ public class ConstantUtil {
 		 * 返回年级ID
 		 * @return
 		 */
-		public int getGradeId(){
-			
+		public int getGradeId(boolean simple){
 			if(type>0){
-				return type/10%10;
+				return  simple?type/10%10 : type/10;
 			}else{
-				return -type/10%10;
+				return -(simple?type/10%10 : type/10);
 			}
 		}
 		/**
@@ -348,7 +374,7 @@ public class ConstantUtil {
 		 */
 		public String getGradeName(Boolean simple){
 			for(Grade g : Grade.values()){
-				if(g.getValue() == getGradeId()){
+				if(g.getValue() == getGradeId(true)){
 					return simple?g.getSimpleName():g.toString();
 				}
 			}
@@ -382,11 +408,11 @@ public class ConstantUtil {
 		/**
 		 * 获取Level
 		 */
-		public int getLevel(){
+		public int getLevel(boolean simple){
 			if(type>0){
-				return type/100;
+				return type/(simple?100:10);
 			}else{
-				return -type/100;
+				return -type/(simple?100:10);
 			}
 		}
 		
@@ -396,7 +422,7 @@ public class ConstantUtil {
 		 */
 		public String getLevelName(boolean simple){
 			for(Level l : Level.values()){
-				if(l.getValue()==getLevel()){
+				if(l.getValue()==getLevel(true)){
 					return simple?l.getSimpleName():l.toString();
 				}
 			}

@@ -76,7 +76,7 @@ public class CommonServiceImpl implements ICommonDataService {
 						lesson.put("discountPrice", lessonType.getDiscountprice());
 						lesson.put("courseCnt", lessonType.getCoursecnt());
 						lesson.put("isholiday", lessonType.getIsholiday());
-						lesson.put("hasBook", lessonType.getNeedbook()?1:0);
+						lesson.put("hasBook", (lessonType.getNeedbook()==null || lessonType.getNeedbook())?1:0);
 						
 						sortlist.add(lesson);
 					}

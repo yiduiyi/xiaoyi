@@ -602,8 +602,6 @@ public class CumstomServiceImpl implements ICustomService{
 						}
 						return data;
 					}
-					
-					
 				}
 			}
 		} catch (Exception e) {
