@@ -137,6 +137,9 @@ public class UserPayOutAction {
 		logger.error("ip ==" + ip);
 		logger.error("openid ==" + openid);
 		//Double amount = object.getDouble("discountPrice") * 100;
+		if(null==amount){
+			amount = 0f;
+		}
 		logger.info("付款数额："+amount.intValue());
 		Integer amounts = amount.intValue();
 		//amounts = amount.intValue();

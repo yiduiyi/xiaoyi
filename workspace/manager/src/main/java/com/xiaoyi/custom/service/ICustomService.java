@@ -31,7 +31,7 @@ public interface ICustomService {
 	 */
 	List<JSONObject> getMySchedules(String openId);
 	
-	int confirmTRecords(JSONObject params);
+	int confirmTRecords(JSONObject params) throws RuntimeException;
 	
 	/**
 	 * 获取学情分析报告

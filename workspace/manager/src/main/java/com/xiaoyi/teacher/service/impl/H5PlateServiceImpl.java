@@ -164,8 +164,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Override
 	public synchronized int withdrawLessons(JSONObject params) throws Exception {
 		// TODO Auto-generated method stub
+		if(null==params ){
+			logger.info("参数错误！");
+			return -1;
+		}
 		String lessonTradeId = params.getString("lessonTradeId");
-		if(null==params || StringUtils.isNotEmpty(lessonTradeId)){
+		if(StringUtils.isNotEmpty(lessonTradeId)){
 			logger.info("参数错误！");
 			return -1;
 		}

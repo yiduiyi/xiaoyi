@@ -88,7 +88,7 @@ public class ConstantUtil {
 			case 0: return "普通";
 			}
 			
-			return null;		
+			return "";		
 		}
 	}
 	
@@ -243,7 +243,7 @@ public class ConstantUtil {
 				return "六年级";
 			}
 		
-			return null;
+			return "";
 		}
 	}
 	
@@ -473,7 +473,7 @@ public class ConstantUtil {
 			case -1:
 				return "差";
 				default :
-					return null;
+					return "";
 			}
 			
 		}
@@ -518,7 +518,7 @@ public class ConstantUtil {
 			case 2:
 				return "已确认(家长)";
 				default :
-					return null;
+					return "";
 			}
 			
 		}

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaoyi.manager.dao.order.IOrderManageDao">
-	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher">
+	<!-- <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Teacher">
 		<result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
 		<result column="teacherName" property="teachername" jdbcType="VARCHAR" />
 		<result column="teachingId" property="teachingid" jdbcType="VARCHAR" />
-	</resultMap>
+	</resultMap> -->
 	<sql id="Base_Column_List">
 		teacherId, teacherName, teachingId
 	</sql>

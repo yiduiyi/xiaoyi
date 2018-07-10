@@ -53,13 +53,13 @@ public class WxPaySignatureUtils {
 
 			md = MessageDigest.getInstance("SHA-1");
 			bytes = md.digest(tosend.getBytes("utf-8"));
+			String singe = byteToStr(bytes);
+			return singe.toLowerCase();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		String singe = byteToStr(bytes);
-		return singe.toLowerCase();
-
+		return "";
 	}
 
 	public static String sha1Check(String[] str) {
@@ -77,12 +77,12 @@ public class WxPaySignatureUtils {
 
 			md = MessageDigest.getInstance("SHA-1");
 			bytes = md.digest(tosend.getBytes("utf-8"));
+			String singe = byteToStr(bytes);
+			return singe.toUpperCase();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		String singe = byteToStr(bytes);
-		return singe.toUpperCase();
+		return "";
 	}
 
 	/**

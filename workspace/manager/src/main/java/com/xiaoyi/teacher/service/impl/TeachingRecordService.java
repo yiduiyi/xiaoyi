@@ -607,6 +607,12 @@ public class TeachingRecordService implements ITeachingRecordService {
 			logger.info("查询老师提现记录失败！");
 			e.printStackTrace();
 		}
+		
+		if(null==record){
+			logger.info("没有找到对应的记录【lessonTradeId】："+lessonTradeId);
+			return 0;
+		}
+		
 		// 设置老师提现成功
 		record.setStatus((byte) 0);
 

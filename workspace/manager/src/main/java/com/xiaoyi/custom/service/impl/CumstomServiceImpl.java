@@ -448,7 +448,7 @@ public class CumstomServiceImpl implements ICustomService{
 			
 			return 0;
 		} catch (Exception e) {
-			throw new RuntimeException();
+			throw e;
 		}
 	}
 
@@ -504,11 +504,13 @@ public class CumstomServiceImpl implements ICustomService{
 						tRecord = tRecordsIter.next();
 						if(null==tRecord){	//去空
 							tRecordsIter.remove();
+							continue;
 						}
 						//tRecord = tRecordsIter.next();
 						JSONObject teachingDetail = new JSONObject();
-						teachingDetail.put("teachingDate", format.format(tRecord.getTeachingdate()));
-						
+						if(null!=tRecord.getTeachingdate()){
+							teachingDetail.put("teachingDate", format.format(tRecord.getTeachingdate()));
+						}
 						StringBuffer sb = new StringBuffer();
 						sb.append(tRecord.getStarttime());
 						sb.append(" ~ ");

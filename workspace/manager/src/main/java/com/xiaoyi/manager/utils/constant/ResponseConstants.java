@@ -30,7 +30,7 @@ public class ResponseConstants {
 			case -2:
 				return "【用户名】参数不正确！";
 			}
-			return null;
+			return "";
 		}
 	}
 	public enum LogOutConstants{
@@ -60,7 +60,7 @@ public class ResponseConstants {
 			case -3:
 				return "改用户已退出";
 			}
-			return null;
+			return "";
 		}
 	}
 	
@@ -87,7 +87,7 @@ public class ResponseConstants {
 			case -1:
 				return "内部错误！";
 			}
-			return null;
+			return "";
 		}
 	}
 	

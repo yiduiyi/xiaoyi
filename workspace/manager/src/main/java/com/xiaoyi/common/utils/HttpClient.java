@@ -50,7 +50,7 @@ public class HttpClient {
 	private static String EMPTY_STR = "";
 	private static String UTF_8 = "UTF-8";
 
-	private static void init() {
+	private synchronized static void init() {
 		if (cm == null) {
 			cm = new PoolingHttpClientConnectionManager();
 			cm.setMaxTotal(50);// 整个连接池最大连接数
