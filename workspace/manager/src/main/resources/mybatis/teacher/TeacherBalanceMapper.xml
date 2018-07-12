@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.teacher.dao.ITeacherBalanceDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherBalance" >
+    <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="balancing_account" property="balancingAccount" jdbcType="REAL" />
+    <result column="total_lesson_profit" property="totalLessonProfit" jdbcType="REAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    teacherId, balancing_account, total_lesson_profit
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher_balance
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from teacher_balance
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherBalance" >
+    insert into teacher_balance (teacherId, balancing_account, total_lesson_profit
+      )
+    values (#{teacherid,jdbcType=VARCHAR}, #{balancingAccount,jdbcType=REAL}, #{totalLessonProfit,jdbcType=REAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherBalance" >
+    insert into teacher_balance
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="balancingAccount != null" >
+        balancing_account,
+      </if>
+      <if test="totalLessonProfit != null" >
+        total_lesson_profit,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="balancingAccount != null" >
+        #{balancingAccount,jdbcType=REAL},
+      </if>
+      <if test="totalLessonProfit != null" >
+        #{totalLessonProfit,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeacherBalance" >
+    update teacher_balance
+    <set >
+      <if test="balancingAccount != null" >
+        balancing_account = #{balancingAccount,jdbcType=REAL},
+      </if>
+      <if test="totalLessonProfit != null" >
+        total_lesson_profit = #{totalLessonProfit,jdbcType=REAL},
+      </if>
+    </set>
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherBalance" >
+    update teacher_balance
+    set balancing_account = #{balancingAccount,jdbcType=REAL},
+      total_lesson_profit = #{totalLessonProfit,jdbcType=REAL}
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+</mapper>

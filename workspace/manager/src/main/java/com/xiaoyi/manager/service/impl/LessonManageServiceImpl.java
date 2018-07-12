@@ -71,6 +71,10 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 					|| (operateType!=null && operateType == 1)){
 				lessonId = UUID.randomUUID().toString();
 				params.put("lessonId", lessonId);
+			}else{
+				LessonTypeKey key = new LessonTypeKey();
+				key.setLessonId(lessonId);
+				lessonTypeDao.deleteByPrimaryKey(key);
 			}
 			return lessonManageDao.updateLessonType(params);
 		} catch (Exception e) {
@@ -322,7 +326,7 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 		try {
 			LessonTypeKey key = new LessonTypeKey();
 			key.setLessonId(lessonId);
-			logger.error("删除课时包失败【params】:"+key);
+			logger.error("删除课时包【params】:"+key);
 			return lessonTypeDao.deleteByPrimaryKey(key );
 		} catch (Exception e) {
 			e.printStackTrace();

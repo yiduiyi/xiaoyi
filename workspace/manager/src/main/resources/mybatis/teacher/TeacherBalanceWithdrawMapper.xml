@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.teacher.dao.ITeacherBalanceWithdrawDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherBalanceWithdraw" >
+    <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
+    <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <id column="withdraw_id" property="withdrawId" jdbcType="VARCHAR" />
+    <result column="apply_date" property="applyDate" jdbcType="TIMESTAMP" />
+    <result column="withdraw" property="withdraw" jdbcType="REAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lessonTradeId, teacherId, withdraw_id, apply_date, withdraw
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceWithdrawKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher_balance_withdraw
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+      and withdraw_id = #{withdrawId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceWithdrawKey" >
+    delete from teacher_balance_withdraw
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+      and withdraw_id = #{withdrawId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceWithdraw" >
+    insert into teacher_balance_withdraw (lessonTradeId, teacherId, withdraw_id, 
+      apply_date, withdraw)
+    values (#{lessontradeid,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{withdrawId,jdbcType=VARCHAR}, 
+      #{applyDate,jdbcType=TIMESTAMP}, #{withdraw,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceWithdraw" >
+    insert into teacher_balance_withdraw
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lessontradeid != null" >
+        lessonTradeId,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="withdrawId != null" >
+        withdraw_id,
+      </if>
+      <if test="applyDate != null" >
+        apply_date,
+      </if>
+      <if test="withdraw != null" >
+        withdraw,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lessontradeid != null" >
+        #{lessontradeid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="withdrawId != null" >
+        #{withdrawId,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDate != null" >
+        #{applyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="withdraw != null" >
+        #{withdraw,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceWithdraw" >
+    update teacher_balance_withdraw
+    <set >
+      <if test="applyDate != null" >
+        apply_date = #{applyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="withdraw != null" >
+        withdraw = #{withdraw,jdbcType=REAL},
+      </if>
+    </set>
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+      and withdraw_id = #{withdrawId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceWithdraw" >
+    update teacher_balance_withdraw
+    set apply_date = #{applyDate,jdbcType=TIMESTAMP},
+      withdraw = #{withdraw,jdbcType=REAL}
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+      and withdraw_id = #{withdrawId,jdbcType=VARCHAR}
+  </update>
+</mapper>
