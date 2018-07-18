@@ -2,11 +2,9 @@ package com.xiaoyi.teacher.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -80,7 +78,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				//数据库没有匹配的用户（电话号码+用户名）
 				if(null==teacher) {
 					return 2;
-				}	
+				}					
 				
 				if(teacher.getSigned()==0){
 					return 4;
@@ -141,6 +139,13 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			user.setNickname((String)params.get("nickname"));
 			user.setHeadimgurl((String)params.get("headimgurl"));
 
+			Object password =params.get("password");
+			if(null!=password && !password.equals("")
+					&& !password.equals(user.getPassword())){
+				logger.info("密码错误！");
+				return 5;
+			}
+			
 			try {
 				if(insert) {
 					userDao.insertSelective(user);

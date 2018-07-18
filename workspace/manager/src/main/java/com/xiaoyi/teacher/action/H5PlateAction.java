@@ -108,7 +108,10 @@ public class H5PlateAction {
 				msg = "请先前往讲师PC端登录签约!";
 				logger.error("该老师未签约！");
 			}
-			
+			if(code==5){
+				code = 4;
+				msg = "密码错误！";
+			}
 			if (code == 0) {
 				msg = RtConstants.SUCCESS.toString();
 			}
