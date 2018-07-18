@@ -194,8 +194,10 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 			//计算课程包Id
 			int newLessonType = updatedGradeId*10+1;
 			newLessonType = (teachingWay==1)?-newLessonType:newLessonType;
+			logger.info("newLessonType:"+newLessonType);
 			
 			try {
+				//查询旧订单
 				Map<String,Object> reqParams = new HashMap<String,Object>();
 				reqParams.put("parentId", parentId);
 				reqParams.put("memberId", studentId);
@@ -209,62 +211,86 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 				}
 				
 				Orders oldOrder = orderList.get(0);
-				
-				//新增修改订单
-				Orders record = new Orders();
-				try {
-					record.setOrderid(UUID.randomUUID().toString());
-					record.setParentid(parentId);
-					record.setMemberid(studentId);
-					record.setCreatetime(new Date());
-					record.setOrderType(3);
-					record.setHasBook(oldOrder.getHasBook());
-					record.setLessontype(newLessonType);
-					record.setPurchasenum(updatedPurchaseNum);
-					
-					ordersDao.insert(record);					
-				} catch (Exception e) {
-					logger.error("插入订单失败！");
-					throw e;
+				if(oldOrder==null){
+					logger.info("插叙不到对应的原订单！");
+					return -4;
 				}
 				
-				//修改原订单状态
-				try {
-					oldOrder.setOrderStatus((short)-2);
-					ordersDao.updateByPrimaryKeySelective(oldOrder);
-				} catch (Exception e) {
-					e.printStackTrace();
-					logger.info("更新旧订单状态失败！");
-				}
-				
-				//修改旧订单总表
+				//查询旧订单总表
 				OrderSumKey key = new OrderSumKey();
 				key.setLessontype(oldLessonTypeId);
 				key.setMemberid(studentId);
 				key.setParentid(parentId);
 				
-				OrderSum orderSum ;
+				OrderSum oldOrderSum ;
 				try {
-					orderSum = orderSumDao.selectByPrimaryKey(key);
+					oldOrderSum = orderSumDao.selectByPrimaryKey(key);
 					
-					if(null == orderSum){	//有订单, 原则上必须有对应的订单总表
-						throw new RuntimeException();
+					if(null == oldOrderSum){	//有订单, 原则上必须有对应的订单总表
+						logger.info("没有匹配到对应的订单总表！");
+						return -5;
 					}											
 				} catch (Exception e) {
 					e.printStackTrace();
 					logger.error("查询订单总表失败！");
-					throw e ;
+					return -6;
 				}
 				
-				float lessonNumGap = updatedPurchaseNum - record.getPurchasenum();
-				
-				
-				//（如果对应是同一条记录,直接更新；如果不同,则根据旧的订单总表剩余课时数分情况更新）
-				if(oldLessonTypeId == newLessonType){	//直接更新旧订单总表
-					orderSum.setLessonleftnum(orderSum.getLessonleftnum() + lessonNumGap);					
-				}else {	//更新原订单总表后再更新/增加新订单总表
-					orderSum.setLessonleftnum(orderSum.getLessonleftnum() - record.getPurchasenum());
+				//判断是否只是改变了订单课时数
+				logger.info("oldLessonTypeId:"+oldLessonTypeId+",newLessonType:"+newLessonType);
+				if(oldLessonTypeId == newLessonType){
+					try {
+						float lessonNumGap = updatedPurchaseNum - oldOrder.getPurchasenum();
+
+						//修改旧订单
+						oldOrder.setPurchasenum(updatedPurchaseNum);
+						ordersDao.updateByPrimaryKey(oldOrder);
+						
+						//更新订单总表
+						logger.info("lessonNumGap:"+lessonNumGap);
+						oldOrderSum.setLessonleftnum(oldOrderSum.getLessonleftnum() + lessonNumGap);
+						oldOrderSum.setTotallessonnum(oldOrderSum.getTotallessonnum() + lessonNumGap);
+						orderSumDao.updateByPrimaryKey(oldOrderSum);
+					} catch (Exception e) {
+						logger.error("修改旧订单/更新订单总表出错！");
+						throw e;
+					}										
 					
+				}else {
+					//删除旧订单，修改订单总表
+					try {
+						//删除旧订单
+						ordersDao.deleteByPrimaryKey(oldOrder);
+					
+						//更新旧订单总表
+						oldOrderSum.setLessonleftnum(oldOrderSum.getLessonleftnum() - oldOrder.getPurchasenum());
+						orderSumDao.updateByPrimaryKey(oldOrderSum);
+					} catch (Exception e) {
+						logger.info("删除旧订单/修改订单总表失败！");
+						throw e;
+					}					
+					
+					//
+					
+					//新增修改订单
+					Orders record = new Orders();
+					try {
+						record.setOrderid(UUID.randomUUID().toString());
+						record.setParentid(parentId);
+						record.setMemberid(studentId);
+						record.setCreatetime(new Date());
+						record.setOrderType(3);
+						record.setHasBook(oldOrder.getHasBook());
+						record.setLessontype(newLessonType);
+						record.setPurchasenum(updatedPurchaseNum);
+						
+						ordersDao.insert(record);					
+					} catch (Exception e) {
+						logger.error("插入订单失败！");
+						throw e;
+					}
+					
+					//新增/修改订单总表
 					key.setLessontype(newLessonType);
 					OrderSum newOrderSum = orderSumDao.selectByPrimaryKey(key);
 					if(null==newOrderSum){
@@ -294,30 +320,18 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 							e.printStackTrace();
 							throw e;
 						}
-					}
-				}
-
-				//修改旧订单总表
-				try {
-					orderSumDao.updateByPrimaryKey(orderSum);
-				} catch (Exception e) {
-					logger.error("修改订单总表出错！");
-					e.printStackTrace();
-					throw e;
-				}
-				
-			} catch (Exception e) {
+					}				
+				}	
+			}catch (Exception e) {
 				e.printStackTrace();
-				logger.info("内部错误！");
 				throw e;
 			}
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("更新家长订单出错！");
 			throw new RuntimeException();
 		}
-
+		
 		return 0;
 	}
 
