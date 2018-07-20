@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
@@ -51,9 +52,13 @@ import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.dao.ISuggestionsDao;
+import com.xiaoyi.teacher.dao.ITeacherBalanceDao;
+import com.xiaoyi.teacher.dao.ITeacherBalanceFromDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.Suggestions;
+import com.xiaoyi.teacher.domain.TeacherBalance;
+import com.xiaoyi.teacher.domain.TeacherBalanceFromKey;
 import com.xiaoyi.teacher.domain.TeachingRecord;
 
 @Service("customService")
@@ -91,6 +96,12 @@ public class CumstomServiceImpl implements ICustomService{
 	
 	@Resource
 	ILessonTypeDao lessonTypeDao;
+	
+	@Resource
+	private ITeacherBalanceFromDao balanceFromDao;
+	
+	@Resource
+	private ITeacherBalanceDao balanceDao;
 	
 	@Resource
 	private ICommonService commonService;
@@ -445,6 +456,48 @@ public class CumstomServiceImpl implements ICustomService{
 				logger.error(e.getMessage());
 				throw new RuntimeException();
 			}
+			
+			//金融版version2.0（加入余额功能）
+			//查询/增加老师对应的余额表
+			String teacherId = record.getTeacherid();
+			try {
+				TeacherBalance teacherBalance = balanceDao.selectByPrimaryKey(teacherId);
+				float balanceAccount =0;
+				StringBuffer balanceFrom = new StringBuffer();
+				if(null==teacherBalance || teacherBalance.getTeacherid()==null){
+					teacherBalance = new TeacherBalance();
+					teacherBalance.setTeacherid(teacherId);
+					teacherBalance.setTotalBalanceProfit(0f);
+					teacherBalance.setBalanceProfitLeft(0f);
+					balanceAccount = 0;
+				}else{
+					balanceAccount += teacherBalance.getBalanceAccount();
+				}
+				
+				if(!StringUtils.isEmpty(teacherBalance.getBalanceFrom())){
+					balanceFrom.append(",");
+				}
+				balanceFrom.append(record.getLessontradeid());
+				teacherBalance.setBalanceFrom(balanceFrom.toString());
+				balanceAccount += record.getActualPay();
+				teacherBalance.setBalanceAccount(balanceAccount);
+				
+				balanceDao.insertSelective(teacherBalance);
+			} catch (Exception e) {
+				logger.error("增加/更新老师账户余额出错！");
+				throw new CommonRunException(-5, "增加/更新老师账户余额出错！");
+			}
+			
+			//更新老师提现记录与老师Id关系表
+			TeacherBalanceFromKey balanceFrom = new TeacherBalanceFromKey();
+			balanceFrom.setTeacherid(teacherId);
+			balanceFrom.setLessontradeid(lessonTradeId);
+			try {			
+				balanceFromDao.insertSelective(balanceFrom);
+			} catch (Exception e) {
+				logger.error("更新老师提现记录与老师Id关系表失败！");
+				throw new CommonRunException(-6,"更新老师提现记录与老师Id关系表失败！");
+			}			
 			
 			return 0;
 		} catch (Exception e) {

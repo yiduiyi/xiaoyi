@@ -3,9 +3,13 @@ package com.xiaoyi.teacher.domain;
 public class TeacherBalance {
     private String teacherid;
 
-    private Float balancingAccount;
+    private Float balanceAccount;
 
-    private Float totalLessonProfit;
+    private Float totalBalanceProfit;
+
+    private String balanceFrom;
+
+    private Float balanceProfitLeft;
 
     public String getTeacherid() {
         return teacherid;
@@ -15,19 +19,35 @@ public class TeacherBalance {
         this.teacherid = teacherid == null ? null : teacherid.trim();
     }
 
-    public Float getBalancingAccount() {
-        return balancingAccount;
+    public Float getBalanceAccount() {
+        return balanceAccount;
     }
 
-    public void setBalancingAccount(Float balancingAccount) {
-        this.balancingAccount = balancingAccount;
+    public void setBalanceAccount(Float balanceAccount) {
+        this.balanceAccount = balanceAccount;
     }
 
-    public Float getTotalLessonProfit() {
-        return totalLessonProfit;
+    public Float getTotalBalanceProfit() {
+        return totalBalanceProfit;
     }
 
-    public void setTotalLessonProfit(Float totalLessonProfit) {
-        this.totalLessonProfit = totalLessonProfit;
+    public void setTotalBalanceProfit(Float totalBalanceProfit) {
+        this.totalBalanceProfit = totalBalanceProfit;
+    }
+
+    public String getBalanceFrom() {
+        return balanceFrom;
+    }
+
+    public void setBalanceFrom(String balanceFrom) {
+        this.balanceFrom = balanceFrom == null ? null : balanceFrom.trim();
+    }
+
+    public Float getBalanceProfitLeft() {
+        return balanceProfitLeft;
+    }
+
+    public void setBalanceProfitLeft(Float balanceProfitLeft) {
+        this.balanceProfitLeft = balanceProfitLeft;
     }
 }

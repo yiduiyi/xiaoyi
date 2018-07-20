@@ -1,21 +1,9 @@
 package com.xiaoyi.teacher.domain;
 
-import java.util.Date;
-
-public class TeacherBalanceProfitsKey {
-    private Date generateDate;
-
+public class TeacherBalanceFromKey {
     private String lessontradeid;
 
     private String teacherid;
-
-    public Date getGenerateDate() {
-        return generateDate;
-    }
-
-    public void setGenerateDate(Date generateDate) {
-        this.generateDate = generateDate;
-    }
 
     public String getLessontradeid() {
         return lessontradeid;

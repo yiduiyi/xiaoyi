@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.dao.IUserDao;
@@ -26,8 +28,12 @@ import com.xiaoyi.manager.domain.UserKey;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ITH5PlateDao;
+import com.xiaoyi.teacher.dao.ITeacherBalanceDao;
+import com.xiaoyi.teacher.dao.ITeacherBalanceWithdrawDao;
 import com.xiaoyi.teacher.dao.ITeachingRecordDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
+import com.xiaoyi.teacher.domain.TeacherBalance;
+import com.xiaoyi.teacher.domain.TeacherBalanceWithdraw;
 import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
 
@@ -42,6 +48,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	
 	@Resource
 	ITeachingRecordDao tRecordDao;
+	
+	@Resource
+	ITeacherBalanceDao balanceDao;
+	
+	@Resource
+	ITeacherBalanceWithdrawDao balanceWithdrawDao;
 	
 	@Autowired
 	IWechatService wechatService;
@@ -267,4 +279,100 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		logger.info("进入定时任务。。。");
 		return 0;
 	}
+
+	@Transactional
+	@Override
+	public int withdrawBalance(JSONObject params) throws Exception {
+		//verify params
+		String openId = params.getString("openId");
+		Float withdrawing = params.getFloat("withdrawing");
+		logger.info("params:"+params.toJSONString());
+		if(null == openId || null == withdrawing){
+			logger.info("参数错误！");
+			throw new CommonRunException(-1, "前台传递参数错误！");
+		}
+		
+		//查询可提现余额
+		String teacherId = params.getString("teacherId");
+		if(StringUtils.isEmpty(teacherId)){
+			Teacher teacher = teacherH5Dao.selectTeacherByOpenId(openId);
+			if(null==teacher){
+				throw new CommonRunException(-1, "参数错误【teacherId为空】！");
+			}
+			teacherId = teacher.getTeacherid();
+		}
+		
+		//判断余额是否大于提现余额
+		TeacherBalance teacherBalance =	balanceDao.selectByPrimaryKey(teacherId);
+		if(null==teacherBalance || teacherBalance.getTotalBalanceProfit()<withdrawing){
+			logger.info("账户余额不足！");
+			throw new CommonRunException(-2, "账户余额不足！");
+		}
+		
+		//付款
+		Map<String,String> payResult = wechatService.unifiedPay(openId, withdrawing);
+		if("SUCCESS".equalsIgnoreCase(payResult.get("result_code")) 
+				&& "SUCCESS".equalsIgnoreCase(payResult.get("return_code"))){
+			logger.info("付款成功！");
+			try {
+				//计算余额 & 收益余额
+				float balanceAccount = teacherBalance.getBalanceAccount() - withdrawing;
+				float leftProfit = (balanceAccount)>=teacherBalance.getBalanceProfitLeft()?
+						teacherBalance.getBalanceProfitLeft():(balanceAccount);
+				teacherBalance.setBalanceAccount(balanceAccount);
+				teacherBalance.setBalanceProfitLeft(leftProfit);
+				
+				balanceDao.updateByPrimaryKey(teacherBalance);				
+			} catch (Exception e) {
+				logger.error("更新老师课时余额失败【需要人工结算】！");
+				throw new CommonRunException(-4, "更新老师课时余额失败【需要人工结算】！");
+			}
+			try {
+				TeacherBalanceWithdraw balanceWithdraw = new TeacherBalanceWithdraw();
+				balanceWithdraw.setApplyDate(new Date());
+				balanceWithdraw.setBalanceLeft(teacherBalance.getBalanceAccount());
+				balanceWithdraw.setTeacherid(teacherBalance.getTeacherid());
+				balanceWithdraw.setWithdraw(withdrawing);
+				balanceWithdraw.setWithdrawId(UUID.randomUUID().toString());
+				
+				balanceWithdrawDao.insertSelective(balanceWithdraw);
+			} catch (Exception e) {
+				logger.error("增加老师课时提现记录失败【需要人工结算】！");
+				throw new CommonRunException(-4, "增加老师课时提现记录失败【需要人工结算】");
+			}
+			
+		}else{
+			logger.info("付款失败！");
+			throw new CommonRunException(-5, "付款失败！");
+		}
+	
+		return 0;
+	}
+
+	@Override
+	public JSONObject queryTeacherBalanceing(JSONObject params) throws Exception {
+			
+		//验证参数
+		params.put("curDate", new Date());
+		if(StringUtils.isEmpty(params.getString("openId"))){
+			throw new CommonRunException(-1, "参数错误,【openId】为空！");
+		}
+		//根据openId查询老师teacherId
+		logger.info("根据openId查询老师【openId】:"+params.get("openId"));
+		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(params.getString("openId"));
+		if(null==teacher){
+			throw new CommonRunException(-1, "参数错误【没有查到对应的老师】!");
+		}
+		
+		//查询老师账户余额
+		try {
+			JSONObject teacherBalance =  balanceDao.selectTeacherBalanceByParams(params);
+			
+			return teacherBalance;
+		} catch (Exception e) {
+			logger.error("查询老师账户余额出错！");
+			throw new CommonRunException(-2, "查询老师账户余额出错！");
+		}		
+	}
+	
 }

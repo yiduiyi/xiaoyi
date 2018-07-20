@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
@@ -145,7 +146,14 @@ public class H5PlateAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.toString());
 		return result;
 	}
-
+	
+	/**
+	 * @deprecated version1.0 (老提现接口)
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
 	@RequestMapping(value = "/withdrawLessons", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject withdrawLessons(HttpServletRequest request, HttpServletResponse response,
@@ -193,6 +201,66 @@ public class H5PlateAction {
 		return result;
 	}
 
+	/**
+	 * 金融版提现接口（version 2.0）
+	 */
+	@RequestMapping(value = "/withdrawBalance", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject withdrawBalance(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		//RtConstants rtCode = RtConstants.FAILED;
+		int code = 1;
+		String msg="提交成功,等待入账...";
+		
+		try {
+			JSONObject reqParams = new JSONObject();			
+			reqParams.put("openId", request.getSession().getAttribute("openid"));			
+			
+			int rtCode = h5PlateService.withdrawBalance(reqParams);		
+			if(rtCode == -4){
+				//说明钱已经提取，但没有更新数据库
+				
+			}
+		} catch (Exception e) {
+			CommonRunException commException = (CommonRunException)e;
+			code = commException.getCode();
+			msg = commException.getMessage();
+			logger.error(msg);
+		}
+
+		setReturnMsg(result, code, msg);
+		return result;
+	}
+	
+	@RequestMapping(value = "/getBalancingAccount", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getBalancingAccount(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		//RtConstants rtCode = RtConstants.FAILED;
+		int code = 1;
+		String msg="获取账户余额失败！";
+		
+		try {
+			JSONObject reqParams = new JSONObject();			
+			reqParams.put("openId", request.getSession().getAttribute("openid"));			
+			
+			JSONObject data = h5PlateService.queryTeacherBalanceing(reqParams);
+			
+			result.put("data", data);
+			code = 0;
+			msg = "获取账户余额成功！";
+		} catch (Exception e) {
+			CommonRunException commException = (CommonRunException)e;
+			code = commException.getCode();
+			msg = commException.getMessage();
+			logger.error(msg);
+		}
+
+		setReturnMsg(result, code, msg);
+		return result;
+	}
 	/**
 	 * 获取用户openId
 	 * @param req

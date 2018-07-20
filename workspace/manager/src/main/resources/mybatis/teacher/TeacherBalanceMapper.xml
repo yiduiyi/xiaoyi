@@ -3,11 +3,13 @@
 <mapper namespace="com.xiaoyi.teacher.dao.ITeacherBalanceDao" >
   <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherBalance" >
     <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
-    <result column="balancing_account" property="balancingAccount" jdbcType="REAL" />
-    <result column="total_lesson_profit" property="totalLessonProfit" jdbcType="REAL" />
+    <result column="balance_account" property="balanceAccount" jdbcType="REAL" />
+    <result column="total_balance_profit" property="totalBalanceProfit" jdbcType="REAL" />
+    <result column="balance_from" property="balanceFrom" jdbcType="VARCHAR" />
+    <result column="balance_profit_left" property="balanceProfitLeft" jdbcType="REAL" />
   </resultMap>
   <sql id="Base_Column_List" >
-    teacherId, balancing_account, total_lesson_profit
+    teacherId, balance_account, total_balance_profit, balance_from, balance_profit_left
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -15,15 +17,24 @@
     from teacher_balance
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </select>
+  
+  <select id="selectTeacherBalanceByParams" resultType="com.alibaba.fastjson.JSONObject" 
+  		parameterType="com.alibaba.fastjson.JSONObject">
+  	SELECT a.teacherId,a.balance_account,a.balance_profit_left,a.total_balance_profit,b.balance_profit,
+  		b.profit_rate FROM teacher_balance a 
+		LEFT JOIN teacher_balance_daily_profits b
+		ON a.teacherId=b.teacherId AND a.teacherId=#{teacherId}
+			AND DATE_FORMAT(b.generate_date,"%Y-%m-%d") =#{curDate}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from teacher_balance
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherBalance" >
-    insert into teacher_balance (teacherId, balancing_account, total_lesson_profit
-      )
-    values (#{teacherid,jdbcType=VARCHAR}, #{balancingAccount,jdbcType=REAL}, #{totalLessonProfit,jdbcType=REAL}
-      )
+    insert into teacher_balance (teacherId, balance_account, total_balance_profit, 
+      balance_from, balance_profit_left)
+    values (#{teacherid,jdbcType=VARCHAR}, #{balanceAccount,jdbcType=REAL}, #{totalBalanceProfit,jdbcType=REAL}, 
+      #{balanceFrom,jdbcType=VARCHAR}, #{balanceProfitLeft,jdbcType=REAL})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherBalance" >
     insert into teacher_balance
@@ -31,41 +42,61 @@
       <if test="teacherid != null" >
         teacherId,
       </if>
-      <if test="balancingAccount != null" >
-        balancing_account,
+      <if test="balanceAccount != null" >
+        balance_account,
       </if>
-      <if test="totalLessonProfit != null" >
-        total_lesson_profit,
+      <if test="totalBalanceProfit != null" >
+        total_balance_profit,
+      </if>
+      <if test="balanceFrom != null" >
+        balance_from,
+      </if>
+      <if test="balanceProfitLeft != null" >
+        balance_profit_left,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="teacherid != null" >
         #{teacherid,jdbcType=VARCHAR},
       </if>
-      <if test="balancingAccount != null" >
-        #{balancingAccount,jdbcType=REAL},
+      <if test="balanceAccount != null" >
+        #{balanceAccount,jdbcType=REAL},
       </if>
-      <if test="totalLessonProfit != null" >
-        #{totalLessonProfit,jdbcType=REAL},
+      <if test="totalBalanceProfit != null" >
+        #{totalBalanceProfit,jdbcType=REAL},
+      </if>
+      <if test="balanceFrom != null" >
+        #{balanceFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="balanceProfitLeft != null" >
+        #{balanceProfitLeft,jdbcType=REAL},
       </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeacherBalance" >
     update teacher_balance
     <set >
-      <if test="balancingAccount != null" >
-        balancing_account = #{balancingAccount,jdbcType=REAL},
+      <if test="balanceAccount != null" >
+        balance_account = #{balanceAccount,jdbcType=REAL},
       </if>
-      <if test="totalLessonProfit != null" >
-        total_lesson_profit = #{totalLessonProfit,jdbcType=REAL},
+      <if test="totalBalanceProfit != null" >
+        total_balance_profit = #{totalBalanceProfit,jdbcType=REAL},
+      </if>
+      <if test="balanceFrom != null" >
+        balance_from = #{balanceFrom,jdbcType=VARCHAR},
+      </if>
+      <if test="balanceProfitLeft != null" >
+        balance_profit_left = #{balanceProfitLeft,jdbcType=REAL},
       </if>
     </set>
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherBalance" >
     update teacher_balance
-    set balancing_account = #{balancingAccount,jdbcType=REAL},
-      total_lesson_profit = #{totalLessonProfit,jdbcType=REAL}
+    set balance_account = #{balanceAccount,jdbcType=REAL},
+      total_balance_profit = #{totalBalanceProfit,jdbcType=REAL},
+      balance_from = #{balanceFrom,jdbcType=VARCHAR},
+      balance_profit_left = #{balanceProfitLeft,jdbcType=REAL}
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
 </mapper>
