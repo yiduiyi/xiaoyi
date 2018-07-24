@@ -18,6 +18,41 @@
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </select>
   
+  <!-- 获取所有老师账户余额列表 -->
+  <select id="selectAllAccountBalance" resultMap="BaseResultMap" 
+  		parameterType="com.alibaba.fastjson.JSONObject">
+  	select *from teacher_balance
+  	where balance_account &gt; 0
+  </select>
+  
+  <insert id="updateAllAccountBalanceProfits" parameterType="java.util.List">
+  	insert into teacher_balance 
+  	<trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="balanceAccount != null" >
+        balance_account,
+      </if>
+      <if test="totalBalanceProfit != null" >
+        total_balance_profit,
+      </if>
+      <if test="balanceFrom != null" >
+        balance_from,
+      </if>
+      <if test="balanceProfitLeft != null" >
+        balance_profit_left,
+      </if>
+    </trim>
+    values 
+    <foreach collection="list" close=")" open="(" separator="," item="item">
+    	(#{item.teacherid,#{item.balanceAccount},#{item.totalBalanceProfit},#{item.balance_from},#{item.balance_profit_left}})
+    </foreach>
+     on duplicate key update totalBalanceProfit=values(totalBalanceProfit),
+     	totalBalanceProfit=values(totalBalanceProfit)
+  </insert>
+  
+  
   <select id="selectTeacherBalanceByParams" resultType="com.alibaba.fastjson.JSONObject" 
   		parameterType="com.alibaba.fastjson.JSONObject">
   	SELECT a.teacherId,a.balance_account,a.balance_profit_left,a.total_balance_profit,b.balance_profit,

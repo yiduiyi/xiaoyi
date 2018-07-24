@@ -24,6 +24,19 @@
     where profit_id = #{profitId,jdbcType=VARCHAR}
       and teacherId = #{teacherid,jdbcType=VARCHAR}
   </delete>
+
+	<!-- 批量插入老师余额日收益表 -->
+	<insert id="insertTeacherDailyFrofitBatch" parameterType="java.util.List">
+	insert into teacher_balance_daily_profits (profit_id, teacherId, generate_date, 
+      balance_profit, profit_rate, balance_left
+      )
+	values 
+	<foreach collection="list" open="(" close=")" item="item" separator=",">
+		(#{profitId,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{generateDate,jdbcType=TIMESTAMP}, 
+      		#{balanceProfit,jdbcType=REAL}, #{profitRate,jdbcType=REAL}, #{balanceLeft,jdbcType=REAL}
+      )
+	</foreach>
+	</insert>
   <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceDailyProfits" >
     insert into teacher_balance_daily_profits (profit_id, teacherId, generate_date, 
       balance_profit, profit_rate, balance_left

@@ -28,11 +28,13 @@ import com.xiaoyi.manager.domain.UserKey;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ITH5PlateDao;
+import com.xiaoyi.teacher.dao.ITeacherBalanceDailyProfitsDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceWithdrawDao;
 import com.xiaoyi.teacher.dao.ITeachingRecordDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.TeacherBalance;
+import com.xiaoyi.teacher.domain.TeacherBalanceDailyProfits;
 import com.xiaoyi.teacher.domain.TeacherBalanceWithdraw;
 import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
@@ -55,6 +57,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Resource
 	ITeacherBalanceWithdrawDao balanceWithdrawDao;
 	
+	@Resource
+	ITeacherBalanceDailyProfitsDao dailyProfitsDao;
+	
 	@Autowired
 	IWechatService wechatService;
 	
@@ -63,7 +68,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	private final static float DAILY_PROFITS_RATE = 8.2f;
+	
 	@Override
 	public int queryBindStatus(String openId) {
 		try {
@@ -373,6 +379,82 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			logger.error("查询老师账户余额出错！");
 			throw new CommonRunException(-2, "查询老师账户余额出错！");
 		}		
+	}
+	
+	/**
+	 * 计算余额收益
+	 */
+	@Transactional
+	public void computeBalanceProfit(){
+				
+		//查询所有余额大于0的老师余额账户
+		try {
+			List<TeacherBalance> balanceList = null;
+			try {
+				balanceList = balanceDao.selectAllAccountBalance();
+				if(CollectionUtils.isEmpty(balanceList)){
+					return ;
+				}
+			} catch (Exception e) {
+				logger.error("查询老师账户余额列表出错！");
+			}
+			
+			List<TeacherBalanceDailyProfits> dailyProfitsList = 
+					new ArrayList<TeacherBalanceDailyProfits>();
+			//批量更新老师余额表
+			for(TeacherBalance teacherBalance : balanceList){
+				//计算老师日收益
+				Float balanceAccount = teacherBalance.getBalanceAccount();
+				if(null == balanceAccount || 0==balanceAccount){
+					continue;
+				}
+				float dailyBalaceProfits = (DAILY_PROFITS_RATE * balanceAccount)/100;
+				dailyBalaceProfits /= 365;
+				//更新余额表
+				float profitLeft = 0f,totalBalanceProfit = 0f;
+				if(null!=teacherBalance.getBalanceProfitLeft()){
+					profitLeft = teacherBalance.getBalanceProfitLeft();
+				}
+				if(null!=teacherBalance.getTotalBalanceProfit()){
+					totalBalanceProfit = teacherBalance.getTotalBalanceProfit();
+				}
+				teacherBalance.setBalanceProfitLeft(profitLeft + dailyBalaceProfits);
+				teacherBalance.setTotalBalanceProfit(totalBalanceProfit + dailyBalaceProfits);
+				
+				
+				//初始化老师余额日收益列表
+				TeacherBalanceDailyProfits dailyProfits = new TeacherBalanceDailyProfits();
+				dailyProfits.setBalanceLeft(balanceAccount);
+				dailyProfits.setBalanceProfit(dailyBalaceProfits);
+				dailyProfits.setGenerateDate(new Date());
+				dailyProfits.setProfitId(UUID.randomUUID().toString());
+				dailyProfits.setProfitRate(DAILY_PROFITS_RATE);
+				dailyProfits.setTeacherid(teacherBalance.getTeacherid());
+				
+				dailyProfitsList.add(dailyProfits);
+			}
+			try {
+				balanceDao.updateAllAccountBalanceProfits(balanceList);				
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("更新账户余额表出错！");
+				throw e;
+			}
+			
+			//批量插入老师日收益表
+			try {
+				dailyProfitsDao.insertTeacherDailyFrofitBatch(dailyProfitsList);
+			} catch (Exception e) {
+				logger.error("批量插入老师日收益失败！");
+				e.printStackTrace();
+				throw e;				
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("内部错误！");
+			throw new RuntimeException();
+		}
 	}
 	
 }

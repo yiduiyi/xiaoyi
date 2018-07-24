@@ -540,7 +540,8 @@ public class CumstomServiceImpl implements ICustomService{
 				logger.info("month:"+params.get("month"));
 				logger.info("lessonTradeId:"+lessonTradeId);
 				
-				reqData.put("queryDate", params.get("month"));
+				reqData.put("queryDate", cal.getTime());
+				//reqData.put("queryDate", params.get("month"));
 				reqData.put("lessonTradeId", lessonTradeId);
 				
 				
