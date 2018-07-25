@@ -3,6 +3,8 @@ package com.xiaoyi.manager.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -100,7 +102,7 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 			
 			//组合数据
 			if(CollectionUtils.isNotEmpty(oriDatas)){
-				Map<Integer,JSONArray> teachingWayOrdersMap = new HashMap<Integer,JSONArray>();	//1：学生上门,-1：老师上门,2:一对二
+				Map<Integer,List<JSONObject>> teachingWayOrdersMap = new HashMap<Integer,List<JSONObject>>();	//1：学生上门,-1：老师上门,2:一对二
 				for(JSONObject oriData : oriDatas){
 					Integer lessonType = oriData.getInteger("lessonType");
 					if(null == lessonType){
@@ -115,9 +117,9 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 						teachingWay = 1;
 					}
 					
-					JSONArray orders = teachingWayOrdersMap.get(teachingWay);
+					List<JSONObject> orders = teachingWayOrdersMap.get(teachingWay);
 					if(null==orders){
-						orders = new JSONArray();
+						orders = new ArrayList<JSONObject>();
 						teachingWayOrdersMap.put(teachingWay, orders);
 					}
 					
@@ -145,6 +147,22 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 				for(Integer teachingWay : teachingWayOrdersMap.keySet()){
 					JSONObject ordersGroup = new JSONObject();
 					ordersGroup.put("teachingWay", teachingWay);
+					
+					List<JSONObject> orders = teachingWayOrdersMap.get(teachingWay);
+					//按照时间（最近）排序
+					Collections.sort(orders, new Comparator<JSONObject>() {
+
+						@Override
+						public int compare(JSONObject o1, JSONObject o2) {
+							if(null!=o1 && null!=o2 
+									&& o1.getString("purchaseDate")!=null
+									&& o2.getString("purchaseDate")!=null){
+								
+								return o2.getString("purchaseDate").compareTo(o1.getString("purchaseDate"));
+							}
+							return 0;
+						}
+					});
 					ordersGroup.put("orders", teachingWayOrdersMap.get(teachingWay));
 					result.add(ordersGroup);
 				}
@@ -154,6 +172,8 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 			e.printStackTrace();
 			logger.error("内部错误！");
 		}
+		
+		
 		return result;
 	}
 

@@ -84,11 +84,14 @@ public class LoginServiceImpl implements ILoginService {
 			}			
 			
 			try {
-				User record = new User();
+				logger.info("old password:"+user.getPassword());
+				user.setPassword(newPassword);
+				logger.info("new password:"+user.getPassword());
+				/*User record = new User();
 				record.setPassword(newPassword);
 				record.setUserid(key.getUserid());
-				record.setUseraccountid(key.getUserid());
-				return userDao.updateByPrimaryKeySelective(record );
+				record.setUseraccountid(key.getUserid());*/
+				return userDao.updateByPrimaryKeySelective(user);
 			} catch (Exception e) {
 				logger.error("更新密码出错！");
 				e.printStackTrace();

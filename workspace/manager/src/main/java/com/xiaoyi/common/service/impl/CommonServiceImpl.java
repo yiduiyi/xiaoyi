@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,21 @@ public class CommonServiceImpl implements ICommonDataService {
 					if(!gradeCoursesMap.containsKey(gradeId)) {
 						gradeId *=-1;
 					}
-					datas.add(gradeCoursesMap.get(gradeId));
+					
+					//排序
+					JSONObject gradeLessonMap = gradeCoursesMap.get(gradeId);
+					List<JSONObject> sortList = (List<JSONObject>)gradeLessonMap.get("sortlist");
+					Collections.sort(sortList, new Comparator<JSONObject>() {
+
+						@Override
+						public int compare(JSONObject arg0, JSONObject arg1) {
+							// TODO Auto-generated method stub
+							return arg1.getIntValue("courseCnt") - arg0.getIntValue("courseCnt");
+						}
+					});
+					gradeLessonMap.put("sortlist", sortList);
+					
+					datas.add(gradeLessonMap);
 				}
 				
 				return datas;
