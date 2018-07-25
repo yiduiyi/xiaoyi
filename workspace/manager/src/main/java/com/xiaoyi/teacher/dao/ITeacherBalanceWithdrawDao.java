@@ -3,7 +3,7 @@ package com.xiaoyi.teacher.dao;
 import com.xiaoyi.teacher.domain.TeacherBalanceWithdraw;
 import com.xiaoyi.teacher.domain.TeacherBalanceWithdrawKey;
 
-public interface TeacherBalanceWithdrawDao {
+public interface ITeacherBalanceWithdrawDao {
     int deleteByPrimaryKey(TeacherBalanceWithdrawKey key);
 
     int insert(TeacherBalanceWithdraw record);

@@ -2,7 +2,7 @@ package com.xiaoyi.teacher.dao;
 
 import com.xiaoyi.teacher.domain.TeacherBalance;
 
-public interface TeacherBalanceDao {
+public interface ITeacherBalanceDao {
     int deleteByPrimaryKey(String teacherid);
 
     int insert(TeacherBalance record);
