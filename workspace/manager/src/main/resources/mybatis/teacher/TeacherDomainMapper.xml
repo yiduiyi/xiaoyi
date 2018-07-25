@@ -18,14 +18,14 @@
 	</resultMap>
 	<sql id="Base_Column_List">
 		a.teacherName,a.signed,a.teachingLevel,a.sex,a.telNumber,a.education,a.notes
-							,a.gradeId,a.schoolId,b.accountNumber,b.accountType,b.status
+							,a.gradeId,a.schoolId,b.userType,b.headimgurl
 	</sql>
 	<select id="selectDomainByTeacherId" resultMap="BaseResultMap"
 		parameterType="com.alibaba.fastjson.JSONObject">
 		select
 		<include refid="Base_Column_List" />	
-		FROM teacher a LEFT JOIN account b
-			ON a.teacherId=b.teacherId
+		FROM teacher a LEFT JOIN user b
+			ON a.teacherId=b.userId
 		WHERE a.teacherId=#{teacherId}
 	</select>
 	

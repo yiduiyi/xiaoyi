@@ -5,7 +5,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.teacher.domain.TeacherBalance;
 
-public interface ITeacherBalanceDao{
+public interface ITeacherBalanceDao {
     int deleteByPrimaryKey(String teacherid);
 
     int insert(TeacherBalance record);
