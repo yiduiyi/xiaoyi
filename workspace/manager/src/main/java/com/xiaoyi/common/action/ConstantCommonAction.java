@@ -140,9 +140,12 @@ public class ConstantCommonAction {
 		    	    	
     	try {
     		List<JSONObject> datas = commonDataService.getCoursePrices(reqData);
-    		
+    		Collections.sort(datas, new Comparator<JSONObject>() {
 
+				@Override
+				public int compare(JSONObject arg0, JSONObject arg1) {
 					// TODO Auto-generated method stub
+					return arg1.getIntValue("courseCnt") - arg0.getIntValue("courseCnt");
 				}
 			});
     		if(null!=datas) {
