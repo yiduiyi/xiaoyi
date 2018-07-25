@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.teacher.dao.ITeacherBalanceFromDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherBalanceFromKey" >
+    <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
+    <id column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceFromKey" >
+    delete from teacher_balance_from
+    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+      and teacherId = #{teacherid,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceFromKey" >
+    insert into teacher_balance_from (lessonTradeId, teacherId)
+    values (#{lessontradeid,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherBalanceFromKey" >
+    insert into teacher_balance_from
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lessontradeid != null" >
+        lessonTradeId,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lessontradeid != null" >
+        #{lessontradeid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

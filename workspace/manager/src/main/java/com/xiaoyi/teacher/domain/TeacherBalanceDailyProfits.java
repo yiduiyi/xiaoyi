@@ -1,13 +1,23 @@
 package com.xiaoyi.teacher.domain;
 
-public class TeacherBalanceProfits extends TeacherBalanceProfitsKey {
+import java.util.Date;
+
+public class TeacherBalanceDailyProfits extends TeacherBalanceDailyProfitsKey {
+    private Date generateDate;
+
     private Float balanceProfit;
 
     private Float profitRate;
 
-    private Float actualpay;
-
     private Float balanceLeft;
+
+    public Date getGenerateDate() {
+        return generateDate;
+    }
+
+    public void setGenerateDate(Date generateDate) {
+        this.generateDate = generateDate;
+    }
 
     public Float getBalanceProfit() {
         return balanceProfit;
@@ -23,14 +33,6 @@ public class TeacherBalanceProfits extends TeacherBalanceProfitsKey {
 
     public void setProfitRate(Float profitRate) {
         this.profitRate = profitRate;
-    }
-
-    public Float getActualpay() {
-        return actualpay;
-    }
-
-    public void setActualpay(Float actualpay) {
-        this.actualpay = actualpay;
     }
 
     public Float getBalanceLeft() {

@@ -1,16 +1,15 @@
 package com.xiaoyi.teacher.dao;
 
 import com.xiaoyi.teacher.domain.TeacherBalanceWithdraw;
-import com.xiaoyi.teacher.domain.TeacherBalanceWithdrawKey;
 
 public interface ITeacherBalanceWithdrawDao {
-    int deleteByPrimaryKey(TeacherBalanceWithdrawKey key);
+    int deleteByPrimaryKey(String teacherid);
 
     int insert(TeacherBalanceWithdraw record);
 
     int insertSelective(TeacherBalanceWithdraw record);
 
-    TeacherBalanceWithdraw selectByPrimaryKey(TeacherBalanceWithdrawKey key);
+    TeacherBalanceWithdraw selectByPrimaryKey(String teacherid);
 
     int updateByPrimaryKeySelective(TeacherBalanceWithdraw record);
 

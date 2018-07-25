@@ -67,11 +67,21 @@ public class LoginServiceImpl implements ILoginService {
 				return -1;
 			}
 			
-			String newPassword = reqParams.getString("newPassword").trim();			
-			String oriPassword = reqParams.getString("oriPassword").trim();
-			if(null == oriPassword || oriPassword.equals(user.getPassword())){
+			String newPassword = reqParams.getString("newPassword");			
+			String oriPassword = reqParams.getString("oriPassword");
+			if(null!=newPassword){
+				newPassword = newPassword.trim();
+			}
+			if(null!=oriPassword){
+				oriPassword = oriPassword.trim();
+			}
+			
+			if(null == oriPassword || !oriPassword.equals(user.getPassword())){
 				return -3;
 			}
+			if(newPassword.equals(user.getPassword())){
+				return 0;
+			}			
 			
 			try {
 				User record = new User();

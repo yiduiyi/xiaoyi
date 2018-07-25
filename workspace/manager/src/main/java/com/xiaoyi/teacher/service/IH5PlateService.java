@@ -12,7 +12,12 @@ public interface IH5PlateService {
 	//需先校验绑定账号
 	int bindWechat(Map<String,Object> params) throws Exception;
 	
+	@Deprecated
 	int withdrawLessons(JSONObject params) throws Exception;
+	
+	int withdrawBalance(JSONObject params) throws Exception;
+	
+	JSONObject queryTeacherBalanceing(JSONObject params) throws Exception;
 	
 	List<JSONObject> getAvailableLessons(String teacherId) throws Exception;
 	

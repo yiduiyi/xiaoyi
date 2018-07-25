@@ -3,6 +3,8 @@ package com.xiaoyi.common.action;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -139,6 +141,10 @@ public class ConstantCommonAction {
     	try {
     		List<JSONObject> datas = commonDataService.getCoursePrices(reqData);
     		
+
+					// TODO Auto-generated method stub
+				}
+			});
     		if(null!=datas) {
     			rtCode = RtConstants.SUCCESS;
     		}

@@ -1,5 +1,8 @@
 package com.xiaoyi.teacher.dao;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.teacher.domain.TeacherBalance;
 
 public interface ITeacherBalanceDao {
@@ -11,7 +14,13 @@ public interface ITeacherBalanceDao {
 
     TeacherBalance selectByPrimaryKey(String teacherid);
 
+    int updateAllAccountBalanceProfits(List<TeacherBalance> list);
+    
+    List<TeacherBalance> selectAllAccountBalance();
+    
     int updateByPrimaryKeySelective(TeacherBalance record);
 
     int updateByPrimaryKey(TeacherBalance record);
+    
+    JSONObject selectTeacherBalanceByParams(JSONObject params);
 }
