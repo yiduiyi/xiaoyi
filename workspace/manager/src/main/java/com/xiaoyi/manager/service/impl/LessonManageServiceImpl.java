@@ -68,6 +68,11 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 	public int updateLessonType(JSONObject params) {
 		String lessonId = params.getString("lessonId");
 		Integer operateType = params.getInteger("operateType");
+		Integer isholiday = params.getInteger("isholiday");
+		if(null == isholiday){	//默认非假期
+			params.put("isholiday", 0);
+		}
+		
 		try {
 			if(StringUtils.isEmpty(lessonId) 
 					|| (operateType!=null && operateType == 1)){
@@ -78,6 +83,7 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 				key.setLessonId(lessonId);
 				lessonTypeDao.deleteByPrimaryKey(key);
 			}
+			
 			return lessonManageDao.updateLessonType(params);
 		} catch (Exception e) {
 			logger.error("更新/新增课程包出错！");

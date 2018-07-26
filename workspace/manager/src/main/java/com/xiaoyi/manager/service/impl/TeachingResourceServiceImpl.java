@@ -336,6 +336,9 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 				LessonTradeSum record = lessonTradeSumDao.selectByPrimaryKey(teacherId);
 				if(null == record) {
 					record = new LessonTradeSum();
+					
+					record.setTeacherid(teacherId);
+					record.setFrozenlessonnum(0f);
 				}
 				
 				//record.setTeacherid(teacherId);
@@ -413,7 +416,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 		String teacherId = params.getString("teacherId");
 		String updatedTelNum = params.getString("telNumber");
 		String addedSchoolName = params.getString("schoolName");
-		
+		String goodAt = params.getString("goodAt");
 		
 		logger.info("teacherId:"+teacherId);
 		logger.info("updatedTelNum:"+updatedTelNum);
@@ -497,6 +500,8 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					updatedTeacher.setTeachinglevel(params.getByteValue("teachingLevel"));
 				}
 				updatedTeacher.setTelnumber(updatedTelNum);
+				updatedTeacher.setGoodAt(goodAt);
+				
 				//更新老师入库
 				try {
 					logger.info("更新老师信息【params】："+updatedTeacher.toString());
@@ -538,6 +543,6 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 			e.printStackTrace();
 			logger.info("内部错误！");
 		}
-		return -1;		
+		return 0;		
 	}
 }

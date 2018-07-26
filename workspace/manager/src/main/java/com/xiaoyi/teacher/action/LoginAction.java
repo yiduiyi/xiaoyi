@@ -28,7 +28,7 @@ public class LoginAction {
 	
 	@RequestMapping(value="/login",method=RequestMethod.POST)
 	@ResponseBody
-	public  JSONObject showTRecords(HttpServletRequest request
+	public  JSONObject login(HttpServletRequest request
 			,HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
@@ -74,6 +74,7 @@ public class LoginAction {
 				setReturnMsg(result, loginStatus.getCode(), loginStatus.toString());
 			}
 			if(null!=user){
+				user.setPassword(null);
 				user.setLoginstatus(false);
 				if(0<=loginService.userLogout(user)){
 					rtCode = RtConstants.SUCCESS;
