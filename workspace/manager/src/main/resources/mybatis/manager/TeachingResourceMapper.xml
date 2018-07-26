@@ -167,8 +167,8 @@
 			<if test="teachingLevel!=null">
 				AND b.teachingLevel=#{teachingLevel}
 			</if>
-			<if test="goodAt!=null">
-				AND b.goodAt LIKE '%${goodAt}%'	
+			<if test="subjectId!=null">
+				AND b.good_at LIKE '%${subjectId}%'	
 			</if>
 		</where>
 	</select>
