@@ -54,6 +54,22 @@ public class CommonServiceImpl implements ICommonService {
 			String studentId = null;
 			String stuName = params.getString("studentName");		
 			String wechatNum = params.getString("wechatNum") ;
+			String telNum = params.getString("telNum");
+			String parentName = params.getString("parentName");
+			
+			//去空格
+			if(null!=stuName){
+				stuName = stuName.trim();
+			}
+			if(wechatNum!=null){
+				wechatNum = wechatNum.trim();
+			}
+			if(telNum!=null){
+				telNum = telNum.trim();
+			}
+			if(parentName!=null){
+				parentName = parentName.trim();
+			}
 			
 			boolean hasRelation = false;			
 			StringBuffer sb =new StringBuffer();
@@ -66,30 +82,41 @@ public class CommonServiceImpl implements ICommonService {
 					parents = parentsDao.selectByOpenId(params.getString("openId"));	//一般情况（家长付费）
 					if(null==parents) {		//管理员手动录入
 						logger.info("根据telNum查询家长角色【params】：{根据telNum:"+params.get("telNum")+"}");
-						parents = parentsDao.selectByTelNum(params.getString("telNum"));
+						parents = parentsDao.selectByTelNum(telNum);
 					}
 					
 					if(null!=parents){
 						parentId = parents.getParentid();
 						
 						//代买
-						if(null!=params.getString("telNum") 
-								&& !params.getString("telNum").equals(parents.getTelnum())
-								&& null!=parentsDao.selectByTelNum(params.getString("telNum"))){
-							//parents.setTelnum(params.getString("telNum"));
-							sb.append("(");
-							sb.append(params.getString("telNum"));
-							sb.append("-");
-							
-							//代买（家长姓名）
-							if(StringUtils.isEmpty(parents.getParentname())
-									&& params.get("parentName")!=null){
-								sb.append(params.get("parentName"));
-								sb.append(")");
+						if(null!=telNum 
+								&& !telNum.equals(parents.getTelnum())
+								/*&& null!=parentsDao.selectByTelNum(params.getString("telNum"))*/){
+							//暂时记录该家长信息（孤立信息, 没有任何绑定）
+							if(null!=parentsDao.selectByTelNum(telNum)){
+								Parents addParent = new Parents();
+								addParent.setOpenid("");
+								addParent.setParentid(UUID.randomUUID().toString());
+								addParent.setParentname(parentName);
+								addParent.setTelnum(telNum);
+								addParent.setWechatnum(wechatNum);
+								
+								parentsDao.insertSelective(addParent);
 							}
+							//parents.setTelnum(params.getString("telNum"));
+							//代买（手机号 + 家长姓名）
+							sb.append("(");
+							sb.append(telNum);
+							sb.append("-");
+														
+							sb.append(params.get("parentName"));
+							sb.append(")");
+							/*if(!StringUtils.isEmpty(parents.getParentname())
+									&& params.get("parentName")!=null){
+							}*/
 						}
 
-						//更新微信号
+						//更新微信号(预约字段)
 						if(null!=wechatNum 
 								&& !wechatNum.trim().equals(parents.getWechatnum())) {
 							parents.setWechatnum(wechatNum);
@@ -113,9 +140,9 @@ public class CommonServiceImpl implements ICommonService {
 						parents = new Parents();
 						parents.setParentid(parentId);
 						parents.setOpenid(params.getString("openId"));
-						parents.setTelnum(params.getString("telNum"));
-						parents.setWechatnum(params.getString("weChatNum"));
-						parents.setParentname(params.getString("parentName"));
+						parents.setTelnum(telNum);
+						parents.setWechatnum(wechatNum);
+						parents.setParentname(parentName);
 						
 						//新增家长(必然不存在家长-学生关系)
 						try {
