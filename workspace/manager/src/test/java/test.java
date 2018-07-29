@@ -85,11 +85,13 @@ public class test {
 
 		
         System.out.println(resp);*/
-    	Date d2 = new SimpleDateFormat("yyyy-MM").parse("2016-5");
+    	Date d2 = new SimpleDateFormat("yyyy-MM").parse("2016-5-3");
     	
     	
-    	Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));    //获取东八区时间
+    	Calendar c = Calendar.getInstance(/*TimeZone.getTimeZone("GMT+08:00")*/);    //获取东八区时间
 
+    	c.setTime(d2);
+    	c.set(Calendar.DAY_OF_MONTH, -1);
         //获取年
         int year = c.get(Calendar.YEAR);
         //获取月份，0表示1月份
@@ -97,11 +99,17 @@ public class test {
         //获取当前天数
         int day = c.get(Calendar.DAY_OF_MONTH);
     	
-    	
+        
+        Calendar   cal   =   Calendar.getInstance();
+        cal.add(Calendar.DATE,   -1);
+        String yesterday = new SimpleDateFormat( "yyyy-MM-dd ").format(cal.getTime());
+        System.out.println(yesterday);
+        
+    	System.out.println(c.getTime());
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
     	String t = sdf.format(new Date(1519833600000l));
     	System.out.println(t);
-    	Calendar cal = Calendar.getInstance();
+    	//Calendar cal = Calendar.getInstance();
     	//System.out.println("year:"+cal.get(Calendar.YEAR));
     	//System.out.println("month:"+cal.get(Calendar.MONTH));
     	StringBuffer tt = new StringBuffer();

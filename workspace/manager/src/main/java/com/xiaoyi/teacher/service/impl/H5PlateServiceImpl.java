@@ -2,7 +2,10 @@ package com.xiaoyi.teacher.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -30,11 +33,13 @@ import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ITH5PlateDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceDailyProfitsDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceDao;
+import com.xiaoyi.teacher.dao.ITeacherBalanceFromDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceWithdrawDao;
 import com.xiaoyi.teacher.dao.ITeachingRecordDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.TeacherBalance;
 import com.xiaoyi.teacher.domain.TeacherBalanceDailyProfits;
+import com.xiaoyi.teacher.domain.TeacherBalanceFromKey;
 import com.xiaoyi.teacher.domain.TeacherBalanceWithdraw;
 import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
@@ -55,6 +60,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	ITeacherBalanceDao balanceDao;
 	
 	@Resource
+	private ITeacherBalanceFromDao balanceFromDao;
+	
+	@Resource
 	ITeacherBalanceWithdrawDao balanceWithdrawDao;
 	
 	@Resource
@@ -66,6 +74,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Autowired
 	ITeachingRecordService tRecordService;
 
+	@Autowired ILessonTradeDao lessonTradeDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final static float DAILY_PROFITS_RATE = 8.2f;
@@ -258,7 +267,18 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					record.put("lessonTradeId", lessonTrade.get("lessonTradeId"));
 					record.put("year", time.substring(0, 4));
 					record.put("month", time.substring(5,7));
-					record.put("fee", lessonTrade.get("actualPay"));
+					
+					//计算剩余可提现余额
+					Float actualPay = lessonTrade.getFloat("actualPay");
+					Float withdrawed = lessonTrade.getFloat("withdrawed");
+					if(null==actualPay){
+						actualPay = 0f;
+					}
+					if(null==withdrawed){
+						withdrawed = 0f;
+					}
+					
+					record.put("fee", actualPay - withdrawed/*lessonTrade.get("actualPay")*/);
 					record.put("parentName", lessonTrade.get("parentName"));
 					
 					Byte status = lessonTrade.getByte("status");
@@ -310,13 +330,97 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		
 		//判断余额是否大于提现余额
 		TeacherBalance teacherBalance =	balanceDao.selectByPrimaryKey(teacherId);
-		if(null==teacherBalance || teacherBalance.getTotalBalanceProfit()<withdrawing){
-			logger.info("账户余额不足！");
-			throw new CommonRunException(-2, "账户余额不足！");
+		
+		if(null==teacherBalance){
+			logger.info("查询账户为空！");
+			throw new CommonRunException(-2, "查询账户为空！");
+		}else{
+			 if(teacherBalance.getTotalBalanceProfit()==null){
+				 teacherBalance.setTotalBalanceProfit(0f);
+			 }
+			 if(teacherBalance.getBalanceAccount()==null){
+				 teacherBalance.setBalanceAccount(0f);
+			 }
+			 if(teacherBalance.getBalanceProfitLeft()==null){
+				 teacherBalance.setBalanceProfitLeft(0f);
+			 }
+			 if((teacherBalance.getBalanceProfitLeft() + teacherBalance.getBalanceAccount())
+					 < withdrawing){
+				 logger.info("账户余额不足！");
+				 throw new CommonRunException(-2, "账户余额不足！");
+			 }
+			 if(StringUtils.isEmpty(teacherBalance.getBalanceFrom())){
+				 logger.info("没有匹配老师课时！");
+				 throw new CommonRunException(-2, "没有匹配老师课时！");
+			 }
+		}
+		
+		//扣除课时所得
+		try {
+			String lessonTradeIds = teacherBalance.getBalanceFrom();
+			logger.info("lessonTradeIds:"+lessonTradeIds);
+			if(!StringUtils.isEmpty(lessonTradeIds)){
+			//	List<String> lessonTradeIds = lessonTradeIds.
+				String[] lessonTradeArray = lessonTradeIds.split(",");
+				List<String> lessonTradeIdList = Arrays.asList(lessonTradeArray);				
+				List<LessonTrade> lessonTradeList = lessonTradeDao.selectByLessonTradeIds(lessonTradeIdList);
+				
+				float tobeWithdrawed = withdrawing;
+				for(LessonTrade record : lessonTradeList){
+					if(record.getActualPay() == null){
+						record.setActualPay(0f);
+					}
+					if(record.getWithdrawed()==null){
+						record.setWithdrawed(0f);
+					}
+					//计算剩余
+					float remain = record.getActualPay() - record.getWithdrawed();
+					if(remain>withdrawing){
+						record.setWithdrawed(record.getWithdrawed() + withdrawing);		
+						tobeWithdrawed = 0;
+					}else{
+						record.setStatus((byte)0);	//全部提现完毕
+						record.setWithdrawed(record.getActualPay());
+						tobeWithdrawed -= remain;	
+						
+						//更新课时余额来源
+						lessonTradeIdList.remove(record.getLessontradeid());						
+					}					
+					
+					//更新课时提现状态
+					lessonTradeDao.updateByPrimaryKeySelective(record);
+					
+					if(tobeWithdrawed <= 0){
+						break;
+					}
+				}
+				
+				//更新课时余额来源
+				StringBuffer sb = new StringBuffer();
+				if(!CollectionUtils.isEmpty(lessonTradeIdList)){
+					for(String lessonTradeId : lessonTradeIdList){
+						sb.append(lessonTradeId);
+						sb.append(",");
+					}
+				}
+				teacherBalance.setBalanceFrom(sb.substring(0,sb.length()-1));
+			}
+		} catch (Exception e) {
+			logger.error("更新老师课时表出错！");
+			throw new CommonRunException(-4, "更新老师课时表出错！！");
 		}
 		
 		//付款
-		Map<String,String> payResult = wechatService.unifiedPay(openId, withdrawing);
+		logger.info("开始付款...");
+		logger.info("付款金额："+ withdrawing);
+		Map<String,String> payResult = null;
+		try {		
+			payResult = wechatService.unifiedPay(openId, withdrawing);
+			logger.info("payResult:"+payResult);
+		} catch (Exception e) {
+			logger.error("付款失败！");
+			throw new CommonRunException(-4, "付款失败！");
+		}
 		if("SUCCESS".equalsIgnoreCase(payResult.get("result_code")) 
 				&& "SUCCESS".equalsIgnoreCase(payResult.get("return_code"))){
 			logger.info("付款成功！");
@@ -359,7 +463,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	public JSONObject queryTeacherBalanceing(JSONObject params) throws Exception {
 			
 		//验证参数
-		params.put("curDate", new Date());
+		SimpleDateFormat formate = new SimpleDateFormat("yyy-MM-dd");
+		
+		params.put("curDate", formate.format(new Date()));
 		if(StringUtils.isEmpty(params.getString("openId"))){
 			throw new CommonRunException(-1, "参数错误,【openId】为空！");
 		}
@@ -372,8 +478,27 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		
 		//查询老师账户余额
 		try {
+			params.put("teacherId", teacher.getTeacherid());
 			JSONObject teacherBalance =  balanceDao.selectTeacherBalanceByParams(params);
-			
+			if(teacherBalance==null || teacherBalance.size()==0){
+				teacherBalance = new JSONObject();
+				teacherBalance.put("teacherId", teacher.getTeacherid());				
+			}
+			if(null == teacherBalance.get("profitRate")){
+				teacherBalance.put("profitRate", 8.2);
+			}
+			if(null == teacherBalance.get("balanceLeft")){
+				teacherBalance.put("balanceLeft", 0);
+			}
+			if(null == teacherBalance.get("balanceProfit")){
+				teacherBalance.put("balanceProfit", 0);
+			}
+			if(null == teacherBalance.get("totalBalanceProfit")){
+				teacherBalance.put("totalBalanceProfit", 0);
+			}
+			if(null == teacherBalance.get("balanceProfitLeft")){
+				teacherBalance.put("balanceProfitLeft", 0);
+			}
 			return teacherBalance;
 		} catch (Exception e) {
 			logger.error("查询老师账户余额出错！");
@@ -386,19 +511,24 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	 */
 	@Transactional
 	public void computeBalanceProfit(){
-				
+		logger.info("时间："+new Date());
+		logger.info("开始计算收益...");
 		//查询所有余额大于0的老师余额账户
 		try {
 			List<TeacherBalance> balanceList = null;
 			try {
+				logger.info("查询老师账户余额列表...");
 				balanceList = balanceDao.selectAllAccountBalance();
 				if(CollectionUtils.isEmpty(balanceList)){
+					logger.info("查询老师账户余额列表为空！");
 					return ;
 				}
 			} catch (Exception e) {
 				logger.error("查询老师账户余额列表出错！");
+				throw e;
 			}
 			
+			logger.info("批量更新老师余额表【size】："+balanceList.size());
 			List<TeacherBalanceDailyProfits> dailyProfitsList = 
 					new ArrayList<TeacherBalanceDailyProfits>();
 			//批量更新老师余额表
@@ -433,8 +563,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				
 				dailyProfitsList.add(dailyProfits);
 			}
+			
 			try {
-				balanceDao.updateAllAccountBalanceProfits(balanceList);				
+				logger.info("批量更新老师余额表【入库】");
+				int updatedNum = balanceDao.updateAllAccountBalanceProfits(balanceList);				
+				logger.info("更新入库记录数："+ updatedNum);
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error("更新账户余额表出错！");
@@ -443,7 +576,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			
 			//批量插入老师日收益表
 			try {
-				dailyProfitsDao.insertTeacherDailyFrofitBatch(dailyProfitsList);
+				logger.info("批量插入老师日收益表...");
+				int insertedNum = dailyProfitsDao.insertTeacherDailyFrofitBatch(dailyProfitsList);
+				logger.info("批量插入老师日收益表数目：" + insertedNum);
 			} catch (Exception e) {
 				logger.error("批量插入老师日收益失败！");
 				e.printStackTrace();
@@ -457,4 +592,83 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		}
 	}
 	
+	/**
+	 * 提现课时费到余额
+	 */
+	@Transactional
+	public void withdrawLessonIncomeToBalance(){
+		//金融版version2.0（加入余额功能）
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("status", 2);
+		//计算昨天日期
+		Calendar   cal   =   Calendar.getInstance();
+        cal.add(Calendar.DATE,   -1);
+        String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+        System.out.println(yesterday);		
+		params.put("queryDate", yesterday);
+		
+		List<LessonTrade> lessonTradeList = lessonTradeDao.selectByParams(params);
+		
+		List<TeacherBalance> withdrawBalanceList = new ArrayList<TeacherBalance>();
+		List<TeacherBalanceFromKey> balanceFromList = new ArrayList<TeacherBalanceFromKey>();
+		
+		for(LessonTrade record : lessonTradeList){
+			//查询/增加老师对应的余额表		
+			String teacherId = record.getTeacherid();
+			String lessonTradeId = record.getLessontradeid();
+			
+			try {
+				TeacherBalance teacherBalance = balanceDao.selectByPrimaryKey(teacherId);
+				float balanceAccount =0;
+				StringBuffer balanceFrom = new StringBuffer();
+				if(null==teacherBalance || teacherBalance.getTeacherid()==null){
+					teacherBalance = new TeacherBalance();
+					teacherBalance.setTeacherid(teacherId);
+					teacherBalance.setTotalBalanceProfit(0f);
+					teacherBalance.setBalanceProfitLeft(0f);
+					balanceAccount = 0;
+				}else{
+					balanceAccount += teacherBalance.getBalanceAccount();
+				}
+				
+				if(!StringUtils.isEmpty(teacherBalance.getBalanceFrom())){
+					balanceFrom.append(",");
+				}
+				balanceFrom.append(record.getLessontradeid());
+				teacherBalance.setBalanceFrom(balanceFrom.toString());
+				balanceAccount += record.getActualPay();
+				teacherBalance.setBalanceAccount(balanceAccount);
+				
+				//balanceDao.u
+				//balanceDao.insertSelective(teacherBalance);
+				withdrawBalanceList.add(teacherBalance);
+			} catch (Exception e) {
+				logger.error("增加/更新老师账户余额出错【内部错误】！");
+				throw new CommonRunException(-5, "增加/更新老师账户余额出错【内部错误】！");
+			}
+			
+			//更新老师提现记录与老师Id关系表
+			TeacherBalanceFromKey balanceFrom = new TeacherBalanceFromKey();
+			balanceFrom.setTeacherid(teacherId);
+			balanceFrom.setLessontradeid(lessonTradeId);
+			
+			balanceFromList.add(balanceFrom);				
+		}
+		
+		//账户余额入库
+		try {
+			balanceDao.updateAllAccountBalanceProfits(withdrawBalanceList);
+		} catch (Exception e) {
+			logger.error("增加/更新老师账户余额出错【入库错误】！");
+			throw new CommonRunException(-7, "增加/更新老师账户余额出错【入库错误】！");
+		}
+		
+		//关系入库
+		try {
+			balanceFromDao.insertBatch(balanceFromList);
+		} catch (Exception e) {
+			logger.error("更新老师提现记录与老师Id关系表【入库错误】！");
+			throw new CommonRunException(-6, "更新老师提现记录与老师Id关系表【入库错误】！");
+		}
+	}
 }

@@ -26,6 +26,8 @@ public class LessonTrade {
     private Float frozenLessons;
     
     private Float actualPay;
+    
+    private Float withdrawed;
 
     public String getLessontradeid() {
         return lessontradeid;
@@ -121,5 +123,13 @@ public class LessonTrade {
 
 	public void setActualPay(Float actualPay) {
 		this.actualPay = actualPay;
+	}
+
+	public Float getWithdrawed() {
+		return withdrawed;
+	}
+
+	public void setWithdrawed(Float withdrawed) {
+		this.withdrawed = withdrawed;
 	}
 }

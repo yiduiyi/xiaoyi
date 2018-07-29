@@ -55,11 +55,17 @@
   
   <select id="selectTeacherBalanceByParams" resultType="com.alibaba.fastjson.JSONObject" 
   		parameterType="com.alibaba.fastjson.JSONObject">
-  	SELECT a.teacherId,a.balance_account,a.balance_profit_left,a.total_balance_profit,b.balance_profit,
-  		b.profit_rate FROM teacher_balance a 
+  	SELECT a.teacherId,a.balance_account AS balanceLeft,
+  		a.balance_profit_left AS balanceProfitLeft,
+  		a.total_balance_profit AS totalBalanceProfit,
+  		b.balance_profit AS balanceProfit, 
+  		b.profit_rate AS profitRate
+  	FROM teacher_balance a 
 		LEFT JOIN teacher_balance_daily_profits b
-		ON a.teacherId=b.teacherId AND a.teacherId=#{teacherId}
-			AND DATE_FORMAT(b.generate_date,"%Y-%m-%d") =#{curDate}
+		ON a.teacherId=b.teacherId AND DATE_FORMAT(b.generate_date,"%Y-%m-%d") =#{curDate}
+	where	
+		a.teacherId=#{teacherId}
+			
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from teacher_balance

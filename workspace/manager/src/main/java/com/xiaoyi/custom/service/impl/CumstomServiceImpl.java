@@ -459,7 +459,7 @@ public class CumstomServiceImpl implements ICustomService{
 			
 			//金融版version2.0（加入余额功能）
 			//查询/增加老师对应的余额表
-			String teacherId = record.getTeacherid();
+			/*String teacherId = record.getTeacherid();
 			try {
 				TeacherBalance teacherBalance = balanceDao.selectByPrimaryKey(teacherId);
 				float balanceAccount =0;
@@ -497,7 +497,7 @@ public class CumstomServiceImpl implements ICustomService{
 			} catch (Exception e) {
 				logger.error("更新老师提现记录与老师Id关系表失败！");
 				throw new CommonRunException(-6,"更新老师提现记录与老师Id关系表失败！");
-			}			
+			}			*/
 			
 			return 0;
 		} catch (Exception e) {

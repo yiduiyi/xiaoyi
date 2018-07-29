@@ -20,6 +20,8 @@ public interface ILessonTradeDao {
     
     int updateStatusByLessonTradeIds(List<String> lessonTradeIds);
     
+    List<LessonTrade> selectByLessonTradeIds(List<String> list);
+    
     //查询某月份学情报告
     List<LessonTrade> selectByParams(Map<String,Object> params);
 }

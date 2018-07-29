@@ -454,6 +454,7 @@ public class WechatServiceImpl implements IWechatService {
 			throw new CommonRunException(-1, "参数错误,提现价格必须大于0【amount】：" + amount);
 		}
 		amount = amount * 100;
+		packageParams.put("amount",String.valueOf((int)amount));
 		
 		//3.0 生成自己的签名
 		String sign  = SignUtils.creatSign("utf-8",packageParams);

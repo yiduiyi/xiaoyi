@@ -216,6 +216,7 @@ public class H5PlateAction {
 		try {
 			JSONObject reqParams = new JSONObject();			
 			reqParams.put("openId", request.getSession().getAttribute("openid"));			
+			reqParams.put("withdrawing", reqData.get("withdrawing"));
 			
 			int rtCode = h5PlateService.withdrawBalance(reqParams);		
 			if(rtCode == -4){
@@ -245,8 +246,8 @@ public class H5PlateAction {
 		try {
 			JSONObject reqParams = new JSONObject();			
 			reqParams.put("openId", request.getSession().getAttribute("openid"));			
-			
 			JSONObject data = h5PlateService.queryTeacherBalanceing(reqParams);
+			//JSONObject data = h5PlateService.queryTeacherBalanceing(reqParams);
 			
 			result.put("data", data);
 			code = 0;

@@ -46,6 +46,17 @@
 			<value>computeBalanceProfit</value>
 		</property>
 	</bean>
+	
+	<bean id="MyTask4" class="com.xiaoyi.teacher.service.impl.H5PlateServiceImpl" />
+	<bean id="MyTaskMethod4"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="MyTask4" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>withdrawLessonIncomeToBalance</value>
+		</property>
+	</bean>
 
 	<!-- ======================== 调度触发器 ======================== -->
 	<!-- 更新提现状态 -->
@@ -66,11 +77,18 @@
 		<property name="cronExpression" value="0 0 1 15 * ?"></property>
 	</bean>
 	
+	<!-- 每天凌晨12:20点更新余额收益-->
+	<bean id="DailyTaskCronTriggerBean4"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="MyTaskMethod4" />	
+		<property name="cronExpression" value="1 20 0 * * ?"></property>
+	</bean>
+
 	<!-- 每天凌晨1点更新余额收益-->
 	<bean id="DailyTaskCronTriggerBean3"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod3" />	
-		<property name="cronExpression" value="1 0 0 * * ?"></property>
+		<property name="cronExpression" value="0 6 14 * * ?"></property>
 	</bean>
 
 	<!-- ======================== 调度工厂 ======================== -->
@@ -80,6 +98,8 @@
 			<list>
 				<ref bean="DailyTaskCronTriggerBean" />
 				<ref bean="DailyTaskCronTriggerBean2" />
+				<ref bean="DailyTaskCronTriggerBean3" />
+				<ref bean="DailyTaskCronTriggerBean4" />
 			</list>
 		</property>
 		<property name="quartzProperties"> 
@@ -89,6 +109,5 @@
 			</props>
 		</property>
 	</bean>
-
 
 </beans>
