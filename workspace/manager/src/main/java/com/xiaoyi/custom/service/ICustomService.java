@@ -36,7 +36,7 @@ public interface ICustomService {
 	/**
 	 * 获取学情分析报告
 	 */
-	JSONObject queryStuTeachingReport(JSONObject params);
+	List<JSONObject> queryStuTeachingReport(JSONObject params);
 	
 	/**
 	 * 家长投诉

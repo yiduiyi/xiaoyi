@@ -506,167 +506,198 @@ public class CumstomServiceImpl implements ICustomService{
 	}
 
 	@Override
-	public JSONObject queryStuTeachingReport(JSONObject params) {
+	public List<JSONObject> queryStuTeachingReport(JSONObject params) {
 		String teachingId = params.getString("teachingId");
 		String queryDate = params.getString("queryDate");
-		String lessonTradeId = params.getString("lessonTradeId");
+		String questLessonTradeId = params.getString("lessonTradeId");
 		String openId = params.getString("openId");
 		
-		JSONObject data = new JSONObject();
+		List<JSONObject> datas = new ArrayList<JSONObject>();
 		try {
-			//根据openId获取家长登录信息
+			StringBuffer dateTime = new StringBuffer();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+			Calendar cal = Calendar.getInstance();
+			if(StringUtils.isEmpty(queryDate)){
+				cal.setTime(new Date());
+				cal.add(Calendar.MONTH, -1);
+				dateTime.append(sdf.format(cal.getTime()));								
+			}else{
+				String yearMon[] = queryDate.split("-");
+				if(yearMon==null || yearMon.length<2 || yearMon[0]==null || yearMon[1]==null){
+					cal.setTime(new Date());
+					cal.add(Calendar.MONTH, -1);
+					dateTime.append(sdf.format(cal.getTime()));	
+				}else{								
+					Integer year = Integer.parseInt(yearMon[0]);
+					Integer month = Integer.parseInt(yearMon[1]);
+					if("1".equals(yearMon[1]) ||"1".equals(yearMon[1])){
+						year -=1;
+						month = 12;
+					}else{
+						month -= 1;
+					}
+					
+					dateTime.append(year);
+					if(yearMon[1]!=null && !yearMon[1].startsWith("0")){
+						dateTime.append("0");
+					}
+					dateTime.append(month);
+				}
+			}		
+			
+			
+			List<String> lessonTradeIdList = new ArrayList<String>();
+			//根据openId获取家长登录信息(非点击模板消息的方式)
 			if(StringUtils.isNotEmpty(openId)){
 				Parents parent = parentDao.selectByOpenId(openId);
 				
 				Map<String,Object> reqData = new HashMap<String,Object>();
-				lessonTradeDao.selectByParams(reqData);
+				reqData.put("parentId", parent.getParentid());
+				reqData.put("queryMonth", dateTime.toString());
+				List<LessonTrade> lessonTradeList = lessonTradeDao.selectByParams(reqData);
+				if(!CollectionUtils.isEmpty(lessonTradeList)){
+					for(LessonTrade record : lessonTradeList){
+						lessonTradeIdList.add(record.getLessontradeid());
+					}
+				}
+			}else{
+				lessonTradeIdList.add(questLessonTradeId);
 			}
 			
-			
-			if(/*StringUtils.isNotEmpty(teachingId)*/true){
-				Map<String,Object> reqData = new HashMap<String,Object>();
-								
-				reqData.put("teachingId", teachingId);
-				
-				//(默认)提现上个月的课时	
-				boolean isConfirmed = false;
-				StringBuffer dateTime = new StringBuffer();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
-				Calendar cal = Calendar.getInstance();
-				if(StringUtils.isEmpty(queryDate)){
-					cal.setTime(new Date());
-					cal.add(Calendar.MONTH, -1);
-					dateTime.append(sdf.format(cal.getTime()));								
-				}else{
-					//Calendar cal = Calendar.getInstance();
-					//cal.setTime(new Date(queryDate));
-					Date d2 = sdf.parse(queryDate);
-					cal.setTime(d2);
-					dateTime.append(sdf.format(cal.getTime()));
-					//isConfirmed = true;
-				}				
-
-				logger.info("teachingId:"+teachingId);
-				logger.info("month:"+params.get("month"));
-				logger.info("lessonTradeId:"+lessonTradeId);
-				
-				reqData.put("queryDate", dateTime.toString()/*cal.getTime()*/);
-				//reqData.put("queryDate", params.get("month"));
-				reqData.put("lessonTradeId", lessonTradeId);
-				
-				
-				List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqData);
-				if(!CollectionUtils.isEmpty(teachingRecords)){
+			for(String lessonTradeId : lessonTradeIdList){
+				JSONObject data = new JSONObject();
+				if(/*StringUtils.isNotEmpty(teachingId)*/true){
+					Map<String,Object> reqData = new HashMap<String,Object>();
+									
+					reqData.put("teachingId", teachingId);
 					
-					//获取上课日期、时间段及上课课时数
-					JSONArray teachingDetails = new JSONArray();
-					Float totalCheckLessons = 0f;
-					Iterator<TeachingRecord> tRecordsIter = teachingRecords.iterator();
-					TeachingRecord tRecord = null;
-					SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-					while(tRecordsIter.hasNext()){
-						tRecord = tRecordsIter.next();
-						if(null==tRecord){	//去空
-							tRecordsIter.remove();
-							continue;
-						}
-						//tRecord = tRecordsIter.next();
-						JSONObject teachingDetail = new JSONObject();
-						if(null!=tRecord.getTeachingdate()){
-							teachingDetail.put("teachingDate", format.format(tRecord.getTeachingdate()));
-						}
-						StringBuffer sb = new StringBuffer();
-						sb.append(tRecord.getStarttime());
-						sb.append(" ~ ");
-						sb.append(tRecord.getEndtime());
-						
-						teachingDetail.put("teachingTime", sb.toString());
-						teachingDetail.put("teachingNum", tRecord.getTeachingnum());
-						
-						//月提现课时总数
-						if(tRecord.getTeachingnum()!=null){
-							totalCheckLessons += tRecord.getTeachingnum();
-						}
-						
-						teachingDetails.add(teachingDetail);
-					}
-					data.put("teachingDetails", teachingDetails);
-					data.put("totalCheckLessons", totalCheckLessons);
+					//(默认)提现上个月的课时	
+					boolean isConfirmed = false;
+							
+	
+					logger.info("teachingId:"+teachingId);
+					logger.info("month:"+params.get("month"));
+					logger.info("lessonTradeId:"+lessonTradeId);
 					
-					//补充其他信息				
-					if(null!=tRecord){
-						//获取老师姓名	
-						String teacherId = tRecord.getTeacherid();
-						if(StringUtils.isNotBlank(teacherId)){
-							Teacher teacher = null;
+					//reqData.put("queryDate", dateTime.toString()/*cal.getTime()*/);
+					//reqData.put("queryDate", params.get("month"));
+					reqData.put("lessonTradeId", lessonTradeId);
+					
+					
+					List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqData);
+					if(!CollectionUtils.isEmpty(teachingRecords)){
+						
+						//获取上课日期、时间段及上课课时数
+						JSONArray teachingDetails = new JSONArray();
+						Float totalCheckLessons = 0f;
+						Iterator<TeachingRecord> tRecordsIter = teachingRecords.iterator();
+						TeachingRecord tRecord = null;
+						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+						while(tRecordsIter.hasNext()){
+							tRecord = tRecordsIter.next();
+							if(null==tRecord){	//去空
+								tRecordsIter.remove();
+								continue;
+							}
+							//tRecord = tRecordsIter.next();
+							JSONObject teachingDetail = new JSONObject();
+							if(null!=tRecord.getTeachingdate()){
+								teachingDetail.put("teachingDate", format.format(tRecord.getTeachingdate()));
+							}
+							StringBuffer sb = new StringBuffer();
+							sb.append(tRecord.getStarttime());
+							sb.append(" ~ ");
+							sb.append(tRecord.getEndtime());
+							
+							teachingDetail.put("teachingTime", sb.toString());
+							teachingDetail.put("teachingNum", tRecord.getTeachingnum());
+							
+							//月提现课时总数
+							if(tRecord.getTeachingnum()!=null){
+								totalCheckLessons += tRecord.getTeachingnum();
+							}
+							
+							teachingDetails.add(teachingDetail);
+						}
+						data.put("teachingDetails", teachingDetails);
+						data.put("totalCheckLessons", totalCheckLessons);
+						
+						//补充其他信息				
+						if(null!=tRecord){
+							//获取老师姓名	
+							String teacherId = tRecord.getTeacherid();
+							if(StringUtils.isNotBlank(teacherId)){
+								Teacher teacher = null;
+								try {
+									logger.info("查询老师：{teacherId:"+teacherId+"}");
+									teacher = teacherDao.selectByPrimaryKey(teacherId);								
+								} catch (Exception e) {
+									logger.info("查询老师出错！");
+									logger.error(e.getMessage());
+								}
+								if(null!=teacher){
+										data.put("teacherName", teacher.getTeachername());
+										data.put("teacherId", teacherId);
+									}
+								}
+							//关联的课时交易Id
+							data.put("lessonTradeId", tRecord.getLessonTradeId());
+							
 							try {
-								logger.info("查询老师：{teacherId:"+teacherId+"}");
-								teacher = teacherDao.selectByPrimaryKey(teacherId);								
+								if(null!=tRecord.getLessonTradeId()){
+									logger.info("查询建议：lessonTradeId", tRecord.getLessonTradeId());
+									Suggestions suggestions = suggestionDao.selectByPrimaryKey(tRecord.getLessonTradeId());
+									logger.info("convert string to array...");
+									try {
+										
+										logger.info("parse suggetions string to array[original]:"+suggestions.getSuggestions());
+										//logger.info("parsed array:"+JSONObject.parseArray(suggestions.getSuggestions()));
+										StringBuffer tt = new StringBuffer();
+								    	tt.append(suggestions.getSuggestions());
+								    	String ttString = tt.subSequence(1, tt.length()-1).toString();
+								    	//System.out.println(ttString);							    	
+								    	
+										data.put("suggestions", Arrays.asList(ttString.split(",")));
+										
+										tt.delete(0, tt.length());
+										tt.append(suggestions.getSituations());
+										ttString = tt.subSequence(1, tt.length()-1).toString();
+										data.put("situations", Arrays.asList(ttString.split(",")));									
+									} catch (Exception e) {
+										logger.info("parse Suggestions erro!");
+										e.printStackTrace();
+									}
+									
+									//查询订单当前状态
+									try {
+										LessonTrade lessonTrade = lessonTradeDao.selectByPrimaryKey(tRecord.getLessonTradeId());						
+										if(null!=lessonTrade){
+											Byte status = lessonTrade.getStatus();
+											if(null!=status && (status.intValue() == 0 || status.intValue()==2)){	//已经确认
+												isConfirmed = true;
+												status = 2;
+											}else{
+												status = 1;
+											}
+											//已经确认-补充家长评价
+											if(isConfirmed){
+												data.put("status", status);
+												data.put("notes", lessonTrade.getNotes());
+												data.put("feedback", lessonTrade.getFeedback());
+											}
+										}
+									} catch (Exception e) {
+										logger.info("查询当前订单状态出错！");
+										e.printStackTrace();
+									}	
+								}
 							} catch (Exception e) {
-								logger.info("查询老师出错！");
+								logger.info("查询建议出错！");
 								logger.error(e.getMessage());
 							}
-							if(null!=teacher){
-									data.put("teacherName", teacher.getTeachername());
-									data.put("teacherId", teacherId);
-								}
-							}
-						//关联的课时交易Id
-						data.put("lessonTradeId", tRecord.getLessonTradeId());
-						
-						try {
-							if(null!=tRecord.getLessonTradeId()){
-								logger.info("查询建议：lessonTradeId", tRecord.getLessonTradeId());
-								Suggestions suggestions = suggestionDao.selectByPrimaryKey(tRecord.getLessonTradeId());
-								logger.info("convert string to array...");
-								try {
-									
-									logger.info("parse suggetions string to array[original]:"+suggestions.getSuggestions());
-									//logger.info("parsed array:"+JSONObject.parseArray(suggestions.getSuggestions()));
-									StringBuffer tt = new StringBuffer();
-							    	tt.append(suggestions.getSuggestions());
-							    	String ttString = tt.subSequence(1, tt.length()-1).toString();
-							    	//System.out.println(ttString);							    	
-							    	
-									data.put("suggestions", Arrays.asList(ttString.split(",")));
-									
-									tt.delete(0, tt.length());
-									tt.append(suggestions.getSituations());
-									ttString = tt.subSequence(1, tt.length()-1).toString();
-									data.put("situations", Arrays.asList(ttString.split(",")));									
-								} catch (Exception e) {
-									logger.info("parse Suggestions erro!");
-									e.printStackTrace();
-								}
-								
-								//查询订单当前状态
-								try {
-									LessonTrade lessonTrade = lessonTradeDao.selectByPrimaryKey(tRecord.getLessonTradeId());						
-									if(null!=lessonTrade){
-										Byte status = lessonTrade.getStatus();
-										if(null!=status && (status.intValue() == 0 || status.intValue()==2)){	//已经确认
-											isConfirmed = true;
-											status = 2;
-										}else{
-											status = 1;
-										}
-										//已经确认-补充家长评价
-										if(isConfirmed){
-											data.put("status", status);
-											data.put("notes", lessonTrade.getNotes());
-											data.put("feedback", lessonTrade.getFeedback());
-										}
-									}
-								} catch (Exception e) {
-									logger.info("查询当前订单状态出错！");
-									e.printStackTrace();
-								}	
-							}
-						} catch (Exception e) {
-							logger.info("查询建议出错！");
-							logger.error(e.getMessage());
+							datas.add(data);
+							//return data;
 						}
-						return data;
 					}
 				}
 			}
@@ -674,7 +705,7 @@ public class CumstomServiceImpl implements ICustomService{
 			e.printStackTrace();
 			logger.info("内部错误！");
 		}
-		return data;
+		return datas;
 	}
 	
 	/**

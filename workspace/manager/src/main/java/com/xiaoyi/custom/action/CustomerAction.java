@@ -1,6 +1,7 @@
 package com.xiaoyi.custom.action;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -215,12 +216,14 @@ public class CustomerAction {
 				openid = weixinOauth2Token.getOpenId();
 				request.getSession().setAttribute("openid", openid);
 				logger.info("确认订单模块-查找 openid====>" + openid);
+							
 				reqData.put("openId", openid);
 			}
 		}
 		
 		try {
-			JSONObject data = customService.queryStuTeachingReport(reqData);
+			reqData.put("openId", "oVbXbw_Fz5o2-VHc5eIW5WY1JG70");
+			List<JSONObject> data = customService.queryStuTeachingReport(reqData);
 			if (null != data) {
 				result.put("data", data);
 				rtCode = RtConstants.SUCCESS;
