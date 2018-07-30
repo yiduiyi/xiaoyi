@@ -510,9 +510,19 @@ public class CumstomServiceImpl implements ICustomService{
 		String teachingId = params.getString("teachingId");
 		String queryDate = params.getString("queryDate");
 		String lessonTradeId = params.getString("lessonTradeId");
+		String openId = params.getString("openId");
 		
 		JSONObject data = new JSONObject();
 		try {
+			//根据openId获取家长登录信息
+			if(StringUtils.isNotEmpty(openId)){
+				Parents parent = parentDao.selectByOpenId(openId);
+				
+				Map<String,Object> reqData = new HashMap<String,Object>();
+				lessonTradeDao.selectByParams(reqData);
+			}
+			
+			
 			if(/*StringUtils.isNotEmpty(teachingId)*/true){
 				Map<String,Object> reqData = new HashMap<String,Object>();
 								

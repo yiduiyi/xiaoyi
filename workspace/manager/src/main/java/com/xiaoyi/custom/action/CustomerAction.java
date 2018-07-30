@@ -200,9 +200,25 @@ public class CustomerAction {
 		logger.info("queryMonth:" + queryMonth);
 		
 		logger.info("lessonTradeId:"+reqData.getString("lessonTradeId"));
-		// String openid = (String) request.getSession().getAttribute("openid");
-		// logger.info("获取学情报告-openId:"+openid);
 
+		//获取openId
+		String openid = (String) request.getSession().getAttribute("openid");
+		logger.info("获取学情报告-openId:" + openid);
+		if (null == openid && reqData.getString("lessonTradeId")==null) { // 从其他界面直接跳转的
+			logger.info("查询openId：");
+			request.setCharacterEncoding("utf-8");
+			request.setCharacterEncoding("utf-8");
+			String code = request.getParameter("code");
+			if (code != null && !"authdeny".equals(code)) {
+				WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID,
+						WeiXinConfig.SECRET, code);
+				openid = weixinOauth2Token.getOpenId();
+				request.getSession().setAttribute("openid", openid);
+				logger.info("确认订单模块-查找 openid====>" + openid);
+				reqData.put("openId", openid);
+			}
+		}
+		
 		try {
 			JSONObject data = customService.queryStuTeachingReport(reqData);
 			if (null != data) {
