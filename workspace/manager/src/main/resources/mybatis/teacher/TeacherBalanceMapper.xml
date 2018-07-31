@@ -33,7 +33,7 @@
     <foreach collection="list" separator="," item="item">
     	(#{item.teacherid}, #{item.balanceAccount}, #{item.totalBalanceProfit}, #{item.balanceFrom}, #{item.balanceProfitLeft})
     </foreach>
-     on duplicate key update balance_account=values(balance_account),
+     on duplicate key update balance_account=values(balance_account),total_balance_profit=values(total_balance_profit),
      	balance_profit_left=values(balance_profit_left)
   </insert>
   
