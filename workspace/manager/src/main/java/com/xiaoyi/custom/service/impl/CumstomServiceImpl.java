@@ -530,12 +530,6 @@ public class CumstomServiceImpl implements ICustomService{
 				}else{								
 					Integer year = Integer.parseInt(yearMon[0]);
 					Integer month = Integer.parseInt(yearMon[1]);
-					if("1".equals(yearMon[1]) ||"1".equals(yearMon[1])){
-						year -=1;
-						month = 12;
-					}else{
-						month -= 1;
-					}
 					
 					dateTime.append(year);
 					if(yearMon[1]!=null && !yearMon[1].startsWith("0")){

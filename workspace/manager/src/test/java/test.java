@@ -84,7 +84,10 @@ public class test {
         }
 
 		
-        System.out.println(resp);*/
+        System.out.println(resp);*/Calendar   cal1   =   Calendar.getInstance();
+        cal1.add(Calendar.DATE,   -7);
+        String yesterdays = new SimpleDateFormat("yyyy-MM-dd").format(cal1.getTime());
+        System.out.println(yesterdays);	
     	Date d2 = new SimpleDateFormat("yyyy-MM").parse("2016-5-3");
     	
     	

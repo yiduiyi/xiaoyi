@@ -206,6 +206,20 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 			if(teachingWay!=0 && teachingWay!=1){	//授课方式
 				return -2;
 			}
+			
+			//年级转换
+			switch(updatedGradeId){
+			case 11:case 12:case 13: case 14: case 15:
+				updatedGradeId = 11;
+				break;
+			case 21:case 22:
+				updatedGradeId=21;
+				break;
+			case 31:case 32:
+				updatedGradeId=31;
+				break;
+			}			
+			
 			boolean gradeValide = false;
 			for(Grade g : Grade.values()){	//年级设置
 				if(g.getValue() == updatedGradeId){
@@ -238,7 +252,7 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 				
 				Orders oldOrder = orderList.get(0);
 				if(oldOrder==null){
-					logger.info("插叙不到对应的原订单！");
+					logger.info("查询不到对应的原订单！");
 					return -4;
 				}
 				
@@ -304,8 +318,8 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 						record.setOrderid(UUID.randomUUID().toString());
 						record.setParentid(parentId);
 						record.setMemberid(studentId);
-						record.setCreatetime(new Date());
-						record.setOrderType(3);
+						record.setCreatetime(oldOrder.getCreatetime());
+						record.setOrderType(2);
 						record.setHasBook(oldOrder.getHasBook());
 						record.setLessontype(newLessonType);
 						record.setPurchasenum(updatedPurchaseNum);

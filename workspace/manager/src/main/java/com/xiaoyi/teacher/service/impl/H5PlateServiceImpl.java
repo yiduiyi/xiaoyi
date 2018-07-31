@@ -330,11 +330,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		
 		//判断余额是否大于提现余额
 		TeacherBalance teacherBalance =	balanceDao.selectByPrimaryKey(teacherId);
-		
+
 		if(null==teacherBalance){
 			logger.info("查询账户为空！");
 			throw new CommonRunException(-2, "查询账户为空！");
 		}else{
+			logger.info("更新前课时来源："+teacherBalance.getBalanceFrom());
 			 if(teacherBalance.getTotalBalanceProfit()==null){
 				 teacherBalance.setTotalBalanceProfit(0f);
 			 }
@@ -360,12 +361,23 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			String lessonTradeIds = teacherBalance.getBalanceFrom();
 			logger.info("lessonTradeIds:"+lessonTradeIds);
 			if(!StringUtils.isEmpty(lessonTradeIds)){
-			//	List<String> lessonTradeIds = lessonTradeIds.
+				
 				String[] lessonTradeArray = lessonTradeIds.split(",");
-				List<String> lessonTradeIdList = Arrays.asList(lessonTradeArray);				
+				List<String> lessonTradeIdList = new ArrayList<String>();
+
+				//避免unmodified map 错误！
+				List<String>tempList = Arrays.asList(lessonTradeArray);				
+				for(String lessonTradeId : tempList){
+					lessonTradeIdList.add(lessonTradeId);
+				}
+				
 				List<LessonTrade> lessonTradeList = lessonTradeDao.selectByLessonTradeIds(lessonTradeIdList);
+				logger.info("根据lessonTradeids查询提现列表【size】："+lessonTradeList);
 				
 				float tobeWithdrawed = withdrawing;
+				if(tobeWithdrawed < 1.0f){	//微信支付必须大于等于1元
+					throw new CommonRunException(-3, "提现金额必须大于1元！");
+				}
 				for(LessonTrade record : lessonTradeList){
 					if(record.getActualPay() == null){
 						record.setActualPay(0f);
@@ -375,6 +387,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					}
 					//计算剩余
 					float remain = record.getActualPay() - record.getWithdrawed();
+					
+					logger.info("lessonTradeId:"+record.getLessontradeid());
+					logger.info("提现金额剩余："+remain);
+					
 					if(remain>withdrawing){
 						record.setWithdrawed(record.getWithdrawed() + withdrawing);		
 						tobeWithdrawed = 0;
@@ -388,7 +404,13 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					}					
 					
 					//更新课时提现状态
-					lessonTradeDao.updateByPrimaryKeySelective(record);
+					logger.info("更新课时提现金额及状态...");
+					try {						
+						lessonTradeDao.updateByPrimaryKeySelective(record);
+					} catch (Exception e) {
+						logger.error("更新课时提现金额及状态失败！");
+						throw new CommonRunException(-1, "更新课时提现金额及状态失败！");
+					}
 					
 					if(tobeWithdrawed <= 0){
 						break;
@@ -404,10 +426,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					}
 				}
 				teacherBalance.setBalanceFrom(sb.substring(0,sb.length()-1));
+				logger.info("更新后课时来源："+teacherBalance.getBalanceFrom());
 			}
 		} catch (Exception e) {
-			logger.error("更新老师课时表出错！");
-			throw new CommonRunException(-4, "更新老师课时表出错！！");
+			logger.error("内部错误！");
+			throw new CommonRunException(-4, e.getMessage());
 		}
 		
 		//付款
@@ -600,9 +623,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		//金融版version2.0（加入余额功能）
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("status", 2);
-		//计算昨天日期
+		//计算七点前的日期
 		Calendar   cal   =   Calendar.getInstance();
-        cal.add(Calendar.DATE,   -1);
+        cal.add(Calendar.DATE,   -7);
         String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
         System.out.println(yesterday);		
 		params.put("queryDate", yesterday);

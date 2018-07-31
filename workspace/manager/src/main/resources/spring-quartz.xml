@@ -59,14 +59,14 @@
 	</bean>
 
 	<!-- ======================== 调度触发器 ======================== -->
-	<!-- 更新提现状态 -->
+	<!-- 更新提现状态(自动确认) -->
 	<bean id="DailyTaskCronTriggerBean"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod" />
 		<!-- 每天一点出发一次 -->
 		<!-- <property name="cronExpression" value="0 0 1 * * ?" /> -->
 		<!-- 每个月10-15号凌晨1点触发 -->
-		<property name="cronExpression" value="0 0 14 6-11 * ?"></property>
+		<property name="cronExpression" value="0 0 14 1-10 * ?"></property>
 	</bean>
 
 	<!-- 每月十五号发送课时不足提醒消息 -->
@@ -77,18 +77,18 @@
 		<property name="cronExpression" value="0 0 1 15 * ?"></property>
 	</bean>
 	
-	<!-- 每天凌晨12:20点更新余额收益-->
+	<!-- 每月7-17号凌晨12:20点提现课时费到余额-->
 	<bean id="DailyTaskCronTriggerBean4"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod4" />	
-		<property name="cronExpression" value="1 20 0 * * ?"></property>
+		<property name="cronExpression" value="1 20 0 7-17 * ?"></property>
 	</bean>
 
 	<!-- 每天凌晨1点更新余额收益-->
 	<bean id="DailyTaskCronTriggerBean3"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod3" />	
-		<property name="cronExpression" value="0 6 14 * * ?"></property>
+		<property name="cronExpression" value="0 2 0 * * ?"></property>
 	</bean>
 
 	<!-- ======================== 调度工厂 ======================== -->

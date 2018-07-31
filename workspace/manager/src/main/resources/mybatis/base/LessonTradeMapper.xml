@@ -26,6 +26,19 @@
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
   </select>
   
+  <select id="selectByLessonTradeIds" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select 
+    <include refid="Base_Column_List" />
+    from lessontrade
+    where 
+    lessonTradeId IN
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+    	#{item}
+    </foreach>
+    AND status = 2
+  </select>
+  
+  
   <!-- 查询学情报告 -->
   <select id="selectByParams" resultMap="BaseResultMap" parameterType="hashmap" >
     select 
@@ -33,7 +46,10 @@
     from lessontrade
     <where>
     	<if test="queryDate!=null">
-    		applyTime = #{queryDate}
+    		DATE_FORMAT(applyTime,"%Y-%m-%d") = #{queryDate}
+    	</if>
+    	<if test="queryMonth!=null">
+    		AND DATE_FORMAT(applyTime,"%Y%m") = #{queryMonth}
     	</if>
     	<if test="parentId!=null">
     		AND parentId = #{parentId}
@@ -177,7 +193,10 @@
        	frozenLessons = #{frozenLessons},
       </if>
       <if test="actualPay!=null">
-      	actualPay = #{actualPay}
+      	actualPay = #{actualPay},
+      </if>
+      <if test="withdrawed!=null">
+      	withdrawed = #{withdrawed}
       </if>
     </set>
     where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
