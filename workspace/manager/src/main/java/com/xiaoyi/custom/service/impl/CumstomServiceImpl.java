@@ -525,7 +525,7 @@ public class CumstomServiceImpl implements ICustomService{
 				String yearMon[] = queryDate.split("-");
 				if(yearMon==null || yearMon.length<2 || yearMon[0]==null || yearMon[1]==null){
 					cal.setTime(new Date());
-					cal.add(Calendar.MONTH, -1);
+					//cal.add(Calendar.MONTH, -1);
 					dateTime.append(sdf.format(cal.getTime()));	
 				}else{								
 					Integer year = Integer.parseInt(yearMon[0]);

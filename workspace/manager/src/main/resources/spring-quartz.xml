@@ -88,7 +88,8 @@
 	<bean id="DailyTaskCronTriggerBean3"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod3" />	
-		<property name="cronExpression" value="0 2 0 * * ?"></property>
+<!-- 		<property name="cronExpression" value="0 2 0 * * ?"></property> -->
+			<property name="cronExpression" value="0 40 23 * * ?"></property>
 	</bean>
 
 	<!-- ======================== 调度工厂 ======================== -->
