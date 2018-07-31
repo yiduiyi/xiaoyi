@@ -27,29 +27,14 @@
   
   <insert id="updateAllAccountBalanceProfits" parameterType="java.util.List">
   	insert into teacher_balance 
-  	<trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="teacherid != null" >
-        teacherId,
-      </if>
-      <if test="balanceAccount != null" >
-        balance_account,
-      </if>
-      <if test="totalBalanceProfit != null" >
-        total_balance_profit,
-      </if>
-      <if test="balanceFrom != null" >
-        balance_from,
-      </if>
-      <if test="balanceProfitLeft != null" >
-        balance_profit_left,
-      </if>
-    </trim>
+	(teacherId, balance_account, total_balance_profit, 
+      balance_from, balance_profit_left)
     values 
-    <foreach collection="list" close=")" open="(" separator="," item="item">
-    	(#{item.teacherid,#{item.balanceAccount},#{item.totalBalanceProfit},#{item.balance_from},#{item.balance_profit_left}})
+    <foreach collection="list" separator="," item="item">
+    	(#{item.teacherid}, #{item.balanceAccount}, #{item.totalBalanceProfit}, #{item.balanceFrom}, #{item.balanceProfitLeft})
     </foreach>
-     on duplicate key update totalBalanceProfit=values(totalBalanceProfit),
-     	totalBalanceProfit=values(totalBalanceProfit)
+     on duplicate key update balance_account=values(balance_account),
+     	balance_profit_left=values(balance_profit_left)
   </insert>
   
   
