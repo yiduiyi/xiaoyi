@@ -197,9 +197,8 @@ public class CustomerAction {
 		String teachingId = reqData.getString("teachingId");
 		logger.info("teachingId:" + teachingId);
 
-		Integer queryMonth = reqData.getInteger("month");
-		logger.info("queryMonth:" + queryMonth);
-		
+		String queryDate = reqData.getString("queryDate");
+		logger.info("queryMonth:" + queryDate);
 		logger.info("lessonTradeId:"+reqData.getString("lessonTradeId"));
 
 		//获取openId
@@ -217,12 +216,12 @@ public class CustomerAction {
 				request.getSession().setAttribute("openid", openid);
 				logger.info("确认订单模块-查找 openid====>" + openid);
 							
-				reqData.put("openId", openid);
 			}
 		}
+		reqData.put("openId", openid);
 		
 		try {
-			reqData.put("openId", "oVbXbw_Fz5o2-VHc5eIW5WY1JG70");
+			//reqData.put("openId", "oVbXbw_Fz5o2-VHc5eIW5WY1JG70");
 			List<JSONObject> data = customService.queryStuTeachingReport(reqData);
 			if (null != data) {
 				result.put("data", data);

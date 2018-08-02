@@ -74,7 +74,6 @@ public class LoginAction {
 				setReturnMsg(result, loginStatus.getCode(), loginStatus.toString());
 			}
 			if(null!=user){
-				user.setPassword(null);
 				user.setLoginstatus(false);
 				if(0<=loginService.userLogout(user)){
 					rtCode = RtConstants.SUCCESS;
@@ -101,6 +100,13 @@ public class LoginAction {
 		try {			
 			int rs = loginService.changePassword(reqData);
 			if(rs>=0){
+				HttpSession session = request.getSession();
+				//设置session回话过期，更新用户登录状态
+				if(null!=session){
+					User user = (User) session.getAttribute("userBean");
+					user.setPassword(reqData.getString("newPassword"));
+					session.setAttribute("user", user);
+				}
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {			

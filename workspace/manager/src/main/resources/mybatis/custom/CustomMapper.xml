@@ -47,7 +47,7 @@
 			teachingId=#{teachingId}
 		</if>
 		<if test="queryDate!=null">
-			AND date_format(teachingDate,'%Y%m')=#{queryDate}
+			AND date_format(teachingDate,'%Y%m')=#{queryDate} 
 		</if> 
 	 	<if test="lessonTradeId!=null">
 	 		AND lessonTradeId = #{lessonTradeId}

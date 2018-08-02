@@ -542,12 +542,13 @@ public class CumstomServiceImpl implements ICustomService{
 			
 			List<String> lessonTradeIdList = new ArrayList<String>();
 			//根据openId获取家长登录信息(非点击模板消息的方式)
-			if(StringUtils.isNotEmpty(openId)){
+			if(StringUtils.isNotEmpty(openId) && StringUtils.isEmpty(questLessonTradeId)){
 				Parents parent = parentDao.selectByOpenId(openId);
-				
 				Map<String,Object> reqData = new HashMap<String,Object>();
 				reqData.put("parentId", parent.getParentid());
 				reqData.put("queryMonth", dateTime.toString());
+
+				logger.info("查询lessonTradeList[params]:"+reqData.toString());
 				List<LessonTrade> lessonTradeList = lessonTradeDao.selectByParams(reqData);
 				if(!CollectionUtils.isEmpty(lessonTradeList)){
 					for(LessonTrade record : lessonTradeList){
@@ -559,6 +560,10 @@ public class CumstomServiceImpl implements ICustomService{
 			}
 			
 			for(String lessonTradeId : lessonTradeIdList){
+				//去空
+				if(StringUtils.isEmpty(lessonTradeId)){
+					continue;
+				}
 				JSONObject data = new JSONObject();
 				if(/*StringUtils.isNotEmpty(teachingId)*/true){
 					Map<String,Object> reqData = new HashMap<String,Object>();
@@ -569,14 +574,10 @@ public class CumstomServiceImpl implements ICustomService{
 					boolean isConfirmed = false;
 							
 	
-					logger.info("teachingId:"+teachingId);
-					logger.info("month:"+params.get("month"));
+					logger.info("teachingId:"+teachingId);					
 					logger.info("lessonTradeId:"+lessonTradeId);
 					
-					//reqData.put("queryDate", dateTime.toString()/*cal.getTime()*/);
-					//reqData.put("queryDate", params.get("month"));
-					reqData.put("lessonTradeId", lessonTradeId);
-					
+					reqData.put("lessonTradeId", lessonTradeId);					
 					
 					List<TeachingRecord> teachingRecords = customDao.selectTeachingRecordsByTeachingId(reqData);
 					if(!CollectionUtils.isEmpty(teachingRecords)){
@@ -664,18 +665,20 @@ public class CumstomServiceImpl implements ICustomService{
 									
 									//查询订单当前状态
 									try {
+										logger.info("查询lessonTrade状态【lessonTradeId】："+tRecord.getLessonTradeId());
 										LessonTrade lessonTrade = lessonTradeDao.selectByPrimaryKey(tRecord.getLessonTradeId());						
+										Byte status = 1;	//1: 家长未确认, 2: 家长已确认
 										if(null!=lessonTrade){
-											Byte status = lessonTrade.getStatus();
-											if(null!=status && (status.intValue() == 0 || status.intValue()==2)){	//已经确认
+											status = lessonTrade.getStatus();
+											
+											logger.info("status:"+status);
+											if(null!=status && (status!=1)){	//已经确认
 												isConfirmed = true;
 												status = 2;
-											}else{
-												status = 1;
 											}
+											data.put("status", status);
 											//已经确认-补充家长评价
 											if(isConfirmed){
-												data.put("status", status);
 												data.put("notes", lessonTrade.getNotes());
 												data.put("feedback", lessonTrade.getFeedback());
 											}
