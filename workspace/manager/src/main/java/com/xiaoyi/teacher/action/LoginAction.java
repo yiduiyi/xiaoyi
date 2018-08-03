@@ -100,7 +100,11 @@ public class LoginAction {
 		
 		try {			
 			int rs = loginService.changePassword(reqData);
+			HttpSession session = request.getSession();
+			User user = (User) session.getAttribute("userBean");			
+			
 			if(rs>=0){
+				user.setPassword(reqData.getString("newPassword"));
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {			
