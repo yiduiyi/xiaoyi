@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.manager.service.IOrderService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
@@ -56,19 +57,22 @@ public class OrderAction {
 			,HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
+		int code = 0;
+		String msg = "返回成功！";
 		
 		try {			
+			
 			List<JSONObject> data = orderService.queryMOrders(reqData);
 			//int rt = orderService.addOrder(reqData);
-			result.put("data", data);
-			rtCode = RtConstants.SUCCESS;
-			
+			result.put("data", data);						
 		} catch (Exception e) {			
+			CommonRunException exception = (CommonRunException)e;
+			code = exception.getCode();
+			msg = exception.getMessage();
 			e.printStackTrace();
 		}
 		
-		setReturnMsg(result, rtCode.getCode(), rtCode.name());		
+		setReturnMsg(result, code, msg);		
 		return result;
 	}
 	
@@ -241,6 +245,8 @@ public class OrderAction {
 		try {			
 			List<JSONObject> data = orderService.queryMTeachings(reqData);
 			if(null!=data){
+				
+				
 				result.put("data", data);
 				
 				code = 0;

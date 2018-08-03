@@ -46,10 +46,10 @@
     from lessontrade
     <where>
     	<if test="queryDate!=null">
-    		DATE_FORMAT(applyTime,"%Y-%m-%d") = #{queryDate}
+    		DATE_FORMAT(applyTime,"%Y-%c-%d") = #{queryDate}
     	</if>
     	<if test="queryMonth!=null">
-    		AND DATE_FORMAT(applyTime,"%Y%m") = #{queryMonth}
+    		AND DATE_FORMAT(applyTime,"%Y%c") = #{queryMonth}
     	</if>
     	<if test="parentId!=null">
     		AND parentId = #{parentId}

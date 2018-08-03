@@ -102,8 +102,8 @@
 	</select>
 	
 	<!-- 获取当月老师授课记录 -->
-	<select id="selectMTeachingsByParams" resultType="hashmap" parameterType="hashmap">
-		SELECT DATE_FORMAT(teachingDate,'%Y年%m月') months, SUM(teachingNum) monthOfLessons, b.feedback
+	<select id="selectMTeachingsByParams" resultType="com.alibaba.fastjson.JSONObject" parameterType="com.alibaba.fastjson.JSONObject">
+		SELECT DATE_FORMAT(teachingDate,'%Y年%m月') months, SUM(teachingNum) monthOfLessons, b.feedback, b.status
 		FROM teachingrecord a LEFT JOIN lessontrade b ON a.lessonTradeId=b.lessonTradeId
 		WHERE a.orderId=#{orderId} AND a.teacherId=#{teacherId}
 		GROUP BY months
@@ -113,7 +113,7 @@
 	<select id="selectMOrdersByParams" resultType="com.xiaoyi.manager.domain.Orders" parameterType="hashmap">
 		SELECT a.*
 		FROM orders a LEFT JOIN ordersum b
-			ON a.parentId=b.parentId AND a.memberId=b.memberId
+			ON a.parentId=b.parentId AND a.memberId=b.memberId AND a.lessonType=b.lessonType
 		WHERE 
 		orderType in (0,1)
 		<if test="memberId!=null">
@@ -121,6 +121,9 @@
 		</if>
 		<if test="parentId!=null">
 			and a.parentId=#{parentId}
+		</if>
+		<if test="lessonType!=null">
+			and a.lessonType=#{lessonType}
 		</if>
 	</select>
 	

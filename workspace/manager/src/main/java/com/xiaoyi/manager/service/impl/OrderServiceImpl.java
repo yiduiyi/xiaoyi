@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
@@ -508,23 +509,29 @@ public class OrderServiceImpl implements IOrderService {
 			int type = params.getIntValue("operateType");
 			Float operateNum = params.getFloat("operateNum");
 			
+			if(null==operateNum || operateNum==0){
+				throw new CommonRunException(-1, "充值/结算数目不能为0！");
+			}
+			
 			operateNum = (type==0)?-operateNum:operateNum;
 			
 			//更新订单总表
 			try {
+				logger.info("查询订单总表（orderId）："+record.getOrderid());
 				record = orderSumDao.selectByPrimaryKey(record);
 			} catch (Exception e) {
 				e.printStackTrace();
-				throw e;
+				throw new CommonRunException(-1, "查询订单总表出错！");
 			}
 			record.setTotallessonnum((record.getTotallessonnum()+operateNum));
 			record.setLessonleftnum((record.getLessonleftnum()+operateNum));
 			
+			//更新入库
 			try {
 				orderSumDao.updateByPrimaryKeySelective(record);				
 			} catch (Exception e) {
 				e.printStackTrace();
-				throw e;
+				throw new CommonRunException(-1, "更新订单总表出错！");
 			}
 			
 			//插入结算、充值记录
@@ -542,11 +549,11 @@ public class OrderServiceImpl implements IOrderService {
 				orderDao.insertSelective(order);
 			}catch (Exception e) {
 				e.printStackTrace();
-				throw e;
+				throw new CommonRunException(-1, "插入结算、充值记录出错！");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return -1;
+			throw new CommonRunException(-2, "内部错误！");
 		}
 		return 0;
 	}
@@ -555,7 +562,20 @@ public class OrderServiceImpl implements IOrderService {
 	@Override
 	public List<JSONObject> queryMTeachings(JSONObject params) {
 		try {
-			return orderManageDao.selectMTeachingsByParams(params);
+			List<JSONObject> mTeachingList = orderManageDao.selectMTeachingsByParams(params);
+			if(null!=mTeachingList){
+				for(JSONObject mTeaching : mTeachingList){
+					Integer status = mTeaching.getInteger("status");
+					if(null!=status && status==1){
+						mTeaching.put("feedback", "3");
+					}
+					if(mTeaching.get("feedback") == null){
+						mTeaching.put("feedback", "1");
+					}
+				}
+			}
+			
+			return mTeachingList;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -578,7 +598,7 @@ public class OrderServiceImpl implements IOrderService {
 				
 				params.put("memberId", orderSum.getMemberid());
 				params.put("parentId", orderSum.getParentid());
-				
+				params.put("lessonType", orderSum.getLessontype());
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
