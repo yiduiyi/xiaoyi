@@ -24,7 +24,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.XMLUtil;
+import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IUserDao;
+import com.xiaoyi.manager.domain.OrderSum;
+import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.domain.UserKey;
@@ -55,6 +58,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	
 	@Resource
 	ITeachingRecordDao tRecordDao;
+	
+	@Resource
+	IOrderSumDao orderSumDao;
 	
 	@Resource
 	ITeacherBalanceDao balanceDao;
@@ -378,6 +384,39 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				if(tobeWithdrawed < 1.0f){	//微信支付必须大于等于1元
 					throw new CommonRunException(-3, "提现金额必须大于1元！");
 				}
+				
+				//判断提现金额是否满足条件（有些家长课时已经为负数，不允许提现）
+				List<OrderSumKey> keys = new ArrayList<OrderSumKey>();
+				for(LessonTrade record : lessonTradeList){
+					OrderSumKey key = new OrderSumKey();
+					key.setLessontype(record.getLessontype());
+					key.setParentid(record.getParentid());
+					key.setMemberid(record.getMemberid());
+					
+					keys.add(key);					
+				}
+				List<OrderSum> orderSumList;
+				try {
+					orderSumList = orderSumDao.selectOrderSumBatchByKey(keys);					
+				} catch (Exception e) {
+					logger.error("查询老师提现-家长订单列表出错！");
+					throw new CommonRunException(-1, "查询老师提现-家长订单列表出错！");
+				}
+				if(null==orderSumList || orderSumList.size()!=lessonTradeList.size()){
+					logger.info("提现列表与订单列表对应不上！");
+					throw new CommonRunException(-1, "提现列表与订单列表对应不上！");
+				}
+				//判断是否存在家长课时为负的订单
+				for(OrderSum orderSum : orderSumList){
+					
+					//家长课时为负时，不再允许老师提现
+					Float lessonLeftNum = orderSum.getLessonleftnum();
+					if(lessonLeftNum<0){
+						throw new CommonRunException(-1, "提现失败！【原因：家长课时为负】");
+					}					
+				}				
+				
+				//更新课时交易记录状态
 				for(LessonTrade record : lessonTradeList){
 					if(record.getActualPay() == null){
 						record.setActualPay(0f);

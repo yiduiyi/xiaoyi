@@ -15,6 +15,29 @@
     lessonType, memberId, orderId, parentId, purchaseTime, totalLessonNum, lessonLeftNum, 
     teachingIds
   </sql>
+  
+  <select id="selectOrderSumBatchByKey" resultMap="BaseResultMap" 
+  			parameterType="java.util.List">
+  	select 
+  	<include refid="Base_Column_List" />
+    from ordersum
+    where
+   	<foreach collection="list" item="item" separator="OR">
+   	    <choose>
+	    	<when test="item.orderid != null">
+	    		orderId = #{orderid,jdbcType=VARCHAR}
+	    	</when>
+				<otherwise>	
+	      		memberId = #{item.memberid,jdbcType=VARCHAR}
+	      		and parentId = #{item.parentid,jdbcType=VARCHAR}
+	    		<if test="item.lessontype!=null">
+	    			and lessonType = #{item.lessontype,jdbcType=INTEGER}
+	    		</if>
+	    	</otherwise>
+    	</choose>
+   	</foreach>
+  </select>
+  
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiaoyi.manager.domain.OrderSumKey" >
     select 
     <include refid="Base_Column_List" />

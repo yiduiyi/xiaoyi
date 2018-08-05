@@ -102,12 +102,9 @@ public class LoginAction {
 			HttpSession session = request.getSession();
 			User user = (User) session.getAttribute("userBean");			
 			
-			if(rs>=0){
-				user.setPassword(reqData.getString("newPassword"));
-				HttpSession session = request.getSession();
+			if(rs>=0){				
 				//设置session回话过期，更新用户登录状态
-				if(null!=session){
-					User user = (User) session.getAttribute("userBean");
+				if(null!=session){					
 					user.setPassword(reqData.getString("newPassword"));
 					session.setAttribute("user", user);
 				}
