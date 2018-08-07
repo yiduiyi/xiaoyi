@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -89,8 +90,10 @@ public class ConstantCommonAction {
     			for(Grade grade : Grade.values()) {
     				JSONObject data = new JSONObject();
     				if(null!=grade.toString()){
-    					data.put(grade.toString(), grade.getValue());
-    					datas.add(data);
+    					if(StringUtils.isNotEmpty(grade.toString())){
+    						data.put(grade.toString(), grade.getValue());
+    						datas.add(data);
+    					}
     				}
     			}
     			break;

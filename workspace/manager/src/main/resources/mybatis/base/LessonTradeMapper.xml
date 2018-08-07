@@ -1,231 +1,242 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.teacher.dao.ILessonTradeDao" >
-  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.LessonTrade" >
-    <id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
-    <result column="lessonType" property="lessontype"  />
-    <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
-    <result column="memberId" property="memberid" jdbcType="VARCHAR" />
-    <result column="parentId" property="parentid" jdbcType="VARCHAR" />
-    <result column="notes" property="notes" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="TINYINT" />
-    <result column="applyLessons" property="applylessons"  />
-    <result column="feedback" property="feedback" jdbcType="VARCHAR" />
-    <result column="applyTime" property="applytime" jdbcType="TIMESTAMP" />
-    <result column="frozenLessons" property="frozenLessons"  />
-    <result column="actualPay" property="actualPay"/>
-  </resultMap>
-  <sql id="Base_Column_List" >
-    lessonTradeId, lessonType, teacherId, memberId, parentId, notes, status, applyLessons, 
-    feedback, applyTime, frozenLessons,actualPay
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select applyLessons,
-    <include refid="Base_Column_List" />
-    from lessontrade
-    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
-  </select>
-  
-  <select id="selectByLessonTradeIds" resultMap="BaseResultMap" parameterType="java.util.List" >
-    select 
-    <include refid="Base_Column_List" />
-    from lessontrade
-    where 
-    lessonTradeId IN
-    <foreach collection="list" open="(" close=")" separator="," item="item">
-    	#{item}
-    </foreach>
-    AND status = 2
-  </select>
-  
-  
-  <!-- 查询学情报告 -->
-  <select id="selectByParams" resultMap="BaseResultMap" parameterType="hashmap" >
-    select 
-    <include refid="Base_Column_List" />
-    from lessontrade
-    <where>
-    	<if test="queryDate!=null">
-    		DATE_FORMAT(applyTime,"%Y-%c-%d") = #{queryDate}
-    	</if>
-    	<if test="queryMonth!=null">
-    		AND DATE_FORMAT(applyTime,"%Y%c") = #{queryMonth}
-    	</if>
-    	<if test="parentId!=null">
-    		AND parentId = #{parentId}
-    	</if>
-    	<if test="memberId!=null">
-    		AND memberId = #{memberId}
-    	</if>
-    	<if test="lessonTradeId">
-    		AND lessonTradeId = #{lessonTradeId}
-    	</if>
-    	<if test="status!=null">
-    		AND status=#{status}
-    	</if>
-    </where>
-  </select>
-  
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from lessontrade
-    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
-    insert into lessontrade (lessonTradeId, lessonType, teacherId, 
-      memberId, parentId, notes, 
-      status, applyLessons, feedback, 
-      applyTime,frozenLessons,actualPay)
-    values (#{lessontradeid,jdbcType=VARCHAR}, #{lessontype,jdbcType=INTEGER}, #{teacherid,jdbcType=VARCHAR}, 
-      #{memberid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{applylessons}, #{feedback,jdbcType=VARCHAR}, 
-      #{applytime,jdbcType=TIMESTAMP}, #{frozenLessons},#{actualPay})
-  </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
-    insert into lessontrade
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="lessontradeid != null" >
-        lessonTradeId,
-      </if>
-      <if test="lessontype != null" >
-        lessonType,
-      </if>
-      <if test="teacherid != null" >
-        teacherId,
-      </if>
-      <if test="memberid != null" >
-        memberId,
-      </if>
-      <if test="parentid != null" >
-        parentId,
-      </if>
-      <if test="notes != null" >
-        notes,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="applylessons != null" >
-        applyLessons,
-      </if>
-      <if test="feedback != null" >
-        feedback,
-      </if>
-      <if test="applytime != null" >
-        applyTime,
-      </if>
-      <if test="frozenLessons != null" >
-        frozenLessons,
-      </if>
-      <if test="actualPay!=null">
-      	actualPay,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="lessontradeid != null" >
-        #{lessontradeid,jdbcType=VARCHAR},
-      </if>
-      <if test="lessontype != null" >
-        #{lessontype,jdbcType=INTEGER},
-      </if>
-      <if test="teacherid != null" >
-        #{teacherid,jdbcType=VARCHAR},
-      </if>
-      <if test="memberid != null" >
-        #{memberid,jdbcType=VARCHAR},
-      </if>
-      <if test="parentid != null" >
-        #{parentid,jdbcType=VARCHAR},
-      </if>
-      <if test="notes != null" >
-        #{notes,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=TINYINT},
-      </if>
-      <if test="applylessons != null" >
-        #{applylessons},
-      </if>
-      <if test="feedback != null" >
-        #{feedback,jdbcType=VARCHAR},
-      </if>
-      <if test="applytime != null" >
-        #{applytime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="frozenLessons != null" >
-        #{frozenLessons},
-      </if>
-      <if test="actualPay!=null">
-      	#{actualPay},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
-    update lessontrade
-    <set >
-      <if test="lessontype != null" >
-        lessonType = #{lessontype,jdbcType=INTEGER},
-      </if>
-      <if test="teacherid != null" >
-        teacherId = #{teacherid,jdbcType=VARCHAR},
-      </if>
-      <if test="memberid != null" >
-        memberId = #{memberid,jdbcType=VARCHAR},
-      </if>
-      <if test="parentid != null" >
-        parentId = #{parentid,jdbcType=VARCHAR},
-      </if>
-      <if test="notes != null" >
-        notes = #{notes,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=TINYINT},
-      </if>
-      <if test="applylessons != null" >
-        applyLessons = #{applylessons},
-      </if>
-      <if test="feedback != null" >
-        feedback = #{feedback,jdbcType=VARCHAR},
-      </if>
-      <if test="applytime != null" >
-        applyTime = #{applytime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="frozenLessons != null" >
-       	frozenLessons = #{frozenLessons},
-      </if>
-      <if test="actualPay!=null">
-      	actualPay = #{actualPay},
-      </if>
-      <if test="withdrawed!=null">
-      	withdrawed = #{withdrawed}
-      </if>
-    </set>
-    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.LessonTrade" >
-    update lessontrade
-    set lessonType = #{lessontype,jdbcType=INTEGER},
-      teacherId = #{teacherid,jdbcType=VARCHAR},
-      memberId = #{memberid,jdbcType=VARCHAR},
-      parentId = #{parentid,jdbcType=VARCHAR},
-      notes = #{notes,jdbcType=VARCHAR},
-      status = #{status,jdbcType=TINYINT},
-      applyLessons = #{applylessons},
-      feedback = #{feedback,jdbcType=VARCHAR},
-      applyTime = #{applytime,jdbcType=TIMESTAMP},
-      frozenLessons = #{frozenLessons},
-      actualPay = #{actualPay}
-    where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
-  </update>
-  
-  <!-- 更新老师提现状态（提现大于5天的记录） -->
-  <update id="updateStatusByLessonTradeIds" parameterType="java.util.List">
-  	UPDATE lessontrade SET `status`=0 
-  	WHERE 
-  	<if test="list!=null and list.size>0">
-  		lessonTradeId IN 
-  		<foreach collection="list" item="item" open="(" close=")" separator=",">
-  			#{item}
-  		</foreach>
-  	</if>
-  </update>
+<mapper namespace="com.xiaoyi.teacher.dao.ILessonTradeDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.LessonTrade">
+		<id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
+		<result column="lessonType" property="lessontype" />
+		<result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+		<result column="memberId" property="memberid" jdbcType="VARCHAR" />
+		<result column="parentId" property="parentid" jdbcType="VARCHAR" />
+		<result column="notes" property="notes" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="applyLessons" property="applylessons" />
+		<result column="feedback" property="feedback" jdbcType="VARCHAR" />
+		<result column="applyTime" property="applytime" jdbcType="TIMESTAMP" />
+		<result column="frozenLessons" property="frozenLessons" />
+		<result column="actualPay" property="actualPay" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		lessonTradeId, lessonType, teacherId, memberId, parentId, notes, status,
+		applyLessons,
+		feedback, applyTime, frozenLessons,actualPay
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select applyLessons,
+		<include refid="Base_Column_List" />
+		from lessontrade
+		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectByLessonTradeIds" resultMap="BaseResultMap"
+		parameterType="java.util.List">
+		select
+		<include refid="Base_Column_List" />
+		from lessontrade
+		where
+		lessonTradeId IN
+		<foreach collection="list" open="(" close=")" separator=","
+			item="item">
+			#{item}
+		</foreach>
+		AND status = 2
+	</select>
+
+
+	<!-- 查询学情报告 -->
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="hashmap">
+		select
+		<include refid="Base_Column_List" />
+		from lessontrade
+		<where>
+			<if test="queryDate!=null">
+				DATE_FORMAT(applyTime,"%Y-%c-%d") = #{queryDate}
+			</if>
+			<if test="queryDateFull!=null">
+				AND DATE_FORMAT(applyTime,"%Y-%m-%d") = #{queryDateFull}
+			</if>
+			<if test="queryMonth!=null">
+				AND DATE_FORMAT(applyTime,"%Y%c") = #{queryMonth}
+			</if>
+			<if test="parentId!=null">
+				AND parentId = #{parentId}
+			</if>
+			<if test="memberId!=null">
+				AND memberId = #{memberId}
+			</if>
+			<if test="lessonTradeId">
+				AND lessonTradeId = #{lessonTradeId}
+			</if>
+			<if test="status!=null">
+				AND status=#{status}
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from lessontrade
+		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.xiaoyi.teacher.domain.LessonTrade">
+		insert into lessontrade (lessonTradeId, lessonType, teacherId,
+		memberId, parentId, notes,
+		status, applyLessons, feedback,
+		applyTime,frozenLessons,actualPay)
+		values (#{lessontradeid,jdbcType=VARCHAR}, #{lessontype,jdbcType=INTEGER},
+		#{teacherid,jdbcType=VARCHAR},
+		#{memberid,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR},
+		#{status,jdbcType=TINYINT}, #{applylessons},
+		#{feedback,jdbcType=VARCHAR},
+		#{applytime,jdbcType=TIMESTAMP}, #{frozenLessons},#{actualPay})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade">
+		insert into lessontrade
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lessontradeid != null">
+				lessonTradeId,
+			</if>
+			<if test="lessontype != null">
+				lessonType,
+			</if>
+			<if test="teacherid != null">
+				teacherId,
+			</if>
+			<if test="memberid != null">
+				memberId,
+			</if>
+			<if test="parentid != null">
+				parentId,
+			</if>
+			<if test="notes != null">
+				notes,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="applylessons != null">
+				applyLessons,
+			</if>
+			<if test="feedback != null">
+				feedback,
+			</if>
+			<if test="applytime != null">
+				applyTime,
+			</if>
+			<if test="frozenLessons != null">
+				frozenLessons,
+			</if>
+			<if test="actualPay!=null">
+				actualPay,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="lessontradeid != null">
+				#{lessontradeid,jdbcType=VARCHAR},
+			</if>
+			<if test="lessontype != null">
+				#{lessontype,jdbcType=INTEGER},
+			</if>
+			<if test="teacherid != null">
+				#{teacherid,jdbcType=VARCHAR},
+			</if>
+			<if test="memberid != null">
+				#{memberid,jdbcType=VARCHAR},
+			</if>
+			<if test="parentid != null">
+				#{parentid,jdbcType=VARCHAR},
+			</if>
+			<if test="notes != null">
+				#{notes,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="applylessons != null">
+				#{applylessons},
+			</if>
+			<if test="feedback != null">
+				#{feedback,jdbcType=VARCHAR},
+			</if>
+			<if test="applytime != null">
+				#{applytime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="frozenLessons != null">
+				#{frozenLessons},
+			</if>
+			<if test="actualPay!=null">
+				#{actualPay},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.LessonTrade">
+		update lessontrade
+		<set>
+			<if test="lessontype != null">
+				lessonType = #{lessontype,jdbcType=INTEGER},
+			</if>
+			<if test="teacherid != null">
+				teacherId = #{teacherid,jdbcType=VARCHAR},
+			</if>
+			<if test="memberid != null">
+				memberId = #{memberid,jdbcType=VARCHAR},
+			</if>
+			<if test="parentid != null">
+				parentId = #{parentid,jdbcType=VARCHAR},
+			</if>
+			<if test="notes != null">
+				notes = #{notes,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="applylessons != null">
+				applyLessons = #{applylessons},
+			</if>
+			<if test="feedback != null">
+				feedback = #{feedback,jdbcType=VARCHAR},
+			</if>
+			<if test="applytime != null">
+				applyTime = #{applytime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="frozenLessons != null">
+				frozenLessons = #{frozenLessons},
+			</if>
+			<if test="actualPay!=null">
+				actualPay = #{actualPay},
+			</if>
+			<if test="withdrawed!=null">
+				withdrawed = #{withdrawed}
+			</if>
+		</set>
+		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.LessonTrade">
+		update lessontrade
+		set lessonType = #{lessontype,jdbcType=INTEGER},
+		teacherId = #{teacherid,jdbcType=VARCHAR},
+		memberId = #{memberid,jdbcType=VARCHAR},
+		parentId = #{parentid,jdbcType=VARCHAR},
+		notes = #{notes,jdbcType=VARCHAR},
+		status = #{status,jdbcType=TINYINT},
+		applyLessons = #{applylessons},
+		feedback = #{feedback,jdbcType=VARCHAR},
+		applyTime = #{applytime,jdbcType=TIMESTAMP},
+		frozenLessons = #{frozenLessons},
+		actualPay = #{actualPay}
+		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 更新老师提现状态（提现大于5天的记录） -->
+	<update id="updateStatusByLessonTradeIds" parameterType="java.util.List">
+		UPDATE lessontrade SET `status`=0
+		WHERE
+		<if test="list!=null and list.size&gt;0">
+			lessonTradeId IN
+			<foreach collection="list" item="item" open="(" close=")"
+				separator=",">
+				#{item}
+			</foreach>
+		</if>
+	</update>
 </mapper>

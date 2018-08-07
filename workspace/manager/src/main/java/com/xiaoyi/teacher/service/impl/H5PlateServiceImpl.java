@@ -667,7 +667,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
         cal.add(Calendar.DATE,   -7);
         String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
         System.out.println(yesterday);		
-		params.put("queryDate", yesterday);
+		params.put("queryDateFull", yesterday);
 		
 		List<LessonTrade> lessonTradeList = lessonTradeDao.selectByParams(params);
 		
@@ -719,6 +719,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		
 		//账户余额入库
 		try {
+			logger.info("withdrawBalanceList[size]:"+withdrawBalanceList.size());
 			balanceDao.updateAllAccountBalanceProfits(withdrawBalanceList);
 		} catch (Exception e) {
 			logger.error("增加/更新老师账户余额出错【入库错误】！");
