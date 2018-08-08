@@ -18,6 +18,18 @@
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </select>
   
+  <!-- 批量查询老师余额列表 -->
+  <select id="selectBatchByTeacherIds" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher_balance
+    where teacherId IN
+    <foreach collection="list" item="item" open="(" close=")" separator=",">
+    	 #{item}
+    </foreach>
+    
+  </select>
+  
   <!-- 获取所有老师账户余额列表 -->
   <select id="selectAllAccountBalance" resultMap="BaseResultMap" 
   		parameterType="com.alibaba.fastjson.JSONObject">
@@ -34,7 +46,7 @@
     	(#{item.teacherid}, #{item.balanceAccount}, #{item.totalBalanceProfit}, #{item.balanceFrom}, #{item.balanceProfitLeft})
     </foreach>
      on duplicate key update balance_account=values(balance_account),total_balance_profit=values(total_balance_profit),
-     	balance_profit_left=values(balance_profit_left)
+     	balance_profit_left=values(balance_profit_left),balance_from=values(balance_from)
   </insert>
   
   

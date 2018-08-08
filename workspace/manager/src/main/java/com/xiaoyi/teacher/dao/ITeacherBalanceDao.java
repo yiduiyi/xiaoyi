@@ -14,6 +14,8 @@ public interface ITeacherBalanceDao {
 
     TeacherBalance selectByPrimaryKey(String teacherid);
 
+    List<TeacherBalance> selectBatchByTeacherIds(List<String> teacherIdList);
+    
     int updateAllAccountBalanceProfits(List<TeacherBalance> list);
     
     List<TeacherBalance> selectAllAccountBalance();

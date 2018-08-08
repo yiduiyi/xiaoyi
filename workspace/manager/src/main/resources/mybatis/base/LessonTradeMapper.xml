@@ -14,6 +14,7 @@
 		<result column="applyTime" property="applytime" jdbcType="TIMESTAMP" />
 		<result column="frozenLessons" property="frozenLessons" />
 		<result column="actualPay" property="actualPay" />
+		<result column="withdrawed" property="withdrawed" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		lessonTradeId, lessonType, teacherId, memberId, parentId, notes, status,
@@ -54,10 +55,10 @@
 				DATE_FORMAT(applyTime,"%Y-%c-%d") = #{queryDate}
 			</if>
 			<if test="queryDateFull!=null">
-				AND DATE_FORMAT(applyTime,"%Y-%m-%d") = #{queryDateFull}
+				DATE_FORMAT(applyTime,"%Y-%m-%d") = #{queryDateFull}
 			</if>
 			<if test="queryMonth!=null">
-				AND DATE_FORMAT(applyTime,"%Y%c") = #{queryMonth}
+				DATE_FORMAT(applyTime,"%Y%c") = #{queryMonth}
 			</if>
 			<if test="parentId!=null">
 				AND parentId = #{parentId}

@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.comparator.ComparableComparator;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
@@ -417,6 +420,16 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				}				
 				
 				//更新课时交易记录状态
+				//排序
+				Collections.sort(lessonTradeList, new Comparator<LessonTrade>() {
+
+					@Override
+					public int compare(LessonTrade o1, LessonTrade o2) {
+						
+						return (int)((o1.getActualPay()-o1.getWithdrawed()) 
+								- (o2.getActualPay()-o2.getWithdrawed()));
+					}
+				});
 				for(LessonTrade record : lessonTradeList){
 					if(record.getActualPay() == null){
 						record.setActualPay(0f);
@@ -464,7 +477,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						sb.append(",");
 					}
 				}
-				teacherBalance.setBalanceFrom(sb.substring(0,sb.length()-1));
+				if(sb.length()>=0){
+					teacherBalance.setBalanceFrom(sb.substring(0,sb.length()-1));					
+				}else{
+					teacherBalance.setBalanceFrom("");
+				}
 				logger.info("更新后课时来源："+teacherBalance.getBalanceFrom());
 			}
 		} catch (Exception e) {
@@ -672,49 +689,80 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		List<LessonTrade> lessonTradeList = lessonTradeDao.selectByParams(params);
 		
 		List<TeacherBalance> withdrawBalanceList = new ArrayList<TeacherBalance>();
-		List<TeacherBalanceFromKey> balanceFromList = new ArrayList<TeacherBalanceFromKey>();
+		//List<TeacherBalanceFromKey> balanceFromList = new ArrayList<TeacherBalanceFromKey>();
 		
+		
+		List<String> teacherIdList = new ArrayList<String>();
+		Map<String,TeacherBalance> teacherIdBalanceTotalMap = new HashMap<String,TeacherBalance>();
 		for(LessonTrade record : lessonTradeList){
 			//查询/增加老师对应的余额表		
 			String teacherId = record.getTeacherid();
-			String lessonTradeId = record.getLessontradeid();
+			//String lessonTradeId = record.getLessontradeid();
 			
-			try {
-				TeacherBalance teacherBalance = balanceDao.selectByPrimaryKey(teacherId);
-				float balanceAccount =0;
-				StringBuffer balanceFrom = new StringBuffer();
-				if(null==teacherBalance || teacherBalance.getTeacherid()==null){
-					teacherBalance = new TeacherBalance();
-					teacherBalance.setTeacherid(teacherId);
-					teacherBalance.setTotalBalanceProfit(0f);
-					teacherBalance.setBalanceProfitLeft(0f);
-					balanceAccount = 0;
-				}else{
-					balanceAccount += teacherBalance.getBalanceAccount();
-				}
-				
-				if(!StringUtils.isEmpty(teacherBalance.getBalanceFrom())){
-					balanceFrom.append(",");
-				}
-				balanceFrom.append(record.getLessontradeid());
-				teacherBalance.setBalanceFrom(balanceFrom.toString());
-				balanceAccount += record.getActualPay();
-				teacherBalance.setBalanceAccount(balanceAccount);
-				
-				//balanceDao.u
-				//balanceDao.insertSelective(teacherBalance);
-				withdrawBalanceList.add(teacherBalance);
-			} catch (Exception e) {
-				logger.error("增加/更新老师账户余额出错【内部错误】！");
-				throw new CommonRunException(-5, "增加/更新老师账户余额出错【内部错误】！");
+			if(!teacherIdList.contains(teacherId)){
+				teacherIdList.add(teacherId);
+			}	
+	
+		}
+		
+		List<TeacherBalance> teacherBalanceList = null;
+		try {
+			logger.info("根据老师Id查询老师余额列表...");
+			teacherBalanceList = 
+					balanceDao.selectBatchByTeacherIds(teacherIdList);
+			
+			//合并余额列表-》总余额账户
+			for(TeacherBalance tb : teacherBalanceList){								
+				teacherIdBalanceTotalMap.put(tb.getTeacherid(), tb);
 			}
-			
-			//更新老师提现记录与老师Id关系表
-			TeacherBalanceFromKey balanceFrom = new TeacherBalanceFromKey();
-			balanceFrom.setTeacherid(teacherId);
-			balanceFrom.setLessontradeid(lessonTradeId);
-			
-			balanceFromList.add(balanceFrom);				
+		} catch (Exception e) {
+			logger.error("根据老师Id查询老师余额列表出错！");
+			throw new CommonRunException(-1, "根据老师Id查询老师余额列表出错！");
+		}
+		
+		//更新余额总表
+		try {
+			logger.info("计算余额总表...");
+			for(LessonTrade record : lessonTradeList){
+				String teacherId = record.getTeacherid();
+				TeacherBalance tb = teacherIdBalanceTotalMap.get(teacherId);
+				Float balanceAccount = 0f;
+				StringBuffer balanceFrom = new StringBuffer();
+				if(null == tb){
+					tb = new TeacherBalance();
+					tb.setTeacherid(teacherId);
+					tb.setTotalBalanceProfit(balanceAccount);
+					tb.setBalanceProfitLeft(balanceAccount);
+					
+					teacherIdBalanceTotalMap.put(teacherId, tb);
+					tb.setBalanceFrom(record.getLessontradeid());				
+				}else{
+					balanceAccount = tb.getBalanceAccount();
+					
+					//余额来源（课时费）
+					balanceFrom.append(tb.getBalanceFrom());
+					balanceFrom.append(",");	
+					if(!balanceFrom.toString().contains(record.getLessontradeid())){
+						balanceFrom.append(record.getLessontradeid());
+					}
+					tb.setBalanceFrom(balanceFrom.toString());
+				}
+				
+				balanceAccount += record.getActualPay();
+				tb.setBalanceAccount(balanceAccount);
+				
+				if(!withdrawBalanceList.contains(tb)){
+					/*TeacherBalance tbCopy = new TeacherBalance();
+					tbCopy.setBalanceAccount(tb.getBalanceAccount());
+					tbCopy.setBalanceFrom(tb.getBalanceFrom());
+					tbCopy.setBalanceProfitLeft(tb.getBalanceProfitLeft());
+					tbCopy.setTeacherid(teacherId);
+					tbCopy.setTotalBalanceProfit(tb.getTotalBalanceProfit());*/
+					withdrawBalanceList.add(tb);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("内部错误[更新余额总表出错]！");
 		}
 		
 		//账户余额入库
@@ -726,12 +774,5 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			throw new CommonRunException(-7, "增加/更新老师账户余额出错【入库错误】！");
 		}
 		
-		//关系入库
-		try {
-			balanceFromDao.insertBatch(balanceFromList);
-		} catch (Exception e) {
-			logger.error("更新老师提现记录与老师Id关系表【入库错误】！");
-			throw new CommonRunException(-6, "更新老师提现记录与老师Id关系表【入库错误】！");
-		}
 	}
 }
