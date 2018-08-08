@@ -426,6 +426,13 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					@Override
 					public int compare(LessonTrade o1, LessonTrade o2) {
 						
+						if(o1.getWithdrawed()==null){
+							o1.setWithdrawed(0f);
+						}
+						if(o2.getWithdrawed()==null){
+							o2.setWithdrawed(0f);
+						}
+						
 						return (int)((o1.getActualPay()-o1.getWithdrawed()) 
 								- (o2.getActualPay()-o2.getWithdrawed()));
 					}
@@ -477,7 +484,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						sb.append(",");
 					}
 				}
-				if(sb.length()>=0){
+				if(sb.length()>0){
 					teacherBalance.setBalanceFrom(sb.substring(0,sb.length()-1));					
 				}else{
 					teacherBalance.setBalanceFrom("");
@@ -486,7 +493,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			}
 		} catch (Exception e) {
 			logger.error("内部错误！");
-			throw new CommonRunException(-4, e.getMessage());
+			e.printStackTrace();
+			throw new CommonRunException(-4, "内部错误！");
 		}
 		
 		//付款

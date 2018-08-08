@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaoyi.teacher.dao.ILessonTradeDao">
-	<resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.LessonTrade">
+	<resultMap id="BaseResultMap2" type="com.xiaoyi.teacher.domain.LessonTrade">
 		<id column="lessonTradeId" property="lessontradeid" jdbcType="VARCHAR" />
 		<result column="lessonType" property="lessontype" />
 		<result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
@@ -19,9 +19,9 @@
 	<sql id="Base_Column_List">
 		lessonTradeId, lessonType, teacherId, memberId, parentId, notes, status,
 		applyLessons,
-		feedback, applyTime, frozenLessons,actualPay
+		feedback, applyTime, frozenLessons,actualPay,withdrawed
 	</sql>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap2"
 		parameterType="java.lang.String">
 		select applyLessons,
 		<include refid="Base_Column_List" />
@@ -29,7 +29,7 @@
 		where lessonTradeId = #{lessontradeid,jdbcType=VARCHAR}
 	</select>
 
-	<select id="selectByLessonTradeIds" resultMap="BaseResultMap"
+	<select id="selectByLessonTradeIds" resultMap="BaseResultMap2"
 		parameterType="java.util.List">
 		select
 		<include refid="Base_Column_List" />
@@ -45,7 +45,7 @@
 
 
 	<!-- 查询学情报告 -->
-	<select id="selectByParams" resultMap="BaseResultMap"
+	<select id="selectByParams" resultMap="BaseResultMap2"
 		parameterType="hashmap">
 		select
 		<include refid="Base_Column_List" />
