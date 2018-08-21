@@ -3,7 +3,6 @@ package com.xiaoyi.common.filter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,9 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.xiaoyi.common.service.impl.WechatServiceImpl;
 import com.xiaoyi.manager.domain.User;
-import com.xiaoyi.manager.service.ILoginService;
 
 /**
  * 验证用户登录权限

@@ -3,7 +3,6 @@ package com.xiaoyi.common.filter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.xiaoyi.manager.domain.User;
-import com.xiaoyi.manager.service.ILoginService;
 
 
 public class SessionFilter implements Filter {

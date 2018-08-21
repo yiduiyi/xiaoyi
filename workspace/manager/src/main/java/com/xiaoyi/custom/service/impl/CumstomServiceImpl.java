@@ -22,9 +22,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
-import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.service.ICustomService;
@@ -57,8 +55,6 @@ import com.xiaoyi.teacher.dao.ITeacherBalanceFromDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.Suggestions;
-import com.xiaoyi.teacher.domain.TeacherBalance;
-import com.xiaoyi.teacher.domain.TeacherBalanceFromKey;
 import com.xiaoyi.teacher.domain.TeachingRecord;
 
 @Service("customService")

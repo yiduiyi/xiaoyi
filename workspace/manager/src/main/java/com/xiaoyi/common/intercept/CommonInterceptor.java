@@ -14,7 +14,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.xiaoyi.common.utils.RequestUtil;
 import com.xiaoyi.manager.domain.User;
-import com.xiaoyi.manager.utils.constant.ResponseConstants.SessionConstants;
 
 
 public class CommonInterceptor extends HandlerInterceptorAdapter{

@@ -1,8 +1,5 @@
 package com.xiaoyi.teacher.action;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,11 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
-import com.xiaoyi.common.service.IWechatService;
-import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.service.IH5PlateService;
-import com.xiaoyi.teacher.service.IPrivateDomainService;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
 import com.xiaoyi.wechat.utils.AdvancedUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;

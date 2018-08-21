@@ -2,13 +2,10 @@ package com.xiaoyi.custom.action;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.service.IWechatService;
-import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
-import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.wechat.utils.AdvancedUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 import com.xiaoyi.wechat.utils.WeixinOauth2Token;
@@ -136,7 +130,8 @@ public class CustomerAction {
 		logger.info("确认订单-openId:" + openid);
 		if (null == openid) { // 从其他界面直接跳转的
 			logger.info("查询openId：");
-			request.setCharacterEncoding("utf-8");
+			//TODO 重复设置字符编码
+//			request.setCharacterEncoding("utf-8");
 			request.setCharacterEncoding("utf-8");
 			String code = request.getParameter("code");
 			if (code != null && !"authdeny".equals(code)) {

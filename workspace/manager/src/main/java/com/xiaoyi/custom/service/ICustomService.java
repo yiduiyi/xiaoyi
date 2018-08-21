@@ -3,8 +3,6 @@ package com.xiaoyi.custom.service;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.teacher.domain.LessonTrade;
-import com.xiaoyi.teacher.domain.LessonTradeSum;
 
 public interface ICustomService {
 	
