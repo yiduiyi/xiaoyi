@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.comparator.ComparableComparator;
 
 import com.alibaba.fastjson.JSONObject;
@@ -321,12 +322,16 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		//verify params
 		String openId = params.getString("openId");
 		Float withdrawing = params.getFloat("withdrawing");
+		
 		logger.info("params:"+params.toJSONString());
 		if(null == openId || null == withdrawing){
 			logger.info("参数错误！");
 			throw new CommonRunException(-1, "前台传递参数错误！");
 		}
 		
+		//扣除课时后剩余（用于计算课时提现金额及余额收益是否需要提现）
+		float tobeWithdrawed = withdrawing;
+
 		//查询可提现余额
 		String teacherId = params.getString("teacherId");
 		if(StringUtils.isEmpty(teacherId)){
@@ -383,7 +388,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				List<LessonTrade> lessonTradeList = lessonTradeDao.selectByLessonTradeIds(lessonTradeIdList);
 				logger.info("根据lessonTradeids查询提现列表【size】："+lessonTradeList);
 				
-				float tobeWithdrawed = withdrawing;
+				
 				if(tobeWithdrawed < 1.0f){	//微信支付必须大于等于1元
 					throw new CommonRunException(-3, "提现金额必须大于1元！");
 				}
@@ -450,7 +455,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					logger.info("lessonTradeId:"+record.getLessontradeid());
 					logger.info("提现金额剩余："+remain);
 					
-					if(remain>withdrawing){
+					if(remain>/*withdrawing*/tobeWithdrawed){
 						record.setWithdrawed(record.getWithdrawed() + withdrawing);		
 						tobeWithdrawed = 0;
 					}else{
@@ -494,6 +499,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		} catch (Exception e) {
 			logger.error("内部错误！");
 			e.printStackTrace();
+			//回滚
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 			throw new CommonRunException(-4, "内部错误！");
 		}
 		
@@ -514,8 +521,13 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			try {
 				//计算余额 & 收益余额
 				float balanceAccount = teacherBalance.getBalanceAccount() - withdrawing;
-				float leftProfit = (balanceAccount)>=teacherBalance.getBalanceProfitLeft()?
-						teacherBalance.getBalanceProfitLeft():(balanceAccount);
+				float leftProfit = teacherBalance.getBalanceProfitLeft();
+				if(tobeWithdrawed>0){	//需要提现余额
+					balanceAccount = 0;
+					leftProfit -= tobeWithdrawed;
+				}/*
+				leftProfit = (balanceAccount)>=teacherBalance.getBalanceProfitLeft()?
+						teacherBalance.getBalanceProfitLeft():(balanceAccount);*/
 				teacherBalance.setBalanceAccount(balanceAccount);
 				teacherBalance.setBalanceProfitLeft(leftProfit);
 				

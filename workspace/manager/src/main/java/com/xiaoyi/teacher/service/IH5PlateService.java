@@ -18,7 +18,7 @@ public interface IH5PlateService {
 	int withdrawLessons(JSONObject params) throws Exception;
 	
 	@Transactional
-	int withdrawBalance(JSONObject params) throws Exception;
+	public int withdrawBalance(JSONObject params) throws Exception;
 	
 	JSONObject queryTeacherBalanceing(JSONObject params) throws Exception;
 	
