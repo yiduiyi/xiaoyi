@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.hamcrest.core.IsInstanceOf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +22,6 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
-import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.manager.dao.IPictureDao;
 import com.xiaoyi.manager.dao.ISchoolDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
