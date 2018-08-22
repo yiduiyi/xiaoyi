@@ -707,7 +707,7 @@ public class CumstomServiceImpl implements ICustomService{
 	 * @param applylessons
 	 * @return
 	 */
-	private LessonTrade calcTeacherPay(LessonTrade trade) {
+	private LessonTradeSum calcTeacherPay(LessonTrade trade) {
 		String teacherId = trade.getTeacherid();
 		Float applylessons = trade.getApplylessons();
 		Integer lessonType = trade.getLessontype();
@@ -757,8 +757,19 @@ public class CumstomServiceImpl implements ICustomService{
 			}else {
 				checkLessons = applylessons;
 			}
-			/*tradeSum.setFrozenlessonnum((short)(checkLessons>0?0:
-					tradeSum.getFrozenlessonnum()-applylessons));*/
+			
+			//更新提现总表的冻结课时数
+			float newAddedFrozenLessons = applylessons - checkLessons;
+			tradeSum.setFrozenlessonnum((tradeSum.getFrozenlessonnum()==null?0:
+					tradeSum.getFrozenlessonnum()-newAddedFrozenLessons));
+			logger.info("更新提现总表的冻结课时数");
+			try {			
+				tradeSumDao.updateByPrimaryKeySelective(tradeSum);
+			} catch (Exception e) {
+				logger.error("更新提现总表的冻结课时数");
+				e.printStackTrace();
+				throw e ;
+			}
 		}else {
 			logger.info("LessonTradeSum 为空(第一次提现)！");
 			checkLessons = applylessons;
@@ -770,7 +781,7 @@ public class CumstomServiceImpl implements ICustomService{
 		//设置提现金额
 		logger.info("提现金额："+checkLessons*priceList.getReward());
 		trade.setActualPay(checkLessons*priceList.getReward());
-		return trade;
+		return tradeSum;
 	}
 
 	@Transactional
