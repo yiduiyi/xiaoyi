@@ -751,12 +751,16 @@ public class CumstomServiceImpl implements ICustomService{
 		//结算时减去被冻结课时
 		Float checkLessons=0f;
 		if(null!=tradeSum) {
+			logger.info("计算结算课时数(扣除冻结课时后所得)...");
+			logger.info("冻结课时数："+tradeSum.getFrozenlessonnum());
+			logger.info("提现课时数："+applylessons);
 			if(tradeSum.getFrozenlessonnum()!=null) {
 				checkLessons = (applylessons>=tradeSum.getFrozenlessonnum())?
 						(applylessons - tradeSum.getFrozenlessonnum()):0;				
 			}else {
 				checkLessons = applylessons;
 			}
+			logger.info("计算所得接榫课时数："+checkLessons);
 			
 			//更新提现总表的冻结课时数
 			float newAddedFrozenLessons = applylessons - checkLessons;
