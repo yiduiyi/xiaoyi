@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IMonitorDao">
+
+	<select id="getTeachersList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT O.teachingId,T.teacherId,T.teacherName,T.sex,T.telNumber,T.teachingLevel,ORD.memberId,ORD.parentId,S.`name` 
+		FROM order_teaching_r O INNER JOIN teacher T ON O.teacherId = T.teacherId 
+		INNER JOIN orders ORD ON O.orderId = ORD.orderId 
+		INNER JOIN student S ON ORD.memberId=S.memberId
+		<where>
+			<if test="teacherName != null">
+				AND T.teacherName LIKE CONCAT('%',#{teacherName},'%')
+			</if>
+			<if test="telNumber != null">
+				AND T.telNumber = #{telNumber}
+			</if>
+			<if test="teachingLevel != null">
+				AND T.teachingLevel = #{teachingLevel}
+			</if>
+		</where>
+	</select>
+	<select id="getLatestWeekTeachingNum" parameterType="hashmap" resultType="java.lang.Integer">
+		SELECT SUM(teachingNum) as latestWeekTeachingNum FROM teachingrecord WHERE 
+		lessonTradeId IN (SELECT lessonTradeId FROM lessontrade WHERE teacherId = #{teacherId} 
+		AND memberId = #{memberId} AND parentId = #{parentId}) AND YEARWEEK(teachingDate) = YEARWEEK(now())-1
+	</select>
+	
+	<select id="getCurrentWeekTeachingNum" parameterType="hashmap" resultType="java.lang.Integer">
+		SELECT SUM(teachingNum) as currentWeekTeachingNum FROM teachingrecord WHERE 
+		lessonTradeId IN (SELECT lessonTradeId FROM lessontrade WHERE teacherId = #{teacherId} 
+		AND memberId = #{memberId} AND parentId = #{parentId}) AND YEARWEEK(teachingDate) = YEARWEEK(now())
+	</select>
+	
+	<select id="getTotalTeachingNum" parameterType="hashmap" resultType="java.lang.Integer">
+		SELECT SUM(teachingNum) as totalTeachingNum FROM teachingrecord WHERE 
+		lessonTradeId IN (SELECT lessonTradeId FROM lessontrade WHERE teacherId = #{teacherId} 
+		AND memberId = #{memberId} AND parentId = #{parentId})
+	</select>
+	
+	<select id="getEvaluatioList" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT L.feedback FROM lessontrade L,(SELECT * FROM order_teaching_r WHERE teachingId = #{teachingId}) B 
+		WHERE L.teacherId = B.teacherId AND L.memberId = B.memberId AND L.parentId = B.parentId 
+	</select>
+	
+	<select id="getMonthEvaluatio" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT * FROM lessontrade L,(SELECT * FROM order_teaching_r WHERE teachingId = #{teachingId}) B WHERE L.teacherId = B.teacherId AND L.memberId = B.memberId AND L.parentId = B.parentId AND STR_TO_DATE(applyTime,'%Y-%m') = STR_TO_DATE(#{queryMonth},'%Y-%m')
+	</select>
+</mapper>
