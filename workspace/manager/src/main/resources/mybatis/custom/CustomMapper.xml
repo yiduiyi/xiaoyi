@@ -58,4 +58,14 @@
 	</where>
   </select>
   
+  <select id="getPSRList" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+  		SELECT P.parentId,S.memberId,S.`name` FROM parents P INNER JOIN parent_stu_r PS ON p.parentId = PS.parentId 
+  		INNER JOIN student S ON PS.memberId = S.memberId WHERE P.openId = #{openid}
+  </select>
+  
+  <select id="getStuTeachingDetailByMonth" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
+  		SELECT TR.teachingDate,TR.startTime,TR.endTime,A.teacherName,TR.teachingNum FROM teachingrecord TR INNER JOIN (
+		SELECT L.lessonTradeId,T.teacherName FROM lessontrade L INNER JOIN teacher T ON L.teacherId = T.teacherId WHERE 
+		L.parentId = #{parentId} AND L.memberId = #{memberId}) A ON TR.lessonTradeId = A.lessonTradeId STR_TO_DATE(teachingDate,'%Y-%m') = STR_TO_DATE(#{queryMonth},'%Y-%m')
+  </select>
 </mapper>

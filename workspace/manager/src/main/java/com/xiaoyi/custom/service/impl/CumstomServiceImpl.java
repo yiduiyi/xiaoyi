@@ -864,4 +864,14 @@ public class CumstomServiceImpl implements ICustomService{
 		return result;
 	}
 
+	@Override
+	public List<JSONObject> getPSRList(String openid) {
+		return customDao.getPSRList(openid);
+	}
+
+	@Override
+	public List<JSONObject> getStuTeachingDetailByMonth(JSONObject reqData) {
+		return customDao.getStuTeachingDetailByMonth(reqData);
+	}
+
 }

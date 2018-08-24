@@ -45,4 +45,8 @@ public interface ICustomService {
 	 * 获取补缴金额
 	 */
 	JSONObject getDebt(JSONObject params);
+	//获取家长对应的学生列表
+	public List<JSONObject> getPSRList(String openid);
+	//获取某月学生上课记录详情
+	public List<JSONObject> getStuTeachingDetailByMonth(JSONObject reqData);
 }
