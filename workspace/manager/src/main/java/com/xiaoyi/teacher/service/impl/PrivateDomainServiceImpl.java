@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.dao.IUserDao;
 import com.xiaoyi.manager.domain.Teacher;

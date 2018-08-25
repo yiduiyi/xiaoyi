@@ -3,8 +3,8 @@ package com.xiaoyi.common.service;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.teacher.domain.LessonTrade;
 
 public interface IWechatService {
 	String processRequest(HttpServletRequest request);

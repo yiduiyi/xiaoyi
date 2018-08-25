@@ -23,6 +23,15 @@ import org.jdom.input.SAXBuilder;
 import org.springframework.stereotype.Service;
 import org.xml.sax.InputSource;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
+import com.xiaoyi.common.service.IWechatService;
+import com.xiaoyi.common.utils.ClientCustomSSL;
+import com.xiaoyi.common.utils.HttpClient;
+import com.xiaoyi.common.utils.SignUtils;
+import com.xiaoyi.common.utils.WXPayUtil;
+import com.xiaoyi.common.utils.WechatMessageUtil;
+import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.common.vo.TextMessage;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -36,15 +45,6 @@ import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.wechat.utils.UUIDUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
-import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.exception.CommonRunException;
-import com.xiaoyi.common.service.IWechatService;
-import com.xiaoyi.common.utils.ClientCustomSSL;
-import com.xiaoyi.common.utils.HttpClient;
-import com.xiaoyi.common.utils.SignUtils;
-import com.xiaoyi.common.utils.WXPayUtil;
-import com.xiaoyi.common.utils.WechatMessageUtil;
-import com.xiaoyi.common.utils.XMLUtil;
 
 
 @Service("wechatService")

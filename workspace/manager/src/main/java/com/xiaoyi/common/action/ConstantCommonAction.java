@@ -1,10 +1,6 @@
 package com.xiaoyi.common.action;
 
-import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -23,9 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.ICommonDataService;
 import com.xiaoyi.common.service.IWechatService;
-import com.xiaoyi.common.utils.HttpClient;
-import com.xiaoyi.common.utils.WXConstants;
-import com.xiaoyi.common.utils.WechatMessageUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Education;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
