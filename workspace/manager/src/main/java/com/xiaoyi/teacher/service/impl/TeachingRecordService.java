@@ -257,8 +257,16 @@ public class TeachingRecordService implements ITeachingRecordService {
 					 * lessonTradeId = UUID.randomUUID().toString(); }
 					 */
 
-					record.setOrderid(orderId);
-					record.setRecordid(UUID.randomUUID().toString());
+					//过滤微信提取的记录
+					String recordId = teachingDetail.getString("recordId");
+					if(StringUtils.isEmpty(recordId)){		// 提现课时数(微信端提交的已经扣除)
+						record.setRecordid(UUID.randomUUID().toString());
+						totalLessons += teachingDetail.getFloat("checkNum");
+					}else{
+						record.setRecordid(recordId);
+					}
+					
+					record.setOrderid(orderId);					
 					record.setTeacherid(teacherId);
 					record.setTeachingid(teachingId);
 					record.setStarttime(teachingDetail.getString("startTime"));
@@ -271,8 +279,11 @@ public class TeachingRecordService implements ITeachingRecordService {
 
 					addedRecordDates.add(teachingDate);
 					lessonTradeIdDateMap.put(lessonTradeId, teachingDate);
-					// 提现课时数
-					totalLessons += teachingDetail.getFloat("checkNum");
+					
+					// 提现课时数(微信端提交的已经扣除)
+					/*if(StringUtils.isEmpty(recordId)){
+						totalLessons += teachingDetail.getFloat("checkNum");
+					}*/
 				}
 				try {
 					// 已经提现

@@ -22,6 +22,8 @@ public class TeachingRecord {
     
     private String lessonTradeId;
 
+    private String feedback;
+    
     public String getRecordid() {
         return recordid;
     }
@@ -92,5 +94,13 @@ public class TeachingRecord {
 
 	public void setLessonTradeId(String lessonTradeId) {
 		this.lessonTradeId = lessonTradeId;
+	}
+
+	public String getFeedback() {
+		return feedback;
+	}
+
+	public void setFeedback(String feedback) {
+		this.feedback = feedback;
 	}
 }

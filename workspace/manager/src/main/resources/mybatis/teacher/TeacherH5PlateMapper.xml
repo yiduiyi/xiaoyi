@@ -81,5 +81,24 @@
 		</set>
 		where telNumber = #{telnumber,jdbcType=VARCHAR}
 	</update>
-
+ 	
+ 	<!-- 查询老师绑定的任教关系 -->
+ 	<select id="selectTeachingRelationships" parameterType="java.lang.String" 
+ 		resultType="com.alibaba.fastjson.JSONObject">
+ 		SELECT a.teachingId,c.parentName,c.telNum,s.`name`,b.lessonLeftNum,b.totalLessonNum
+		FROM order_teaching_r a 
+			LEFT JOIN ordersum b ON a.orderId=b.orderId
+			LEFT JOIN parents c ON a.parentId=c.parentId
+			LEFT JOIN student s ON a.memberId=s.memberId
+		WHERE teacherId=#{teacherId}
+ 	</select>
+ 	
+ 	<!-- 获取历史课时提交记录 -->
+ 	<select id="selectHistoryTeachingRecords" parameterType="com.alibaba.fastjson.JSONObject" 
+ 		resultType="com.alibaba.fastjson.JSONObject">
+ 		SELECT startTime,endTime,teachingNum,teachingDate,feedback
+		FROM teachingrecord 
+		WHERE teachingId=#{teachingId}
+			AND DATE_FORMAT(teachingDate,"%Y-%m")=#{queryDate}
+ 	</select>
 </mapper>

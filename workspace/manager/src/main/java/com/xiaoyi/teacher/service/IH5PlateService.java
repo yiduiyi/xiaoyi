@@ -24,6 +24,16 @@ public interface IH5PlateService {
 	
 	List<JSONObject> getAvailableLessons(String teacherId) throws Exception;
 	
+	//获取老师所绑定的任教关系
+	List<JSONObject> getTeachingRelationships(String openId);
+	
+	//iii.	获取历史课时提交记录（未实现）
+	List<JSONObject> getHistoryTeachingRecords(JSONObject params);
+	
+	//iv.	提交课时记录（未实现）
+	@Transactional
+	int submitTeachingRecord(JSONObject params);
+	
 	/**
 	 * 每月发送定时提现消息
 	 * @return

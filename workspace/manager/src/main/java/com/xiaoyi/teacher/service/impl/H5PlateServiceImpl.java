@@ -1,14 +1,18 @@
 package com.xiaoyi.teacher.service.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,17 +28,23 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.comparator.ComparableComparator;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.XMLUtil;
+import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.manager.dao.IOrderSumDao;
+import com.xiaoyi.manager.dao.IOrdersDao;
+import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.dao.IUserDao;
 import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
+import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.domain.UserKey;
+import com.xiaoyi.manager.service.IAccountService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.teacher.dao.ILessonTradeDao;
 import com.xiaoyi.teacher.dao.ITH5PlateDao;
@@ -48,8 +58,10 @@ import com.xiaoyi.teacher.domain.TeacherBalance;
 import com.xiaoyi.teacher.domain.TeacherBalanceDailyProfits;
 import com.xiaoyi.teacher.domain.TeacherBalanceFromKey;
 import com.xiaoyi.teacher.domain.TeacherBalanceWithdraw;
+import com.xiaoyi.teacher.domain.TeachingRecord;
 import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 @Service("h5PlateService")
 public class H5PlateServiceImpl implements IH5PlateService {
@@ -67,6 +79,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	IOrderSumDao orderSumDao;
 	
 	@Resource
+	IOrdersDao ordersDao;
+	
+	@Resource
+	ITeacherDao teacherDao;
+	
+	@Resource
 	ITeacherBalanceDao balanceDao;
 	
 	@Resource
@@ -77,6 +95,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	
 	@Resource
 	ITeacherBalanceDailyProfitsDao dailyProfitsDao;
+	
+	@Autowired
+	IAccountService accountService;
 	
 	@Autowired
 	IWechatService wechatService;
@@ -794,5 +815,186 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			throw new CommonRunException(-7, "增加/更新老师账户余额出错【入库错误】！");
 		}
 		
+	}
+
+	@Override
+	public List<JSONObject> getTeachingRelationships(String openId) {
+		List<JSONObject> result = new ArrayList<JSONObject>();
+		
+		String teacherId = null;
+		if(StringUtils.isEmpty(openId)){
+			return result;
+		}
+		
+		//根据openId查询老师
+		Teacher teacher = null;
+		try {
+			teacher = teacherH5Dao.selectTeacherByOpenId(openId);
+			if(null==teacher){
+				throw new CommonRunException(-1, "参数错误【teacherId为空】！");
+			}
+			teacherId = teacher.getTeacherid();
+		} catch (Exception e) {
+			logger.error("根据openID查询老师失败！");
+		}
+		
+		if(StringUtils.isEmpty(teacherId)){
+			logger.info("老师Id为空！");
+			return result;
+		}
+		//查询绑定教学订单（老师-家长-学生关系）
+		try {		
+			result = teacherH5Dao.selectTeachingRelationships(teacherId);
+		} catch (Exception e) {
+			logger.error("查询绑定教学订单（老师-家长-学生关系）失败！");
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<JSONObject> getHistoryTeachingRecords(JSONObject params) {
+		List<JSONObject> result = new ArrayList<JSONObject>();
+		try {
+			result = teacherH5Dao.selectHistoryTeachingRecords(params);
+		} catch (Exception e) {
+			logger.error("查询历史课时提交记录失败！");
+		}
+		return result;
+	}
+
+	@Override
+	public int submitTeachingRecord(JSONObject params) {
+		// TODO Auto-generated method stub
+		String orderId = params.getString("orderId");
+		String teacherId = params.getString("teacherId");
+		String teachingId = params.getString("teachingId");
+		String openId = params.getString("openId");
+		
+		String teacherName = null;
+		try {
+			Teacher teacher = teacherDao.selectByPrimaryKey(teacherId);
+			teacherName = teacher.getTeachername();
+		} catch (Exception e) {
+			logger.info("查询老师失败！");
+			e.printStackTrace();
+			return -1;
+		}
+		
+		//新增微信端teachingRecord
+		float totalLessons = 0f;
+		try {
+			List<TeachingRecord> teachingRecords = new ArrayList<TeachingRecord>();
+			JSONArray teachingDetails = params.getJSONArray("teachingDetails");			
+			
+			for(Object obj : teachingDetails){
+				JSONObject teachingDetail = (JSONObject)obj;
+				TeachingRecord record = new TeachingRecord();
+				
+				record.setOrderid(orderId);
+				record.setTeacherid(teacherId);
+				record.setTeachingid(teachingId);
+				record.setRecordid(UUID.randomUUID().toString());
+				record.setEndtime(teachingDetail.getString("endTime"));
+				record.setStarttime(teachingDetail.getString("startTime"));
+				record.setTeachingdate(teachingDetail.getDate("teachingDate"));
+				record.setTeachingnum(teachingDetail.getFloat("checkNum"));
+				record.setFeedback(teachingDetail.getString("feedback"));
+				//record.setLessonTradeId(lessonTradeId);  区别于pc端提现
+				//此次提现课时数
+				totalLessons += teachingDetail.getFloatValue("checkNum");
+				
+				teachingRecords.add(record);
+			}
+			
+			tRecordDao.insertTeachingRecords(teachingRecords );
+		} catch (Exception e) {
+			throw new CommonRunException(-1, "插入微信提现记录失败！");
+		}
+		
+		//更新家长订单
+		Float leftLessonCount = 0f;
+		int lessontype = 0;
+		// 更新用户订单课时数（家长）
+		try {
+			OrderSumKey key = new OrderSumKey();
+			key.setOrderid(orderId);
+			OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
+			leftLessonCount = orderSum.getLessonleftnum() - totalLessons;
+			orderSum.setLessonleftnum(leftLessonCount);
+
+			lessontype = orderSum.getLessontype();
+			
+			// 新增家长端老师提现记录
+			Orders order = new Orders();
+			order.setOrderid(UUID.randomUUID().toString());
+			order.setCreatetime(new Date());
+			order.setLessontype(lessontype);
+			order.setMemberid(orderSum.getMemberid());
+			order.setOrderType(-1);
+			order.setParentid(orderSum.getParentid());
+			order.setPurchasenum(-totalLessons);
+
+			// 提现记录入库
+			ordersDao.insert(order);
+
+			// 更新用户总课时
+			orderSumDao.updateByPrimaryKeySelective(orderSum);
+			//leftLessonCount = orderSum.getLessonleftnum();
+			
+			//剩余课时小于6个小时,自动触发缴费提醒
+			if(orderSum.getLessonleftnum()<=6){
+				Map<String,Object> obj = new HashMap<String,Object>();
+				obj.put("orderIds", orderId);
+				accountService.sendMsgsToSelectedCustom(obj);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new CommonRunException(-1, " 更新家长订单失败！");
+		}
+
+		
+		//发送消息到家长微信端
+		// 根据家长openId开始推送消息（确认老师提现）
+		// 消息推送给家长，进行确认
+		JSONObject data = new JSONObject();
+		JSONObject first = new JSONObject();
+		first.put("value", "家长您好：");
+		first.put("color", "#173177");
+		data.put("first", first);
+
+		JSONObject keyword1 = new JSONObject();
+		keyword1.put("value", teacherName);
+		keyword1.put("color", "#173177");
+		data.put("keyword1", keyword1);
+
+		
+		LessonType lt = LessonType.convert(lessontype);
+		JSONObject keyword2 = new JSONObject();
+		keyword2.put("value", lt.getGradeName(false));
+		keyword2.put("color", "#173177");
+		data.put("keyword2", keyword2);
+		params.put("data", data);
+		
+		JSONObject keyword3 = new JSONObject();
+		keyword3.put("value", totalLessons+"(剩余："+leftLessonCount+")");
+		keyword3.put("color", "#173177");
+		data.put("keyword3", keyword3);
+		params.put("data", data);
+
+		JSONObject keyword4 = new JSONObject();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		keyword4.put("value", sdf.format(new Date()));
+		keyword4.put("color", "#173177");
+		data.put("keyword4", keyword4);
+		params.put("data", data);
+
+		//已捕获异常
+		String result = wechatService.sendTempletMsg(WeiXinConfig.CUSTOM_LESSON_CONFIRM_MSG_TEMPLETE_ID/*LESSON_CONFIRM_MSG_TEMPLETE_ID*/,
+				WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL/* + extraParams.toString()*/, openId,
+				data);
+		
+		return 0;
 	}
 }
