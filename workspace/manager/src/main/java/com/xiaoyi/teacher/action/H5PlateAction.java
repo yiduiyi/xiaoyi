@@ -1,5 +1,6 @@
 package com.xiaoyi.teacher.action;
 
+import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -256,6 +257,119 @@ public class H5PlateAction {
 		setReturnMsg(result, code, msg);
 		return result;
 	}
+	
+	/**
+	 * ii.	查询老师绑定的家长-学生（未实现）
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getTeachingRelationships", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getTeachingRelationships(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();		
+		int code = 1;
+		String msg="获取任教关系失败！";
+		
+		try {
+			JSONObject reqParams = new JSONObject();			
+			reqParams.put("openId", request.getSession().getAttribute("openid"));			
+			List<JSONObject> datas = 
+					h5PlateService.getTeachingRelationships(reqParams.getString("openId"));
+			
+			result.put("datas", datas);
+			code = 0;
+			msg = "获取账户余额成功！";
+		} catch (Exception e) {
+			CommonRunException commException = (CommonRunException)e;
+			code = commException.getCode();
+			msg = commException.getMessage();
+			logger.error(msg);
+		}
+
+		setReturnMsg(result, code, msg);
+		return result;
+	}
+	
+	/**
+	 * iii.	获取历史课时提交记录（未实现）
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getHistoryTeachingRecords", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getHistoryTeachingRecords(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();		
+		int code = 1;
+		String msg="获取任教关系失败！";
+		
+		try {			
+			//verify parmaments
+			logger.info("params:" + reqData.toJSONString());
+			if(StringUtils.isEmpty(reqData.getString("queryMonth"))
+					||StringUtils.isEmpty(reqData.getString("teachingId"))){
+				msg = "参数错误！";
+				code = -1;
+				setReturnMsg(result, code, msg);
+				return result;
+			}
+			List<JSONObject> datas = h5PlateService.getHistoryTeachingRecords(reqData);
+			//JSONObject data = h5PlateService.queryTeacherBalanceing(reqParams);
+			
+			result.put("datas", datas);
+			code = 0;
+			msg = "获取账户余额成功！";
+		} catch (Exception e) {
+			CommonRunException commException = (CommonRunException)e;
+			code = commException.getCode();
+			msg = commException.getMessage();
+			logger.error(msg);
+		}
+
+		setReturnMsg(result, code, msg);
+		return result;
+	}
+	
+	/**
+	 * iv.	提交课时记录（未实现）
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/submitTeachingRecord", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject submitTeachingRecord(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();		
+		int code = 1;
+		String msg="微信端提交课时记录失败！";
+		
+		try {
+			JSONObject reqParams = new JSONObject();			
+			reqParams.put("openId", request.getSession().getAttribute("openid"));			
+			reqData.put("openId", reqParams.get("openId"));	//用于发送微信消息
+						
+			h5PlateService.submitTeachingRecord(reqData);
+			
+			code = 0;
+			msg = "微信端提交课时记录成功！";
+		} catch (Exception e) {
+			CommonRunException commException = (CommonRunException)e;
+			code = commException.getCode();
+			msg = commException.getMessage();
+			logger.error(msg);
+		}
+
+		setReturnMsg(result, code, msg);
+		return result;
+	}
+	
 	/**
 	 * 获取用户openId
 	 * @param req
@@ -281,6 +395,8 @@ public class H5PlateAction {
 		}
 		return null;
 	}
+	
+	//
 	
 	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {
 		result.put("code", code);

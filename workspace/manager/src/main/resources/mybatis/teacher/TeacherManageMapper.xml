@@ -168,6 +168,7 @@
 				#{item.starttime},#{item.endtime},#{item.teachingnum}
 				,#{item.teachingdate},#{item.lessonTradeId})
 		</foreach>
+		ON DUPLICATE KEY UPDATE recordId=VALUES(recordId), lessonTradeId=VALUES(lessonTradeId)
 	</insert>
 	
 	<!-- 查询老师提现记录 -->
