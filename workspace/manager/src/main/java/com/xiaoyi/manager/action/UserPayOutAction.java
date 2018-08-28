@@ -164,7 +164,7 @@ public class UserPayOutAction {
 		//parameters.put("body", body.toJSONString());
 		
 		//到账通知地址
-		parameters.put("notify_url", "http://test.yduiy.com.cn/interface/notice.do");
+		parameters.put("notify_url", WeiXinConfig.NOTIFY_URL);
 		parameters.put("trade_type", WeiXinConfig.tradeType);
 		parameters.put("openid", openid);
 		String sign = WeiXinConfig.createSign("UTF-8", parameters);

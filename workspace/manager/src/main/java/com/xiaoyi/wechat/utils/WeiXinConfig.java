@@ -27,7 +27,7 @@ public class WeiXinConfig {
 																	// ed88788d15aa1982954d605f7569fe0f
 																	// N4ufMPFoicK1ewPFZbdQjGNNtFUr6SERjUMjKdU67rh
 	public static String SECRET ;//= "2e50c7d680e6fc3efe5fc0cdf81568fd"; // AppSecret
-																		// 确定正确
+	public static String NOTIFY_URL;																	// 确定正确
 
 	// public static String
 	// LESSON_CONFIRM_MSG_TEMPLETE_ID="kXQ9h6ptFCKM6cmrizyIZXrJtU3uKPs0dbl_bQH_QaM";
@@ -95,6 +95,7 @@ public class WeiXinConfig {
 		BIND_TEACHER_MSG_TEMPLETE_ID = properties.getProperty("BIND_TEACHER_MSG_TEMPLETE_ID");
 		TEACHER_PLATE_APPID = properties.getProperty("TEACHER_PLATE_APPID");
 		TEACHER_PLATE_SECRET_KEY = properties.getProperty("TEACHER_PLATE_SECRET_KEY");
+		NOTIFY_URL = properties.getProperty("NOTIFY_URL"); 
 	}
 
 	public static String getRequestXml(SortedMap<String, String> parameters) {
