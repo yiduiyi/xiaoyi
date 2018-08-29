@@ -25,13 +25,13 @@ public class TestMonitor {
 	@Test
 	public void testGetTeachingProcess() {
 		JSONObject reqData = new JSONObject();
-		/*reqData.put("teacherName", "吕");*/
+		reqData.put("lessThan", "2");
 		List<JSONObject> data = monitorService.getTeachingProcess(reqData);
-		if(CollectionUtils.isNotEmpty(data)) {
+		/*if(CollectionUtils.isNotEmpty(data)) {
 			for (JSONObject jsonObject : data) {
 				System.out.println(jsonObject);
 			}
-		}
+		}*/
 	}
 	@Test
 	public void testGetCustomFeedback() {

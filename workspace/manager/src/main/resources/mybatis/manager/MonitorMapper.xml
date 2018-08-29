@@ -17,11 +17,7 @@
 			<if test="teachingLevel != null">
 				AND T.teachingLevel = #{teachingLevel}
 			</if>
-		</where> ) A <where>
-			<if test="lessThan != null">
-				AND latestWeekTeachingNum &lt; lessThan
-			</if>
-		</where>
+		</where> ) A
 	</select>
 	<select id="getLatestWeekTeachingNum" parameterType="hashmap" resultType="java.lang.Integer">
 		SELECT SUM(teachingNum) as latestWeekTeachingNum FROM teachingrecord WHERE 

@@ -1,6 +1,7 @@
 package com.xiaoyi.manager.service.impl;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -28,14 +29,32 @@ public class MonitorServiceImpl implements IMonitorService {
 	public List<JSONObject> getTeachingProcess(JSONObject reqData) {
 		List<JSONObject> result = null;
 		try {
-			long startTime = System.currentTimeMillis();
+			
 			result = iMonitorDao.getTeachersList(reqData);
-			long endTime = System.currentTimeMillis();
-			logger.info("数据处理时间"+""+(endTime-startTime));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
+		long startTime = System.currentTimeMillis();
+		//上周课时低于lessThan课时
+		Integer lessThan = reqData.getInteger("lessThan");
+		Iterator<JSONObject> iterator = result.iterator();
+		if(null != lessThan) {
+			while(iterator.hasNext()) {
+				JSONObject teacher = iterator.next();
+				logger.info(teacher.getString("teacherId")+"该教师所提现的课时"+"上周课时"+teacher.getString("latestWeekTeachingNum")+"本周课时"+teacher.getString("currentWeekTeachingNum")+"总课时"+teacher.getString("totalTeachingNum"));
+				Integer latestWeekTeachingNum = teacher.getInteger("latestWeekTeachingNum");
+				if(null != latestWeekTeachingNum) {
+					if(latestWeekTeachingNum > lessThan) {
+						iterator.remove();
+					}
+				}
+				
+			}
+		}
+		long endTime = System.currentTimeMillis();
+		logger.info("数据处理时间"+""+(endTime-startTime));
 		if(CollectionUtils.isNotEmpty(result)) {
 			for (JSONObject teacher : result) {
 				//转换教师等级
@@ -63,7 +82,6 @@ public class MonitorServiceImpl implements IMonitorService {
 				}
 				
 			}
-			
 		}
 		return result;
 	}

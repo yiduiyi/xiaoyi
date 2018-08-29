@@ -18,7 +18,7 @@ public class TestCumstom {
 	
 	@Test
 	public void testGetPSRList() {
-		String openid = "oVbXbwwOE7yzHjGJp1Pd7Cw00tN8";
+		String openid = "oknxW0ivmUJDGZHQXEleabGhydjc";
 		List<JSONObject> jsonObjects = customService.getPSRList(openid);
 		for (JSONObject jsonObject : jsonObjects) {
 			System.out.println(jsonObject.toJSONString());
