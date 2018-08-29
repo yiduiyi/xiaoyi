@@ -154,7 +154,7 @@
 		left JOIN student d ON a.memberId = d.memberId
 		WHERE
 		b.teacherId=#{teacherId}
-		GROUP BY parentId,memberId,gradeId
+		GROUP BY b.teachingId<!-- parentId,memberId,gradeId -->
 	</select>
 	
 	<!-- 插入提现课时记录 -->
