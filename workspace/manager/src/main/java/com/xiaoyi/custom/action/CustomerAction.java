@@ -285,6 +285,11 @@ public class CustomerAction {
 		try {
 			// 获取openId
 			String openid = (String) request.getSession().getAttribute("openid");
+			if(null == openid){
+				openid = setSessionOpenId(request);
+				logger.info("In getPSRList:"+openid);			
+			}
+			openid="oknxW0lyknEETUK7k4qfC8BGvVA4";
 			if (StringUtils.isNotEmpty(openid)) {
 				List<JSONObject> studentsList = customService.getPSRList(openid);
 				result.put("data", studentsList);
@@ -305,6 +310,7 @@ public class CustomerAction {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
+			reqData.put("memberId", reqData.getString("studentId"));
 			List<JSONObject> studentsList = customService.getStuTeachingDetailByMonth(reqData);
 			result.put("data", studentsList);
 			rtCode = RtConstants.SUCCESS;
@@ -315,6 +321,32 @@ public class CustomerAction {
 		return result;
 	}
 
+	/**
+	 * 获取用户openId
+	 * @param req
+	 */
+	private String setSessionOpenId(HttpServletRequest req){
+		logger.info("In common get openId method...");
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+		    logger.info("code[in common]:"+code);
+		    if (code!=null && !"authdeny".equals(code)){
+	        	logger.info("authing..."); 
+		    	WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.TEACHER_PLATE_APPID, WeiXinConfig.TEACHER_PLATE_SECRET_KEY , code);
+	            String openid = weixinOauth2Token.getOpenId();
+	            req.getSession().setAttribute("openid", openid);
+	            logger.error("openid====>" + openid);
+	              //res.sendRedirect( req.getContextPath() + "/wechat/index.html#/drawings");
+	            return openid;
+		    } 	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	//
 	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {
 		result.put("code", code);
