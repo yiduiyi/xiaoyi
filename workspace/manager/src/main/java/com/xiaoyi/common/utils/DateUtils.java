@@ -13,6 +13,8 @@ public class DateUtils {
 	public static final String YYYYMMDDHHMMSS ="yyyy-MM-dd HH:mm:ss";
 	public static final String YYYYMMDD ="yyyy-MM-dd";
 	
+	public static final String HHMM ="HH:mm";
+	
 	public static String toYYYYMMDDHHMMSSString(Date date) {
 		SimpleDateFormat dateFormat=new SimpleDateFormat(YYYYMMDDHHMMSS);
 		return dateFormat.format(date);
@@ -33,4 +35,12 @@ public class DateUtils {
 		return dateFormat.parse(dateString);
 	}
 	
+	public static StringBuilder starTimeJoinEndTime(Date startTime,Date endTime) {
+		SimpleDateFormat dateFormat=new SimpleDateFormat(HHMM);
+		StringBuilder result = new StringBuilder();
+		String startTimeStr = dateFormat.format(startTime);
+		String endTimeStr = dateFormat.format(endTime);
+		result=result.append(startTimeStr).append("——").append(endTimeStr);
+		return result;
+	}
 }

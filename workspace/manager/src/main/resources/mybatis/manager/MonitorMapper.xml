@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaoyi.manager.dao.IMonitorDao">
-
 	<select id="getTeachersList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT O.teachingId,T.teacherId,T.teacherName,T.sex,T.telNumber,T.teachingLevel,ORD.memberId,ORD.parentId,S.`name` 
-		FROM order_teaching_r O INNER JOIN teacher T ON O.teacherId = T.teacherId 
-		INNER JOIN orders ORD ON O.orderId = ORD.orderId 
-		INNER JOIN student S ON ORD.memberId=S.memberId
+		SELECT A.teachingId,A.teacherName,A.sex,A.telNumber,A.teachingLevel,A.studentName,
+		(SELECT SUM(T.teachingNum) FROM teachingrecord T INNER JOIN lessontrade L ON T.lessonTradeId = L.lessonTradeId WHERE L.teacherId = A.teacherId AND L.memberId = A.memberId AND L.parentId = A.parentId AND YEARWEEK(teachingDate) = YEARWEEK(now())-1) as latestWeekTeachingNum,
+		(SELECT SUM(T.teachingNum) FROM teachingrecord T INNER JOIN lessontrade L ON T.lessonTradeId = L.lessonTradeId WHERE L.teacherId = A.teacherId AND L.memberId = A.memberId AND L.parentId = A.parentId AND YEARWEEK(teachingDate) = YEARWEEK(now())) as currentWeekTeachingNum,
+		(SELECT SUM(T.teachingNum) FROM teachingrecord T INNER JOIN lessontrade L ON T.lessonTradeId = L.lessonTradeId WHERE L.teacherId = A.teacherId AND L.memberId = A.memberId AND L.parentId = A.parentId) as totalTeachingNum
+		FROM ( SELECT O.teachingId,T.teacherId,T.teacherName,T.sex,T.telNumber,T.teachingLevel,ORD.memberId,ORD.parentId,S.`name` AS studentName FROM order_teaching_r O INNER JOIN teacher T ON O.teacherId = T.teacherId INNER JOIN orders ORD ON O.orderId = ORD.orderId INNER JOIN student S ON ORD.memberId=S.memberId 
 		<where>
 			<if test="teacherName != null">
 				AND T.teacherName LIKE CONCAT('%',#{teacherName},'%')
@@ -17,7 +17,7 @@
 			<if test="teachingLevel != null">
 				AND T.teachingLevel = #{teachingLevel}
 			</if>
-		</where>
+		</where> ) A
 	</select>
 	<select id="getLatestWeekTeachingNum" parameterType="hashmap" resultType="java.lang.Integer">
 		SELECT SUM(teachingNum) as latestWeekTeachingNum FROM teachingrecord WHERE 
@@ -43,6 +43,6 @@
 	</select>
 	
 	<select id="getMonthEvaluatio" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT * FROM lessontrade L,(SELECT * FROM order_teaching_r WHERE teachingId = #{teachingId}) B WHERE L.teacherId = B.teacherId AND L.memberId = B.memberId AND L.parentId = B.parentId AND STR_TO_DATE(applyTime,'%Y-%m') = STR_TO_DATE(#{queryMonth},'%Y-%m')
+		SELECT L.feedback,L.notes FROM lessontrade L,(SELECT * FROM order_teaching_r WHERE teachingId = #{teachingId}) B WHERE L.teacherId = B.teacherId AND L.memberId = B.memberId AND L.parentId = B.parentId AND STR_TO_DATE(applyTime,'%Y-%m') = STR_TO_DATE(#{queryMonth},'%Y-%m')
 	</select>
 </mapper>

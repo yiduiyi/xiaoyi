@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.manager.service.MonitorService;
+import com.xiaoyi.manager.service.IMonitorService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 /**
@@ -26,7 +26,7 @@ import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 @RequestMapping("/monitor")
 public class MonitorAction {
 	@Resource
-	private MonitorService monitorService;
+	private IMonitorService monitorService;
 
 	/**
 	 * 教学监控列表查询

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
 
-public interface MonitorService {
+public interface IMonitorService {
 	
 	//教学监控列表查询
 	public List<JSONObject> getTeachingProcess(JSONObject reqData);
