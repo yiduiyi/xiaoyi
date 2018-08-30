@@ -874,10 +874,18 @@ public class CumstomServiceImpl implements ICustomService{
 	public List<JSONObject> getStuTeachingDetailByMonth(JSONObject reqData) {
 		List<JSONObject> result = null;
 		try {
+			//适配前端日期
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+			Date date = sdf.parse(reqData.getString("queryMonth"));
+			String queryDateFormatString = sdf.format(date);
+			
+			reqData.put("queryMonth", queryDateFormatString);
 			result = customDao.getStuTeachingDetailByMonth(reqData);
 			if (!CollectionUtils.isEmpty(result)) {
+				
 				for (JSONObject jsonObject : result) {
-					jsonObject.put("teachingTime", DateUtils.starTimeJoinEndTime(jsonObject.getDate("startTime"), jsonObject.getDate("endTime")));
+					jsonObject.put("teachingTime", 
+							DateUtils.starTimeJoinEndTime(jsonObject.getDate("startTime"), jsonObject.getDate("endTime")));
 				}
 			}
 		} catch (Exception e) {

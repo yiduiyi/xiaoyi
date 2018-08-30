@@ -64,8 +64,14 @@
   </select>
   
   <select id="getStuTeachingDetailByMonth" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-  		SELECT TR.teachingDate,TR.startTime,TR.endTime,A.teacherName,TR.teachingNum FROM teachingrecord TR INNER JOIN (
-		SELECT L.lessonTradeId,T.teacherName FROM lessontrade L INNER JOIN teacher T ON L.teacherId = T.teacherId WHERE 
-		L.parentId = #{parentId} AND L.memberId = #{memberId}) A ON TR.lessonTradeId = A.lessonTradeId WHERE STR_TO_DATE(teachingDate,'%Y-%m') = STR_TO_DATE(#{queryMonth},'%Y-%m')
+  		SELECT DATE_FORMAT(teachingDate,'%c.%e') AS teachingDate,TR.startTime,TR.endTime,A.teacherName,TR.teachingNum 
+  		FROM teachingrecord TR INNER JOIN 
+  		(
+			SELECT L.lessonTradeId,T.teacherName 
+			FROM lessontrade L 
+				INNER JOIN teacher T ON L.teacherId = T.teacherId 
+			WHERE L.parentId = #{parentId} AND L.memberId = #{memberId}
+		)A ON TR.lessonTradeId = A.lessonTradeId 
+		WHERE STR_TO_DATE(teachingDate,'%Y-%m') = STR_TO_DATE(#{queryMonth},'%Y-%m')
   </select>
 </mapper>
