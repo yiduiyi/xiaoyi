@@ -186,4 +186,31 @@ public class WeichatAuthAction{
 			e.printStackTrace();
 		}
 	}
+	
+	//http://www.yduiy.com.cn/xiaoyi/wechat/index.html#/addCourseRecord
+	@RequestMapping("/authToCourseRecord")
+	public void authToCourseRecord(HttpServletRequest req,
+			 HttpServletResponse res )  {
+		log.info("In authWithRedirectUrl...");
+		String redirectUrl = req.getParameter("redirect_url");
+		String orderId = req.getParameter("orderId");
+		log.info("orderId:" + orderId);
+		redirectUrl = "/wechat/index.html#/paydebt?orderId="+orderId;
+		log.info("redirect Url:"+redirectUrl);
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+	        if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID, WeiXinConfig.SECRET , code);
+	              String openid = weixinOauth2Token.getOpenId();
+	              req.getSession().setAttribute("openid", openid);
+	              log.error("openid====>" + openid);
+	              res.sendRedirect( req.getContextPath() + redirectUrl);
+	        } 
+	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
