@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
+import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
@@ -871,7 +872,18 @@ public class CumstomServiceImpl implements ICustomService{
 
 	@Override
 	public List<JSONObject> getStuTeachingDetailByMonth(JSONObject reqData) {
-		return customDao.getStuTeachingDetailByMonth(reqData);
+		List<JSONObject> result = null;
+		try {
+			result = customDao.getStuTeachingDetailByMonth(reqData);
+			if (!CollectionUtils.isEmpty(result)) {
+				for (JSONObject jsonObject : result) {
+					jsonObject.put("teachingTime", DateUtils.starTimeJoinEndTime(jsonObject.getDate("startTime"), jsonObject.getDate("endTime")));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }
