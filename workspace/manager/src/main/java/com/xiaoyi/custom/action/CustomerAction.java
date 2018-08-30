@@ -289,7 +289,7 @@ public class CustomerAction {
 				openid = setSessionOpenId(request);
 				logger.info("In getPSRList:"+openid);			
 			}
-			openid="oknxW0lyknEETUK7k4qfC8BGvVA4";
+			//openid="oknxW0lyknEETUK7k4qfC8BGvVA4";
 			if (StringUtils.isNotEmpty(openid)) {
 				List<JSONObject> studentsList = customService.getPSRList(openid);
 				result.put("data", studentsList);
