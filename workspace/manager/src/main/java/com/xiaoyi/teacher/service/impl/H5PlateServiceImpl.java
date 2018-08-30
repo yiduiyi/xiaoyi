@@ -11,6 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import javax.annotation.Resource;
 
@@ -102,6 +107,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final static float DAILY_PROFITS_RATE = 8.2f;
+	
+	private ExecutorService executorService = Executors.newFixedThreadPool(3);
 	
 	@Override
 	public int queryBindStatus(String openId) {
@@ -849,6 +856,13 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	public List<JSONObject> getHistoryTeachingRecords(JSONObject params) {
 		List<JSONObject> result = new ArrayList<JSONObject>();
 		try {
+			
+			//适配前端查询日期
+			String queryMonth = params.getString("queryMonth");
+			if(StringUtils.isNotEmpty(queryMonth) && queryMonth.length()>5){				
+				params.put("queryMonth", queryMonth.substring(0, 6));
+			}
+			
 			result = teacherH5Dao.selectHistoryTeachingRecords(params);
 		} catch (Exception e) {
 			logger.error("查询历史课时提交记录失败！");
@@ -859,15 +873,17 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Override
 	public int submitTeachingRecord(JSONObject params) {
 		// TODO Auto-generated method stub
-		String orderId = params.getString("orderId");
-		String teacherId = params.getString("teacherId");
+		final String orderId = params.getString("orderId");
 		String teachingId = params.getString("teachingId");
 		String openId = params.getString("openId");
 		
+		String teacherId = null;
 		String teacherName = null;
-		try {
-			Teacher teacher = teacherDao.selectByPrimaryKey(teacherId);
+		try {			
+			Teacher teacher = teacherH5Dao.selectTeacherByOpenId(openId); 
+					//teacherDao.selectByPrimaryKey(teacherId);
 			teacherName = teacher.getTeachername();
+			teacherId = teacher.getTeacherid();
 		} catch (Exception e) {
 			logger.info("查询老师失败！");
 			e.printStackTrace();
@@ -890,7 +906,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				record.setRecordid(UUID.randomUUID().toString());
 				record.setEndtime(teachingDetail.getString("endTime"));
 				record.setStarttime(teachingDetail.getString("startTime"));
-				record.setTeachingdate(teachingDetail.getDate("teachingDate"));
+
+				record.setTeachingdate(new Date());
 				record.setTeachingnum(teachingDetail.getFloat("checkNum"));
 				record.setFeedback(teachingDetail.getString("feedback"));
 				//record.setLessonTradeId(lessonTradeId);  区别于pc端提现
@@ -927,7 +944,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			order.setOrderType(-1);
 			order.setParentid(orderSum.getParentid());
 			order.setPurchasenum(-totalLessons);
-
+			order.setHasBook((short)0);
+			
 			// 提现记录入库
 			ordersDao.insert(order);
 
@@ -937,9 +955,20 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			
 			//剩余课时小于6个小时,自动触发缴费提醒
 			if(orderSum.getLessonleftnum()<=6){
-				Map<String,Object> obj = new HashMap<String,Object>();
-				obj.put("orderIds", orderId);
-				accountService.sendMsgsToSelectedCustom(obj);
+				logger.info("剩余课时小于6个小时,自动触发缴费提醒【发送中...】");
+				
+				Future<JSONObject> sendResult = executorService.submit(new Callable<JSONObject>() {
+
+					@Override
+					public JSONObject call() throws Exception {
+						// TODO Auto-generated method stub
+						Map<String,Object> obj = new HashMap<String,Object>();
+						obj.put("orderIds", orderId);
+						accountService.sendMsgsToSelectedCustom(obj);
+						return null;
+					}
+				});
+				sendResult.get();
 			}
 			
 		} catch (Exception e) {

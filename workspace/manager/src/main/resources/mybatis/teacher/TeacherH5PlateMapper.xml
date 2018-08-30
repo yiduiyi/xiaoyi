@@ -85,7 +85,8 @@
  	<!-- 查询老师绑定的任教关系 -->
  	<select id="selectTeachingRelationships" parameterType="java.lang.String" 
  		resultType="com.alibaba.fastjson.JSONObject">
- 		SELECT a.teachingId,c.parentName,c.telNum,IFNULL(s.`name`,"") as studentName,b.lessonLeftNum,b.totalLessonNum
+ 		SELECT a.orderId, a.teachingId, c.parentName, c.telNum, IFNULL(s.`name`,"") as studentName,
+ 			b.lessonLeftNum as leftLessons, b.totalLessonNum as totalPurchasedLessons
 		FROM order_teaching_r a 
 			LEFT JOIN ordersum b ON a.orderId=b.orderId
 			LEFT JOIN parents c ON a.parentId=c.parentId
@@ -100,6 +101,6 @@
  		SELECT startTime,endTime,teachingNum,teachingDate,feedback
 		FROM teachingrecord 
 		WHERE teachingId=#{teachingId}
-			AND DATE_FORMAT(teachingDate,"%Y-%m")=#{queryDate}
+			AND DATE_FORMAT(teachingDate,"%Y-%c")=#{queryMonth}
  	</select>
 </mapper>

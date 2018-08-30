@@ -276,10 +276,10 @@ public class H5PlateAction {
 		try {
 			JSONObject reqParams = new JSONObject();			
 			reqParams.put("openId", request.getSession().getAttribute("openid"));			
-			List<JSONObject> datas = 
+			List<JSONObject> data = 
 					h5PlateService.getTeachingRelationships(reqParams.getString("openId"));
 			
-			result.put("datas", datas);
+			result.put("data", data);
 			code = 0;
 			msg = "获取账户余额成功！";
 		} catch (Exception e) {
@@ -318,10 +318,10 @@ public class H5PlateAction {
 				setReturnMsg(result, code, msg);
 				return result;
 			}
-			List<JSONObject> datas = h5PlateService.getHistoryTeachingRecords(reqData);
+			List<JSONObject> data = h5PlateService.getHistoryTeachingRecords(reqData);
 			//JSONObject data = h5PlateService.queryTeacherBalanceing(reqParams);
 			
-			result.put("datas", datas);
+			result.put("data", data);
 			code = 0;
 			msg = "获取账户余额成功！";
 		} catch (Exception e) {
@@ -354,7 +354,9 @@ public class H5PlateAction {
 			JSONObject reqParams = new JSONObject();			
 			reqParams.put("openId", request.getSession().getAttribute("openid"));			
 			reqData.put("openId", reqParams.get("openId"));	//用于发送微信消息
-						
+			if(StringUtils.isEmpty(reqData.getString("openId"))){
+				reqData.put("openId", "oknxW0lyknEETUK7k4qfC8BGvVA4");
+			}
 			h5PlateService.submitTeachingRecord(reqData);
 			
 			code = 0;

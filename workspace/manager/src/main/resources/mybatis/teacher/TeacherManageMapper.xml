@@ -161,12 +161,12 @@
 	<insert id="insertTeachingRecords" parameterType="java.util.List">
 		INSERT INTO teachingrecord(recordId, teachingId, orderId,
 			teacherId, startTime, endTime,
-			teachingNum, teachingDate,lessonTradeId)
+			teachingNum, teachingDate,lessonTradeId,feedback)
 		VALUES
 		<foreach collection="list" item="item" separator=",">
 			(#{item.recordid},#{item.teachingid},#{item.orderid},#{item.teacherid},
 				#{item.starttime},#{item.endtime},#{item.teachingnum}
-				,#{item.teachingdate},#{item.lessonTradeId})
+				,#{item.teachingdate},#{item.lessonTradeId},#{item.feedback})
 		</foreach>
 		ON DUPLICATE KEY UPDATE recordId=VALUES(recordId), lessonTradeId=VALUES(lessonTradeId)
 	</insert>

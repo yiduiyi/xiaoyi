@@ -191,11 +191,8 @@ public class WeichatAuthAction{
 	@RequestMapping("/authToCourseRecord")
 	public void authToCourseRecord(HttpServletRequest req,
 			 HttpServletResponse res )  {
-		log.info("In authWithRedirectUrl...");
-		String redirectUrl = req.getParameter("redirect_url");
-		String orderId = req.getParameter("orderId");
-		log.info("orderId:" + orderId);
-		redirectUrl = "/wechat/index.html#/paydebt?orderId="+orderId;
+		log.info("In authToCourseRecord...");
+		String redirectUrl = "/wechat/index.html#/addCourseRecord";
 		log.info("redirect Url:"+redirectUrl);
 		try {
 			req.setCharacterEncoding("utf-8");
