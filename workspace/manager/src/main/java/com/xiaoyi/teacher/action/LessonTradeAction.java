@@ -1,6 +1,7 @@
 package com.xiaoyi.teacher.action;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -142,6 +144,66 @@ public class LessonTradeAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
+	
+	/**
+	 * iii.	查询当前提现记录对应的微信端提现备忘列表
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value="/getWechatTRecord",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getWechatTRecord(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+				
+		try {
+			/**
+			 * teacherId : 老师Id
+				teachingId: 任教关系Id
+				orderId: 订单Id
+				queryMonth: 查询年月（如2018-07）
+			 */
+			//校验参数
+			if(StringUtils.isEmpty(reqData.get("teacherId"))
+					|| StringUtils.isEmpty(reqData.get("teacherId"))
+					|| StringUtils.isEmpty(reqData.get("teacherId"))){
+				result.put("code", "-1");
+				result.put("msg", "参数错误！");
+			}
+			
+			//适配前端查询月份
+			String queryMonth = reqData.getString("queryMonth");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			if(!StringUtils.isEmpty(queryMonth)){
+				Date date = sdf.parse(queryMonth);
+				
+				sdf.applyPattern("yyyy-MM");
+				reqData.put("queryMonth", sdf.format(date));
+			}
+			List<JSONObject> data = recordService.getWechatTeachingRecords(reqData);			
+			
+			if(null!=data) {				
+				sdf.applyPattern("yyyy-MM-dd");
+				for(JSONObject singleData : data){
+					Date teachingDate = singleData.getDate("teachingDate");
+					if(null!=teachingDate){
+						singleData.put("teachingDate", sdf.format(teachingDate));
+					}
+				}
+				result.put("data",  data);			
+				rtCode = RtConstants.SUCCESS;			
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	//
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());

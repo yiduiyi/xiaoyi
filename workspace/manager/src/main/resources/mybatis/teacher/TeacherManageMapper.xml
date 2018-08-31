@@ -208,4 +208,24 @@
 			</if>
 			<!-- = #{queryDate}; -->
 	</select>
+	
+	<!-- 查询老师微信端提交的课时记录 -->
+	<select id="selectByParams" parameterType="com.alibaba.fastjson.JSONObject"
+		resultMap="BaseResultMap">
+		SELECT * FROM teachingrecord
+		<where>
+			<if test="orderId!=null">
+				orderId=#{orderId}
+			</if>
+			<if test="teacherId!=null">
+				AND teacherId=#{teacherId}
+			</if>
+			<if test="teachingId!=null">
+				AND teachingId=#{teachingId}
+			</if>
+			<if test="queryMonth!=null">
+				AND DATE_FORMAT(teachingDate,"%Y-%m")=#{queryMonth};
+			</if>
+		</where>
+	</select>
 </mapper>

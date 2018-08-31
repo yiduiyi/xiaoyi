@@ -907,7 +907,20 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				record.setEndtime(teachingDetail.getString("endTime"));
 				record.setStarttime(teachingDetail.getString("startTime"));
 
-				record.setTeachingdate(new Date());
+				//适配日期
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				String teachingDate = teachingDetail.getString("teachingDate");
+				if(null==teachingDate){	//没有时间记录的,视为无效记录					
+					continue;
+				} else{
+					try {						
+						record.setTeachingdate(sdf.parse(teachingDate));
+					} catch (Exception e) {
+						logger.info("当前记录插入失败！");
+						logger.info("插入记录为："+teachingDetail.toJSONString());
+						e.printStackTrace();
+					}
+				}
 				record.setTeachingnum(teachingDetail.getFloat("checkNum"));
 				record.setFeedback(teachingDetail.getString("feedback"));
 				//record.setLessonTradeId(lessonTradeId);  区别于pc端提现

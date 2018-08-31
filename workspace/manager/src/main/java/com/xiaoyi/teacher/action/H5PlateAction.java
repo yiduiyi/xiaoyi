@@ -354,9 +354,9 @@ public class H5PlateAction {
 			JSONObject reqParams = new JSONObject();			
 			reqParams.put("openId", request.getSession().getAttribute("openid"));			
 			reqData.put("openId", reqParams.get("openId"));	//用于发送微信消息
-			/*if(StringUtils.isEmpty(reqData.getString("openId"))){
+			if(StringUtils.isEmpty(reqData.getString("openId"))){
 				reqData.put("openId", "oknxW0lyknEETUK7k4qfC8BGvVA4");
-			}*/
+			}
 			h5PlateService.submitTeachingRecord(reqData);
 			
 			code = 0;

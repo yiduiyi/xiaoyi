@@ -671,4 +671,29 @@ public class TeachingRecordService implements ITeachingRecordService {
 		}
 	}
 
+	@Override
+	public List<JSONObject> getWechatTeachingRecords(JSONObject params) {
+		List<JSONObject> result = new ArrayList<JSONObject>();
+		try {
+			List<TeachingRecord>teachingRecords = teachingRecordDao.selectByParams(params);
+			
+			if(!CollectionUtils.isEmpty(teachingRecords)){
+				for(TeachingRecord tr : teachingRecords){
+					JSONObject record = new JSONObject();
+					record.put("recordId", tr.getRecordid());
+					record.put("teachingDate", tr.getTeachingdate());
+					record.put("startTime", tr.getStarttime());
+					record.put("endTime", tr.getEndtime());
+					record.put("teachingNum", tr.getTeachingnum());
+					
+					result.add(record);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("查询上课记录失败！");
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 }

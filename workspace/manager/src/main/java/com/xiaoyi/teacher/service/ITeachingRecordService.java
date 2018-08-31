@@ -25,4 +25,11 @@ public interface ITeachingRecordService {
 	List<JSONObject> queryWithdrawRecords(JSONObject params);		
 
 	int updateLessonTrade(String lessonTradeId);
+	
+	/**
+	 * 获取微信端课时记录
+	 * @param params
+	 * @return
+	 */
+	List<JSONObject> getWechatTeachingRecords(JSONObject params);
 }

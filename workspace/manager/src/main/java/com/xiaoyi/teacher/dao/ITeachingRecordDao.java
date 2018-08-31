@@ -42,4 +42,6 @@ public interface ITeachingRecordDao {
     int updateByPrimaryKey(TeachingRecord record);
 
     List<JSONObject> selectLessonTradeByTeacherId(String teacherId);
+    
+    List<TeachingRecord> selectByParams(JSONObject params);
 }
