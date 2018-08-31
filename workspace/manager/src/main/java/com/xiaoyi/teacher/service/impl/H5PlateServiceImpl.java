@@ -859,8 +859,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			
 			//适配前端查询日期
 			String queryMonth = params.getString("queryMonth");
-			if(StringUtils.isNotEmpty(queryMonth) && queryMonth.length()>5){				
-				params.put("queryMonth", queryMonth.substring(0, 6));
+			if(StringUtils.isNotEmpty(queryMonth) && queryMonth.length()>6){				
+				params.put("queryMonth", queryMonth.substring(0, 7));
 			}
 			
 			result = teacherH5Dao.selectHistoryTeachingRecords(params);
@@ -908,7 +908,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				record.setStarttime(teachingDetail.getString("startTime"));
 
 				//适配日期
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 				String teachingDate = teachingDetail.getString("teachingDate");
 				if(null==teachingDate){	//没有时间记录的,视为无效记录					
 					continue;
@@ -919,6 +919,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						logger.info("当前记录插入失败！");
 						logger.info("插入记录为："+teachingDetail.toJSONString());
 						e.printStackTrace();
+						continue;
 					}
 				}
 				record.setTeachingnum(teachingDetail.getFloat("checkNum"));
@@ -929,8 +930,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				
 				teachingRecords.add(record);
 			}
-			
+			if(teachingRecords.size()==0){
+				return 0;
+			}
 			tRecordDao.insertTeachingRecords(teachingRecords );
+			
 		} catch (Exception e) {
 			throw new CommonRunException(-1, "插入微信提现记录失败！");
 		}
