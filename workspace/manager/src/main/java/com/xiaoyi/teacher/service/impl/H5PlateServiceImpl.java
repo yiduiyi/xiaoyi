@@ -441,7 +441,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					//家长课时为负时，不再允许老师提现
 					Float lessonLeftNum = orderSum.getLessonleftnum();
 					if(lessonLeftNum<0){
-						throw new CommonRunException(-1, "提现失败！【原因：家长课时为负】");
+						throw new CommonRunException(-1, "提现失败,请联系课程顾问！【原因：家长课时为负】");
 					}					
 				}				
 				
@@ -522,7 +522,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			e.printStackTrace();
 			//回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			throw new CommonRunException(-4, "内部错误！");
+			throw new CommonRunException(-4, e.getMessage());
 		}
 		
 		//付款

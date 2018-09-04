@@ -62,7 +62,7 @@
 		ON a.teacherId=b.teacherId AND DATE_FORMAT(b.generate_date,"%Y-%m-%d") =#{curDate}
 	where	
 		a.teacherId=#{teacherId}
-			
+	GROUP BY teacherId	
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from teacher_balance
