@@ -441,7 +441,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					//家长课时为负时，不再允许老师提现
 					Float lessonLeftNum = orderSum.getLessonleftnum();
 					if(lessonLeftNum<0){
-						throw new CommonRunException(-1, "提现失败！【原因：家长课时为负】");
+						throw new CommonRunException(-1, "提现失败,请联系课程顾问！【原因：家长课时为负】");
 					}					
 				}				
 				
@@ -522,7 +522,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			e.printStackTrace();
 			//回滚
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-			throw new CommonRunException(-4, "内部错误！");
+			throw new CommonRunException(-4, e.getMessage());
 		}
 		
 		//付款
@@ -859,8 +859,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			
 			//适配前端查询日期
 			String queryMonth = params.getString("queryMonth");
-			if(StringUtils.isNotEmpty(queryMonth) && queryMonth.length()>5){				
-				params.put("queryMonth", queryMonth.substring(0, 6));
+			if(StringUtils.isNotEmpty(queryMonth) && queryMonth.length()>6){				
+				params.put("queryMonth", queryMonth.substring(0, 7));
 			}
 			
 			result = teacherH5Dao.selectHistoryTeachingRecords(params);

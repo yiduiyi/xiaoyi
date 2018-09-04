@@ -201,6 +201,7 @@ public class LessonTradeAction {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		setReturnMsg(result, rtCode);
 		return result;
 	}
 	
