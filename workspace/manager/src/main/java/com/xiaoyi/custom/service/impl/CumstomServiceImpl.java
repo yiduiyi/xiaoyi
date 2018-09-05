@@ -454,48 +454,6 @@ public class CumstomServiceImpl implements ICustomService{
 				throw new RuntimeException();
 			}
 			
-			//金融版version2.0（加入余额功能）
-			//查询/增加老师对应的余额表
-			/*String teacherId = record.getTeacherid();
-			try {
-				TeacherBalance teacherBalance = balanceDao.selectByPrimaryKey(teacherId);
-				float balanceAccount =0;
-				StringBuffer balanceFrom = new StringBuffer();
-				if(null==teacherBalance || teacherBalance.getTeacherid()==null){
-					teacherBalance = new TeacherBalance();
-					teacherBalance.setTeacherid(teacherId);
-					teacherBalance.setTotalBalanceProfit(0f);
-					teacherBalance.setBalanceProfitLeft(0f);
-					balanceAccount = 0;
-				}else{
-					balanceAccount += teacherBalance.getBalanceAccount();
-				}
-				
-				if(!StringUtils.isEmpty(teacherBalance.getBalanceFrom())){
-					balanceFrom.append(",");
-				}
-				balanceFrom.append(record.getLessontradeid());
-				teacherBalance.setBalanceFrom(balanceFrom.toString());
-				balanceAccount += record.getActualPay();
-				teacherBalance.setBalanceAccount(balanceAccount);
-				
-				balanceDao.insertSelective(teacherBalance);
-			} catch (Exception e) {
-				logger.error("增加/更新老师账户余额出错！");
-				throw new CommonRunException(-5, "增加/更新老师账户余额出错！");
-			}
-			
-			//更新老师提现记录与老师Id关系表
-			TeacherBalanceFromKey balanceFrom = new TeacherBalanceFromKey();
-			balanceFrom.setTeacherid(teacherId);
-			balanceFrom.setLessontradeid(lessonTradeId);
-			try {			
-				balanceFromDao.insertSelective(balanceFrom);
-			} catch (Exception e) {
-				logger.error("更新老师提现记录与老师Id关系表失败！");
-				throw new CommonRunException(-6,"更新老师提现记录与老师Id关系表失败！");
-			}			*/
-			
 			return 0;
 		} catch (Exception e) {
 			throw e;

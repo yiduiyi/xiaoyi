@@ -227,6 +227,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 			// String lessonTradeId = UUID.randomUUID().toString();
 			// 1.增加老师带课记录
 			Float totalLessons = 0f;
+			Float allSubmitLessons = 0f;
 			List<Date> addedRecordDates = new ArrayList<Date>();
 			Map<String, Date> lessonTradeIdDateMap = new HashMap<String, Date>();			
 
@@ -264,6 +265,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 					}else{
 						record.setRecordid(recordId);
 					}
+					allSubmitLessons += teachingDetail.getFloat("checkNum");
 					
 					record.setOrderid(orderId);					
 					record.setTeacherid(teacherId);
@@ -297,7 +299,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 				// 2、增加提现记录
 				LessonTrade lessonTrade = new LessonTrade();
 				lessonTrade.setLessontradeid(lessonTradeId);
-				lessonTrade.setApplylessons(totalLessons);
+				lessonTrade.setApplylessons(/*totalLessons*/allSubmitLessons);
 				lessonTrade.setLessontype(lessontype);
 				lessonTrade.setParentid(parentId);
 				lessonTrade.setMemberid(memberId);
@@ -333,7 +335,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 					// 提现汇总表
 					try {
 						LessonTradeSum tradeSum = tradeSumDao.selectByPrimaryKey(teacherId);
-						Float totalSubLessons = totalLessons;
+						Float totalSubLessons = allSubmitLessons/*totalLessons*/;
 						if (null == tradeSum) {
 							tradeSum = new LessonTradeSum();
 							tradeSum.setTeacherid(teacherId);
@@ -433,7 +435,7 @@ public class TeachingRecordService implements ITeachingRecordService {
 						params.put("data", data);
 						
 						JSONObject keyword3 = new JSONObject();
-						keyword3.put("value", totalLessons+"(剩余："+leftLessonCount+")");
+						keyword3.put("value", allSubmitLessons+"(剩余："+leftLessonCount+")");
 						keyword3.put("color", "#173177");
 						data.put("keyword3", keyword3);
 						params.put("data", data);

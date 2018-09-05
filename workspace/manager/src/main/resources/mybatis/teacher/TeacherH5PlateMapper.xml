@@ -101,6 +101,6 @@
  		SELECT startTime,endTime,teachingNum,teachingDate,feedback
 		FROM teachingrecord 
 		WHERE teachingId=#{teachingId}
-			AND DATE_FORMAT(teachingDate,"%Y-%c")=#{queryMonth}
+			AND DATE_FORMAT(teachingDate,"%Y-%m")=#{queryMonth}
  	</select>
 </mapper>

@@ -31,9 +31,9 @@
       balance_profit, profit_rate, balance_left
       )
 	values 
-	<foreach collection="list" open="(" close=")" item="item" separator=",">
-		(#{profitId,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{generateDate,jdbcType=TIMESTAMP}, 
-      		#{balanceProfit,jdbcType=REAL}, #{profitRate,jdbcType=REAL}, #{balanceLeft,jdbcType=REAL}
+	<foreach collection="list" item="item" separator=",">
+		(#{item.profitId,jdbcType=VARCHAR}, #{item.teacherid,jdbcType=VARCHAR}, #{item.generateDate,jdbcType=TIMESTAMP}, 
+      		#{item.balanceProfit,jdbcType=REAL}, #{item.profitRate,jdbcType=REAL}, #{item.balanceLeft,jdbcType=REAL}
       )
 	</foreach>
 	</insert>
