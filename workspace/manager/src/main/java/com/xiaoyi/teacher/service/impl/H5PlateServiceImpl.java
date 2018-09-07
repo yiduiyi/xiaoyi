@@ -431,7 +431,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					logger.error("查询老师提现-家长订单列表出错！");
 					throw new CommonRunException(-1, "查询老师提现-家长订单列表出错！");
 				}
-				if(null==orderSumList || orderSumList.size()!=lessonTradeList.size()){
+				if(null==orderSumList /*|| orderSumList.size()!=lessonTradeList.size()*/){
 					logger.info("提现列表与订单列表对应不上！");
 					throw new CommonRunException(-1, "提现列表与订单列表对应不上！");
 				}
@@ -725,7 +725,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		params.put("status", 2);
 		//计算七点前的日期
 		Calendar   cal   =   Calendar.getInstance();
-        cal.add(Calendar.DATE,   -7);
+        cal.add(Calendar.DATE,   -6);
         String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
         System.out.println(yesterday);		
 		params.put("queryDateFull", yesterday);

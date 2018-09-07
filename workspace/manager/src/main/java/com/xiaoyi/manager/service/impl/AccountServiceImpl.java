@@ -101,6 +101,9 @@ public class AccountServiceImpl implements IAccountService{
 		String orderId = params.getString("orderIds");
 		logger.info("orderId:"+orderId);
 		if(StringUtils.isEmpty(orderId)){
+			orderId = params.getString("orderId");
+		}
+		if(StringUtils.isEmpty(orderId)){
 			return -2;
 		}
 		try {
