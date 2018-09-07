@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IBillRecordRelationDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.BillRecordRelation" >
+    <id column="bill_record_id" property="billRecordId" jdbcType="VARCHAR" />
+    <result column="bill_id" property="billId" jdbcType="VARCHAR" />
+    <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="teacher_resume_r_id" property="teacherResumeRId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bill_record_id, bill_id, teacherId, teacher_resume_r_id, create_time, update_time, 
+    status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from bill_record_r
+    where bill_record_id = #{billRecordId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bill_record_r
+    where bill_record_id = #{billRecordId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.BillRecordRelation" >
+    insert into bill_record_r (bill_record_id, bill_id, teacherId, 
+      teacher_resume_r_id, create_time, update_time, 
+      status)
+    values (#{billRecordId,jdbcType=VARCHAR}, #{billId,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, 
+      #{teacherResumeRId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.BillRecordRelation" >
+    insert into bill_record_r
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="billRecordId != null" >
+        bill_record_id,
+      </if>
+      <if test="billId != null" >
+        bill_id,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="teacherResumeRId != null" >
+        teacher_resume_r_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="billRecordId != null" >
+        #{billRecordId,jdbcType=VARCHAR},
+      </if>
+      <if test="billId != null" >
+        #{billId,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherResumeRId != null" >
+        #{teacherResumeRId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.BillRecordRelation" >
+    update bill_record_r
+    <set >
+      <if test="billId != null" >
+        bill_id = #{billId,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        teacherId = #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherResumeRId != null" >
+        teacher_resume_r_id = #{teacherResumeRId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where bill_record_id = #{billRecordId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.BillRecordRelation" >
+    update bill_record_r
+    set bill_id = #{billId,jdbcType=VARCHAR},
+      teacherId = #{teacherid,jdbcType=VARCHAR},
+      teacher_resume_r_id = #{teacherResumeRId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where bill_record_id = #{billRecordId,jdbcType=VARCHAR}
+  </update>
+  <select id="getBillRecordList" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT B.bill_id AS billId,BR.bill_record_id AS billRecordId,T.teacherId AS teacherId,BR.teacher_resume_r_id AS teacherResumeRId,B.serial_number AS serialNumber,
+  	B.grade_id AS gradeId,B.course_id AS courseId,T.teacherName AS teacherName,T.sex AS sex,T.schoolId AS schoolId,
+  	T.telNumber AS telNumber,T.standby_tel_number AS standbyTelNumber,T.teachingLevel AS teachingLevel FROM bill_record_r BR 
+  	LEFT JOIN bill B ON b.bill_id = BR.bill_id 
+  	LEFT JOIN teacher T ON BR.teacherId = T.teacherId 
+  	WHERE BR.bill_id = #{billId}
+  </select>
+</mapper>

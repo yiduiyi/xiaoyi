@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.teacher.dao.ITeacherSpaceSetDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherSpaceSet" >
+    <id column="teacher_space_set_id" property="teacherSpaceSetId" jdbcType="VARCHAR" />
+    <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="is_remind" property="isRemind" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    teacher_space_set_id, teacherId, is_remind, create_time, update_time, status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher_space_set
+    where teacher_space_set_id = #{teacherSpaceSetId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from teacher_space_set
+    where teacher_space_set_id = #{teacherSpaceSetId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherSpaceSet" >
+    insert into teacher_space_set (teacher_space_set_id, teacherId, is_remind, 
+      create_time, update_time, status
+      )
+    values (#{teacherSpaceSetId,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{isRemind,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherSpaceSet" >
+    insert into teacher_space_set
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="teacherSpaceSetId != null" >
+        teacher_space_set_id,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="isRemind != null" >
+        is_remind,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="teacherSpaceSetId != null" >
+        #{teacherSpaceSetId,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="isRemind != null" >
+        #{isRemind,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeacherSpaceSet" >
+    update teacher_space_set
+    <set >
+      <if test="teacherid != null" >
+        teacherId = #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="isRemind != null" >
+        is_remind = #{isRemind,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where teacher_space_set_id = #{teacherSpaceSetId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherSpaceSet" >
+    update teacher_space_set
+    set teacherId = #{teacherid,jdbcType=VARCHAR},
+      is_remind = #{isRemind,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where teacher_space_set_id = #{teacherSpaceSetId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectTeacherSpaceSetByTeacherId" parameterType="java.lang.String" resultType="com.xiaoyi.teacher.domain.TeacherSpaceSet">
+  	select 
+    <include refid="Base_Column_List" />
+    from teacher_space_set
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </select>
+</mapper>

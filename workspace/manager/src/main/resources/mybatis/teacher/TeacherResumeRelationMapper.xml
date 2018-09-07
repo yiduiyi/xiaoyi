@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.teacher.dao.ITeacherResumeRelationDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherResumeRelation" >
+    <id column="teacher_resume_r_id" property="teacherResumeRId" jdbcType="VARCHAR" />
+    <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="teacher_resume_id" property="teacherResumeId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="is_default" property="isDefault" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    teacher_resume_r_id, teacherId, teacher_resume_id, create_time, update_time, is_default, 
+    status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher_resume_r
+    where teacher_resume_r_id = #{teacherResumeRId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from teacher_resume_r
+    where teacher_resume_r_id = #{teacherResumeRId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherResumeRelation" >
+    insert into teacher_resume_r (teacher_resume_r_id, teacherId, teacher_resume_id, 
+      create_time, update_time, is_default, 
+      status)
+    values (#{teacherResumeRId,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{teacherResumeId,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{isDefault,jdbcType=INTEGER}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherResumeRelation" >
+    insert into teacher_resume_r
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="teacherResumeRId != null" >
+        teacher_resume_r_id,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="teacherResumeId != null" >
+        teacher_resume_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="isDefault != null" >
+        is_default,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="teacherResumeRId != null" >
+        #{teacherResumeRId,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherResumeId != null" >
+        #{teacherResumeId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDefault != null" >
+        #{isDefault,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeacherResumeRelation" >
+    update teacher_resume_r
+    <set >
+      <if test="teacherid != null" >
+        teacherId = #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherResumeId != null" >
+        teacher_resume_id = #{teacherResumeId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDefault != null" >
+        is_default = #{isDefault,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where teacher_resume_r_id = #{teacherResumeRId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherResumeRelation" >
+    update teacher_resume_r
+    set teacherId = #{teacherid,jdbcType=VARCHAR},
+      teacher_resume_id = #{teacherResumeId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_default = #{isDefault,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where teacher_resume_r_id = #{teacherResumeRId,jdbcType=VARCHAR}
+  </update>
+  <select id="getTeacherResumeList" resultType="com.alibaba.fastjson.JSONObject">
+  		SELECT TRR.teacher_resume_r_id AS teacherResumeRId,T.teacherId,TR.taught_subject AS taughtSubject,TR.introduce AS introduce FROM teacher_resume_r TRR 
+  		LEFT JOIN teacher T ON TRR.teacherId = T.teacherId 
+  		LEFT JOIN teacher_resume TR ON TRR.teacher_resume_id = TR.teacher_resume_id WHERE
+  		 TRR.`status` = 0 AND TRR.is_default = 1 AND TR.`status` = 0
+  </select>
+  <select id="getDefaultResumeByTeacherId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from teacher_resume_r
+    where teacherId = #{teacherid,jdbcType=VARCHAR} AND is_default = 1 AND `status` = 0
+  </select>
+  <update id="updateAllTeacherResumeRelationToNotDefault">
+  	 update teacher_resume_r set is_default = 0 WHERE teacherId = #{teacherid}
+  </update>
+</mapper>

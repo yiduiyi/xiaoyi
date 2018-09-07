@@ -30,6 +30,8 @@ public class Teacher {
     private Short signed;
     
     private String goodAt;
+    
+    private String standbyTelNumber;
     public String getTeacherid() {
         return teacherid;
     }
@@ -141,4 +143,13 @@ public class Teacher {
 	public void setGoodAt(String goodAt) {
 		this.goodAt = goodAt;
 	}
+
+	public String getStandbyTelNumber() {
+		return standbyTelNumber;
+	}
+
+	public void setStandbyTelNumber(String standbyTelNumber) {
+		this.standbyTelNumber = standbyTelNumber;
+	}
+	
 }

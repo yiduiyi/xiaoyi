@@ -13,4 +13,9 @@ public class UUIDUtil {
 		String str = uuid.toString();
 		return str.replaceAll("-", "");
 	}
+	
+	public static String getUUIDPrimary() {
+		String str = UUID.randomUUID().toString();
+		return str;
+	}
 }

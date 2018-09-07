@@ -537,4 +537,31 @@ public class ConstantUtil {
 			}
 		}
 	}
+
+	// 派单订单状态
+	public static final Integer BILL_STATUS_REMOVE = -1;// 删除
+	public static final Integer BILL_STATUS_NORMAL = 0;// 初始状态
+	public static final Integer BILL_STATUS_IS_SENT = 1;//正在派单
+	public static final Integer BILL_STATUS_IS_SENT_OVER = 2;// 已派单
+
+	// 订单投递状态
+	public static final Integer BILL_RECORD_STATUS_IS_PASS = -1;//投递失败
+	public static final Integer BILL_RECORD_STATUS_NORMAL = 0;//正常
+	public static final Integer BILL_RECORD_STATUS_IS_OK = 1;//投递成功
+	
+	//教师简历状态
+	public static final Integer TEACHER_RESUME_STATUS_REMOVE = -1;//删除
+	public static final Integer TEACHER_RESUME_STATUS_NORMAL = 0;//正常
+	
+	//教师简历绑定关系是否为默认
+	public static final Integer TEACHER_RESUME_R_IS_NOT_DEFAULT = 0;// 删除
+	public static final Integer TEACHER_RESUME_R_IS_DEFAULT = 1;// 正常
+
+	// 教师简历状态
+	public static final Integer TEACHER_RESUME_R_STATUS_REMOVE = -1;// 删除
+	public static final Integer TEACHER_RESUME_R_STATUS_NORMAL = 0;// 正常
+	
+	// 教师简历状态
+	public static final Integer TEACHER_SPACE_SET_STATUS_REMOVE = -1;// 删除
+	public static final Integer TEACHER_SPACE_SET_STATUS_NORMAL = 0;// 正常
 }
