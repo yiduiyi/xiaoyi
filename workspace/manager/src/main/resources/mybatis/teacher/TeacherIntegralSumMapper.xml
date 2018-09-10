@@ -79,4 +79,7 @@
       status = #{status,jdbcType=INTEGER}
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
+  <select id="getTeacherIntegralSumList" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT teacherId AS teacherId,integral_count AS integralCount FROM teacher_integral_sum WHERE `status` = 0
+  </select>
 </mapper>

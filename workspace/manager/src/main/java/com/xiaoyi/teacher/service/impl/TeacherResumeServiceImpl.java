@@ -15,5 +15,9 @@ public class TeacherResumeServiceImpl implements ITeacherResumeService {
 	public int insert(TeacherResume teacherResume) {
 		return teacherResumeDao.insert(teacherResume);
 	}
+	@Override
+	public TeacherResume getTeacherResume(String teacherResumeId) {
+		return teacherResumeDao.selectByPrimaryKey(teacherResumeId);
+	}
 
 }
