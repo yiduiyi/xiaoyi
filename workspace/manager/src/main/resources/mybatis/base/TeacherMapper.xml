@@ -16,10 +16,11 @@
     <result column="openId" property="openId" jdbcType="VARCHAR" />
     <result column="signed" property="signed" jdbcType="BIT" />
     <result column="good_at" property="goodAt" jdbcType="VARCHAR" />
+    <result column="standby_tel_number" property="standbyTelNumber" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     teacherId, teacherName, picId, schoolId, gradeId, sex, education, telNumber, teachingLevel, 
-    regDate, notes, openId, signed,good_at
+    regDate, notes, openId, signed,good_at,standby_tel_number
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -138,6 +139,7 @@
       <if test="goodAt != null" >
         goodAt,
       </if>
+      
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Teacher" >
@@ -163,6 +165,9 @@
       </if>
       <if test="telnumber != null" >
         telNumber = #{telnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="standbyTelNumber != null" >
+        standby_tel_number = #{standbyTelNumber,jdbcType=VARCHAR},
       </if>
       <if test="teachinglevel != null" >
         teachingLevel = #{teachinglevel,jdbcType=TINYINT},
@@ -194,6 +199,7 @@
       sex = #{sex,jdbcType=BIT},
       education = #{education,jdbcType=TINYINT},
       telNumber = #{telnumber,jdbcType=VARCHAR},
+      standby_tel_number = #{standbyTelNumber,jdbcType=VARCHAR},
       teachingLevel = #{teachinglevel,jdbcType=TINYINT},
       regDate = #{regdate,jdbcType=TIMESTAMP},
       notes = #{notes,jdbcType=VARCHAR},

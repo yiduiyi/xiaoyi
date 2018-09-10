@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IBillDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Bill" >
+    <id column="bill_id" property="billId" jdbcType="VARCHAR" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="grade_id" property="gradeId" jdbcType="VARCHAR" />
+    <result column="course_id" property="courseId" jdbcType="VARCHAR" />
+    <result column="consultant_id" property="consultantId" jdbcType="VARCHAR" />
+    <result column="class_time" property="classTime" jdbcType="VARCHAR" />
+    <result column="class_address" property="classAddress" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.xiaoyi.manager.domain.Bill" extends="BaseResultMap" >
+    <result column="demand" property="demand" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bill_id, serial_number, grade_id, course_id, consultant_id, class_time, class_address, 
+    create_time, update_time, status
+  </sql>
+  <sql id="Blob_Column_List" >
+    demand
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from bill
+    where bill_id = #{billId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from bill
+    where bill_id = #{billId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Bill" >
+    insert into bill (bill_id, serial_number, grade_id, 
+      course_id, consultant_id, class_time, 
+      class_address, create_time, update_time, 
+      status, demand)
+    values (#{billId,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR}, #{gradeId,jdbcType=VARCHAR}, 
+      #{courseId,jdbcType=VARCHAR}, #{consultantId,jdbcType=VARCHAR}, #{classTime,jdbcType=VARCHAR}, 
+      #{classAddress,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{demand,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Bill" >
+    insert into bill
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="billId != null" >
+        bill_id,
+      </if>
+      <if test="serialNumber != null" >
+        serial_number,
+      </if>
+      <if test="gradeId != null" >
+        grade_id,
+      </if>
+      <if test="courseId != null" >
+        course_id,
+      </if>
+      <if test="consultantId != null" >
+        consultant_id,
+      </if>
+      <if test="classTime != null" >
+        class_time,
+      </if>
+      <if test="classAddress != null" >
+        class_address,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="demand != null" >
+        demand,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="billId != null" >
+        #{billId,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null" >
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null" >
+        #{gradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null" >
+        #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantId != null" >
+        #{consultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="classTime != null" >
+        #{classTime,jdbcType=VARCHAR},
+      </if>
+      <if test="classAddress != null" >
+        #{classAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="demand != null" >
+        #{demand,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Bill" >
+    update bill
+    <set >
+      <if test="serialNumber != null" >
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null" >
+        grade_id = #{gradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="courseId != null" >
+        course_id = #{courseId,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantId != null" >
+        consultant_id = #{consultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="classTime != null" >
+        class_time = #{classTime,jdbcType=VARCHAR},
+      </if>
+      <if test="classAddress != null" >
+        class_address = #{classAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="demand != null" >
+        demand = #{demand,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where bill_id = #{billId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xiaoyi.manager.domain.Bill" >
+    update bill
+    set serial_number = #{serialNumber,jdbcType=VARCHAR},
+      grade_id = #{gradeId,jdbcType=VARCHAR},
+      course_id = #{courseId,jdbcType=VARCHAR},
+      consultant_id = #{consultantId,jdbcType=VARCHAR},
+      class_time = #{classTime,jdbcType=VARCHAR},
+      class_address = #{classAddress,jdbcType=VARCHAR},
+      update_time = NOW(),
+      status = #{status,jdbcType=INTEGER},
+      demand = #{demand,jdbcType=LONGVARCHAR}
+    where bill_id = #{billId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Bill" >
+    update bill
+    set serial_number = #{serialNumber,jdbcType=VARCHAR},
+      grade_id = #{gradeId,jdbcType=VARCHAR},
+      course_id = #{courseId,jdbcType=VARCHAR},
+      consultant_id = #{consultantId,jdbcType=VARCHAR},
+      class_time = #{classTime,jdbcType=VARCHAR},
+      class_address = #{classAddress,jdbcType=VARCHAR},
+      update_time = NOW(),
+      status = #{status,jdbcType=INTEGER}
+    where bill_id = #{billId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getBillList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT B.bill_id AS billId,B.serial_number AS serialNumber,B.grade_id AS gradeId,B.course_id AS courseId,B.class_address AS classAddress,C.consultant_id AS consultantId,C.consultant_name  AS consultantName FROM bill B 
+  	LEFT JOIN consultant C ON B.consultant_id = C.consultant_id
+  	<where>
+  		<if test="gradeId != null">
+  			AND B.grade_id = #{gradeId}
+  		</if>
+  		<if test="courseId != null">
+  			AND B.course_id = #{courseId}
+  		</if>
+  		<if test="serialNumber != null">
+  			AND B.serial_number LIKE CONCAT('%',#{serialNumber},'%')
+  		</if>
+  		<if test="consultantId != null">
+  			AND B.consultant_id = #{consultantId}
+  		</if>
+  	</where>
+  </select>
+  <select id="getBillQuantityNums" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT bill_id AS billId,COUNT(teacherId) AS billQuantityNum FROM bill_record_r WHERE `status` = 0 GROUP BY bill_id
+  </select>
+  <select id="selectSuitBillListByConsultantId" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT bill_id AS billId,serial_number AS serialNumber,grade_id AS gradeId,course_id AS courseId,consultant_id AS consultantId,class_time AS classTime,
+  	class_address AS classAddress,demand AS demand,`status` AS `status` FROM bill WHERE consultant_id = #{consultantId} AND `status` != -1
+  </select>
+  <select id="getAllBillList" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT bill_id AS billId,serial_number AS serialNumber,grade_id AS gradeId,course_id AS courseId,consultant_id AS consultantId,class_time AS classTime,
+  	class_address AS classAddress,demand AS demand,`status` AS `status` FROM bill WHERE `status` != -1
+  </select>
+  <select id="getBillSendNum" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT bill_id AS billId,COUNT(1) AS sendNum FROM bill_record_r WHERE `status` != -1 GROUP BY bill_id
+  </select>
+  
+  <select id="getRecordStatus" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT bill_id AS billId, `status` AS recordStatus FROM bill_record_r WHERE teacherId = #{teacherid} AND `status` != -1
+  </select>
+  
+  <select id="getMyBillRecord" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT B.bill_id AS billId,B.serial_number AS serialNumber,B.grade_id AS gradeId,B.course_id AS courseId,B.consultant_id AS consultantId,B.class_time AS classTime,
+  	B.class_address AS classAddress,B.demand AS demand,B.`status` AS `status`,BRR.`status` AS recordStatus,BRR.update_time AS updateTime FROM bill B 
+  	LEFT JOIN bill_record_r BRR ON b.bill_id = BRR.bill_id WHERE BRR.teacherId = #{teacherid}
+  </select>
+  
+  <select id="getAllSendBillList" resultType = "com.alibaba.fastjson.JSONObject">
+  	SELECT bill_id AS billId,serial_number AS serialNumber,grade_id AS gradeId,course_id AS courseId,consultant_id AS consultantId,class_time AS classTime,
+  	class_address AS classAddress,demand AS demand,`status` AS `status` FROM bill WHERE 
+  	`status` = 1 
+  	<if test="null != billIdList">
+  		AND bill_id IN
+  		<foreach collection="billIdList" open="(" close=")" separator="," item="item">#{item}</foreach>
+	</if>
+  </select>
+</mapper>

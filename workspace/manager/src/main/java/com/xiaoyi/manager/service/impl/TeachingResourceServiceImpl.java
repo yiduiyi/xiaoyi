@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +23,8 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
+import com.xiaoyi.common.utils.ConstantUtil;
+import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.manager.dao.IPictureDao;
 import com.xiaoyi.manager.dao.ISchoolDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
@@ -34,7 +37,13 @@ import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.ITeachingResourceService;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
+import com.xiaoyi.teacher.dao.ITeacherIntegralSumDao;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
+import com.xiaoyi.teacher.domain.TeacherResume;
+import com.xiaoyi.teacher.domain.TeacherResumeRelation;
+import com.xiaoyi.teacher.service.ITeacherIntegralSumService;
+import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
+import com.xiaoyi.teacher.service.ITeacherResumeService;
 
 @Service("teachingResourceService")
 public class TeachingResourceServiceImpl implements ITeachingResourceService {
@@ -60,7 +69,12 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	
 	@Resource
 	ILessonTradeSumDao lessonTradeSumDao;
-	
+	@Resource
+	private ITeacherResumeRelationService teacherResumeRelationService;
+	@Resource
+	private ITeacherResumeService teacherResumeService;
+	@Resource
+	private ITeacherIntegralSumService teacherIntegralSumService; 
 	@Transactional
 	@Override
 	public int addTeachingTeacher(List<JSONObject> datas) {
@@ -243,7 +257,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 			if(!CollectionUtils.isEmpty(result)){
 				Map<String,Object> teachingCountMap = new HashMap<String,Object>();
 				Map<String,Object> latestLessonTradeCountMap = new HashMap<String,Object>();
-				
+				Map<String,Object> teacherIntegralSumMap = new HashMap<String,Object>();
 				//查询老师当前接单数
 				try {
 					List<JSONObject> teacherOrderList = teachingResourceDao.selectCurrentOrdersOfTeacher();
@@ -273,7 +287,18 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					logger.info("查询老师上月提现课时失败！");
 					e.printStackTrace();
 				}
-			
+				//查询教师总积分
+				try {
+					List<JSONObject> teacherIntegralSumList = teacherIntegralSumService.getTeacherIntegralSumList();
+					if(!CollectionUtils.isEmpty(teacherIntegralSumList)) {
+						for (JSONObject jsonObject : teacherIntegralSumList) {
+							teacherIntegralSumMap.put(jsonObject.getString("teacherId"), jsonObject.getString("integralCount"));
+						}
+					}
+				} catch (Exception e) {
+					logger.info("查询教师总积分失败！");
+					e.printStackTrace();
+				}
 				//增加上月提现课时、绑定订单数字段
 				for(JSONObject singleResult : result){
 					String teacherId = singleResult.getString("teacherId");
@@ -282,10 +307,31 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 								?0:latestLessonTradeCountMap.get(teacherId));
 						singleResult.put("curBondedOrders", teachingCountMap.get(teacherId)==null
 								?0:teachingCountMap.get(teacherId));
+						singleResult.put("integralCount", teacherIntegralSumMap.get(teacherId) == null 
+								? 0 :teacherIntegralSumMap.get(teacherId));
+					}
+					Integer integralCount = singleResult.getInteger("integralCount");
+					if(null != integralCount) {
+						Integer teachingLevel = getTeachingLevelByIntegralCount(integralCount);
+						for(TeachingLevel level : TeachingLevel.values()) {
+							if(teachingLevel==level.getValue()) {
+								singleResult.put("teachingLevel", level.toString());
+								break;
+							}
+						}
 					}
 				}
-				
-				//时间排序
+				//按照教师等级查询
+				Iterator<JSONObject> iterator = result.iterator();
+				if (null != params.getString("teachingLevel")) {
+					while (iterator.hasNext()) {
+						JSONObject teacher = iterator.next();
+						if (!params.getString("teachingLevel").equals(teacher.getString("teachingLevel"))) {
+							iterator.remove();
+						}
+					}
+				}
+				// 时间排序
 				sortJsonList(result, "regDate", false);
 				
 				//按接单量和消课量排序
@@ -310,6 +356,22 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 			e.printStackTrace();			
 		}
 		return null;
+	}
+	//根据积分匹配教师等级
+	private Integer getTeachingLevelByIntegralCount(Integer integralCount) {
+		Integer teachingLevel = 0;
+		if(integralCount == 0) {
+			teachingLevel = 0;
+		}else if(integralCount >= 0 && integralCount < 200) {
+			teachingLevel = 1;
+		}else if(integralCount >= 200 && integralCount < 500) {
+			teachingLevel = 2;
+		}else if(integralCount >= 500 && integralCount < 1000) {
+			teachingLevel = 3;
+		}else if(integralCount == 1000) {
+			teachingLevel = 4;
+		}
+		return teachingLevel;
 	}
 
 	@Override
@@ -542,5 +604,25 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 			logger.info("内部错误！");
 		}
 		return 0;		
+	}
+
+	@Override
+	public JSONObject getTeacherIntroduce(JSONObject reqData) {
+		JSONObject jsonObject = new JSONObject();
+		TeacherResume teacherResume = null;
+		TeacherResumeRelation teacherResumeRelation = teacherResumeRelationService.getDefaultResumeByTeacherId(reqData.getString("teacherId"));
+		if(null != teacherResumeRelation) {
+			teacherResume = teacherResumeService.getTeacherResume(teacherResumeRelation.getTeacherResumeId());
+			if(null != teacherResume) {
+				jsonObject.put("Introduce", teacherResume.getIntroduce());
+			}
+		}
+		return jsonObject;
+	}
+
+	@Override
+	public List<JSONObject> getTeacherTreaty(JSONObject reqData) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

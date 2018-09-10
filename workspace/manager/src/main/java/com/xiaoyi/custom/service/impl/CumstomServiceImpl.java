@@ -840,7 +840,6 @@ public class CumstomServiceImpl implements ICustomService{
 			reqData.put("queryMonth", queryDateFormatString);
 			result = customDao.getStuTeachingDetailByMonth(reqData);
 			if (!CollectionUtils.isEmpty(result)) {
-				
 				for (JSONObject jsonObject : result) {
 					jsonObject.put("teachingTime", 
 							DateUtils.starTimeJoinEndTime(jsonObject.getDate("startTime"), jsonObject.getDate("endTime")));

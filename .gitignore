@@ -1,4 +1,4 @@
-/workspace/.metadata/
+﻿/workspace/.metadata/
 /workspace/RemoteSystemsTempFiles/
 /workspace/Servers/
 /workspace/manager/.settings/
@@ -21,3 +21,6 @@ workspace/manager/src/main/resources/config/jdbc.properties
 workspace/manager/src/main/resources/config/jdbc.properties
 workspace/manager/.classpath
 workspace/manager/src/main/resources/config/jdbc.properties
+小易网络交易前后端接口文档.docx
+*.docx
+workspace/manager/.classpath

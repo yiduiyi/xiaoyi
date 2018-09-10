@@ -68,7 +68,7 @@ public class ConstantUtil {
 	 *
 	 */
 	public static enum TeachingLevel{
-		BLACK_LIST(-1),DEFAULT(0),NORMAL(1),GOLD(2);
+		BLACK_LIST(-1),DEFAULT(0),POTENTIAL(1),SILVER(2),GOLD(3),SPECIALLY(4);
 		
 		private int teachingLevel;
 		private TeachingLevel(int level) {
@@ -83,8 +83,10 @@ public class ConstantUtil {
 		public String toString(){
 			switch(teachingLevel) {
 			case -1: return "黑名单";
-			case 1: return "中等";
-			case 2:	return "金牌";
+			case 1: return "潜力";
+			case 2:	return "银牌";
+			case 3: return "金牌";
+			case 4: return "特聘";
 			case 0: return "普通";
 			}
 			
@@ -537,4 +539,31 @@ public class ConstantUtil {
 			}
 		}
 	}
+
+	// 派单订单状态
+	public static final Integer BILL_STATUS_REMOVE = -1;// 删除
+	public static final Integer BILL_STATUS_NORMAL = 0;// 初始状态
+	public static final Integer BILL_STATUS_IS_SENT = 1;//正在派单
+	public static final Integer BILL_STATUS_IS_SENT_OVER = 2;// 已派单
+
+	// 订单投递状态
+	public static final Integer BILL_RECORD_STATUS_IS_PASS = -1;//投递失败
+	public static final Integer BILL_RECORD_STATUS_NORMAL = 0;//正常
+	public static final Integer BILL_RECORD_STATUS_IS_OK = 1;//投递成功
+	
+	//教师简历状态
+	public static final Integer TEACHER_RESUME_STATUS_REMOVE = -1;//删除
+	public static final Integer TEACHER_RESUME_STATUS_NORMAL = 0;//正常
+	
+	//教师简历绑定关系是否为默认
+	public static final Integer TEACHER_RESUME_R_IS_NOT_DEFAULT = 0;// 删除
+	public static final Integer TEACHER_RESUME_R_IS_DEFAULT = 1;// 正常
+
+	// 教师简历状态
+	public static final Integer TEACHER_RESUME_R_STATUS_REMOVE = -1;// 删除
+	public static final Integer TEACHER_RESUME_R_STATUS_NORMAL = 0;// 正常
+	
+	// 教师简历状态
+	public static final Integer TEACHER_SPACE_SET_STATUS_REMOVE = -1;// 删除
+	public static final Integer TEACHER_SPACE_SET_STATUS_NORMAL = 0;// 正常
 }

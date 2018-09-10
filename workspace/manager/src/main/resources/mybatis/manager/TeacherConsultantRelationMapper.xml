@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.ITeacherConsultantRelationDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.TeacherConsultantRelation" >
+    <id column="teacher_consultant_id" property="teacherConsultantId" jdbcType="VARCHAR" />
+    <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+    <result column="consultant_id" property="consultantId" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    teacher_consultant_id, teacherId, consultant_id, create_time, update_time, status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from teacher_consultant_r
+    where teacher_consultant_id = #{teacherConsultantId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from teacher_consultant_r
+    where teacher_consultant_id = #{teacherConsultantId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.TeacherConsultantRelation" >
+    insert into teacher_consultant_r (teacher_consultant_id, teacherId, consultant_id, 
+      create_time, update_time, status
+      )
+    values (#{teacherConsultantId,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{consultantId,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.TeacherConsultantRelation" >
+    insert into teacher_consultant_r
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="teacherConsultantId != null" >
+        teacher_consultant_id,
+      </if>
+      <if test="teacherid != null" >
+        teacherId,
+      </if>
+      <if test="consultantId != null" >
+        consultant_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="teacherConsultantId != null" >
+        #{teacherConsultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null" >
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantId != null" >
+        #{consultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.TeacherConsultantRelation" >
+    update teacher_consultant_r
+    <set >
+      <if test="teacherid != null" >
+        teacherId = #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantId != null" >
+        consultant_id = #{consultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where teacher_consultant_id = #{teacherConsultantId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.TeacherConsultantRelation" >
+    update teacher_consultant_r
+    set teacherId = #{teacherid,jdbcType=VARCHAR},
+      consultant_id = #{consultantId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where teacher_consultant_id = #{teacherConsultantId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="selectTeacherConsultantRelationByTeacherId" parameterType="java.lang.String" resultType="com.xiaoyi.manager.domain.TeacherConsultantRelation">
+  	 select 
+    <include refid="Base_Column_List" />
+    from teacher_consultant_r
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </select>
+</mapper>
