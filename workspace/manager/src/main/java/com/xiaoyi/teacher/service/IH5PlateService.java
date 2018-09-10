@@ -39,4 +39,20 @@ public interface IH5PlateService {
 	 * @return
 	 */
 	int send();
+	//获取教师可任教科目
+	public List<JSONObject> getTeacherGootAt(String openId);
+	//修改教师的可任教科目
+	public int updateTeacherGootAt(JSONObject reqData);
+	//添加教师接单设置
+	public int insertTeacherBillSet(JSONObject reqData);
+	//添加教师接单记录
+	public int insertBillRecord(JSONObject reqData);
+	//查询适合我的订单
+	public List<JSONObject> getSuitBillList(JSONObject reqData);
+	//查询所有订单
+	public List<JSONObject> getAllBillList(JSONObject reqData);
+	//查询所有投递的订单记录
+	public List<JSONObject> getMyBillRecord(JSONObject reqData);
+	//查询所有推送的订单
+	public List<JSONObject> getAllSendBillList(JSONObject reqData);
 }

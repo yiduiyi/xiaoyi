@@ -16,11 +16,13 @@
 		<result column="notes" property="notes" jdbcType="VARCHAR" />
 		<result column="openId" property="openId" jdbcType="VARCHAR" />
 		<result column="signed" property="signed" jdbcType="BIT" />
+		<result column="good_at" property="goodAt" jdbcType="VARCHAR" />
+		<result column="standby_tel_number" property="standbyTelNumber" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		teacherId, teacherName, picId, schoolId, gradeId, sex, education, telNumber,
 		teachingLevel,
-		regDate, notes, openId, signed
+		regDate, notes, openId, signed,good_at,standby_tel_number
 	</sql>
 	<select id="selectTeacherByOpenId" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
@@ -82,6 +84,55 @@
 		where telNumber = #{telnumber,jdbcType=VARCHAR}
 	</update>
  	
+ 	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Teacher" >
+    update teacher
+    <set >
+      <if test="teachername != null" >
+        teacherName = #{teachername,jdbcType=VARCHAR},
+      </if>
+      <if test="picid != null" >
+        picId = #{picid,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolid != null" >
+        schoolId = #{schoolid,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeid != null" >
+        gradeId = #{gradeid,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=BIT},
+      </if>
+      <if test="education != null" >
+        education = #{education,jdbcType=TINYINT},
+      </if>
+      <if test="telnumber != null" >
+        telNumber = #{telnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="teachinglevel != null" >
+        teachingLevel = #{teachinglevel,jdbcType=TINYINT},
+      </if>
+      <if test="regdate != null" >
+        regDate = #{regdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="openId != null" >
+        openId = #{openId,jdbcType=VARCHAR},
+      </if>
+      <if test="signed != null" >
+        signed = #{signed,jdbcType=BIT},
+      </if>
+      <if test="goodAt != null" >
+        good_at = #{goodAt,jdbcType=VARCHAR},
+      </if>
+      <if test="standbyTelNumber != null" >
+        standby_tel_number = #{standbyTelNumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where teacherId = #{teacherid,jdbcType=VARCHAR}
+  </update>
+  
  	<!-- 查询老师绑定的任教关系 -->
  	<select id="selectTeachingRelationships" parameterType="java.lang.String" 
  		resultType="com.alibaba.fastjson.JSONObject">

@@ -3,7 +3,6 @@ package com.xiaoyi.manager.service;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.manager.domain.Teacher;
 
 public interface ITeachingResourceService {
 	
@@ -41,4 +40,8 @@ public interface ITeachingResourceService {
 	 * @return
 	 */
 	int updateTeachingTeacher(JSONObject params);
+	//查询教师简历
+	public JSONObject getTeacherIntroduce(JSONObject reqData);
+	//查询教师违约记录
+	public List<JSONObject> getTeacherTreaty(JSONObject reqData);
 }

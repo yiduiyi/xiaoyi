@@ -1,10 +1,12 @@
 package com.xiaoyi.teacher.action;
 
 import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -397,7 +399,233 @@ public class H5PlateAction {
 		}
 		return null;
 	}
+	/**
+	 * 获取教师可任教科目
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/getTeacherGootAt",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getTeacherGootAt(HttpServletRequest request,HttpServletResponse response) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
+		
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			List<JSONObject> data = h5PlateService.getTeacherGootAt(openId);
+			if(CollectionUtils.isNotEmpty(data)) {
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	/**
+	 * 修改教师可任教项目
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/updateTeacherGootAt",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject updateTeacherGootAt(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
+		
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			reqData.put("openId", openId);
+			if(h5PlateService.updateTeacherGootAt(reqData) > 0) {
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	/**
+	 * 添加教师接单设置
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/insertTeacherBillSet",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject insertTeacherBillSet(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
+		
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			reqData.put("openId", openId);
+			if(h5PlateService.insertTeacherBillSet(reqData) > 0) {
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	/**
+	 * 添加投递记录
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/insertBillRecord", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject insertBillRecord(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
+		
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			reqData.put("openId", openId);
+			if(h5PlateService.insertBillRecord(reqData) > 0) {
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	/**
+	 * 查询适合我的订单接口
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getSuitBillLis" , method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getSuitBillList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
+		
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			reqData.put("openId", openId);
+			List<JSONObject> data = h5PlateService.getSuitBillList(reqData);
+			if(CollectionUtils.isNotEmpty(data)) {
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	/**
+	 * 查询所有订单接口
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getAllBillList",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getAllBillList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
+		
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			reqData.put("openId", openId);
+			List<JSONObject> data = h5PlateService.getAllBillList(reqData);
+			if(CollectionUtils.isNotEmpty(data)) {
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	/**
+	 * 查询所有投递的订单面试状态
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getMyBillRecord",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getMyBillRecord(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
+		
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			reqData.put("openId", openId);
+			List<JSONObject> data = h5PlateService.getMyBillRecord(reqData);
+			if(CollectionUtils.isNotEmpty(data)) {
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
 	
+	@RequestMapping(value = "/getAllSendBillList",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getAllSendBillList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data = h5PlateService.getAllSendBillList(reqData);
+			if(CollectionUtils.isNotEmpty(data)) {
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
 	//
 	
 	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {

@@ -17,6 +17,8 @@ public interface ITH5PlateDao {
 	//telnumber - 唯一性约束
 	int updateTeacherByOpenId(Teacher teacher);
 	
+	int updateByPrimaryKeySelective(Teacher record);
+	
 	//获取老师关联的任教关系
 	List<JSONObject> selectTeachingRelationships(String teacherId);
 	

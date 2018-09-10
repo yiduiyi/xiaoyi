@@ -237,7 +237,50 @@ public class TeachingResourceAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
-	
+	/**
+	 * 查询教师简历
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getTeacherIntroduce",method =RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getTeacherIntroduce(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		
+		try {
+			JSONObject data = tResourceService.getTeacherIntroduce(reqData);
+			if(null != data){	
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;			
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
+	@RequestMapping(value = "/getTeacherTreaty" , method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getTeacherTreaty(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data = tResourceService.getTeacherTreaty(reqData);
+			if(null != data){	
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;			
+			}
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode);		
+		return result;
+	}
 	///
 	private JSONObject setReturnMsg(JSONObject result,RtConstants rtCode){
 		result.put("code", rtCode.getCode());
