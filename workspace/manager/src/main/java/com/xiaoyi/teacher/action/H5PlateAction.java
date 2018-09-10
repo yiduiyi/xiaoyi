@@ -34,7 +34,7 @@ public class H5PlateAction {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Resource
-	private IH5PlateService h5PlateService;
+	IH5PlateService h5PlateService;
 
 	@Autowired
 	ITeachingRecordService tRecordService;

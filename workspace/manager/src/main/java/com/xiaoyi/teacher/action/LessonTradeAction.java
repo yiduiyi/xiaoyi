@@ -177,7 +177,7 @@ public class LessonTradeAction {
 			
 			//适配前端查询月份
 			String queryMonth = reqData.getString("queryMonth");
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 			if(!StringUtils.isEmpty(queryMonth)){
 				Date date = sdf.parse(queryMonth);
 				

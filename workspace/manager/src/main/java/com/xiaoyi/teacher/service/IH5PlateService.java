@@ -3,6 +3,7 @@ package com.xiaoyi.teacher.service;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
@@ -17,7 +18,7 @@ public interface IH5PlateService {
 	@Deprecated
 	int withdrawLessons(JSONObject params) throws Exception;
 	
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	public int withdrawBalance(JSONObject params) throws Exception;
 	
 	JSONObject queryTeacherBalanceing(JSONObject params) throws Exception;

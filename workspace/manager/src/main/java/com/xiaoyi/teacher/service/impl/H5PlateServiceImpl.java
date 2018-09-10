@@ -451,28 +451,31 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					keys.add(key);
 				}
 				List<OrderSum> orderSumList;
-				try {
-					orderSumList = orderSumDao.selectOrderSumBatchByKey(keys);
-				} catch (Exception e) {
-					logger.error("查询老师提现-家长订单列表出错！");
-					throw new CommonRunException(-1, "查询老师提现-家长订单列表出错！");
-				}
-				if (null == orderSumList || orderSumList.size() != lessonTradeList.size()) {
-					logger.info("提现列表与订单列表对应不上！");
-					throw new CommonRunException(-1, "提现列表与订单列表对应不上！");
-				}
-				// 判断是否存在家长课时为负的订单
-				for (OrderSum orderSum : orderSumList) {
-
-					// 家长课时为负时，不再允许老师提现
-					Float lessonLeftNum = orderSum.getLessonleftnum();
-					if (lessonLeftNum < 0) {
-						throw new CommonRunException(-1, "提现失败,请联系课程顾问！【原因：家长课时为负】");
+				
+				if(keys.size()>0){	//针对解除任教关系的老师
+					try {
+						orderSumList = orderSumDao.selectOrderSumBatchByKey(keys);					
+					} catch (Exception e) {
+						logger.error("查询老师提现-家长订单列表出错！");
+						throw new CommonRunException(-1, "查询老师提现-家长订单列表出错！");
 					}
+					if(null==orderSumList /*|| orderSumList.size()!=lessonTradeList.size()*/){
+						logger.info("提现列表与订单列表对应不上！");
+						throw new CommonRunException(-1, "提现列表与订单列表对应不上！");
+					}
+					//判断是否存在家长课时为负的订单
+					for(OrderSum orderSum : orderSumList){
+						
+						//家长课时为负时，不再允许老师提现
+						Float lessonLeftNum = orderSum.getLessonleftnum();
+						if(lessonLeftNum<0){
+							throw new CommonRunException(-1, "提现失败,请联系课程顾问！【原因：家长课时为负】");
+						}					
+					}		
 				}
-
-				// 更新课时交易记录状态
-				// 排序
+				
+				//更新课时交易记录状态
+				//排序
 				Collections.sort(lessonTradeList, new Comparator<LessonTrade>() {
 
 					@Override
@@ -489,43 +492,45 @@ public class H5PlateServiceImpl implements IH5PlateService {
 								- (o2.getActualPay() - o2.getWithdrawed()));
 					}
 				});
-				for (LessonTrade record : lessonTradeList) {
-					if (record.getActualPay() == null) {
-						record.setActualPay(0f);
-					}
-					if (record.getWithdrawed() == null) {
-						record.setWithdrawed(0f);
-					}
-					// 计算剩余
-					float remain = record.getActualPay() - record.getWithdrawed();
-
-					logger.info("lessonTradeId:" + record.getLessontradeid());
-					logger.info("提现金额剩余：" + remain);
-
-					if (remain > /* withdrawing */tobeWithdrawed) {
-						record.setWithdrawed(record.getWithdrawed() + withdrawing);
-						tobeWithdrawed = 0;
-					} else {
-						record.setStatus((byte) 0); // 全部提现完毕
-						record.setWithdrawed(record.getActualPay());
-						tobeWithdrawed -= remain;
-
-						// 更新课时余额来源
-						lessonTradeIdList.remove(record.getLessontradeid());
-					}
-
-					// 更新课时提现状态
-					logger.info("更新课时提现金额及状态...");
-					try {
-						lessonTradeDao.updateByPrimaryKeySelective(record);
-					} catch (Exception e) {
-						logger.error("更新课时提现金额及状态失败！");
-						throw new CommonRunException(-1, "更新课时提现金额及状态失败！");
-					}
-
-					if (tobeWithdrawed <= 0) {
-						break;
-					}
+				synchronized(this){
+					for(LessonTrade record : lessonTradeList){
+						if(record.getActualPay() == null){
+							record.setActualPay(0f);
+						}
+						if(record.getWithdrawed()==null){
+							record.setWithdrawed(0f);
+						}
+						//计算剩余
+						float remain = record.getActualPay() - record.getWithdrawed();
+						
+						logger.info("lessonTradeId:"+record.getLessontradeid());
+						logger.info("提现金额剩余："+remain);
+						
+						if(remain>/*withdrawing*/tobeWithdrawed){
+							record.setWithdrawed(record.getWithdrawed() + withdrawing);		
+							tobeWithdrawed = 0;
+						}else{
+							record.setStatus((byte)0);	//全部提现完毕
+							record.setWithdrawed(record.getActualPay());
+							tobeWithdrawed -= remain;	
+							
+							//更新课时余额来源
+							lessonTradeIdList.remove(record.getLessontradeid());						
+						}					
+						
+						//更新课时提现状态
+						logger.info("更新课时提现金额及状态...");
+						try {						
+							lessonTradeDao.updateByPrimaryKeySelective(record);
+						} catch (Exception e) {
+							logger.error("更新课时提现金额及状态失败！");
+							throw new CommonRunException(-1, "更新课时提现金额及状态失败！");
+						}
+						
+						if(tobeWithdrawed <= 0){
+							break;
+						}
+					}				
 				}
 
 				// 更新课时余额来源
@@ -745,11 +750,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		// 金融版version2.0（加入余额功能）
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("status", 2);
-		// 计算七点前的日期
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, -7);
-		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
-		System.out.println(yesterday);
+		//计算七点前的日期
+		Calendar   cal   =   Calendar.getInstance();
+        cal.add(Calendar.DATE,   -6);
+        String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+        System.out.println(yesterday);		
+
 		params.put("queryDateFull", yesterday);
 
 		List<LessonTrade> lessonTradeList = lessonTradeDao.selectByParams(params);
@@ -932,8 +938,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				record.setEndtime(teachingDetail.getString("endTime"));
 				record.setStarttime(teachingDetail.getString("startTime"));
 
-				// 适配日期
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				//适配日期
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+
 				String teachingDate = teachingDetail.getString("teachingDate");
 				if (null == teachingDate) { // 没有时间记录的,视为无效记录
 					continue;
@@ -944,6 +951,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						logger.info("当前记录插入失败！");
 						logger.info("插入记录为：" + teachingDetail.toJSONString());
 						e.printStackTrace();
+						continue;
 					}
 				}
 				record.setTeachingnum(teachingDetail.getFloat("checkNum"));
@@ -954,8 +962,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 				teachingRecords.add(record);
 			}
+			if(teachingRecords.size()==0){
+				return 0;
+			}
+			tRecordDao.insertTeachingRecords(teachingRecords );
 
-			tRecordDao.insertTeachingRecords(teachingRecords);
 		} catch (Exception e) {
 			throw new CommonRunException(-1, "插入微信提现记录失败！");
 		}

@@ -481,4 +481,47 @@ public class WechatServiceImpl implements IWechatService {
 			throw new CommonRunException(-2, e.getMessage());
 		}				
 	}
+
+	@Override
+	public String sendTempletMsg2(String templeteId, 
+			String redirect_url, 
+			String openId, 
+			List<String>values,
+			List<String>colors,
+			JSONObject params) {
+		JSONObject sendData = new JSONObject();
+		if(values ==null || colors==null || values.size()!=colors.size()){
+			return "send failed[reason: values/colors is null or not the same size]";
+		}
+		int size = values.size();
+		for(int n=0; n<size ; n++){
+			JSONObject showData = new JSONObject();
+			
+			if(n==0){
+				sendData.put("first", showData);				
+			}else if(n==size-1){
+				sendData.put("remark", showData);
+			}else {
+				sendData.put("keyword"+n, showData);
+			}
+		}
+		
+		if(params != null){
+			StringBuffer sb = new StringBuffer();
+			int n=0;
+			for(String key : params.keySet()){
+				sb.append(redirect_url);
+				if(n==0){
+					sb.append("?"+key);
+				}else{
+					sb.append("&"+key);
+					sb.append(params.get(key));
+				}
+				sb.append("="+params.get(key));
+				++n;
+			}
+		}				
+		
+		return sendTempletMsg(templeteId, redirect_url, openId, sendData);
+	}
 }
