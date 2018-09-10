@@ -467,7 +467,8 @@ public class TeachingRecordService implements ITeachingRecordService {
 						logger.info("extraParams:" + extraParams.toString());
 						//已捕获异常
 						String result = wechatService.sendTempletMsg(WeiXinConfig.CUSTOM_LESSON_CONFIRM_MSG_TEMPLETE_ID/*LESSON_CONFIRM_MSG_TEMPLETE_ID*/,
-								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString(), parents.getOpenid(),
+								WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL + extraParams.toString(), 
+								parents.getOpenid(),
 								data);
 						
 						//存储模板消息发送结果

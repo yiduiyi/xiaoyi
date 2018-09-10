@@ -425,25 +425,28 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					keys.add(key);					
 				}
 				List<OrderSum> orderSumList;
-				try {
-					orderSumList = orderSumDao.selectOrderSumBatchByKey(keys);					
-				} catch (Exception e) {
-					logger.error("查询老师提现-家长订单列表出错！");
-					throw new CommonRunException(-1, "查询老师提现-家长订单列表出错！");
+				
+				if(keys.size()>0){	//针对解除任教关系的老师
+					try {
+						orderSumList = orderSumDao.selectOrderSumBatchByKey(keys);					
+					} catch (Exception e) {
+						logger.error("查询老师提现-家长订单列表出错！");
+						throw new CommonRunException(-1, "查询老师提现-家长订单列表出错！");
+					}
+					if(null==orderSumList /*|| orderSumList.size()!=lessonTradeList.size()*/){
+						logger.info("提现列表与订单列表对应不上！");
+						throw new CommonRunException(-1, "提现列表与订单列表对应不上！");
+					}
+					//判断是否存在家长课时为负的订单
+					for(OrderSum orderSum : orderSumList){
+						
+						//家长课时为负时，不再允许老师提现
+						Float lessonLeftNum = orderSum.getLessonleftnum();
+						if(lessonLeftNum<0){
+							throw new CommonRunException(-1, "提现失败,请联系课程顾问！【原因：家长课时为负】");
+						}					
+					}		
 				}
-				if(null==orderSumList /*|| orderSumList.size()!=lessonTradeList.size()*/){
-					logger.info("提现列表与订单列表对应不上！");
-					throw new CommonRunException(-1, "提现列表与订单列表对应不上！");
-				}
-				//判断是否存在家长课时为负的订单
-				for(OrderSum orderSum : orderSumList){
-					
-					//家长课时为负时，不再允许老师提现
-					Float lessonLeftNum = orderSum.getLessonleftnum();
-					if(lessonLeftNum<0){
-						throw new CommonRunException(-1, "提现失败,请联系课程顾问！【原因：家长课时为负】");
-					}					
-				}				
 				
 				//更新课时交易记录状态
 				//排序
