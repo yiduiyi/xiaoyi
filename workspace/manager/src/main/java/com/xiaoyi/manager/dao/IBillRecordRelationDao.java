@@ -21,4 +21,6 @@ public interface IBillRecordRelationDao {
     int updateByPrimaryKey(BillRecordRelation record);
 	
 	public List<JSONObject> getBillRecordList(@Param("billId") String billId);
+	//查询订单投递数量
+	public Integer getBillRecordSendNumByBillId(String billId);
 }

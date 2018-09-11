@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.teacher.dao.IIntegralConductDao;
+import com.xiaoyi.teacher.domain.IntegralConduct;
 import com.xiaoyi.teacher.service.IIntegralConductService;
 @Service("integralConductService")
 public class IntegralConductServiceImpl implements IIntegralConductService {
@@ -17,6 +18,10 @@ public class IntegralConductServiceImpl implements IIntegralConductService {
 	public List<JSONObject> getIntegralConduct(String integralConductType) {
 		
 		return integralConductDao.getIntegralConduct(integralConductType);
+	}
+	@Override
+	public IntegralConduct getIntegralConductByIntegralConductId(String integralConductId) {
+		return integralConductDao.selectByPrimaryKey(integralConductId);
 	}
 
 }

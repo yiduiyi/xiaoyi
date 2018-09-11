@@ -7,13 +7,15 @@ public class TeacherIntegral {
 
     private String teacherid;
 
-    private Float integralNum;
+    private String integralConductName;
 
-    private Integer operationType;
+    private Float integralConductValue;
 
-    private String operationDescription;
+    private Integer integralConductType;
 
     private Date createTime;
+
+    private String integralConductDesc;
 
     public String getTeacherIntegralId() {
         return teacherIntegralId;
@@ -31,28 +33,28 @@ public class TeacherIntegral {
         this.teacherid = teacherid == null ? null : teacherid.trim();
     }
 
-    public Float getIntegralNum() {
-        return integralNum;
+    public String getIntegralConductName() {
+        return integralConductName;
     }
 
-    public void setIntegralNum(Float integralNum) {
-        this.integralNum = integralNum;
+    public void setIntegralConductName(String integralConductName) {
+        this.integralConductName = integralConductName == null ? null : integralConductName.trim();
     }
 
-    public Integer getOperationType() {
-        return operationType;
+    public Float getIntegralConductValue() {
+        return integralConductValue;
     }
 
-    public void setOperationType(Integer operationType) {
-        this.operationType = operationType;
+    public void setIntegralConductValue(Float integralConductValue) {
+        this.integralConductValue = integralConductValue;
     }
 
-    public String getOperationDescription() {
-        return operationDescription;
+    public Integer getIntegralConductType() {
+        return integralConductType;
     }
 
-    public void setOperationDescription(String operationDescription) {
-        this.operationDescription = operationDescription == null ? null : operationDescription.trim();
+    public void setIntegralConductType(Integer integralConductType) {
+        this.integralConductType = integralConductType;
     }
 
     public Date getCreateTime() {
@@ -61,5 +63,13 @@ public class TeacherIntegral {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getIntegralConductDesc() {
+        return integralConductDesc;
+    }
+
+    public void setIntegralConductDesc(String integralConductDesc) {
+        this.integralConductDesc = integralConductDesc == null ? null : integralConductDesc.trim();
     }
 }

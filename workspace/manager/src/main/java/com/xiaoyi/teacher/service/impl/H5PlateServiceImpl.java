@@ -46,7 +46,6 @@ import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.Teacher;
-import com.xiaoyi.manager.domain.TeacherConsultantRelation;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.IAccountService;
 import com.xiaoyi.manager.service.IBillRecordRelationService;
@@ -1170,7 +1169,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			updateTeacher.setTeacherid(teacher.getTeacherid());
 			updateTeacher.setStandbyTelNumber(reqData.getString("standbyTelNumber"));
 			teacherDao.updateByPrimaryKeySelective(updateTeacher);//修改教师备用电话号码
-			if (null != teacherResumeRelation) {
+			//查询订单当前投递数量，如果超过预定的五个就返回失败
+			Integer billRecordSendNum = billRecordRelationService.getBillRecordSendNumByBillId(reqData.getString("billId"));
+			if (null != teacherResumeRelation && billRecordSendNum < 5) {
 				BillRecordRelation billRecordRelation = new BillRecordRelation();
 				billRecordRelation.setBillRecordId(UUIDUtil.getUUIDPrimary());
 				billRecordRelation.setBillId(reqData.getString("billId"));
@@ -1213,11 +1214,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
 				}
 			}
-			TeacherConsultantRelation teacherConsultantRelation = teacherConsultantRelationService
+			/*TeacherConsultantRelation teacherConsultantRelation = teacherConsultantRelationService
 					.selectTeacherConsultantRelationByTeacherId(teacher.getTeacherid());
 			if(null != teacherConsultantRelation) {
 				billList = billService.selectSuitBillListByConsultantId(teacherConsultantRelation.getConsultantId());
-			}
+			}*/
+			billList = billService.getAllBillList();
 			if (CollectionUtils.isNotEmpty(billList)) {
 				Iterator<JSONObject> iterator = billList.iterator();
 				// 判断教师所选的可任教科目是否包含订单所选的科目，如果没有，则删除该订单

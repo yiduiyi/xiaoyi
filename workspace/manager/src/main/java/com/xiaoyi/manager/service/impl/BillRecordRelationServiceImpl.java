@@ -97,5 +97,9 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 	public int insert(BillRecordRelation billRecordRelation) {
 		return billRecordRelationDao.insert(billRecordRelation);
 	}
+	@Override
+	public Integer getBillRecordSendNumByBillId(String billId) {
+		return billRecordRelationDao.getBillRecordSendNumByBillId(billId);
+	}
 
 }

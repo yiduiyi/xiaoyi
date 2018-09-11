@@ -288,6 +288,13 @@ public class TeachingResourceAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
+	/**
+	 * 添加教师违约记录
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
 	@RequestMapping(value = "/insertTeacherTreaty",method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject insertTeacherTreaty(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
@@ -304,6 +311,13 @@ public class TeachingResourceAction {
 		setReturnMsg(result, rtCode);		
 		return result;
 	}
+	/**
+	 * 获取积分行为
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
 	@RequestMapping(value = "/getIntegralConduct",method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject getIntegralConduct(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
