@@ -61,7 +61,7 @@ public class TestTeacher {
 	@Test
 	public void testgetAllBillList() {
 		JSONObject reqData = new JSONObject();
-		reqData.put("openId", "oQHVE04sqMngRGJ9H5lKgGd8ARs4");
+		reqData.put("openId", "oQHVE00HAWuiDqD8zQb1Zun4cfxo");
 		h5PlateService.getAllBillList(reqData);
 	}
 	

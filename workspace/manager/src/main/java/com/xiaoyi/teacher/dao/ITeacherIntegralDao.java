@@ -18,7 +18,9 @@ public interface ITeacherIntegralDao {
 
     int updateByPrimaryKeySelective(TeacherIntegral record);
 
+    int updateByPrimaryKeyWithBLOBs(TeacherIntegral record);
+
     int updateByPrimaryKey(TeacherIntegral record);
     //查询教师违约记录
-	public List<JSONObject> getTeacherTreaty(@Param("teacherId")String teacherId);
+  	public List<JSONObject> getTeacherTreaty(@Param("teacherId")String teacherId);
 }

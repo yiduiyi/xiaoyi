@@ -570,4 +570,9 @@ public class ConstantUtil {
 	//教师积分状态
 	public static final Integer TEACHER_INTEGRAL_STATUS_REMOVE = -1;// 删除
 	public static final Integer TEACHER_INTEGRAL_STATUS_NORMAL = 0;// 正常
+
+	//积分行为分类
+	public static final Integer INTEGRAL_CONDUCT_TYPE_SUB = -1;// 投递失败
+	public static final Integer INTEGRAL_CONDUCT_TYPE_ADD = 0;// 正常
+	public static final Integer INTEGRAL_CONDUCT_TYPE_REWARD = 1;// 投递成功
 }
