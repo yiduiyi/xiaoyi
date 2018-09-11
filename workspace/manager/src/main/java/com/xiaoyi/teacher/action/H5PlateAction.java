@@ -608,7 +608,13 @@ public class H5PlateAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	
+	/**
+	 * 查询所有推送的订单信息
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
 	@RequestMapping(value = "/getAllSendBillList",method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject getAllSendBillList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
@@ -626,8 +632,24 @@ public class H5PlateAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+	@RequestMapping(value = "/getClassFeesList",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getClassFeesList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data = h5PlateService.getClassFeesList(reqData);
+			if(CollectionUtils.isNotEmpty(data)) {
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
 	//
-	
 	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {
 		result.put("code", code);
 		result.put("msg", rtString);

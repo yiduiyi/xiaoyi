@@ -23,7 +23,6 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
-import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.manager.dao.IPictureDao;
 import com.xiaoyi.manager.dao.ISchoolDao;
@@ -37,10 +36,11 @@ import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.ITeachingResourceService;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
-import com.xiaoyi.teacher.dao.ITeacherIntegralSumDao;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.TeacherResume;
 import com.xiaoyi.teacher.domain.TeacherResumeRelation;
+import com.xiaoyi.teacher.service.IIntegralConductService;
+import com.xiaoyi.teacher.service.ITeacherIntegralService;
 import com.xiaoyi.teacher.service.ITeacherIntegralSumService;
 import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
 import com.xiaoyi.teacher.service.ITeacherResumeService;
@@ -74,7 +74,11 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	@Resource
 	private ITeacherResumeService teacherResumeService;
 	@Resource
+	private ITeacherIntegralService teacherIntegralService;
+	@Resource
 	private ITeacherIntegralSumService teacherIntegralSumService; 
+	@Resource
+	private IIntegralConductService integralConductService;
 	@Transactional
 	@Override
 	public int addTeachingTeacher(List<JSONObject> datas) {
@@ -487,7 +491,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 		}
 		
 		try {			
-			List<School> hasRecordedSchool;
+			List<School> hasRecordedSchool = null;
 			List<String> schoolNames = null;
 			try {
 				schoolNames = new ArrayList<String>();							
@@ -622,7 +626,17 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 
 	@Override
 	public List<JSONObject> getTeacherTreaty(JSONObject reqData) {
-		// TODO Auto-generated method stub
-		return null;
+		List<JSONObject> data = teacherIntegralService.getTeacherTreaty(reqData.getString("teacherId"));
+		return data;
+	}
+
+	@Override
+	public int insertTeacherTreaty(JSONObject reqData) {
+		return teacherIntegralService.insertTeacherTreaty(reqData);
+	}
+
+	@Override
+	public List<JSONObject> getIntegralConduct(JSONObject reqData) {
+		return integralConductService.getIntegralConduct(reqData.getString("integralConductType"));
 	}
 }

@@ -67,6 +67,7 @@ import com.xiaoyi.teacher.domain.TeacherResume;
 import com.xiaoyi.teacher.domain.TeacherResumeRelation;
 import com.xiaoyi.teacher.domain.TeacherSpaceSet;
 import com.xiaoyi.teacher.domain.TeachingRecord;
+import com.xiaoyi.teacher.service.IClassFeesService;
 import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
 import com.xiaoyi.teacher.service.ITeacherResumeService;
@@ -137,6 +138,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	
 	@Resource
 	private IBillRecordRelationService billRecordRelationService;
+	
+	@Resource
+	private IClassFeesService classFeesService;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final static float DAILY_PROFITS_RATE = 8.2f;
@@ -1417,5 +1421,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			}
 		}
 		return billList;
+	}
+
+	@Override
+	public List<JSONObject> getClassFeesList(JSONObject reqData) {
+		
+		return classFeesService.getClassFeesList(reqData.getString("gradeId"));
 	}
 }

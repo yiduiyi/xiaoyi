@@ -56,4 +56,6 @@ public interface IH5PlateService {
 	public List<JSONObject> getMyBillRecord(JSONObject reqData);
 	//查询所有推送的订单
 	public List<JSONObject> getAllSendBillList(JSONObject reqData);
+	//根据年级ID查询课时费
+	public List<JSONObject> getClassFeesList(JSONObject reqData);
 }

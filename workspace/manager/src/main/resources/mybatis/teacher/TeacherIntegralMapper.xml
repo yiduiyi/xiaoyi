@@ -104,4 +104,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
   </update>
+  
+  <select id="getTeacherTreaty" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT operation_description AS operationDescription,create_time AS createTime FROM teacher_integral WHERE teacherId = #{teacherId} AND operation_type = -1 ORDER BY create_time DESC
+  </select>
 </mapper>

@@ -44,4 +44,8 @@ public interface ITeachingResourceService {
 	public JSONObject getTeacherIntroduce(JSONObject reqData);
 	//查询教师违约记录
 	public List<JSONObject> getTeacherTreaty(JSONObject reqData);
+	//添加教师违约记录
+	public int insertTeacherTreaty(JSONObject reqData);
+	//查询积分项
+	public List<JSONObject> getIntegralConduct(JSONObject reqData);
 }
