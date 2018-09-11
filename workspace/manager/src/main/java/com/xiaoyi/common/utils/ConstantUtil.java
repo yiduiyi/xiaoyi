@@ -566,4 +566,8 @@ public class ConstantUtil {
 	// 教师简历状态
 	public static final Integer TEACHER_SPACE_SET_STATUS_REMOVE = -1;// 删除
 	public static final Integer TEACHER_SPACE_SET_STATUS_NORMAL = 0;// 正常
+	
+	//教师积分状态
+	public static final Integer TEACHER_INTEGRAL_STATUS_REMOVE = -1;// 删除
+	public static final Integer TEACHER_INTEGRAL_STATUS_NORMAL = 0;// 正常
 }

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.teacher.dao.IClassFeesDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.ClassFees" >
+    <id column="class_fee_id" property="classFeeId" jdbcType="VARCHAR" />
+    <result column="grade_id" property="gradeId" jdbcType="VARCHAR" />
+    <result column="teaching_type" property="teachingType" jdbcType="INTEGER" />
+    <result column="general_class_fee" property="generalClassFee" jdbcType="REAL" />
+    <result column="silver_class_fee" property="silverClassFee" jdbcType="REAL" />
+    <result column="gold_class_fee" property="goldClassFee" jdbcType="REAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    class_fee_id, grade_id, teaching_type, general_class_fee, silver_class_fee, gold_class_fee, 
+    create_time, update_time, status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from class_fees
+    where class_fee_id = #{classFeeId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from class_fees
+    where class_fee_id = #{classFeeId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.ClassFees" >
+    insert into class_fees (class_fee_id, grade_id, teaching_type, 
+      general_class_fee, silver_class_fee, gold_class_fee, 
+      create_time, update_time, status
+      )
+    values (#{classFeeId,jdbcType=VARCHAR}, #{gradeId,jdbcType=VARCHAR}, #{teachingType,jdbcType=INTEGER}, 
+      #{generalClassFee,jdbcType=REAL}, #{silverClassFee,jdbcType=REAL}, #{goldClassFee,jdbcType=REAL}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.ClassFees" >
+    insert into class_fees
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="classFeeId != null" >
+        class_fee_id,
+      </if>
+      <if test="gradeId != null" >
+        grade_id,
+      </if>
+      <if test="teachingType != null" >
+        teaching_type,
+      </if>
+      <if test="generalClassFee != null" >
+        general_class_fee,
+      </if>
+      <if test="silverClassFee != null" >
+        silver_class_fee,
+      </if>
+      <if test="goldClassFee != null" >
+        gold_class_fee,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="classFeeId != null" >
+        #{classFeeId,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null" >
+        #{gradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="teachingType != null" >
+        #{teachingType,jdbcType=INTEGER},
+      </if>
+      <if test="generalClassFee != null" >
+        #{generalClassFee,jdbcType=REAL},
+      </if>
+      <if test="silverClassFee != null" >
+        #{silverClassFee,jdbcType=REAL},
+      </if>
+      <if test="goldClassFee != null" >
+        #{goldClassFee,jdbcType=REAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.ClassFees" >
+    update class_fees
+    <set >
+      <if test="gradeId != null" >
+        grade_id = #{gradeId,jdbcType=VARCHAR},
+      </if>
+      <if test="teachingType != null" >
+        teaching_type = #{teachingType,jdbcType=INTEGER},
+      </if>
+      <if test="generalClassFee != null" >
+        general_class_fee = #{generalClassFee,jdbcType=REAL},
+      </if>
+      <if test="silverClassFee != null" >
+        silver_class_fee = #{silverClassFee,jdbcType=REAL},
+      </if>
+      <if test="goldClassFee != null" >
+        gold_class_fee = #{goldClassFee,jdbcType=REAL},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where class_fee_id = #{classFeeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.ClassFees" >
+    update class_fees
+    set grade_id = #{gradeId,jdbcType=VARCHAR},
+      teaching_type = #{teachingType,jdbcType=INTEGER},
+      general_class_fee = #{generalClassFee,jdbcType=REAL},
+      silver_class_fee = #{silverClassFee,jdbcType=REAL},
+      gold_class_fee = #{goldClassFee,jdbcType=REAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER}
+    where class_fee_id = #{classFeeId,jdbcType=VARCHAR}
+  </update>
+  <select id="getClassFeesList" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT grade_id AS gradeId,teaching_type AS teachingType,general_class_fee AS generalClassFee,silver_class_fee AS silverClassFee,
+  	gold_class_fee AS goldClassFee FROM class_fees 
+  	<where>
+  		<if test="gradeId != null">
+  			AND grade_id = #{gradeId}
+  		</if>
+  		AND `status` = 0
+  	</where>
+  </select>
+</mapper>
