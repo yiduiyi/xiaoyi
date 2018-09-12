@@ -123,4 +123,7 @@
   	LEFT JOIN teacher T ON BR.teacherId = T.teacherId 
   	WHERE BR.bill_id = #{billId}
   </select>
+  <select id="getBillRecordSendNumByBillId" parameterType="java.lang.String" resultType="java.lang.Integer">
+  	SELECT COUNT(1) FROM bill_record_r WHERE bill_id = #{billId} AND `status` = 0
+  </select>
 </mapper>

@@ -2,10 +2,8 @@ package com.xiaoyi.teacher.domain;
 
 import java.util.Date;
 
-public class TeacherIntegral {
-    private String teacherIntegralId;
-
-    private String teacherid;
+public class IntegralConduct {
+    private String integralConductId;
 
     private String integralConductName;
 
@@ -15,22 +13,18 @@ public class TeacherIntegral {
 
     private Date createTime;
 
+    private Date updateTime;
+
+    private Integer status;
+
     private String integralConductDesc;
 
-    public String getTeacherIntegralId() {
-        return teacherIntegralId;
+    public String getIntegralConductId() {
+        return integralConductId;
     }
 
-    public void setTeacherIntegralId(String teacherIntegralId) {
-        this.teacherIntegralId = teacherIntegralId == null ? null : teacherIntegralId.trim();
-    }
-
-    public String getTeacherid() {
-        return teacherid;
-    }
-
-    public void setTeacherid(String teacherid) {
-        this.teacherid = teacherid == null ? null : teacherid.trim();
+    public void setIntegralConductId(String integralConductId) {
+        this.integralConductId = integralConductId == null ? null : integralConductId.trim();
     }
 
     public String getIntegralConductName() {
@@ -63,6 +57,22 @@ public class TeacherIntegral {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getIntegralConductDesc() {

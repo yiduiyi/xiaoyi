@@ -46,7 +46,6 @@ import com.xiaoyi.manager.domain.OrderSum;
 import com.xiaoyi.manager.domain.OrderSumKey;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.Teacher;
-import com.xiaoyi.manager.domain.TeacherConsultantRelation;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.manager.service.IAccountService;
 import com.xiaoyi.manager.service.IBillRecordRelationService;
@@ -67,6 +66,7 @@ import com.xiaoyi.teacher.domain.TeacherResume;
 import com.xiaoyi.teacher.domain.TeacherResumeRelation;
 import com.xiaoyi.teacher.domain.TeacherSpaceSet;
 import com.xiaoyi.teacher.domain.TeachingRecord;
+import com.xiaoyi.teacher.service.IClassFeesService;
 import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
 import com.xiaoyi.teacher.service.ITeacherResumeService;
@@ -137,6 +137,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	
 	@Resource
 	private IBillRecordRelationService billRecordRelationService;
+	
+	@Resource
+	private IClassFeesService classFeesService;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final static float DAILY_PROFITS_RATE = 8.2f;
@@ -1166,7 +1169,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			updateTeacher.setTeacherid(teacher.getTeacherid());
 			updateTeacher.setStandbyTelNumber(reqData.getString("standbyTelNumber"));
 			teacherDao.updateByPrimaryKeySelective(updateTeacher);//修改教师备用电话号码
-			if (null != teacherResumeRelation) {
+			//查询订单当前投递数量，如果超过预定的五个就返回失败
+			Integer billRecordSendNum = billRecordRelationService.getBillRecordSendNumByBillId(reqData.getString("billId"));
+			if (null != teacherResumeRelation && billRecordSendNum < 5) {
 				BillRecordRelation billRecordRelation = new BillRecordRelation();
 				billRecordRelation.setBillRecordId(UUIDUtil.getUUIDPrimary());
 				billRecordRelation.setBillId(reqData.getString("billId"));
@@ -1212,7 +1217,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			/*TeacherConsultantRelation teacherConsultantRelation = teacherConsultantRelationService
 					.selectTeacherConsultantRelationByTeacherId(teacher.getTeacherid());
 			if(null != teacherConsultantRelation) {
-				 = billService.selectSuitBillListByConsultantId(teacherConsultantRelation.getConsultantId());
+				billList = billService.selectSuitBillListByConsultantId(teacherConsultantRelation.getConsultantId());				
 			}*/
 			billList = billService.getAllBillList();
 			if (CollectionUtils.isNotEmpty(billList)) {
@@ -1418,5 +1423,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			}
 		}
 		return billList;
+	}
+
+	@Override
+	public List<JSONObject> getClassFeesList(JSONObject reqData) {
+		
+		return classFeesService.getClassFeesList(reqData.getString("gradeId"));
 	}
 }

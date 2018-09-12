@@ -1,5 +1,10 @@
 package com.xiaoyi.teacher.dao;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.teacher.domain.TeacherIntegral;
 
 public interface ITeacherIntegralDao {
@@ -13,5 +18,9 @@ public interface ITeacherIntegralDao {
 
     int updateByPrimaryKeySelective(TeacherIntegral record);
 
+    int updateByPrimaryKeyWithBLOBs(TeacherIntegral record);
+
     int updateByPrimaryKey(TeacherIntegral record);
+    //查询教师违约记录
+  	public List<JSONObject> getTeacherTreaty(@Param("teacherId")String teacherId);
 }

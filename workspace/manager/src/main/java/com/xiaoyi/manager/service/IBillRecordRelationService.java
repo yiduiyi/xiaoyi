@@ -12,5 +12,7 @@ public interface IBillRecordRelationService {
 	public int updateBillRecord(BillRecordRelation record);
 	//添加教师投递记录
 	public int insert(BillRecordRelation billRecordRelation);
+	//查询订单投递数量
+	public Integer getBillRecordSendNumByBillId(String billId);
 
 }

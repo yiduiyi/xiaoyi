@@ -12,6 +12,7 @@ import java.util.Date;
 public class DateUtils {
 	public static final String YYYYMMDDHHMMSS ="yyyy-MM-dd HH:mm:ss";
 	public static final String YYYYMMDD ="yyyy-MM-dd";
+	public static final String MMDD ="MM月dd日";
 	
 	public static final String HHMM ="HH:mm";
 	
@@ -22,6 +23,11 @@ public class DateUtils {
 	
 	public static String toYYYYMMDDString(Date date) {
 		SimpleDateFormat dateFormat=new SimpleDateFormat(YYYYMMDD);
+		return dateFormat.format(date);
+	}
+	
+	public static String toMMDDString(Date date) {
+		SimpleDateFormat dateFormat=new SimpleDateFormat(MMDD);
 		return dateFormat.format(date);
 	}
 	
