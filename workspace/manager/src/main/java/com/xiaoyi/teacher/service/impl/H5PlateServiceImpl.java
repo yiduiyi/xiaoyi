@@ -1209,11 +1209,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
 				}
 			}
-			TeacherConsultantRelation teacherConsultantRelation = teacherConsultantRelationService
+			/*TeacherConsultantRelation teacherConsultantRelation = teacherConsultantRelationService
 					.selectTeacherConsultantRelationByTeacherId(teacher.getTeacherid());
 			if(null != teacherConsultantRelation) {
-				billList = billService.selectSuitBillListByConsultantId(teacherConsultantRelation.getConsultantId());
-			}
+				 = billService.selectSuitBillListByConsultantId(teacherConsultantRelation.getConsultantId());
+			}*/
+			billList = billService.getAllBillList();
 			if (CollectionUtils.isNotEmpty(billList)) {
 				Iterator<JSONObject> iterator = billList.iterator();
 				// 判断教师所选的可任教科目是否包含订单所选的科目，如果没有，则删除该订单
