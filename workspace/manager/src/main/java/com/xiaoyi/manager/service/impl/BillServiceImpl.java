@@ -1,16 +1,23 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
@@ -19,8 +26,10 @@ import com.xiaoyi.manager.domain.Bill;
 import com.xiaoyi.manager.domain.BillRecordRelation;
 import com.xiaoyi.manager.service.IBillRecordRelationService;
 import com.xiaoyi.manager.service.IBillService;
+import com.xiaoyi.teacher.service.IH5PlateService;
 import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
 import com.xiaoyi.wechat.utils.UUIDUtil;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
 @Service("billService")
 public class BillServiceImpl implements IBillService {
 	@Resource
@@ -29,6 +38,14 @@ public class BillServiceImpl implements IBillService {
 	private IBillRecordRelationService billRecordRelationService;
 	@Resource
 	private ITeacherResumeRelationService teacherResumeRelationDao;
+	@Resource
+	private IH5PlateService ih5PlateService;
+	@Resource
+	private IWechatService wechatService;
+	
+	ExecutorService executor = Executors.newFixedThreadPool(2);
+	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public int insertBill(JSONObject reqData) {
 		if(null == reqData) {
@@ -177,5 +194,42 @@ public class BillServiceImpl implements IBillService {
 	public List<JSONObject> getAllSendBillList(List<String> billIdList) {
 		return billDao.getAllSendBillList(billIdList);
 	}
-
+	@Override
+	public void sendAllInTheSingleBillQuarzMsgToTeacher() {
+		List<JSONObject> bills = billDao.getAllInTheSingleBill();
+		final List<String> values = new ArrayList<String>();
+		final List<String> colors = new ArrayList<String>();
+		values.add("重要提醒 \n以下订单未派，想接的尽快哦\n");
+		colors.add("#173177");
+		if(CollectionUtils.isNotEmpty(bills)) {
+			StringBuilder serialNumberS = new StringBuilder();
+			for (JSONObject bill : bills) {
+				serialNumberS.append(bill.getString("serialNumber")).append(" ");
+			}
+			values.add(serialNumberS.toString());
+			colors.add("#173177");
+		}
+		values.add("点击查看详情");
+		colors.add("#173177");
+		List<JSONObject> teachers = ih5PlateService.getAllRemindTeacherList();
+		if (CollectionUtils.isNotEmpty(teachers)) {
+			Iterator<JSONObject> iterator = teachers.iterator();
+			while (iterator.hasNext()) {
+				final JSONObject teacher = iterator.next();
+				executor.submit(new Runnable() {
+					@Override
+					public void run() {
+						// TODO 回调地址未定
+						wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_TAKE_BILL_TEMPLETE_ID, WeiXinConfig.BILL_LIST_REDIRECT_URL, teacher.getString("openId"),
+								values, colors, null);
+					}
+				});
+			
+			}
+		}
+	}
+	@Override
+	public List<JSONObject> getAllInTheSingleBill() {
+		return billDao.getAllInTheSingleBill();
+	}
 }

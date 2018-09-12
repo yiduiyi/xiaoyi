@@ -154,4 +154,13 @@
 		WHERE teachingId=#{teachingId}
 			AND DATE_FORMAT(teachingDate,"%Y-%m")=#{queryMonth}
  	</select>
+ 	
+ 	<select id="getAllRemindTeacherList" resultType="com.alibaba.fastjson.JSONObject">
+ 		SELECT openId AS openId FROM teacher T LEFT JOIN teacher_space_set TSS ON T.teacherId = TSS.teacherId WHERE TSS.is_remind = 1 AND TSS.`status` = 0
+ 	</select>
+ 	<select id="getMonthTeacherClassFeeRank" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
+ 		SELECT T.teacherName AS teacherName,SUM(L.actualPay) AS classFee FROM lessontrade L 
+ 		LEFT JOIN teacher T ON L.teacherId = T.teacherId 
+ 		WHERE date_format(L.applyTime, '%Y %m') = date_format(#{date},'%Y %m') GROUP BY L.teacherId ORDER BY classFee DESC
+ 	</select>
 </mapper>

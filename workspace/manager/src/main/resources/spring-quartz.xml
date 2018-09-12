@@ -57,6 +57,17 @@
 			<value>withdrawLessonIncomeToBalance</value>
 		</property>
 	</bean>
+	
+	<bean id="MyTask5" class="com.xiaoyi.manager.service.impl.BillServiceImpl" />
+	<bean id="MyTaskMethod5"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="MyTask5" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>sendAllInTheSingleBillQuarzMsgToTeacher</value>
+		</property>
+	</bean>
 
 	<!-- ======================== 调度触发器 ======================== -->
 	<!-- 更新提现状态(自动确认) -->
@@ -91,7 +102,14 @@
 		<!-- <property name="cronExpression" value="0 2 0 * * ?"></property> -->
 		<property name="cronExpression" value="0 40 23 * * ?" />
 	</bean>
-
+	
+	<!-- 每天下午九点推送未派出订单 -->
+	<bean id="DailyTaskCronTriggerBean5"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="MyTaskMethod5" />
+		<!-- <property name="cronExpression" value="0 2 0 * * ?"></property> -->
+		<property name="cronExpression" value="0 0 21 * * ? *" />
+	</bean>
 	<!-- ======================== 调度工厂 ======================== -->
 	<bean id="SpringJobSchedulerFactoryBean"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -101,6 +119,7 @@
 				<ref bean="DailyTaskCronTriggerBean2" />
 				<ref bean="DailyTaskCronTriggerBean3" />
 				<ref bean="DailyTaskCronTriggerBean4" />
+				<ref bean="DailyTaskCronTriggerBean5"/>
 			</list>
 		</property>
 		<property name="quartzProperties">

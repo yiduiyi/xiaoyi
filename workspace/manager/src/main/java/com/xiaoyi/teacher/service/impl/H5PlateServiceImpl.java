@@ -36,6 +36,7 @@ import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
+import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
@@ -134,10 +135,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 	@Resource
 	private IBillService billService;
-	
+
 	@Resource
 	private IBillRecordRelationService billRecordRelationService;
-	
+
 	@Resource
 	private IClassFeesService classFeesService;
 
@@ -454,31 +455,31 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					keys.add(key);
 				}
 				List<OrderSum> orderSumList;
-				
-				if(keys.size()>0){	//针对解除任教关系的老师
+
+				if (keys.size() > 0) { // 针对解除任教关系的老师
 					try {
-						orderSumList = orderSumDao.selectOrderSumBatchByKey(keys);					
+						orderSumList = orderSumDao.selectOrderSumBatchByKey(keys);
 					} catch (Exception e) {
 						logger.error("查询老师提现-家长订单列表出错！");
 						throw new CommonRunException(-1, "查询老师提现-家长订单列表出错！");
 					}
-					if(null==orderSumList /*|| orderSumList.size()!=lessonTradeList.size()*/){
+					if (null == orderSumList /* || orderSumList.size()!=lessonTradeList.size() */) {
 						logger.info("提现列表与订单列表对应不上！");
 						throw new CommonRunException(-1, "提现列表与订单列表对应不上！");
 					}
-					//判断是否存在家长课时为负的订单
-					for(OrderSum orderSum : orderSumList){
-						
-						//家长课时为负时，不再允许老师提现
+					// 判断是否存在家长课时为负的订单
+					for (OrderSum orderSum : orderSumList) {
+
+						// 家长课时为负时，不再允许老师提现
 						Float lessonLeftNum = orderSum.getLessonleftnum();
-						if(lessonLeftNum<0){
+						if (lessonLeftNum < 0) {
 							throw new CommonRunException(-1, "提现失败,请联系课程顾问！【原因：家长课时为负】");
-						}					
-					}		
+						}
+					}
 				}
-				
-				//更新课时交易记录状态
-				//排序
+
+				// 更新课时交易记录状态
+				// 排序
 				Collections.sort(lessonTradeList, new Comparator<LessonTrade>() {
 
 					@Override
@@ -495,45 +496,45 @@ public class H5PlateServiceImpl implements IH5PlateService {
 								- (o2.getActualPay() - o2.getWithdrawed()));
 					}
 				});
-				synchronized(this){
-					for(LessonTrade record : lessonTradeList){
-						if(record.getActualPay() == null){
+				synchronized (this) {
+					for (LessonTrade record : lessonTradeList) {
+						if (record.getActualPay() == null) {
 							record.setActualPay(0f);
 						}
-						if(record.getWithdrawed()==null){
+						if (record.getWithdrawed() == null) {
 							record.setWithdrawed(0f);
 						}
-						//计算剩余
+						// 计算剩余
 						float remain = record.getActualPay() - record.getWithdrawed();
-						
-						logger.info("lessonTradeId:"+record.getLessontradeid());
-						logger.info("提现金额剩余："+remain);
-						
-						if(remain>/*withdrawing*/tobeWithdrawed){
-							record.setWithdrawed(record.getWithdrawed() + withdrawing);		
+
+						logger.info("lessonTradeId:" + record.getLessontradeid());
+						logger.info("提现金额剩余：" + remain);
+
+						if (remain > /* withdrawing */tobeWithdrawed) {
+							record.setWithdrawed(record.getWithdrawed() + withdrawing);
 							tobeWithdrawed = 0;
-						}else{
-							record.setStatus((byte)0);	//全部提现完毕
+						} else {
+							record.setStatus((byte) 0); // 全部提现完毕
 							record.setWithdrawed(record.getActualPay());
-							tobeWithdrawed -= remain;	
-							
-							//更新课时余额来源
-							lessonTradeIdList.remove(record.getLessontradeid());						
-						}					
-						
-						//更新课时提现状态
+							tobeWithdrawed -= remain;
+
+							// 更新课时余额来源
+							lessonTradeIdList.remove(record.getLessontradeid());
+						}
+
+						// 更新课时提现状态
 						logger.info("更新课时提现金额及状态...");
-						try {						
+						try {
 							lessonTradeDao.updateByPrimaryKeySelective(record);
 						} catch (Exception e) {
 							logger.error("更新课时提现金额及状态失败！");
 							throw new CommonRunException(-1, "更新课时提现金额及状态失败！");
 						}
-						
-						if(tobeWithdrawed <= 0){
+
+						if (tobeWithdrawed <= 0) {
 							break;
 						}
-					}				
+					}
 				}
 
 				// 更新课时余额来源
@@ -753,11 +754,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		// 金融版version2.0（加入余额功能）
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("status", 2);
-		//计算七点前的日期
-		Calendar   cal   =   Calendar.getInstance();
-        cal.add(Calendar.DATE,   -6);
-        String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
-        System.out.println(yesterday);		
+		// 计算七点前的日期
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -6);
+		String yesterday = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+		System.out.println(yesterday);
 
 		params.put("queryDateFull", yesterday);
 
@@ -941,7 +942,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				record.setEndtime(teachingDetail.getString("endTime"));
 				record.setStarttime(teachingDetail.getString("startTime"));
 
-				//适配日期
+				// 适配日期
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 
 				String teachingDate = teachingDetail.getString("teachingDate");
@@ -965,10 +966,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 				teachingRecords.add(record);
 			}
-			if(teachingRecords.size()==0){
+			if (teachingRecords.size() == 0) {
 				return 0;
 			}
-			tRecordDao.insertTeachingRecords(teachingRecords );
+			tRecordDao.insertTeachingRecords(teachingRecords);
 
 		} catch (Exception e) {
 			throw new CommonRunException(-1, "插入微信提现记录失败！");
@@ -1079,7 +1080,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			teacherIdJson.put("teacherId", teacher.getTeacherid());
 			String[] teacherGoodAtArr = teacher.getGoodAt().split(",");
 			for (int i = 0; i < teacherGoodAtArr.length; i++) {
-				if(!teacherGoodAtArr[i].equals("NaN")) {
+				if (!teacherGoodAtArr[i].equals("NaN")) {
 					Integer courseId = Integer.valueOf(teacherGoodAtArr[i]);
 					if (null != courseId) {
 						for (Course course : Course.values()) {
@@ -1090,7 +1091,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						}
 					}
 				}
-				
+
 			}
 		}
 		result.add(teacherIdJson);
@@ -1168,9 +1169,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			Teacher updateTeacher = new Teacher();
 			updateTeacher.setTeacherid(teacher.getTeacherid());
 			updateTeacher.setStandbyTelNumber(reqData.getString("standbyTelNumber"));
-			teacherDao.updateByPrimaryKeySelective(updateTeacher);//修改教师备用电话号码
-			//查询订单当前投递数量，如果超过预定的五个就返回失败
-			Integer billRecordSendNum = billRecordRelationService.getBillRecordSendNumByBillId(reqData.getString("billId"));
+			teacherDao.updateByPrimaryKeySelective(updateTeacher);// 修改教师备用电话号码
+			// 查询订单当前投递数量，如果超过预定的五个就返回失败
+			Integer billRecordSendNum = billRecordRelationService
+					.getBillRecordSendNumByBillId(reqData.getString("billId"));
 			if (null != teacherResumeRelation && billRecordSendNum < 5) {
 				BillRecordRelation billRecordRelation = new BillRecordRelation();
 				billRecordRelation.setBillRecordId(UUIDUtil.getUUIDPrimary());
@@ -1180,7 +1182,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				billRecordRelation.setCreateTime(new Date());
 				billRecordRelation.setUpdateTime(new Date());
 				billRecordRelation.setStatus(ConstantUtil.BILL_RECORD_STATUS_NORMAL);
-				resultType = billRecordRelationService.insert(billRecordRelation);//新增投递记录
+				resultType = billRecordRelationService.insert(billRecordRelation);// 新增投递记录
 			}
 		}
 		return resultType;
@@ -1214,11 +1216,14 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
 				}
 			}
-			/*TeacherConsultantRelation teacherConsultantRelation = teacherConsultantRelationService
-					.selectTeacherConsultantRelationByTeacherId(teacher.getTeacherid());
-			if(null != teacherConsultantRelation) {
-				billList = billService.selectSuitBillListByConsultantId(teacherConsultantRelation.getConsultantId());				
-			}*/
+			/*
+			 * TeacherConsultantRelation teacherConsultantRelation =
+			 * teacherConsultantRelationService
+			 * .selectTeacherConsultantRelationByTeacherId(teacher.getTeacherid()); if(null
+			 * != teacherConsultantRelation) { billList =
+			 * billService.selectSuitBillListByConsultantId(teacherConsultantRelation.
+			 * getConsultantId()); }
+			 */
 			billList = billService.getAllBillList();
 			if (CollectionUtils.isNotEmpty(billList)) {
 				Iterator<JSONObject> iterator = billList.iterator();
@@ -1232,7 +1237,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				}
 				// 添加该订单的
 				for (JSONObject bill : billList) {
-					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0 : sendNumMap.get(bill.getString("billId")) );
+					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
+							: sendNumMap.get(bill.getString("billId")));
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")));
 					Integer gradeId = bill.getIntValue("gradeId");
 					if (null != gradeId) {
@@ -1257,7 +1263,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				Collections.sort(billList, new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						if (null != o1 && null != o2 && o1.getString("sendNum") != null && o2.getString("sendNum") != null) {
+						if (null != o1 && null != o2 && o1.getString("sendNum") != null
+								&& o2.getString("sendNum") != null) {
 
 							return o2.getString("sendNum").compareTo(o1.getString("sendNum"));
 						}
@@ -1292,8 +1299,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			if (CollectionUtils.isNotEmpty(billList)) {
 				// 添加该订单的sendNum和recordStatus
 				for (JSONObject bill : billList) {
-					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0 : sendNumMap.get(bill.getString("billId")) );
-					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")));
+					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
+							: sendNumMap.get(bill.getString("billId")));
+					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
 					Integer gradeId = bill.getIntValue("gradeId");
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
@@ -1317,7 +1325,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				Collections.sort(billList, new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						if (null != o1 && null != o2 && o1.getString("sendNum") != null && o2.getString("sendNum") != null) {
+						if (null != o1 && null != o2 && o1.getString("sendNum") != null
+								&& o2.getString("sendNum") != null) {
 
 							return o2.getString("sendNum").compareTo(o1.getString("sendNum"));
 						}
@@ -1375,51 +1384,60 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 	@Override
 	public List<JSONObject> getAllSendBillList(JSONObject reqData) {
-		List<JSONObject> billList  = null;
-		List<String> billIdList = new ArrayList<String>();
-		String[] billIdArr = reqData.getString("billId").split(",");
-		if(billIdArr.length > 0) {
-			for (int i = 0; i < billIdArr.length; i++) {
-				billIdList.add(billIdArr[i]);
+		List<JSONObject> billList = null;
+		billList = billService.getAllInTheSingleBill();
+		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
+		Map<String, Object> sendNumMap = new HashMap<String, Object>();
+		List<JSONObject> sendNums = billService.getBillSendNum();
+		if (CollectionUtils.isNotEmpty(sendNums)) {
+			for (JSONObject sendNum : sendNums) {
+				sendNumMap.put(sendNum.getString("billId"), sendNum.getString("sendNum"));
 			}
-			if(CollectionUtils.isNotEmpty(billIdList)) {
-				billList = billService.getAllSendBillList(billIdList);
-				if(CollectionUtils.isNotEmpty(billList)) {
-
-					for (JSONObject bill : billList) {
-						Integer gradeId = bill.getIntValue("gradeId");
-						if (null != gradeId) {
-							for (Grade grade : Grade.values()) {
-								if (grade.getValue() == gradeId) {
-									bill.put("gradeName", grade.toString());
-									break;
-								}
-							}
-						}
-						Integer courseId = bill.getIntValue("courseId");
-						if (null != courseId) {
-							for (Course course : Course.values()) {
-								if (course.getValue() == courseId) {
-									bill.put("courseName", course.toString());
-									break;
-								}
+		}
+		Map<String, Object> recordStatusMap = new HashMap<String, Object>();
+		List<JSONObject> recordStatus = billService.getRecordStatus(teacher.getTeacherid());
+		if (CollectionUtils.isNotEmpty(recordStatus)) {
+			for (JSONObject recordStatu : recordStatus) {
+				recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
+			}
+		}
+		if(null != teacher) {
+			if (CollectionUtils.isNotEmpty(billList)) {
+				for (JSONObject bill : billList) {
+					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
+							: sendNumMap.get(bill.getString("billId")));
+					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
+					Integer gradeId = bill.getIntValue("gradeId");
+					if (null != gradeId) {
+						for (Grade grade : Grade.values()) {
+							if (grade.getValue() == gradeId) {
+								bill.put("gradeName", grade.toString());
+								break;
 							}
 						}
 					}
-					// 按照投递数排序
-					Collections.sort(billList, new Comparator<JSONObject>() {
-						@Override
-						public int compare(JSONObject o1, JSONObject o2) {
-							if (null != o1 && null != o2 && o1.getString("updateTime") != null
-									&& o2.getString("updateTime") != null) {
-
-								return o2.getString("updateTime").compareTo(o1.getString("updateTime"));
+					Integer courseId = bill.getIntValue("courseId");
+					if (null != courseId) {
+						for (Course course : Course.values()) {
+							if (course.getValue() == courseId) {
+								bill.put("courseName", course.toString());
+								break;
 							}
-							return 0;
 						}
-					});
-				
+					}
 				}
+				// 按照投递数排序
+				Collections.sort(billList, new Comparator<JSONObject>() {
+					@Override
+					public int compare(JSONObject o1, JSONObject o2) {
+						if (null != o1 && null != o2 && o1.getString("updateTime") != null
+								&& o2.getString("updateTime") != null) {
+
+							return o2.getString("updateTime").compareTo(o1.getString("updateTime"));
+						}
+						return 0;
+					}
+				});
 			}
 		}
 		return billList;
@@ -1427,7 +1445,37 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 	@Override
 	public List<JSONObject> getClassFeesList(JSONObject reqData) {
-		
 		return classFeesService.getClassFeesList(reqData.getString("gradeId"));
+	}
+
+	@Override
+	public List<JSONObject> getAllRemindTeacherList() {
+		return teacherH5Dao.getAllRemindTeacherList();
+	}
+
+	@Override
+	public List<JSONObject> getMonthTeacherClassFeeRank() {
+		Date date =DateUtils.getLastMonth();
+		List<JSONObject> data = teacherH5Dao.getMonthTeacherClassFeeRank(date);
+		if(CollectionUtils.isNotEmpty(data)) {
+			// 按照课时费排序
+			Collections.sort(data, new Comparator<JSONObject>() {
+				@Override
+				public int compare(JSONObject o1, JSONObject o2) {
+					if (null != o1 && null != o2 && o1.getString("classFee") != null
+							&& o2.getString("classFee") != null) {
+
+						return o2.getString("classFee").compareTo(o1.getString("classFee"));
+					}
+					return 0;
+				}
+			});
+			Integer ranking = 1;
+			for (JSONObject jsonObject : data) {
+				jsonObject.put("ranking", ranking);
+				ranking++;
+			}
+		}
+		return data;
 	}
 }

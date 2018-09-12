@@ -220,7 +220,7 @@
   <select id="getMyBillRecord" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
   	SELECT B.bill_id AS billId,B.serial_number AS serialNumber,B.grade_id AS gradeId,B.course_id AS courseId,B.consultant_id AS consultantId,B.class_time AS classTime,
   	B.class_address AS classAddress,B.demand AS demand,B.`status` AS `status`,BRR.`status` AS recordStatus,BRR.update_time AS updateTime FROM bill B 
-  	LEFT JOIN bill_record_r BRR ON b.bill_id = BRR.bill_id WHERE BRR.teacherId = #{teacherid}
+  	INNER JOIN bill_record_r BRR ON b.bill_id = BRR.bill_id WHERE BRR.teacherId = #{teacherid}
   </select>
   
   <select id="getAllSendBillList" resultType = "com.alibaba.fastjson.JSONObject">
@@ -231,5 +231,9 @@
   		AND bill_id IN
   		<foreach collection="billIdList" open="(" close=")" separator="," item="item">#{item}</foreach>
 	</if>
+  </select>
+  <select id="getAllInTheSingleBill" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT bill_id AS billId,serial_number AS serialNumber,grade_id AS gradeId,course_id AS courseId,consultant_id AS consultantId,class_time AS classTime,
+  	class_address AS classAddress,demand AS demand,`status` AS `status` FROM bill WHERE `status` = 1
   </select>
 </mapper>

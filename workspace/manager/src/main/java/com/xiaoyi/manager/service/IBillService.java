@@ -29,5 +29,8 @@ public interface IBillService {
 	public List<JSONObject> getMyBillRecord(String teacherid);
 	//根据订单主键列表查询订单
 	public List<JSONObject> getAllSendBillList(List<String> billIdList);
-
+	//推送所有未派出的订单至教师端
+	public void sendAllInTheSingleBillQuarzMsgToTeacher();
+	//查询所有未被派出的订单
+	public List<JSONObject> getAllInTheSingleBill();
 }

@@ -1,7 +1,10 @@
 package com.xiaoyi.teacher.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.Teacher;
@@ -24,4 +27,8 @@ public interface ITH5PlateDao {
 	
 	//查询历史课时提交记录
 	List<JSONObject> selectHistoryTeachingRecords(JSONObject params);
+	//查询所有接收生源提醒的教师openId
+	public List<JSONObject> getAllRemindTeacherList();
+	//查询上月教师课时费排行榜
+	public List<JSONObject> getMonthTeacherClassFeeRank(@Param("date")Date date);
 }

@@ -58,4 +58,8 @@ public interface IH5PlateService {
 	public List<JSONObject> getAllSendBillList(JSONObject reqData);
 	//根据年级ID查询课时费
 	public List<JSONObject> getClassFeesList(JSONObject reqData);
+	//查询所有教师的openId
+	public List<JSONObject> getAllRemindTeacherList();
+	//查询教师月度课时费排行榜
+	public List<JSONObject> getMonthTeacherClassFeeRank();
 }

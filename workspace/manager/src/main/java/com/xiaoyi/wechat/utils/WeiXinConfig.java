@@ -59,6 +59,11 @@ public class WeiXinConfig {
 	// 讲师平台微信公众号参数配置
 	public static String TEACHER_PLATE_APPID ;//= "wxdd97f462c846471b";
 	public static String TEACHER_PLATE_SECRET_KEY ;//= "a22efaaa6dfb5498baa32ffa06ac510a";
+	
+	//订单推送模板ID
+	public static String TEACHER_TAKE_BILL_TEMPLETE_ID;
+	public static String BILL_LIST_REDIRECT_URL;
+	
 
 	// 证书url
 	public static final String CA_LICENSE = "F:" + File.separator + "xiaoyi" + File.separator + "cert" + File.separator
@@ -96,6 +101,8 @@ public class WeiXinConfig {
 		TEACHER_PLATE_APPID = properties.getProperty("TEACHER_PLATE_APPID");
 		TEACHER_PLATE_SECRET_KEY = properties.getProperty("TEACHER_PLATE_SECRET_KEY");
 		NOTIFY_URL = properties.getProperty("NOTIFY_URL"); 
+		TEACHER_TAKE_BILL_TEMPLETE_ID = properties.getProperty("TEACHER_TAKE_BILL_TEMPLETE_ID"); 
+		BILL_LIST_REDIRECT_URL = properties.getProperty("BILL_LIST_REDIRECT_URL");
 	}
 
 	public static String getRequestXml(SortedMap<String, String> parameters) {

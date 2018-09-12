@@ -632,6 +632,13 @@ public class H5PlateAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+	/**
+	 * 根据年级ID查询课时信息
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
 	@RequestMapping(value = "/getClassFeesList",method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject getClassFeesList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
@@ -639,6 +646,23 @@ public class H5PlateAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
 			List<JSONObject> data = h5PlateService.getClassFeesList(reqData);
+			if(CollectionUtils.isNotEmpty(data)) {
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	@RequestMapping(value = "/getMonthTeacherClassFeeRank",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getMonthTeacherClassFeeRank(HttpServletRequest request,HttpServletResponse response) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data = h5PlateService.getMonthTeacherClassFeeRank();
 			if(CollectionUtils.isNotEmpty(data)) {
 				result.put("data", data);
 				rtCode = RtConstants.SUCCESS;

@@ -505,7 +505,6 @@ public class WechatServiceImpl implements IWechatService {
 				sendData.put("keyword"+n, showData);
 			}
 		}
-		
 		if(params != null){
 			StringBuffer sb = new StringBuffer();
 			int n=0;
