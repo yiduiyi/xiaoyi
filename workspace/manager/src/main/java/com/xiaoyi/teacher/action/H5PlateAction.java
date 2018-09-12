@@ -522,7 +522,7 @@ public class H5PlateAction {
 	 * @param reqData
 	 * @return
 	 */
-	@RequestMapping(value = "/getSuitBillLis" , method = RequestMethod.POST)
+	@RequestMapping(value = "/getSuitBillList" , method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject getSuitBillList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();

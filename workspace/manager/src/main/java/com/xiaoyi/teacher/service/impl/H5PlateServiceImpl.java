@@ -1217,7 +1217,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			/*TeacherConsultantRelation teacherConsultantRelation = teacherConsultantRelationService
 					.selectTeacherConsultantRelationByTeacherId(teacher.getTeacherid());
 			if(null != teacherConsultantRelation) {
-				billList = billService.selectSuitBillListByConsultantId(teacherConsultantRelation.getConsultantId());
+				billList = billService.selectSuitBillListByConsultantId(teacherConsultantRelation.getConsultantId());				
 			}*/
 			billList = billService.getAllBillList();
 			if (CollectionUtils.isNotEmpty(billList)) {
