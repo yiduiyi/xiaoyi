@@ -1,107 +1,115 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.teacher.dao.ITeacherIntegralDao" >
-  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherIntegral" >
-    <id column="teacher_integral_id" property="teacherIntegralId" jdbcType="VARCHAR" />
-    <result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
-    <result column="integral_num" property="integralNum" jdbcType="REAL" />
-    <result column="operation_type" property="operationType" jdbcType="INTEGER" />
-    <result column="operation_description" property="operationDescription" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    teacher_integral_id, teacherId, integral_num, operation_type, operation_description, 
-    create_time
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from teacher_integral
-    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from teacher_integral
-    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral" >
-    insert into teacher_integral (teacher_integral_id, teacherId, integral_num, 
-      operation_type, operation_description, create_time
-      )
-    values (#{teacherIntegralId,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{integralNum,jdbcType=REAL}, 
-      #{operationType,jdbcType=INTEGER}, #{operationDescription,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral" >
-    insert into teacher_integral
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="teacherIntegralId != null" >
-        teacher_integral_id,
-      </if>
-      <if test="teacherid != null" >
-        teacherId,
-      </if>
-      <if test="integralNum != null" >
-        integral_num,
-      </if>
-      <if test="operationType != null" >
-        operation_type,
-      </if>
-      <if test="operationDescription != null" >
-        operation_description,
-      </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="teacherIntegralId != null" >
-        #{teacherIntegralId,jdbcType=VARCHAR},
-      </if>
-      <if test="teacherid != null" >
-        #{teacherid,jdbcType=VARCHAR},
-      </if>
-      <if test="integralNum != null" >
-        #{integralNum,jdbcType=REAL},
-      </if>
-      <if test="operationType != null" >
-        #{operationType,jdbcType=INTEGER},
-      </if>
-      <if test="operationDescription != null" >
-        #{operationDescription,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral" >
-    update teacher_integral
-    <set >
-      <if test="teacherid != null" >
-        teacherId = #{teacherid,jdbcType=VARCHAR},
-      </if>
-      <if test="integralNum != null" >
-        integral_num = #{integralNum,jdbcType=REAL},
-      </if>
-      <if test="operationType != null" >
-        operation_type = #{operationType,jdbcType=INTEGER},
-      </if>
-      <if test="operationDescription != null" >
-        operation_description = #{operationDescription,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral" >
-    update teacher_integral
-    set teacherId = #{teacherid,jdbcType=VARCHAR},
-      integral_num = #{integralNum,jdbcType=REAL},
-      operation_type = #{operationType,jdbcType=INTEGER},
-      operation_description = #{operationDescription,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
-    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-  </update>
+<mapper namespace="com.xiaoyi.teacher.dao.ITeacherIntegralDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherIntegral">
+		<id column="teacher_integral_id" property="teacherIntegralId"
+			jdbcType="VARCHAR" />
+		<result column="teacherId" property="teacherid" jdbcType="VARCHAR" />
+		<result column="integral_num" property="integralNum" jdbcType="REAL" />
+		<result column="operation_type" property="operationType"
+			jdbcType="INTEGER" />
+		<result column="operation_description" property="operationDescription"
+			jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		teacher_integral_id, teacherId, integral_num, operation_type, operation_description,
+		create_time
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from teacher_integral
+		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from teacher_integral
+		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
+		insert into teacher_integral (teacher_integral_id, teacherId,
+		integral_num,
+		operation_type, operation_description, create_time
+		)
+		values (#{teacherIntegralId,jdbcType=VARCHAR},
+		#{teacherid,jdbcType=VARCHAR}, #{integralNum,jdbcType=REAL},
+		#{operationType,jdbcType=INTEGER},
+		#{operationDescription,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
+		insert into teacher_integral
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="teacherIntegralId != null">
+				teacher_integral_id,
+			</if>
+			<if test="teacherid != null">
+				teacherId,
+			</if>
+			<if test="integralNum != null">
+				integral_num,
+			</if>
+			<if test="operationType != null">
+				operation_type,
+			</if>
+			<if test="operationDescription != null">
+				operation_description,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="teacherIntegralId != null">
+				#{teacherIntegralId,jdbcType=VARCHAR},
+			</if>
+			<if test="teacherid != null">
+				#{teacherid,jdbcType=VARCHAR},
+			</if>
+			<if test="integralNum != null">
+				#{integralNum,jdbcType=REAL},
+			</if>
+			<if test="operationType != null">
+				#{operationType,jdbcType=INTEGER},
+			</if>
+			<if test="operationDescription != null">
+				#{operationDescription,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
+		update teacher_integral
+		<set>
+			<if test="teacherid != null">
+				teacherId = #{teacherid,jdbcType=VARCHAR},
+			</if>
+			<if test="integralNum != null">
+				integral_num = #{integralNum,jdbcType=REAL},
+			</if>
+			<if test="operationType != null">
+				operation_type = #{operationType,jdbcType=INTEGER},
+			</if>
+			<if test="operationDescription != null">
+				operation_description = #{operationDescription,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
+		update teacher_integral
+		set teacherId = #{teacherid,jdbcType=VARCHAR},
+		integral_num = #{integralNum,jdbcType=REAL},
+		operation_type = #{operationType,jdbcType=INTEGER},
+		operation_description = #{operationDescription,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP}
+		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+	</update>
 </mapper>
