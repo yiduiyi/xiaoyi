@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.manager.service.ITeachingResourceService;
 import com.xiaoyi.teacher.service.IH5PlateService;
 
 @RunWith(JUnit4ClassRunner.class)     //琛ㄧず缁ф壙浜哠pringJUnit4ClassRunner绫�  
@@ -15,7 +16,8 @@ public class TestTeacher {
 
 	@Resource
 	private IH5PlateService h5PlateService;
-	
+	@Resource
+	private ITeachingResourceService tResourceService;
 	@Test
 	public void testGetTeacherGootAt() {
 		String openId = "oQHVE04sqMngRGJ9H5lKgGd8ARs4";
@@ -81,9 +83,20 @@ public class TestTeacher {
 	
 	@Test
 	public void testGetMonthTeacherClassFeeRank() {
-	List<JSONObject> jsonObjects = h5PlateService.getMonthTeacherClassFeeRank();
-	for (JSONObject jsonObject : jsonObjects) {
-		System.out.println(jsonObject.toJSONString());
+		List<JSONObject> jsonObjects = h5PlateService.getMonthTeacherClassFeeRank();
+		for (JSONObject jsonObject : jsonObjects) {
+			System.out.println(jsonObject.toJSONString());
+		}
 	}
+	
+	@Test
+	public void testGetTeacherTreaty() {
+		JSONObject reqData = new JSONObject();
+		reqData.put("teacherId", "6a32d9eb-1e1a-4bef-9ae3-8ec32334f0a6");
+		List<JSONObject> data = tResourceService.getTeacherTreaty(reqData);
+		for (JSONObject jsonObject : data) {
+			System.out.println(jsonObject);
+		}
+		
 	}
 }

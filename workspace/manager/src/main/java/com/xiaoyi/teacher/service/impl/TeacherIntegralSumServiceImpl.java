@@ -27,5 +27,9 @@ public class TeacherIntegralSumServiceImpl implements ITeacherIntegralSumService
 	public int updateTeacherIntegralSum(UpdateTeacherIntegralSumVo updateTeacherIntegralSumVo) {
 		return teacherIntegralSumDao.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 	}
+	@Override
+	public int insert(TeacherIntegralSum newTeacherIntegralSum) {
+		return teacherIntegralSumDao.insert(newTeacherIntegralSum);
+	}
 
 }

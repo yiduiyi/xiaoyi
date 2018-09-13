@@ -88,7 +88,7 @@ public class BillServiceImpl implements IBillService {
 				if(null!=gradeId) {
 					for(Grade grade : Grade.values()) {
 						if(grade.getValue() == gradeId) {
-							jsonObject.put("gradeName", grade.toString());
+							jsonObject.put("gradeName", grade.getFullGradeName());
 							break;
 						}
 					}
