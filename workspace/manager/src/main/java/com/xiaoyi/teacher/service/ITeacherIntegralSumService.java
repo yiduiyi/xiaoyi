@@ -13,5 +13,7 @@ public interface ITeacherIntegralSumService {
 	public TeacherIntegralSum getTeacherIntegralSum(String string);
 	//同步修改教师总积分
 	public int updateTeacherIntegralSum(UpdateTeacherIntegralSumVo updateTeacherIntegralSumVo);
+	//添加教师积分总表
+	public int insert(TeacherIntegralSum newTeacherIntegralSum);
 
 }

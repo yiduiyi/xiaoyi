@@ -1239,12 +1239,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				for (JSONObject bill : billList) {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
-					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")));
+					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 :sendNumMap.get(bill.getString("billId")));
 					Integer gradeId = bill.getIntValue("gradeId");
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
 							if (grade.getValue() == gradeId) {
-								bill.put("gradeName", grade.toString());
+								bill.put("gradeName", grade.getFullGradeName());
 								break;
 							}
 						}
@@ -1306,7 +1306,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
 							if (grade.getValue() == gradeId) {
-								bill.put("gradeName", grade.toString());
+								bill.put("gradeName", grade.getFullGradeName());
 								break;
 							}
 						}
@@ -1350,7 +1350,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
 							if (grade.getValue() == gradeId) {
-								bill.put("gradeName", grade.toString());
+								bill.put("gradeName", grade.getFullGradeName());
 								break;
 							}
 						}
@@ -1411,7 +1411,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
 							if (grade.getValue() == gradeId) {
-								bill.put("gradeName", grade.toString());
+								bill.put("gradeName", grade.getFullGradeName());
 								break;
 							}
 						}

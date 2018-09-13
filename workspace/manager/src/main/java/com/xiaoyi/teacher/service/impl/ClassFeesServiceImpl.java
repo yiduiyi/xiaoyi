@@ -25,7 +25,7 @@ public class ClassFeesServiceImpl implements IClassFeesService {
 				if (null != gradeIds) {
 					for (Grade grade : Grade.values()) {
 						if (grade.getValue() == gradeIds) {
-							jsonObject.put("gradeName", grade.toString());
+							jsonObject.put("gradeName", grade.getFullGradeName());
 							break;
 						}
 					}

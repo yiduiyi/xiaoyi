@@ -1,151 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaoyi.teacher.dao.ITeacherIntegralDao">
-	<resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.teacherIntegral">
-		<id column="teacher_integral_id" jdbcType="VARCHAR" property="teacherIntegralId" />
-		<result column="teacherId" jdbcType="VARCHAR" property="teacherid" />
-		<result column="integral_conduct_name" jdbcType="VARCHAR"
-			property="integralConductName" />
-		<result column="integral_conduct_value" jdbcType="REAL"
-			property="integralConductValue" />
-		<result column="integral_conduct_type" jdbcType="INTEGER"
-			property="integralConductType" />
-		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-	</resultMap>
-	<resultMap extends="BaseResultMap" id="ResultMapWithBLOBs"
-		type="com.xiaoyi.teacher.domain.teacherIntegral">
-		<result column="integral_conduct_desc" jdbcType="LONGVARCHAR"
-			property="integralConductDesc" />
-	</resultMap>
-	<sql id="Base_Column_List">
-		teacher_integral_id, teacherId, integral_conduct_name, integral_conduct_value,
-		integral_conduct_type,
-		create_time
-	</sql>
-	<sql id="Blob_Column_List">
-		integral_conduct_desc
-	</sql>
-	<select id="selectByPrimaryKey" parameterType="java.lang.String"
-		resultMap="ResultMapWithBLOBs">
-		select
-		<include refid="Base_Column_List" />
-		,
-		<include refid="Blob_Column_List" />
-		from teacher_integral
-		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-	</select>
-	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-		delete from teacher_integral
-		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-	</delete>
-	<insert id="insert" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
-		insert into teacher_integral (teacher_integral_id, teacherId,
-		integral_conduct_name,
-		integral_conduct_value, integral_conduct_type,
-		create_time, integral_conduct_desc)
-		values (#{teacherIntegralId,jdbcType=VARCHAR},
-		#{teacherid,jdbcType=VARCHAR},
-		#{integralConductName,jdbcType=VARCHAR},
-		#{integralConductValue,jdbcType=REAL},
-		#{integralConductType,jdbcType=INTEGER},
-		#{createTime,jdbcType=TIMESTAMP},
-		#{integralConductDesc,jdbcType=LONGVARCHAR})
-	</insert>
-	<insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
-		insert into teacher_integral
-		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="teacherIntegralId != null">
-				teacher_integral_id,
-			</if>
-			<if test="teacherid != null">
-				teacherId,
-			</if>
-			<if test="integralConductName != null">
-				integral_conduct_name,
-			</if>
-			<if test="integralConductValue != null">
-				integral_conduct_value,
-			</if>
-			<if test="integralConductType != null">
-				integral_conduct_type,
-			</if>
-			<if test="createTime != null">
-				create_time,
-			</if>
-			<if test="integralConductDesc != null">
-				integral_conduct_desc,
-			</if>
-		</trim>
-		<trim prefix="values (" suffix=")" suffixOverrides=",">
-			<if test="teacherIntegralId != null">
-				#{teacherIntegralId,jdbcType=VARCHAR},
-			</if>
-			<if test="teacherid != null">
-				#{teacherid,jdbcType=VARCHAR},
-			</if>
-			<if test="integralConductName != null">
-				#{integralConductName,jdbcType=VARCHAR},
-			</if>
-			<if test="integralConductValue != null">
-				#{integralConductValue,jdbcType=REAL},
-			</if>
-			<if test="integralConductType != null">
-				#{integralConductType,jdbcType=INTEGER},
-			</if>
-			<if test="createTime != null">
-				#{createTime,jdbcType=TIMESTAMP},
-			</if>
-			<if test="integralConductDesc != null">
-				#{integralConductDesc,jdbcType=LONGVARCHAR},
-			</if>
-		</trim>
-	</insert>
-	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
-		update teacher_integral
-		<set>
-			<if test="teacherid != null">
-				teacherId = #{teacherid,jdbcType=VARCHAR},
-			</if>
-			<if test="integralConductName != null">
-				integral_conduct_name = #{integralConductName,jdbcType=VARCHAR},
-			</if>
-			<if test="integralConductValue != null">
-				integral_conduct_value = #{integralConductValue,jdbcType=REAL},
-			</if>
-			<if test="integralConductType != null">
-				integral_conduct_type = #{integralConductType,jdbcType=INTEGER},
-			</if>
-			<if test="createTime != null">
-				create_time = #{createTime,jdbcType=TIMESTAMP},
-			</if>
-			<if test="integralConductDesc != null">
-				integral_conduct_desc = #{integralConductDesc,jdbcType=LONGVARCHAR},
-			</if>
-		</set>
-		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-	</update>
-	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
-		update teacher_integral
-		set teacherId = #{teacherid,jdbcType=VARCHAR},
-		integral_conduct_name = #{integralConductName,jdbcType=VARCHAR},
-		integral_conduct_value = #{integralConductValue,jdbcType=REAL},
-		integral_conduct_type = #{integralConductType,jdbcType=INTEGER},
-		create_time = #{createTime,jdbcType=TIMESTAMP},
-		integral_conduct_desc = #{integralConductDesc,jdbcType=LONGVARCHAR}
-		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-	</update>
-	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
-		update teacher_integral
-		set teacherId = #{teacherid,jdbcType=VARCHAR},
-		integral_conduct_name = #{integralConductName,jdbcType=VARCHAR},
-		integral_conduct_value = #{integralConductValue,jdbcType=REAL},
-		integral_conduct_type = #{integralConductType,jdbcType=INTEGER},
-		create_time = #{createTime,jdbcType=TIMESTAMP}
-		where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
-	</update>
-	<select id="getTeacherTreaty" parameterType="java.lang.String"
-		resultType="com.alibaba.fastjson.JSONObject">
-		SELECT integral_conduct_name AS integralConductName,create_time AS
-		createTime FROM teacher_integral WHERE teacherId = #{teacherId}
-	</select>
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.teacherIntegral">
+    <id column="teacher_integral_id" jdbcType="VARCHAR" property="teacherIntegralId" />
+    <result column="teacherId" jdbcType="VARCHAR" property="teacherid" />
+    <result column="integral_conduct_name" jdbcType="VARCHAR" property="integralConductName" />
+    <result column="integral_conduct_value" jdbcType="REAL" property="integralConductValue" />
+    <result column="integral_conduct_type" jdbcType="INTEGER" property="integralConductType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xiaoyi.teacher.domain.teacherIntegral">
+    <result column="integral_conduct_desc" jdbcType="LONGVARCHAR" property="integralConductDesc" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    teacher_integral_id, teacherId, integral_conduct_name, integral_conduct_value, integral_conduct_type, 
+    create_time
+  </sql>
+  <sql id="Blob_Column_List">
+    integral_conduct_desc
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from teacher_integral
+    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from teacher_integral
+    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+    insert into teacher_integral (teacher_integral_id, teacherId, integral_conduct_name, 
+      integral_conduct_value, integral_conduct_type, 
+      create_time, integral_conduct_desc)
+    values (#{teacherIntegralId,jdbcType=VARCHAR}, #{teacherid,jdbcType=VARCHAR}, #{integralConductName,jdbcType=VARCHAR}, 
+      #{integralConductValue,jdbcType=REAL}, #{integralConductType,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{integralConductDesc,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+    insert into teacher_integral
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="teacherIntegralId != null">
+        teacher_integral_id,
+      </if>
+      <if test="teacherid != null">
+        teacherId,
+      </if>
+      <if test="integralConductName != null">
+        integral_conduct_name,
+      </if>
+      <if test="integralConductValue != null">
+        integral_conduct_value,
+      </if>
+      <if test="integralConductType != null">
+        integral_conduct_type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="integralConductDesc != null">
+        integral_conduct_desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="teacherIntegralId != null">
+        #{teacherIntegralId,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherid != null">
+        #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="integralConductName != null">
+        #{integralConductName,jdbcType=VARCHAR},
+      </if>
+      <if test="integralConductValue != null">
+        #{integralConductValue,jdbcType=REAL},
+      </if>
+      <if test="integralConductType != null">
+        #{integralConductType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="integralConductDesc != null">
+        #{integralConductDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+    update teacher_integral
+    <set>
+      <if test="teacherid != null">
+        teacherId = #{teacherid,jdbcType=VARCHAR},
+      </if>
+      <if test="integralConductName != null">
+        integral_conduct_name = #{integralConductName,jdbcType=VARCHAR},
+      </if>
+      <if test="integralConductValue != null">
+        integral_conduct_value = #{integralConductValue,jdbcType=REAL},
+      </if>
+      <if test="integralConductType != null">
+        integral_conduct_type = #{integralConductType,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="integralConductDesc != null">
+        integral_conduct_desc = #{integralConductDesc,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+    update teacher_integral
+    set teacherId = #{teacherid,jdbcType=VARCHAR},
+      integral_conduct_name = #{integralConductName,jdbcType=VARCHAR},
+      integral_conduct_value = #{integralConductValue,jdbcType=REAL},
+      integral_conduct_type = #{integralConductType,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      integral_conduct_desc = #{integralConductDesc,jdbcType=LONGVARCHAR}
+    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+    update teacher_integral
+    set teacherId = #{teacherid,jdbcType=VARCHAR},
+      integral_conduct_name = #{integralConductName,jdbcType=VARCHAR},
+      integral_conduct_value = #{integralConductValue,jdbcType=REAL},
+      integral_conduct_type = #{integralConductType,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
+  </update>
+   <select id="getTeacherTreaty" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT integral_conduct_name AS integralConductName,create_time AS createTime FROM teacher_integral WHERE teacherId = #{teacherId}
+  </select>
 </mapper>
