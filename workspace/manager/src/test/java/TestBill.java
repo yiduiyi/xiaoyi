@@ -99,4 +99,9 @@ public class TestBill {
 		JSONObject extraParams =null;
 		wechatService.sendTempletMsg2(templeteId, redirect_url, openId, values, colors, extraParams);
 	}
+	
+	@Test
+	public void testSendAllInTheSingleBillQuarzMsgToTeacher() {
+		billService.sendAllInTheSingleBillQuarzMsgToTeacher();
+	}
 }

@@ -125,7 +125,6 @@ public class BillServiceImpl implements IBillService {
 			updateBill.setDemand(reqData.getString("demand"));
 			resultType =  billDao.updateByPrimaryKeySelective(updateBill);
 		}
-		
 		return resultType;
 	}
 	@Override
@@ -211,15 +210,16 @@ public class BillServiceImpl implements IBillService {
 		}
 		values.add("点击查看详情");
 		colors.add("#173177");
+		//查询所有接收推送的教师openId
 		List<JSONObject> teachers = ih5PlateService.getAllRemindTeacherList();
 		if (CollectionUtils.isNotEmpty(teachers)) {
 			Iterator<JSONObject> iterator = teachers.iterator();
 			while (iterator.hasNext()) {
 				final JSONObject teacher = iterator.next();
+				logger.info("推送的教师主键："+teacher.getString("openId")+"————推送的内容："+values.toString());
 				executor.submit(new Runnable() {
 					@Override
 					public void run() {
-						// TODO 回调地址未定
 						wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_TAKE_BILL_TEMPLETE_ID, WeiXinConfig.BILL_LIST_REDIRECT_URL, teacher.getString("openId"),
 								values, colors, null);
 					}

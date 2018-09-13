@@ -79,4 +79,11 @@ public class TestTeacher {
 		h5PlateService.getAllSendBillList(reqData);
 	}
 	
+	@Test
+	public void testGetMonthTeacherClassFeeRank() {
+	List<JSONObject> jsonObjects = h5PlateService.getMonthTeacherClassFeeRank();
+	for (JSONObject jsonObject : jsonObjects) {
+		System.out.println(jsonObject.toJSONString());
+	}
+	}
 }

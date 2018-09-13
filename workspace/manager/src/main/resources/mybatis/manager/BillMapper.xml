@@ -234,6 +234,6 @@
   </select>
   <select id="getAllInTheSingleBill" resultType="com.alibaba.fastjson.JSONObject">
   	SELECT bill_id AS billId,serial_number AS serialNumber,grade_id AS gradeId,course_id AS courseId,consultant_id AS consultantId,class_time AS classTime,
-  	class_address AS classAddress,demand AS demand,`status` AS `status` FROM bill WHERE `status` = 1
+  	class_address AS classAddress,demand AS demand,`status` AS `status`,update_time AS updateTime FROM bill WHERE `status` = 1
   </select>
 </mapper>

@@ -1328,7 +1328,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						if (null != o1 && null != o2 && o1.getString("sendNum") != null
 								&& o2.getString("sendNum") != null) {
 
-							return o2.getString("sendNum").compareTo(o1.getString("sendNum"));
+							return o1.getString("sendNum").compareTo(o2.getString("sendNum"));
 						}
 						return 0;
 					}
@@ -1365,14 +1365,14 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						}
 					}
 				}
-				// 按照投递数排序
+				// 按照投递时间
 				Collections.sort(billList, new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						if (null != o1 && null != o2 && o1.getString("updateTime") != null
-								&& o2.getString("updateTime") != null) {
+						if (null != o1 && null != o2 && o1.getDate("updateTime") != null
+								&& o2.getDate("updateTime") != null) {
 
-							return o2.getString("updateTime").compareTo(o1.getString("updateTime"));
+							return o2.getDate("updateTime").compareTo(o1.getDate("updateTime"));
 						}
 						return 0;
 					}
@@ -1430,10 +1430,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				Collections.sort(billList, new Comparator<JSONObject>() {
 					@Override
 					public int compare(JSONObject o1, JSONObject o2) {
-						if (null != o1 && null != o2 && o1.getString("updateTime") != null
-								&& o2.getString("updateTime") != null) {
+						if (null != o1 && null != o2 && o1.getDate("updateTime") != null
+								&& o2.getDate("updateTime") != null) {
 
-							return o2.getString("updateTime").compareTo(o1.getString("updateTime"));
+							return o2.getDate("updateTime").compareTo(o1.getDate("updateTime"));
 						}
 						return 0;
 					}
@@ -1462,10 +1462,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			Collections.sort(data, new Comparator<JSONObject>() {
 				@Override
 				public int compare(JSONObject o1, JSONObject o2) {
-					if (null != o1 && null != o2 && o1.getString("classFee") != null
-							&& o2.getString("classFee") != null) {
+					if (null != o1 && null != o2 && o1.getFloat("classFee") != null
+							&& o2.getFloat("classFee") != null) {
 
-						return o2.getString("classFee").compareTo(o1.getString("classFee"));
+						return o2.getFloat("classFee").compareTo(o1.getFloat("classFee"));
 					}
 					return 0;
 				}
