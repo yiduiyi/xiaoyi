@@ -395,7 +395,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	public int operateTeacherLessons(JSONObject params) {
 		try {
 			String teacherId = params.getString("teacherId");
-			
+			boolean isNewRecord = false;
 			if(!StringUtils.isEmpty(teacherId)) {
 				LessonTradeSum record = lessonTradeSumDao.selectByPrimaryKey(teacherId);
 				if(null == record) {
@@ -403,6 +403,8 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					
 					record.setTeacherid(teacherId);
 					record.setFrozenlessonnum(0f);
+					
+					isNewRecord = true;
 				}
 				
 				//record.setTeacherid(teacherId);
@@ -424,8 +426,12 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					
 					record.setFrozenlessonnum(record.getFrozenlessonnum()-operateNum);
 				}
-												
-				return lessonTradeSumDao.updateByPrimaryKeySelective(record);				
+				
+				if(isNewRecord){	//新记录
+					return lessonTradeSumDao.insertSelective(record);
+				}else{
+					return lessonTradeSumDao.updateByPrimaryKeySelective(record);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
