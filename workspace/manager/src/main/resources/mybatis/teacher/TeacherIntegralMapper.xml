@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaoyi.teacher.dao.ITeacherIntegralDao">
-  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.teacherIntegral">
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeacherIntegral">
     <id column="teacher_integral_id" jdbcType="VARCHAR" property="teacherIntegralId" />
     <result column="teacherId" jdbcType="VARCHAR" property="teacherid" />
     <result column="integral_conduct_name" jdbcType="VARCHAR" property="integralConductName" />
@@ -9,7 +9,7 @@
     <result column="integral_conduct_type" jdbcType="INTEGER" property="integralConductType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xiaoyi.teacher.domain.teacherIntegral">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.xiaoyi.teacher.domain.TeacherIntegral">
     <result column="integral_conduct_desc" jdbcType="LONGVARCHAR" property="integralConductDesc" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -31,7 +31,7 @@
     delete from teacher_integral
     where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
     insert into teacher_integral (teacher_integral_id, teacherId, integral_conduct_name, 
       integral_conduct_value, integral_conduct_type, 
       create_time, integral_conduct_desc)
@@ -39,7 +39,7 @@
       #{integralConductValue,jdbcType=REAL}, #{integralConductType,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{integralConductDesc,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
     insert into teacher_integral
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="teacherIntegralId != null">
@@ -88,7 +88,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
     update teacher_integral
     <set>
       <if test="teacherid != null">
@@ -112,7 +112,7 @@
     </set>
     where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
     update teacher_integral
     set teacherId = #{teacherid,jdbcType=VARCHAR},
       integral_conduct_name = #{integralConductName,jdbcType=VARCHAR},
@@ -122,7 +122,7 @@
       integral_conduct_desc = #{integralConductDesc,jdbcType=LONGVARCHAR}
     where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.teacherIntegral">
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeacherIntegral">
     update teacher_integral
     set teacherId = #{teacherid,jdbcType=VARCHAR},
       integral_conduct_name = #{integralConductName,jdbcType=VARCHAR},

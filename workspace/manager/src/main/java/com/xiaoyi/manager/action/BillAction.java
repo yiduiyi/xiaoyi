@@ -68,10 +68,8 @@ public class BillAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
 			List<JSONObject> data = billService.getBillList(reqData);
-			if(CollectionUtils.isNotEmpty(data)) {
-				result.put("data", data);
-				rtCode = RtConstants.SUCCESS;
-			}
+			result.put("data", data);
+			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -136,10 +134,8 @@ public class BillAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
 			List<JSONObject> data = billRecordRelationService.getBillRecordList(reqData);
-			if(CollectionUtils.isNotEmpty(data)) {
 				result.put("data", data);
 				rtCode = RtConstants.SUCCESS;
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

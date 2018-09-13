@@ -39,7 +39,7 @@ public class BillServiceImpl implements IBillService {
 	@Resource
 	private ITeacherResumeRelationService teacherResumeRelationDao;
 	@Resource
-	private IH5PlateService ih5PlateService;
+	private IH5PlateService h5PlateService;
 	@Resource
 	private IWechatService wechatService;
 	
