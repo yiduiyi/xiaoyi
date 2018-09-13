@@ -15,9 +15,6 @@ workspace/manager/logs/ssm.log
 workspace/manager/src/main/webapp/WEB-INF/web.xml
 ~$网络交易前后端接口文档.docx
 workspace/manager/.classpath
-workspace/manager/.classpath
-workspace/manager/.classpath
-workspace/manager/src/main/resources/config/jdbc.properties
 workspace/manager/src/main/resources/config/jdbc.properties
 workspace/manager/.classpath
 workspace/manager/src/main/resources/config/jdbc.properties
