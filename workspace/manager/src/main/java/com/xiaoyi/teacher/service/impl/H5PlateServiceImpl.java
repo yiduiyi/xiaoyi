@@ -1071,13 +1071,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	}
 
 	@Override
-	public List<JSONObject> getTeacherGootAt(String openId) {
-		List<JSONObject> result = new ArrayList<JSONObject>();
-		JSONObject teacherGoodAtJson = new JSONObject();
-		JSONObject teacherIdJson = new JSONObject();
+	public List<String> getTeacherGootAt(String openId) {
+		List<String> result = new ArrayList<String>();
 		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(openId);
 		if (null != teacher) {
-			teacherIdJson.put("teacherId", teacher.getTeacherid());
 			String[] teacherGoodAtArr = teacher.getGoodAt().split(",");
 			for (int i = 0; i < teacherGoodAtArr.length; i++) {
 				if (!teacherGoodAtArr[i].equals("NaN")) {
@@ -1085,17 +1082,14 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					if (null != courseId) {
 						for (Course course : Course.values()) {
 							if (course.getValue() == courseId) {
-								teacherGoodAtJson.put(courseId.toString(), course.toString());
+								result.add(course.toString());
 								break;
 							}
 						}
 					}
 				}
-
 			}
 		}
-		result.add(teacherIdJson);
-		result.add(teacherGoodAtJson);
 		return result;
 	}
 
@@ -1281,20 +1275,20 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		List<JSONObject> billList = null;
 		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
 		Map<String, Object> sendNumMap = new HashMap<String, Object>();
-		List<JSONObject> sendNums = billService.getBillSendNum();
-		if (CollectionUtils.isNotEmpty(sendNums)) {
-			for (JSONObject sendNum : sendNums) {
-				sendNumMap.put(sendNum.getString("billId"), sendNum.getString("sendNum"));
-			}
-		}
 		Map<String, Object> recordStatusMap = new HashMap<String, Object>();
-		List<JSONObject> recordStatus = billService.getRecordStatus(teacher.getTeacherid());
-		if (CollectionUtils.isNotEmpty(recordStatus)) {
-			for (JSONObject recordStatu : recordStatus) {
-				recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
-			}
-		}
 		if (null != teacher) {
+			List<JSONObject> sendNums = billService.getBillSendNum();
+			if (CollectionUtils.isNotEmpty(sendNums)) {
+				for (JSONObject sendNum : sendNums) {
+					sendNumMap.put(sendNum.getString("billId"), sendNum.getString("sendNum"));
+				}
+			}
+			List<JSONObject> recordStatus = billService.getRecordStatus(teacher.getTeacherid());
+			if (CollectionUtils.isNotEmpty(recordStatus)) {
+				for (JSONObject recordStatu : recordStatus) {
+					recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
+				}
+			}
 			billList = billService.getAllBillList();
 			if (CollectionUtils.isNotEmpty(billList)) {
 				// 添加该订单的sendNum和recordStatus

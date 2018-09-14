@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -424,7 +423,7 @@ public class H5PlateAction {
 			openId = setSessionOpenId(request);
 		}
 		try {
-			List<JSONObject> data = h5PlateService.getTeacherGootAt(openId);
+			List<String> data = h5PlateService.getTeacherGootAt(openId);
 			result.put("data", data);
 			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {

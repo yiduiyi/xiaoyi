@@ -21,8 +21,8 @@ public class TestTeacher {
 	@Test
 	public void testGetTeacherGootAt() {
 		String openId = "oQHVE04sqMngRGJ9H5lKgGd8ARs4";
-		List<JSONObject> data =h5PlateService.getTeacherGootAt(openId);
-		for (JSONObject jsonObject : data) {
+		List<String> data =h5PlateService.getTeacherGootAt(openId);
+		for (String jsonObject : data) {
 			System.out.println(jsonObject);
 		}
 	}

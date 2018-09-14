@@ -41,7 +41,7 @@ public interface IH5PlateService {
 	 */
 	int send();
 	//获取教师可任教科目
-	public List<JSONObject> getTeacherGootAt(String openId);
+	public List<String> getTeacherGootAt(String openId);
 	//修改教师的可任教科目
 	public int updateTeacherGootAt(JSONObject reqData);
 	//添加教师接单设置

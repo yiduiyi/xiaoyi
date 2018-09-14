@@ -211,7 +211,7 @@ public class BillServiceImpl implements IBillService {
 		values.add("点击查看详情");
 		colors.add("#173177");
 		//查询所有接收推送的教师openId
-		List<JSONObject> teachers = ih5PlateService.getAllRemindTeacherList();
+		List<JSONObject> teachers = h5PlateService.getAllRemindTeacherList();
 		if (CollectionUtils.isNotEmpty(teachers)) {
 			Iterator<JSONObject> iterator = teachers.iterator();
 			while (iterator.hasNext()) {

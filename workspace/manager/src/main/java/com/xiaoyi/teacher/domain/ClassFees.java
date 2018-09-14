@@ -9,11 +9,9 @@ public class ClassFees {
 
     private Integer teachingType;
 
-    private Float generalClassFee;
+    private Byte teachingLevel;
 
-    private Float silverClassFee;
-
-    private Float goldClassFee;
+    private Float classCost;
 
     private Date createTime;
 
@@ -45,28 +43,20 @@ public class ClassFees {
         this.teachingType = teachingType;
     }
 
-    public Float getGeneralClassFee() {
-        return generalClassFee;
+    public Byte getTeachingLevel() {
+        return teachingLevel;
     }
 
-    public void setGeneralClassFee(Float generalClassFee) {
-        this.generalClassFee = generalClassFee;
+    public void setTeachingLevel(Byte teachingLevel) {
+        this.teachingLevel = teachingLevel;
     }
 
-    public Float getSilverClassFee() {
-        return silverClassFee;
+    public Float getClassCost() {
+        return classCost;
     }
 
-    public void setSilverClassFee(Float silverClassFee) {
-        this.silverClassFee = silverClassFee;
-    }
-
-    public Float getGoldClassFee() {
-        return goldClassFee;
-    }
-
-    public void setGoldClassFee(Float goldClassFee) {
-        this.goldClassFee = goldClassFee;
+    public void setClassCost(Float classCost) {
+        this.classCost = classCost;
     }
 
     public Date getCreateTime() {
