@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
+import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.teacher.dao.IClassFeesDao;
 import com.xiaoyi.teacher.service.IClassFeesService;
 @Service("classFeesService")
@@ -30,9 +31,18 @@ public class ClassFeesServiceImpl implements IClassFeesService {
 						}
 					}
 				}
+				Integer teachingLevels = jsonObject.getIntValue("teachingLevel");
+				if(null != teachingLevels) {
+					for(TeachingLevel teachingLevel : TeachingLevel.values()) {
+						if(teachingLevel.getValue() == teachingLevels) {
+							jsonObject.put("teachingLevel", teachingLevel.toString());
+							break;
+						}
+					}
+				}
 			}
 		}
-		return null;
+		return data;
 	}
 
 }

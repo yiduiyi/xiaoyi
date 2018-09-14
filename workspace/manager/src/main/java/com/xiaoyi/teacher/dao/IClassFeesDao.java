@@ -2,6 +2,8 @@ package com.xiaoyi.teacher.dao;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.teacher.domain.ClassFees;
 
@@ -18,5 +20,5 @@ public interface IClassFeesDao {
 
     int updateByPrimaryKey(ClassFees record);
   //根据年级主键查询该年级的课时费信息
-  	public List<JSONObject> getClassFeesList(String gradeId);
+  	public List<JSONObject> getClassFeesList(@Param("gradeId")String gradeId);
 }
