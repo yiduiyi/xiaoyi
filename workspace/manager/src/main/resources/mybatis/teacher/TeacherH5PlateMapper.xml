@@ -161,6 +161,6 @@
  	<select id="getMonthTeacherClassFeeRank" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
  		SELECT T.teacherName AS teacherName,SUM(L.actualPay) AS classFee FROM lessontrade L 
  		LEFT JOIN teacher T ON L.teacherId = T.teacherId 
- 		WHERE date_format(L.applyTime, '%Y %m') = date_format(#{date},'%Y %m') GROUP BY L.teacherId ORDER BY classFee DESC
+ 		WHERE date_format(L.applyTime, '%Y %m') = date_format(#{date},'%Y %m') GROUP BY L.teacherId ORDER BY classFee DESC limit 0,3
  	</select>
 </mapper>

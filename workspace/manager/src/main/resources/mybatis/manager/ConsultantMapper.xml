@@ -139,4 +139,10 @@
       status = #{status,jdbcType=INTEGER}
     where consultant_id = #{consultantId,jdbcType=VARCHAR}
   </update>
+  <!-- 获取所有课程顾问 -->
+  <select id="selectList" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from consultant
+  </select>
 </mapper>

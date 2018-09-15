@@ -371,7 +371,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 	@Transactional
 	@Override
-	public int withdrawBalance(JSONObject params) throws Exception {
+	synchronized public int withdrawBalance(JSONObject params) throws Exception {
 		// verify params
 		String openId = params.getString("openId");
 		Float withdrawing = params.getFloat("withdrawing");
@@ -496,7 +496,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 								- (o2.getActualPay() - o2.getWithdrawed()));
 					}
 				});
-				synchronized (this) {
+				//synchronized (this) {
 					for (LessonTrade record : lessonTradeList) {
 						if (record.getActualPay() == null) {
 							record.setActualPay(0f);
@@ -535,7 +535,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							break;
 						}
 					}
-				}
+				//}
 
 				// 更新课时余额来源
 				StringBuffer sb = new StringBuffer();
@@ -1466,6 +1466,22 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			});
 			Integer ranking = 1;
 			for (JSONObject jsonObject : data) {
+				String teacherName = jsonObject.getString("teacherName");
+				if(StringUtils.isNotEmpty(teacherName)){
+					int length = teacherName.length();
+					String replaceString = "";
+					switch(length){
+					case 2:
+						replaceString = teacherName.substring(1);
+						break;
+					case 3:
+					case 10: 
+						replaceString = teacherName.substring(1, length-1);
+						break;
+					}
+					jsonObject.put("teacherName", teacherName.replaceFirst(replaceString, "*"));
+				}
+				
 				jsonObject.put("ranking", ranking);
 				ranking++;
 			}
