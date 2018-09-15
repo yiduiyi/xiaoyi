@@ -1466,6 +1466,22 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			});
 			Integer ranking = 1;
 			for (JSONObject jsonObject : data) {
+				String teacherName = jsonObject.getString("teacherName");
+				if(StringUtils.isNotEmpty(teacherName)){
+					int length = teacherName.length();
+					String replaceString = "";
+					switch(length){
+					case 2:
+						replaceString = teacherName.substring(1);
+						break;
+					case 3:
+					case 10: 
+						replaceString = teacherName.substring(1, length-1);
+						break;
+					}
+					jsonObject.put("teacherName", teacherName.replaceFirst(replaceString, "*"));
+				}
+				
 				jsonObject.put("ranking", ranking);
 				ranking++;
 			}
