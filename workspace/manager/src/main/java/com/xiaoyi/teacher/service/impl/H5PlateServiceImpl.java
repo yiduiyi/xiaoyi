@@ -371,7 +371,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 	@Transactional
 	@Override
-	public int withdrawBalance(JSONObject params) throws Exception {
+	synchronized public int withdrawBalance(JSONObject params) throws Exception {
 		// verify params
 		String openId = params.getString("openId");
 		Float withdrawing = params.getFloat("withdrawing");
@@ -496,7 +496,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 								- (o2.getActualPay() - o2.getWithdrawed()));
 					}
 				});
-				synchronized (this) {
+				//synchronized (this) {
 					for (LessonTrade record : lessonTradeList) {
 						if (record.getActualPay() == null) {
 							record.setActualPay(0f);
@@ -535,7 +535,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							break;
 						}
 					}
-				}
+				//}
 
 				// 更新课时余额来源
 				StringBuffer sb = new StringBuffer();
