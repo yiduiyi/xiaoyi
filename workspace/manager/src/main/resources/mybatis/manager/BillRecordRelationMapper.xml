@@ -116,7 +116,7 @@
     where bill_record_id = #{billRecordId,jdbcType=VARCHAR}
   </update>
   <select id="getBillRecordList" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT B.bill_id AS billId,BR.bill_record_id AS billRecordId,T.teacherId AS teacherId,BR.teacher_resume_r_id AS teacherResumeRId,B.serial_number AS serialNumber,
+  	SELECT B.bill_id AS billId,BR.bill_record_id AS billRecordId,T.teacherId AS teacherId,BR.status,BR.teacher_resume_r_id AS teacherResumeRId,B.serial_number AS serialNumber,
   	B.grade_id AS gradeId,B.course_id AS courseId,T.teacherName AS teacherName,T.sex AS sex,T.schoolId AS schoolId,
   	T.telNumber AS telNumber,T.standby_tel_number AS standbyTelNumber,T.teachingLevel AS teachingLevel FROM bill_record_r BR 
   	LEFT JOIN bill B ON b.bill_id = BR.bill_id 
