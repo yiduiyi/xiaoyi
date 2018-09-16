@@ -93,7 +93,8 @@ public class BillServiceImpl implements IBillService {
 					jsonObject.put("billQuantityNum",0);
 				}else{
 					jsonObject.put("billQuantityNum", billQuantityNum);	
-					if((Integer)(billQuantityNum) >= 5){	//设置派单已满状态
+					
+					if(jsonObject.getInteger("billQuantityNum")>= 5){	//设置派单已满状态
 						jsonObject.put("status", "3");
 					}
 				}
