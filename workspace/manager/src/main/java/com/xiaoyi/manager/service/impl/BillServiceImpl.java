@@ -88,7 +88,12 @@ public class BillServiceImpl implements IBillService {
 				}
 			}
 			for (JSONObject jsonObject : result) {
-				jsonObject.put("billQuantityNum", billQuantityNumMap.get(jsonObject.getString("billId")));
+				Object billQuantityNum = billQuantityNumMap.get(jsonObject.getString("billId"));
+				if(null == billQuantityNum){
+					jsonObject.put("billQuantityNum",0);
+				}else{
+					jsonObject.put("billQuantityNum", billQuantityNum);					
+				}
 				Integer gradeId = jsonObject.getIntValue("gradeId");
 				if(null!=gradeId) {
 					for(Grade grade : Grade.values()) {
