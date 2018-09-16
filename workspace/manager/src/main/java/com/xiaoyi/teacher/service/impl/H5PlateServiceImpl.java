@@ -1071,24 +1071,32 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	}
 
 	@Override
-	public List<String> getTeacherGootAt(String openId) {
-		List<String> result = new ArrayList<String>();
+	public JSONObject getTeacherGootAt(String openId) {
+		JSONObject result = new JSONObject();
 		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(openId);
 		if (null != teacher) {
 			String[] teacherGoodAtArr = teacher.getGoodAt().split(",");
+			
+			StringBuffer courseNames = new StringBuffer();
+			StringBuffer courseIds = new StringBuffer();
 			for (int i = 0; i < teacherGoodAtArr.length; i++) {
 				if (!teacherGoodAtArr[i].equals("NaN")) {
 					Integer courseId = Integer.valueOf(teacherGoodAtArr[i]);
 					if (null != courseId) {
 						for (Course course : Course.values()) {
 							if (course.getValue() == courseId) {
-								result.add(course.toString());
+								//result.add(course.toString());
+								courseNames.append(course.toString()+",");
+								courseIds.append(courseId+",");
 								break;
 							}
 						}
 					}
 				}
 			}
+			result.put("teacherId", teacher.getTeacherid());
+			result.put("goodAt", courseIds.subSequence(0, courseIds.length()-1));
+			result.put("goodAtName", courseNames.subSequence(0, courseNames.length()-1));
 		}
 		return result;
 	}

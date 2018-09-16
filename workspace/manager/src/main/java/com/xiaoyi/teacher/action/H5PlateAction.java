@@ -423,7 +423,7 @@ public class H5PlateAction {
 			openId = setSessionOpenId(request);
 		}
 		try {
-			List<String> data = h5PlateService.getTeacherGootAt(openId);
+			JSONObject data = h5PlateService.getTeacherGootAt(openId);
 			result.put("data", data);
 			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
