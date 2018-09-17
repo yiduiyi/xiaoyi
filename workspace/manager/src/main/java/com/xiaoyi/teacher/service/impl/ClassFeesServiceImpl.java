@@ -21,7 +21,6 @@ public class ClassFeesServiceImpl implements IClassFeesService {
 		List<JSONObject> data = classFeesDao.getClassFeesList(gradeId);
 		if(CollectionUtils.isNotEmpty(data)) {
 			for (JSONObject jsonObject : data) {
-				//TODO 待修改
 				Integer gradeIds = jsonObject.getIntValue("gradeId");
 				if (null != gradeIds) {
 					for (Grade grade : Grade.values()) {

@@ -316,8 +316,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 					}
 					Float integralCount = singleResult.getFloat("integralCount");
 					if(null != integralCount) {
-						
-						Integer teachingLevel = getTeachingLevelByIntegralCount(integralCount.intValue());
+						Integer teachingLevel = getTeachingLevelByIntegralCount(integralCount);
 						for(TeachingLevel level : TeachingLevel.values()) {
 							if(teachingLevel==level.getValue()) {
 								singleResult.put("teachingLevel", level.toString());
@@ -363,7 +362,7 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 		return null;
 	}
 	//根据积分匹配教师等级
-	private Integer getTeachingLevelByIntegralCount(Integer integralCount) {
+	private Integer getTeachingLevelByIntegralCount(Float integralCount) {
 		Integer teachingLevel = 0;
 		if(integralCount == 0) {
 			teachingLevel = 0;

@@ -81,7 +81,7 @@
 				signed = #{signed,jdbcType=VARCHAR},
 			</if>
 		</set>
-		where telNumber = #{telnumber,jdbcType=VARCHAR}
+		where openId = #{openId,jdbcType=VARCHAR}
 	</update>
  	
  	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Teacher" >

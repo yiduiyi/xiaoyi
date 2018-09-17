@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.teacher.domain.TeacherIntegralSum;
 
 public interface IH5PlateService {
 	
@@ -67,5 +66,5 @@ public interface IH5PlateService {
 	//查询教师月度课时费排行榜
 	public List<JSONObject> getMonthTeacherClassFeeRank();
 	//查询教师积分总量
-	public TeacherIntegralSum getTeacherIntegralSum(JSONObject reqData);
+	public JSONObject getTeacherIntegralSum(JSONObject reqData);
 }

@@ -36,6 +36,7 @@ import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
+import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.common.utils.XMLUtil;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -1511,13 +1512,35 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	}
 
 	@Override
-	public TeacherIntegralSum getTeacherIntegralSum(JSONObject reqData) {
-		TeacherIntegralSum teacherIntegralSum = new TeacherIntegralSum();
-		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
-		if(null != teacher) {
-			teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
+	public JSONObject getTeacherIntegralSum(JSONObject reqData) {
+		try {
+			JSONObject jsonObject = new JSONObject();
+			TeacherIntegralSum teacherIntegralSum = new TeacherIntegralSum();
+			Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
+			if(null != teacher) {
+				teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
+				Integer teachingLevel = 0;
+				//同步修改教师等级
+				if (null != teacherIntegralSum) {
+					teachingLevel = getTeachingLevelByIntegralCount(teacherIntegralSum.getIntegralCount());
+					teacher.setTeachinglevel(teachingLevel.byteValue());
+					teacherH5Dao.updateTeacherByOpenId(teacher);
+				}
+				String jsonString = JSONObject.toJSONString(teacherIntegralSum);
+				jsonObject = JSONObject.parseObject(jsonString);
+				for (TeachingLevel level : TeachingLevel.values()) {
+					if (teachingLevel == level.getValue()) {
+						jsonObject.put("teachingLevel", level.toString());
+						break;
+					}
+				}
+			}
+			return jsonObject;
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info("查询教师总积分失败！");
 		}
-		return teacherIntegralSum;
+		return null;
 	}
 	
 	@Override
@@ -1532,5 +1555,22 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			logger.info("查询老师空间设置失败！");
 		}
 		return null;
+	}
+	
+	// 根据积分匹配教师等级
+	private Integer getTeachingLevelByIntegralCount(Float integralCount) {
+		Integer teachingLevel = 0;
+		if (integralCount == 0) {
+			teachingLevel = 0;
+		} else if (integralCount >= 0 && integralCount < 200) {
+			teachingLevel = 1;
+		} else if (integralCount >= 200 && integralCount < 500) {
+			teachingLevel = 2;
+		} else if (integralCount >= 500 && integralCount < 1000) {
+			teachingLevel = 3;
+		} else if (integralCount == 1000) {
+			teachingLevel = 4;
+		}
+		return teachingLevel;
 	}
 }
