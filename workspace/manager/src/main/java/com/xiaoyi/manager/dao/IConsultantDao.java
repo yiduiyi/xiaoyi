@@ -1,5 +1,7 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.List;
+
 import com.xiaoyi.manager.domain.Consultant;
 
 public interface IConsultantDao {
@@ -14,4 +16,6 @@ public interface IConsultantDao {
     int updateByPrimaryKeySelective(Consultant record);
 
     int updateByPrimaryKey(Consultant record);
+    
+    List<Consultant> selectList();
 }

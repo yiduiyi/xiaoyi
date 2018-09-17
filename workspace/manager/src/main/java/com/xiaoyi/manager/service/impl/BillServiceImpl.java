@@ -22,8 +22,10 @@ import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.manager.dao.IBillDao;
+import com.xiaoyi.manager.dao.IConsultantDao;
 import com.xiaoyi.manager.domain.Bill;
 import com.xiaoyi.manager.domain.BillRecordRelation;
+import com.xiaoyi.manager.domain.Consultant;
 import com.xiaoyi.manager.service.IBillRecordRelationService;
 import com.xiaoyi.manager.service.IBillService;
 import com.xiaoyi.teacher.service.IH5PlateService;
@@ -42,6 +44,9 @@ public class BillServiceImpl implements IBillService {
 	private IH5PlateService h5PlateService;
 	@Resource
 	private IWechatService wechatService;
+	
+	@Resource 
+	IConsultantDao consultantDao;
 	
 	ExecutorService executor = Executors.newFixedThreadPool(2);
 	
@@ -83,7 +88,16 @@ public class BillServiceImpl implements IBillService {
 				}
 			}
 			for (JSONObject jsonObject : result) {
-				jsonObject.put("billQuantityNum", billQuantityNumMap.get(jsonObject.getString("billId")));
+				Object billQuantityNum = billQuantityNumMap.get(jsonObject.getString("billId"));
+				if(null == billQuantityNum){
+					jsonObject.put("billQuantityNum",0);
+				}else{
+					jsonObject.put("billQuantityNum", billQuantityNum);	
+					
+					if(jsonObject.getInteger("billQuantityNum")>= 5){	//设置派单已满状态
+						jsonObject.put("status", "3");
+					}
+				}
 				Integer gradeId = jsonObject.getIntValue("gradeId");
 				if(null!=gradeId) {
 					for(Grade grade : Grade.values()) {
@@ -231,5 +245,26 @@ public class BillServiceImpl implements IBillService {
 	@Override
 	public List<JSONObject> getAllInTheSingleBill() {
 		return billDao.getAllInTheSingleBill();
+	}
+	@Override
+	public List<JSONObject> getAllConsultants() {
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		try {
+			List <Consultant> consultantList = consultantDao.selectList();
+			
+			if(CollectionUtils.isNotEmpty(consultantList)){
+				for(Consultant c : consultantList){
+					JSONObject data = new JSONObject();
+					data.put("consultantId", c.getConsultantId());
+					data.put("consultantName", c.getConsultantName());
+					
+					datas.add(data);
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+				
+		return datas;
 	}
 }

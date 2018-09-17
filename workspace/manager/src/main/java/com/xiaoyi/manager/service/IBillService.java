@@ -33,4 +33,7 @@ public interface IBillService {
 	public void sendAllInTheSingleBillQuarzMsgToTeacher();
 	//查询所有未被派出的订单
 	public List<JSONObject> getAllInTheSingleBill();
+	//查询课程顾问列表
+	public List<JSONObject> getAllConsultants();
+	
 }

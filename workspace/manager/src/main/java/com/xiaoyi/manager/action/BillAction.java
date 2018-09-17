@@ -186,6 +186,29 @@ public class BillAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+	
+	/**
+	 * 获取课程顾问列表
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getConsultantList",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getConsultantList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			result.put("data", billService.getAllConsultants());
+			rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	
 	///
 	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {
 		result.put("code", code);
