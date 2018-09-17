@@ -58,6 +58,7 @@ import com.xiaoyi.teacher.dao.ITeacherBalanceDailyProfitsDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceFromDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceWithdrawDao;
+import com.xiaoyi.teacher.dao.ITeacherResumeDao;
 import com.xiaoyi.teacher.dao.ITeachingRecordDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.TeacherBalance;
@@ -121,6 +122,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Autowired
 	ILessonTradeDao lessonTradeDao;
 
+	@Resource
+	ITeacherResumeDao resumeDao;
+	
 	@Resource
 	private ITeacherResumeService teacherResumeService;
 
@@ -1064,9 +1068,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 		// 已捕获异常
 		String result = wechatService.sendTempletMsg(
+				WeiXinConfig.APPID,
+				WeiXinConfig.SECRET,
 				WeiXinConfig.CUSTOM_LESSON_CONFIRM_MSG_TEMPLETE_ID/* LESSON_CONFIRM_MSG_TEMPLETE_ID */,
 				WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL/* + extraParams.toString() */, openId, data);
 
+		logger.info("send result" + result);
 		return 0;
 	}
 
@@ -1495,5 +1502,20 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			}
 		}
 		return data;
+	}
+
+	@Override
+	public JSONObject getTeacherBillSet(JSONObject reqData) {		
+		try {
+			Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
+			if (null != teacher) {
+				return resumeDao.selectTeacherDefaultResult(teacher.getTeacherid());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info("查询老师空间设置失败！");
+		}
+		
+		return null;
 	}
 }

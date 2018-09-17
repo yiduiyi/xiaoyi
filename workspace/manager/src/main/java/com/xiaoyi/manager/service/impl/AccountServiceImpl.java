@@ -156,6 +156,8 @@ public class AccountServiceImpl implements IAccountService{
 					logger.info("openId"+openId);
 					logger.info("data"+data);
 					wechatService.sendTempletMsg(
+							WeiXinConfig.APPID,
+							WeiXinConfig.SECRET,
 							WeiXinConfig.CUSTOM_ARREARAGE_REMAINDER_TEMPLETE_ID, 
 							WeiXinConfig.AUTH_AND_PAY_URL+"?orderId="+orderId, 
 							openId, 
@@ -284,6 +286,8 @@ public class AccountServiceImpl implements IAccountService{
 						public void run() {
 							// TODO Auto-generated method stub
 							wechatService.sendTempletMsg(
+									WeiXinConfig.APPID,
+									WeiXinConfig.SECRET,
 									WeiXinConfig.CUSTOM_LESSON_SHORTAGE_REMAINDER_TEMPLETE_ID, 
 									WeiXinConfig.AUTH_WITH_REDIRECT_URL, 
 									openId, 

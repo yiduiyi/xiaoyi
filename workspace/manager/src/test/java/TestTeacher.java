@@ -21,10 +21,10 @@ public class TestTeacher {
 	@Test
 	public void testGetTeacherGootAt() {
 		String openId = "oQHVE04sqMngRGJ9H5lKgGd8ARs4";
-		List<String> data =h5PlateService.getTeacherGootAt(openId);
-		for (String jsonObject : data) {
+		JSONObject data =h5PlateService.getTeacherGootAt(openId);
+		/*for (String jsonObject : data) {
 			System.out.println(jsonObject);
-		}
+		}*/
 	}
 	
 	@Test

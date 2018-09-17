@@ -97,7 +97,7 @@ public class TestBill {
 		List<String> colors = new ArrayList<String>();
 		colors.add("#137600");
 		JSONObject extraParams =null;
-		wechatService.sendTempletMsg2(templeteId, redirect_url, openId, values, colors, extraParams);
+		wechatService.sendTempletMsg2(WeiXinConfig.APPID,WeiXinConfig.SECRET,templeteId, redirect_url, openId, values, colors, extraParams);
 	}
 	
 	@Test
