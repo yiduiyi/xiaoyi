@@ -708,7 +708,41 @@ public class H5PlateAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+	/**
+	 * 查询教师总积分接口
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getTeacherIntegralSum", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getTeacherIntegralSum(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
 
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			reqData.put("openId", openId);
+			result.put("data", h5PlateService.getTeacherIntegralSum(reqData));
+			rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	/**
+	 * 查询阅读课时费排行榜
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value = "/getMonthTeacherClassFeeRank", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject getMonthTeacherClassFeeRank(HttpServletRequest request, HttpServletResponse response) {
