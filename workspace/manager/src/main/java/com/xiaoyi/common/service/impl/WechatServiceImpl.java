@@ -95,7 +95,12 @@ public class WechatServiceImpl implements IWechatService {
     }
 
 	@Override
-	public String sendTempletMsg(String templetId,String redirect_url,String openId,JSONObject reqDatas) {
+	public String sendTempletMsg(String appId, 
+			String appSecret,
+			String templetId,
+			String redirect_url,
+			String openId,
+			JSONObject reqDatas) {
 		try{
 			JSONObject params = new JSONObject();
 			params.put("touser", openId);
@@ -103,7 +108,7 @@ public class WechatServiceImpl implements IWechatService {
 			
 			StringBuffer url = new StringBuffer();
 			url.append("https://open.weixin.qq.com/connect/oauth2/authorize?appid=");
-			url.append(WeiXinConfig.APPID);
+			url.append(appId);
 			
 			url.append("&redirect_uri=");
 			url.append(redirect_url);
@@ -117,7 +122,9 @@ public class WechatServiceImpl implements IWechatService {
 			
 			String result = null;
 			try{
-				String rtString = HttpClient.httpGetRequest("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxd9579db73c42cf91&secret=2e50c7d680e6fc3efe5fc0cdf81568fd");
+				String rtString = HttpClient.httpGetRequest("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential"
+						+ "&appid="+appId
+						+ "&secret="+appSecret);
 				JSONObject p = JSONObject.parseObject(rtString);
 				String access_token = p.getString("access_token");
 				result = HttpClient.httpPost("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token="+access_token, 
@@ -370,7 +377,7 @@ public class WechatServiceImpl implements IWechatService {
 							List<String> successMsgs = new ArrayList<String>();
 							for(SendTmpMsgFailed msg : sendFailedMsgs){								
 								try {								
-									String result = sendTempletMsg(msg.getTempletId(), msg.getTargetUrl(), 
+									String result = sendTempletMsg(WeiXinConfig.APPID,WeiXinConfig.SECRET,msg.getTempletId(), msg.getTargetUrl(), 
 											msg.getOpenid(), JSONObject.parseObject(msg.getMsgContent()));
 									if(StringUtils.isNotEmpty(result)){
 										JSONObject jsonRS = JSONObject.parseObject(result);
@@ -483,19 +490,25 @@ public class WechatServiceImpl implements IWechatService {
 	}
 
 	@Override
-	public String sendTempletMsg2(String templeteId, 
+	public String sendTempletMsg2(String appId,
+			String appSecret,
+			String templeteId, 
 			String redirect_url, 
 			String openId, 
 			List<String>values,
 			List<String>colors,
 			JSONObject params) {
 		JSONObject sendData = new JSONObject();
+		//JSONObject sendParams = new JSONObject();
+		
 		if(values ==null || colors==null || values.size()!=colors.size()){
 			return "send failed[reason: values/colors is null or not the same size]";
 		}
 		int size = values.size();
 		for(int n=0; n<size ; n++){
 			JSONObject showData = new JSONObject();
+			showData.put("value", values.get(n));
+			showData.put("color", colors.get(n));
 			
 			if(n==0){
 				sendData.put("first", showData);				
@@ -521,6 +534,7 @@ public class WechatServiceImpl implements IWechatService {
 			}
 		}				
 		
-		return sendTempletMsg(templeteId, redirect_url, openId, sendData);
+		logger.info("sendData:"+sendData);
+		return sendTempletMsg(appId,appSecret,templeteId, redirect_url, openId, sendData);
 	}
 }

@@ -58,6 +58,7 @@ import com.xiaoyi.teacher.dao.ITeacherBalanceDailyProfitsDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceFromDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceWithdrawDao;
+import com.xiaoyi.teacher.dao.ITeacherResumeDao;
 import com.xiaoyi.teacher.dao.ITeachingRecordDao;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.TeacherBalance;
@@ -123,6 +124,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Autowired
 	ILessonTradeDao lessonTradeDao;
 
+	@Resource
+	ITeacherResumeDao resumeDao;
+	
 	@Resource
 	private ITeacherResumeService teacherResumeService;
 
@@ -1067,31 +1071,42 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 		// 已捕获异常
 		String result = wechatService.sendTempletMsg(
+				WeiXinConfig.APPID,
+				WeiXinConfig.SECRET,
 				WeiXinConfig.CUSTOM_LESSON_CONFIRM_MSG_TEMPLETE_ID/* LESSON_CONFIRM_MSG_TEMPLETE_ID */,
 				WeiXinConfig.LEFFON_CONFIRM_REDIRECT_URL/* + extraParams.toString() */, openId, data);
 
+		logger.info("send result" + result);
 		return 0;
 	}
 
 	@Override
-	public List<String> getTeacherGootAt(String openId) {
-		List<String> result = new ArrayList<String>();
+	public JSONObject getTeacherGootAt(String openId) {
+		JSONObject result = new JSONObject();
 		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(openId);
 		if (null != teacher) {
 			String[] teacherGoodAtArr = teacher.getGoodAt().split(",");
+			
+			StringBuffer courseNames = new StringBuffer();
+			StringBuffer courseIds = new StringBuffer();
 			for (int i = 0; i < teacherGoodAtArr.length; i++) {
 				if (!teacherGoodAtArr[i].equals("NaN")) {
 					Integer courseId = Integer.valueOf(teacherGoodAtArr[i]);
 					if (null != courseId) {
 						for (Course course : Course.values()) {
 							if (course.getValue() == courseId) {
-								result.add(course.toString());
+								//result.add(course.toString());
+								courseNames.append(course.toString()+",");
+								courseIds.append(courseId+",");
 								break;
 							}
 						}
 					}
 				}
 			}
+			result.put("teacherId", teacher.getTeacherid());
+			result.put("goodAt", courseIds.subSequence(0, courseIds.length()-1));
+			result.put("goodAtName", courseNames.subSequence(0, courseNames.length()-1));
 		}
 		return result;
 	}
@@ -1503,5 +1518,19 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
 		}
 		return teacherIntegralSum;
+	}
+	
+	@Override
+	public JSONObject getTeacherBillSet(JSONObject reqData) {		
+		try {
+			Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
+			if (null != teacher) {
+				return resumeDao.selectTeacherDefaultResult(teacher.getTeacherid());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.info("查询老师空间设置失败！");
+		}
+		return null;
 	}
 }

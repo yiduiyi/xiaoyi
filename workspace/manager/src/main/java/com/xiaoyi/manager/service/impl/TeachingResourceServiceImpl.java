@@ -314,9 +314,10 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 						singleResult.put("integralCount", teacherIntegralSumMap.get(teacherId) == null 
 								? 0 :teacherIntegralSumMap.get(teacherId));
 					}
-					Integer integralCount = singleResult.getInteger("integralCount");
+					Float integralCount = singleResult.getFloat("integralCount");
 					if(null != integralCount) {
-						Integer teachingLevel = getTeachingLevelByIntegralCount(integralCount);
+						
+						Integer teachingLevel = getTeachingLevelByIntegralCount(integralCount.intValue());
 						for(TeachingLevel level : TeachingLevel.values()) {
 							if(teachingLevel==level.getValue()) {
 								singleResult.put("teachingLevel", level.toString());
