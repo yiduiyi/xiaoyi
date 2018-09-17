@@ -301,7 +301,6 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			logger.info("系统内部错误, 请稍后重试！");
 			return -3;
 		}
-
 	}
 
 	@Override
@@ -359,7 +358,6 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 
@@ -1120,17 +1118,20 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			teacherResume.setStatus(ConstantUtil.TEACHER_RESUME_STATUS_NORMAL);
 			resultType = teacherResumeService.insert(teacherResume);
 			// 同步添加绑定关系
-			if (resultType > 0) {
-				String teacherResumeRId = UUIDUtil.getUUIDPrimary();
-				TeacherResumeRelation teacherResumeRelation = new TeacherResumeRelation();
-				teacherResumeRelation.setTeacherResumeRId(teacherResumeRId);
-				teacherResumeRelation.setTeacherid(teacher.getTeacherid());
-				teacherResumeRelation.setTeacherResumeId(teacherResumeId);
-				teacherResumeRelation.setCreateTime(new Date());
-				teacherResumeRelation.setUpdateTime(new Date());
-				teacherResumeRelation.setIsDefault(ConstantUtil.TEACHER_RESUME_R_IS_DEFAULT);
-				teacherResumeRelation.setStatus(ConstantUtil.TEACHER_RESUME_R_STATUS_NORMAL);
-				resultType = teacherResumeRelationService.insert(teacherResumeRelation);
+			if(resultType > 0) {
+				TeacherResumeRelation oldTeacherResumeRelation = teacherResumeRelationService.getDefaultResumeByTeacherId(teacher.getTeacherid());
+				if (null == oldTeacherResumeRelation) {
+					String teacherResumeRId = UUIDUtil.getUUIDPrimary();
+					TeacherResumeRelation teacherResumeRelation = new TeacherResumeRelation();
+					teacherResumeRelation.setTeacherResumeRId(teacherResumeRId);
+					teacherResumeRelation.setTeacherid(teacher.getTeacherid());
+					teacherResumeRelation.setTeacherResumeId(teacherResumeId);
+					teacherResumeRelation.setCreateTime(new Date());
+					teacherResumeRelation.setUpdateTime(new Date());
+					teacherResumeRelation.setIsDefault(ConstantUtil.TEACHER_RESUME_R_IS_DEFAULT);
+					teacherResumeRelation.setStatus(ConstantUtil.TEACHER_RESUME_R_STATUS_NORMAL);
+					resultType = teacherResumeRelationService.insert(teacherResumeRelation);
+				}
 			}
 		}
 		TeacherSpaceSet teacherSpaceSet = teacherSpaceSetService
@@ -1234,7 +1235,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 :sendNumMap.get(bill.getString("billId")));
-					Integer gradeId = bill.getIntValue("gradeId");
+					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
 							if (grade.getValue() == gradeId) {
@@ -1243,7 +1244,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							}
 						}
 					}
-					Integer courseId = bill.getIntValue("courseId");
+					Integer courseId = bill.getInteger("courseId");
 					if (null != courseId) {
 						for (Course course : Course.values()) {
 							if (course.getValue() == courseId) {
@@ -1296,7 +1297,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
-					Integer gradeId = bill.getIntValue("gradeId");
+					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
 							if (grade.getValue() == gradeId) {
@@ -1305,7 +1306,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							}
 						}
 					}
-					Integer courseId = bill.getIntValue("courseId");
+					Integer courseId = bill.getInteger("courseId");
 					if (null != courseId) {
 						for (Course course : Course.values()) {
 							if (course.getValue() == courseId) {
@@ -1340,7 +1341,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			billList = billService.getMyBillRecord(teacher.getTeacherid());
 			if (CollectionUtils.isNotEmpty(billList)) {
 				for (JSONObject bill : billList) {
-					Integer gradeId = bill.getIntValue("gradeId");
+					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
 							if (grade.getValue() == gradeId) {
@@ -1349,7 +1350,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							}
 						}
 					}
-					Integer courseId = bill.getIntValue("courseId");
+					Integer courseId = bill.getInteger("courseId");
 					if (null != courseId) {
 						for (Course course : Course.values()) {
 							if (course.getValue() == courseId) {
@@ -1401,7 +1402,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
-					Integer gradeId = bill.getIntValue("gradeId");
+					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
 							if (grade.getValue() == gradeId) {
@@ -1410,7 +1411,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							}
 						}
 					}
-					Integer courseId = bill.getIntValue("courseId");
+					Integer courseId = bill.getInteger("courseId");
 					if (null != courseId) {
 						for (Course course : Course.values()) {
 							if (course.getValue() == courseId) {

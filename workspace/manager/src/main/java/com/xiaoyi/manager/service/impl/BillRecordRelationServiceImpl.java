@@ -42,7 +42,7 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 				//匹配教师简历
 				jsonObject.put("introduce", teacherResumeMap.get(jsonObject.getString("teacherResumeRId")));
 				//匹配订单年级名称和课程名称
-				Integer gradeId = jsonObject.getIntValue("gradeId");
+				Integer gradeId = jsonObject.getInteger("gradeId");
 				if(null!=gradeId) {
 					for(Grade grade : Grade.values()) {
 						if(grade.getValue() == gradeId) {
@@ -51,7 +51,7 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 						}
 					}
 				}
-				Integer courseId = jsonObject.getIntValue("courseId");
+				Integer courseId = jsonObject.getInteger("courseId");
 				if(null!=courseId) {
 					for(Course course : Course.values()) {
 						if(course.getValue() == courseId) {

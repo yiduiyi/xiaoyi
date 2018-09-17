@@ -1,6 +1,8 @@
 package com.xiaoyi.manager.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -98,7 +100,7 @@ public class BillServiceImpl implements IBillService {
 						jsonObject.put("status", "3");
 					}
 				}
-				Integer gradeId = jsonObject.getIntValue("gradeId");
+				Integer gradeId = jsonObject.getInteger("gradeId");
 				if(null!=gradeId) {
 					for(Grade grade : Grade.values()) {
 						if(grade.getValue() == gradeId) {
@@ -107,7 +109,7 @@ public class BillServiceImpl implements IBillService {
 						}
 					}
 				}
-				Integer courseId = jsonObject.getIntValue("courseId");
+				Integer courseId = jsonObject.getInteger("courseId");
 				if(null!=courseId) {
 					for(Course course : Course.values()) {
 						if(course.getValue() == courseId) {
@@ -117,6 +119,18 @@ public class BillServiceImpl implements IBillService {
 					}
 				}
 			}
+			// 按照投递数排序
+			Collections.sort(result, new Comparator<JSONObject>() {
+				@Override
+				public int compare(JSONObject o1, JSONObject o2) {
+					if (null != o1 && null != o2 && o1.getDate("updateTime") != null
+							&& o2.getDate("updateTime") != null) {
+
+						return o2.getDate("updateTime").compareTo(o1.getDate("updateTime"));
+					}
+					return 0;
+				}
+			});
 		}
 		return result;
 	}
@@ -148,7 +162,7 @@ public class BillServiceImpl implements IBillService {
 		if(null != bill) {
 			Bill updateBill = new Bill();
 			updateBill.setBillId(bill.getBillId());
-			updateBill.setStatus(ConstantUtil.BILL_STATUS_IS_SENT);
+			updateBill.setStatus(reqData.getInteger("status"));
 			resultType = billDao.updateByPrimaryKeySelective(updateBill);
 		}
 		return resultType;

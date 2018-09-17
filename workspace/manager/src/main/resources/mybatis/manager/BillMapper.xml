@@ -181,7 +181,7 @@
   </update>
   
   <select id="getBillList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT B.bill_id AS billId,B.serial_number AS serialNumber,B.grade_id AS gradeId,B.course_id AS courseId,B.status,B.class_address AS classAddress,C.consultant_id AS consultantId,C.consultant_name  AS consultantName FROM bill B 
+  	SELECT B.bill_id AS billId,B.serial_number AS serialNumber,B.grade_id AS gradeId,B.course_id AS courseId,B.status,B.class_address AS classAddress,B.update_time AS updateTime,C.consultant_id AS consultantId,C.consultant_name  AS consultantName FROM bill B 
   	LEFT JOIN consultant C ON B.consultant_id = C.consultant_id
   	<where>
   		<if test="gradeId != null">
@@ -195,6 +195,9 @@
   		</if>
   		<if test="consultantId != null">
   			AND B.consultant_id = #{consultantId}
+  		</if>
+  		<if test="status != null">
+  			AND B.status = #{status}
   		</if>
   	</where>
   </select>
