@@ -108,7 +108,7 @@
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod5" />
 		<!-- <property name="cronExpression" value="0 2 0 * * ?"></property> -->
-		<property name="cronExpression" value="0 0 21 * * ?" />
+		<property name="cronExpression" value="0 46 14 * * ?" />
 	</bean>
 	<!-- ======================== 调度工厂 ======================== -->
 	<bean id="SpringJobSchedulerFactoryBean"

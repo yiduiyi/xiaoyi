@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -231,9 +232,14 @@ public class BillServiceImpl implements IBillService {
 		if(CollectionUtils.isNotEmpty(bills)) {
 			StringBuilder serialNumberS = new StringBuilder();
 			for (JSONObject bill : bills) {
-				serialNumberS.append(bill.getString("serialNumber")).append(" ");
+				serialNumberS.append(bill.getString("serialNumber")).append(", ");
 			}
 			values.add(serialNumberS.toString());
+			colors.add("#173177");
+			
+			//发送时间
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			values.add(sdf.format(new Date()));
 			colors.add("#173177");
 		}
 		values.add("点击查看详情");
@@ -248,7 +254,9 @@ public class BillServiceImpl implements IBillService {
 				executor.submit(new Runnable() {
 					@Override
 					public void run() {
-						wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_TAKE_BILL_TEMPLETE_ID, WeiXinConfig.BILL_LIST_REDIRECT_URL, teacher.getString("openId"),
+						wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_PLATE_APPID,
+								WeiXinConfig.TEACHER_PLATE_SECRET_KEY,
+								WeiXinConfig.TEACHER_TAKE_BILL_TEMPLETE_ID, WeiXinConfig.BILL_LIST_REDIRECT_URL, teacher.getString("openId"),
 								values, colors, null);
 					}
 				});

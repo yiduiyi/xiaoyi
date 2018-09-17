@@ -25,6 +25,22 @@
     from teacher_resume
     where teacher_resume_id = #{teacherResumeId,jdbcType=VARCHAR}
   </select>
+  <!-- 获取默认设置 -->
+  <select id="selectTeacherDefaultResult" resultType="com.alibaba.fastjson.JSONObject" 
+  		parameterType="java.lang.String">
+  	select a.teacherId,b.introduce,c.is_remind
+	FROM teacher_resume_r a 
+	LEFT JOIN teacher_resume b
+		ON a.teacher_resume_id = b.teacher_resume_id
+	LEFT JOIN teacher_space_set c
+		ON a.teacherId = c.teacherId
+	WHERE a.is_default =1 	
+	<if test="teacherId!=null">
+   		AND a.teacherId = #{teacherId}
+   	</if>
+   	limit 0,1
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from teacher_resume
     where teacher_resume_id = #{teacherResumeId,jdbcType=VARCHAR}

@@ -423,7 +423,7 @@ public class H5PlateAction {
 			openId = setSessionOpenId(request);
 		}
 		try {
-			List<String> data = h5PlateService.getTeacherGootAt(openId);
+			JSONObject data = h5PlateService.getTeacherGootAt(openId);
 			result.put("data", data);
 			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
@@ -497,6 +497,40 @@ public class H5PlateAction {
 		return result;
 	}
 
+	/**
+	 * 添加教师接单设置
+	 * 
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getTeacherBillSet", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getTeacherBillSet(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		String openId = (String) request.getSession().getAttribute("openid");
+		logger.info("openId:" + openId);
+
+		if (null == openId) {
+			openId = setSessionOpenId(request);
+		}
+		try {
+			reqData.put("openId", openId);
+			JSONObject data = h5PlateService.getTeacherBillSet(reqData);
+			if(null!=data){
+				result.put("data", data);
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	
 	/**
 	 * 添加投递记录
 	 * 

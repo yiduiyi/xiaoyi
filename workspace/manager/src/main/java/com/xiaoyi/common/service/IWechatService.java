@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 public interface IWechatService {
 	String processRequest(HttpServletRequest request);
 
-	String sendTempletMsg(String templetId, String redirect_url, String openId, JSONObject params);
+	String sendTempletMsg(String appId, String appSecret,String templetId, String redirect_url, String openId, JSONObject params);
 
 
 	/**
@@ -23,7 +23,8 @@ public interface IWechatService {
 	 * @param extraParams	该参数需与前端对接
 	 * @return
 	 */
-	String sendTempletMsg2(String templeteId, String redirect_url, String openId, List<String>values,List<String>colors, JSONObject extraParams);
+	String sendTempletMsg2(String appId,
+			String appSecret,String templeteId, String redirect_url, String openId, List<String>values,List<String>colors, JSONObject extraParams);
 	/**
 	 * 老师提现
 	 * @return{返回结果}
