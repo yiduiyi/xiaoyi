@@ -63,12 +63,14 @@ import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.TeacherBalance;
 import com.xiaoyi.teacher.domain.TeacherBalanceDailyProfits;
 import com.xiaoyi.teacher.domain.TeacherBalanceWithdraw;
+import com.xiaoyi.teacher.domain.TeacherIntegralSum;
 import com.xiaoyi.teacher.domain.TeacherResume;
 import com.xiaoyi.teacher.domain.TeacherResumeRelation;
 import com.xiaoyi.teacher.domain.TeacherSpaceSet;
 import com.xiaoyi.teacher.domain.TeachingRecord;
 import com.xiaoyi.teacher.service.IClassFeesService;
 import com.xiaoyi.teacher.service.IH5PlateService;
+import com.xiaoyi.teacher.service.ITeacherIntegralSumService;
 import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
 import com.xiaoyi.teacher.service.ITeacherResumeService;
 import com.xiaoyi.teacher.service.ITeacherSpaceSetService;
@@ -141,6 +143,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 	@Resource
 	private IClassFeesService classFeesService;
+	
+	@Resource
+	private ITeacherIntegralSumService teacherIntegralSumService;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	private final static float DAILY_PROFITS_RATE = 8.2f;
@@ -1488,5 +1493,15 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			}
 		}
 		return data;
+	}
+
+	@Override
+	public TeacherIntegralSum getTeacherIntegralSum(JSONObject reqData) {
+		TeacherIntegralSum teacherIntegralSum = new TeacherIntegralSum();
+		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
+		if(null != teacher) {
+			teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
+		}
+		return teacherIntegralSum;
 	}
 }
