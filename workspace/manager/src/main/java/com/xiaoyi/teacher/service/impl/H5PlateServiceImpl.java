@@ -1281,8 +1281,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					public int compare(JSONObject o1, JSONObject o2) {
 						if (null != o1 && null != o2 && o1.getString("sendNum") != null
 								&& o2.getString("sendNum") != null) {
-
-							return o2.getString("sendNum").compareTo(o1.getString("sendNum"));
+							return o1.getString("sendNum").compareTo(o2.getString("sendNum"));
 						}
 						return 0;
 					}

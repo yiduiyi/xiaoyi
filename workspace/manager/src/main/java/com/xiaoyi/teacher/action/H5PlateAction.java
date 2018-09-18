@@ -498,7 +498,7 @@ public class H5PlateAction {
 	}
 
 	/**
-	 * 添加教师接单设置
+	 * 获取教师接单设置
 	 * 
 	 * @param request
 	 * @param response
