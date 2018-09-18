@@ -136,6 +136,32 @@ public class WeichatAuthAction{
 		}
 	}
 	
+	/**
+	 * 老师端-派单提醒菜单
+	 * @param req
+	 * @param res
+	 */
+	@RequestMapping("/getAuth5")
+	public void getAuth5(HttpServletRequest req,
+			 HttpServletResponse res )  {
+		 
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+	        if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.TEACHER_PLATE_APPID, WeiXinConfig.TEACHER_PLATE_SECRET_KEY , code);
+	              String openid = weixinOauth2Token.getOpenId();
+	              req.getSession().setAttribute("openid", openid);
+	              log.error("openid====>" + openid);
+	              res.sendRedirect( req.getContextPath() + "/wechat/index.html#/dispatchCenter");
+	        } 
+	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	//http://test.yduiy.com.cn/wechat/index.html#/buyClass
 	@RequestMapping("/authWithRedirectUrl")
 	public void authWithRedirectUrl(HttpServletRequest req,

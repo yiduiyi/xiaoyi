@@ -206,7 +206,7 @@
   	</where>
   </select>
   <select id="getBillQuantityNums" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT bill_id AS billId,COUNT(teacherId) AS billQuantityNum FROM bill_record_r WHERE `status` = 0 GROUP BY bill_id
+  	SELECT bill_id AS billId,COUNT(teacherId) AS billQuantityNum FROM bill_record_r<!--  WHERE `status` = 0 --> GROUP BY bill_id
   </select>
   <select id="selectSuitBillListByConsultantId" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
   	SELECT bill_id AS billId,serial_number AS serialNumber,grade_id AS gradeId,course_id AS courseId,consultant_id AS consultantId,class_time AS classTime,
