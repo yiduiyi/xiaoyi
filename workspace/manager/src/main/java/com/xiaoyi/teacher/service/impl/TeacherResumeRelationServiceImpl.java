@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.teacher.dao.ITeacherResumeRelationDao;
 import com.xiaoyi.teacher.domain.TeacherResumeRelation;
 import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
