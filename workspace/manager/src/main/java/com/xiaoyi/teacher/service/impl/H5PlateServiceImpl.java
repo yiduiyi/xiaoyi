@@ -1140,6 +1140,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			resultType = teacherResumeService.insert(teacherResume);
 			// 同步添加绑定关系
 			if(resultType > 0) {
+				//查询该教师当前的默认简历
 				TeacherResumeRelation oldTeacherResumeRelation = teacherResumeRelationService.getDefaultResumeByTeacherId(teacher.getTeacherid());
 				if (null == oldTeacherResumeRelation) {
 					String teacherResumeRId = UUIDUtil.getUUIDPrimary();
@@ -1152,6 +1153,21 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					teacherResumeRelation.setIsDefault(ConstantUtil.TEACHER_RESUME_R_IS_DEFAULT);
 					teacherResumeRelation.setStatus(ConstantUtil.TEACHER_RESUME_R_STATUS_NORMAL);
 					resultType = teacherResumeRelationService.insert(teacherResumeRelation);
+				}else {
+					oldTeacherResumeRelation.setIsDefault(ConstantUtil.TEACHER_RESUME_R_IS_NOT_DEFAULT);
+					resultType = teacherResumeRelationService.updeteTeacherResumeRelation(oldTeacherResumeRelation);
+					if(resultType > 0) {
+						String teacherResumeRId = UUIDUtil.getUUIDPrimary();
+						TeacherResumeRelation teacherResumeRelation = new TeacherResumeRelation();
+						teacherResumeRelation.setTeacherResumeRId(teacherResumeRId);
+						teacherResumeRelation.setTeacherid(teacher.getTeacherid());
+						teacherResumeRelation.setTeacherResumeId(teacherResumeId);
+						teacherResumeRelation.setCreateTime(new Date());
+						teacherResumeRelation.setUpdateTime(new Date());
+						teacherResumeRelation.setIsDefault(ConstantUtil.TEACHER_RESUME_R_IS_DEFAULT);
+						teacherResumeRelation.setStatus(ConstantUtil.TEACHER_RESUME_R_STATUS_NORMAL);
+						resultType = teacherResumeRelationService.insert(teacherResumeRelation);
+					}
 				}
 			}
 		}

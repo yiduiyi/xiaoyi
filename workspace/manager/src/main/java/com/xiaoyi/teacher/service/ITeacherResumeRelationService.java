@@ -12,5 +12,7 @@ public interface ITeacherResumeRelationService {
 	public int insert(TeacherResumeRelation teacherResumeRelation);
 	//获取默认的教师简历
 	public TeacherResumeRelation getDefaultResumeByTeacherId(String teacherid);
+	//修改教师简历绑定关系
+	public int updeteTeacherResumeRelation(TeacherResumeRelation oldTeacherResumeRelation);
 
 }
