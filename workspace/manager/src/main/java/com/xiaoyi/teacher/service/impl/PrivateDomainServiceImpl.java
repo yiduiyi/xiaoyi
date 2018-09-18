@@ -12,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.manager.dao.ISchoolDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.dao.IUserDao;
+import com.xiaoyi.manager.domain.School;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.User;
 import com.xiaoyi.teacher.dao.IPrivateDomainDao;
@@ -31,6 +33,9 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 	
 	@Resource
 	private IPrivateDomainDao domainDao;
+	
+	@Resource
+	private ISchoolDao schoolDao;
 	
 	@Override
 	public Short getSignStatus(JSONObject params) throws Exception {
@@ -98,13 +103,13 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 				}
 				
 				try {
-					List<Map<String, Object>> schoolGradeList = domainDao.selectSchoolDetailById(params);
+					//params.put("schoolId", schoolId);
+					//List<Map<String, Object>> schoolGradeList = domainDao.selectSchoolDetailById(params);
+					School school = schoolDao.selectByPrimaryKey(schoolId);
 					
-					if(!CollectionUtils.isEmpty(schoolGradeList)){
-						for(Map<String,Object> schoolGrade : schoolGradeList){							
-							result.put("schoolName", schoolGrade.get(schoolId));
-							result.put("gradeName", "");
-						}
+					if(null!=school){
+						result.put("schoolName", school.getSchoolname());
+						result.put("gradeName", "");
 					}
 				} catch (Exception e) {
 					logger.error("查询学校出错！");
