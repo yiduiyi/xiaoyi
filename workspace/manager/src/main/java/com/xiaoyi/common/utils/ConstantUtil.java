@@ -556,8 +556,8 @@ public class ConstantUtil {
 	public static final Integer TEACHER_RESUME_STATUS_NORMAL = 0;//正常
 	
 	//教师简历绑定关系是否为默认
-	public static final Integer TEACHER_RESUME_R_IS_NOT_DEFAULT = 0;// 删除
-	public static final Integer TEACHER_RESUME_R_IS_DEFAULT = 1;// 正常
+	public static final Integer TEACHER_RESUME_R_IS_NOT_DEFAULT = 0;// 教师非默认简历
+	public static final Integer TEACHER_RESUME_R_IS_DEFAULT = 1;// 教师默认简历
 
 	// 教师简历状态
 	public static final Integer TEACHER_RESUME_R_STATUS_REMOVE = -1;// 删除

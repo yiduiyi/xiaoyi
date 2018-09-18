@@ -88,7 +88,7 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 			
 			if(null!=result){
 				String schoolId = result.getString("schoolId");
-				String gradeId = result.getString("gradeId");				
+				/*String gradeId = result.getString("gradeId");*/		
 				
 				//转换性别
 				try {

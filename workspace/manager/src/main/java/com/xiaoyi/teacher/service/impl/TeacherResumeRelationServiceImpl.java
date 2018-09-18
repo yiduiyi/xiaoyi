@@ -7,7 +7,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.teacher.dao.ITeacherResumeRelationDao;
 import com.xiaoyi.teacher.domain.TeacherResumeRelation;
 import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
@@ -25,15 +24,18 @@ public class TeacherResumeRelationServiceImpl implements ITeacherResumeRelationS
 
 	@Override
 	public int insert(TeacherResumeRelation teacherResumeRelation) {
-		if(teacherResumeRelation.getIsDefault().equals(ConstantUtil.TEACHER_RESUME_R_IS_DEFAULT)) {
-			teacherResumeRelationDao.updateAllTeacherResumeRelationToNotDefault(teacherResumeRelation.getTeacherid());
-		}
 		return teacherResumeRelationDao.insert(teacherResumeRelation);
 	}
 
 	@Override
 	public TeacherResumeRelation getDefaultResumeByTeacherId(String teacherid) {
 		return teacherResumeRelationDao.getDefaultResumeByTeacherId(teacherid);
+	}
+
+	@Override
+	public int updeteTeacherResumeRelation(TeacherResumeRelation oldTeacherResumeRelation) {
+		// TODO Auto-generated method stub
+		return teacherResumeRelationDao.updateByPrimaryKey(oldTeacherResumeRelation);
 	}
 
 }
