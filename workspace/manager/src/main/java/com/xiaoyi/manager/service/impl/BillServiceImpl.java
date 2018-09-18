@@ -163,7 +163,11 @@ public class BillServiceImpl implements IBillService {
 		if(null != bill) {
 			Bill updateBill = new Bill();
 			updateBill.setBillId(bill.getBillId());
-			updateBill.setStatus(reqData.getInteger("status"));
+			if(reqData.getString("operationType").equals("0")) {
+				updateBill.setStatus(ConstantUtil.BILL_STATUS_NORMAL);
+			}else if(reqData.getString("operationType").equals("1")) {
+				updateBill.setStatus(ConstantUtil.BILL_STATUS_IS_SENT);
+			}
 			resultType = billDao.updateByPrimaryKeySelective(updateBill);
 		}
 		return resultType;
