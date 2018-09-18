@@ -51,6 +51,11 @@ public class H5PlateAction {
 		String openId = (String) request.getSession().getAttribute("openid");
 		logger.info("openId:" + openId);
 
+		//教师端模板消息
+		if(request.getParameter("openId")!=null){
+			logger.info("request parameter get openId:"+openId);
+			openId = request.getParameter("openId");
+		}
 		if (null == openId) {
 			openId = setSessionOpenId(request);
 		}

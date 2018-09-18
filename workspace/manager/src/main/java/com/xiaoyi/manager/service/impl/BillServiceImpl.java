@@ -261,7 +261,7 @@ public class BillServiceImpl implements IBillService {
 						wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_PLATE_APPID,
 								WeiXinConfig.TEACHER_PLATE_SECRET_KEY,
 								WeiXinConfig.TEACHER_TAKE_BILL_TEMPLETE_ID, WeiXinConfig.BILL_LIST_REDIRECT_URL, teacher.getString("openId"),
-								values, colors, null);
+								values, colors, teacher);
 					}
 				});
 			
