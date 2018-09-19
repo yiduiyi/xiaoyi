@@ -1271,6 +1271,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				for (JSONObject bill : billList) {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
+					//当接单量大于等于5时，设置状态为已满
+					if(bill.getInteger("sendNum") >= 5) {
+						bill.put("status", -2);
+					}
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 :sendNumMap.get(bill.getString("billId")));
 					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
@@ -1332,6 +1336,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				for (JSONObject bill : billList) {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
+					//当接单量为大于等于5时，设置状态为已满
+					if(bill.getInteger("sendNum") >= 5) {
+						bill.put("status", -2);
+					}
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
 					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
@@ -1437,6 +1445,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				for (JSONObject bill : billList) {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
+					//当接单量大于等于5时，设置状态为已满
+					if(bill.getInteger("sendNum") >= 5) {
+						bill.put("status", -2);
+					}
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
 					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
