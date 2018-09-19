@@ -1170,23 +1170,23 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					}
 				}
 			}
-		}
-		TeacherSpaceSet teacherSpaceSet = teacherSpaceSetService
-				.selectTeacherSpaceSetByTeacherId(teacher.getTeacherid());
-		// 同步添加个人空间设置的生源提醒
-		if (null == teacherSpaceSet) {
-			TeacherSpaceSet newTeacherSpaceSet = new TeacherSpaceSet();
-			newTeacherSpaceSet.setTeacherSpaceSetId(UUIDUtil.getUUIDPrimary());
-			newTeacherSpaceSet.setTeacherid(teacher.getTeacherid());
-			newTeacherSpaceSet.setIsRemind(reqData.getInteger("remind"));
-			newTeacherSpaceSet.setCreateTime(new Date());
-			newTeacherSpaceSet.setUpdateTime(new Date());
-			newTeacherSpaceSet.setStatus(ConstantUtil.TEACHER_SPACE_SET_STATUS_NORMAL);
-			resultType = teacherSpaceSetService.insert(newTeacherSpaceSet);
-		} else {
-			teacherSpaceSet.setIsRemind(reqData.getInteger("remind"));
-			teacherSpaceSet.setUpdateTime(new Date());
-			resultType = teacherSpaceSetService.update(teacherSpaceSet);
+			TeacherSpaceSet teacherSpaceSet = teacherSpaceSetService
+					.selectTeacherSpaceSetByTeacherId(teacher.getTeacherid());
+			// 同步添加个人空间设置的生源提醒
+			if (null == teacherSpaceSet && resultType >0) {
+				TeacherSpaceSet newTeacherSpaceSet = new TeacherSpaceSet();
+				newTeacherSpaceSet.setTeacherSpaceSetId(UUIDUtil.getUUIDPrimary());
+				newTeacherSpaceSet.setTeacherid(teacher.getTeacherid());
+				newTeacherSpaceSet.setIsRemind(reqData.getInteger("remind"));
+				newTeacherSpaceSet.setCreateTime(new Date());
+				newTeacherSpaceSet.setUpdateTime(new Date());
+				newTeacherSpaceSet.setStatus(ConstantUtil.TEACHER_SPACE_SET_STATUS_NORMAL);
+				resultType = teacherSpaceSetService.insert(newTeacherSpaceSet);
+			} else if(resultType > 0) {
+				teacherSpaceSet.setIsRemind(reqData.getInteger("remind"));
+				teacherSpaceSet.setUpdateTime(new Date());
+				resultType = teacherSpaceSetService.update(teacherSpaceSet);
+			}
 		}
 		return resultType;
 	}
