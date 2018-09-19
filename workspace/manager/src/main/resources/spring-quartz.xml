@@ -109,6 +109,7 @@
 		<property name="jobDetail" ref="MyTaskMethod5" />
 		<!-- <property name="cronExpression" value="0 2 0 * * ?"></property> -->
 		<property name="cronExpression" value="0 10 21 * * ?" />
+
 	</bean>
 	<!-- ======================== 调度工厂 ======================== -->
 	<bean id="SpringJobSchedulerFactoryBean"

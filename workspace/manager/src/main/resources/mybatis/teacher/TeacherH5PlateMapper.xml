@@ -31,7 +31,12 @@
 		from teacher
 		where openId = #{openId,jdbcType=VARCHAR}
 	</select>
-
+	<select id="selectTeacherByTeacherId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from teacher
+		where teacherId = #{teacherId,jdbcType=VARCHAR}
+	</select>
 	<select id="selectTeacherByParams" resultMap="BaseResultMap"
 		parameterType="hashmap">
 		select

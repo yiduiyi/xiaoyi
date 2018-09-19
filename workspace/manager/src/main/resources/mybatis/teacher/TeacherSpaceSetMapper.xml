@@ -104,7 +104,7 @@
     where teacher_space_set_id = #{teacherSpaceSetId,jdbcType=VARCHAR}
   </update>
   
-  <select id="selectTeacherSpaceSetByTeacherId" parameterType="java.lang.String" resultType="com.xiaoyi.teacher.domain.TeacherSpaceSet">
+  <select id="selectTeacherSpaceSetByTeacherId" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />
     from teacher_space_set

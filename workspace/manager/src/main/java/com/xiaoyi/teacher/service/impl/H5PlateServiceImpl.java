@@ -1170,23 +1170,23 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					}
 				}
 			}
-		}
-		TeacherSpaceSet teacherSpaceSet = teacherSpaceSetService
-				.selectTeacherSpaceSetByTeacherId(teacher.getTeacherid());
-		// 同步添加个人空间设置的生源提醒
-		if (null == teacherSpaceSet) {
-			TeacherSpaceSet newTeacherSpaceSet = new TeacherSpaceSet();
-			newTeacherSpaceSet.setTeacherSpaceSetId(UUIDUtil.getUUIDPrimary());
-			newTeacherSpaceSet.setTeacherid(teacher.getTeacherid());
-			newTeacherSpaceSet.setIsRemind(reqData.getInteger("remind"));
-			newTeacherSpaceSet.setCreateTime(new Date());
-			newTeacherSpaceSet.setUpdateTime(new Date());
-			newTeacherSpaceSet.setStatus(ConstantUtil.TEACHER_SPACE_SET_STATUS_NORMAL);
-			resultType = teacherSpaceSetService.insert(newTeacherSpaceSet);
-		} else {
-			teacherSpaceSet.setIsRemind(reqData.getInteger("remind"));
-			teacherSpaceSet.setUpdateTime(new Date());
-			resultType = teacherSpaceSetService.update(teacherSpaceSet);
+			TeacherSpaceSet teacherSpaceSet = teacherSpaceSetService
+					.selectTeacherSpaceSetByTeacherId(teacher.getTeacherid());
+			// 同步添加个人空间设置的生源提醒
+			if (null == teacherSpaceSet && resultType >0) {
+				TeacherSpaceSet newTeacherSpaceSet = new TeacherSpaceSet();
+				newTeacherSpaceSet.setTeacherSpaceSetId(UUIDUtil.getUUIDPrimary());
+				newTeacherSpaceSet.setTeacherid(teacher.getTeacherid());
+				newTeacherSpaceSet.setIsRemind(reqData.getInteger("remind"));
+				newTeacherSpaceSet.setCreateTime(new Date());
+				newTeacherSpaceSet.setUpdateTime(new Date());
+				newTeacherSpaceSet.setStatus(ConstantUtil.TEACHER_SPACE_SET_STATUS_NORMAL);
+				resultType = teacherSpaceSetService.insert(newTeacherSpaceSet);
+			} else if(resultType > 0) {
+				teacherSpaceSet.setIsRemind(reqData.getInteger("remind"));
+				teacherSpaceSet.setUpdateTime(new Date());
+				resultType = teacherSpaceSetService.update(teacherSpaceSet);
+			}
 		}
 		return resultType;
 	}
@@ -1271,6 +1271,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				for (JSONObject bill : billList) {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
+					//当接单量大于等于5时，设置状态为已满
+					if(bill.getInteger("sendNum") >= 5) {
+						bill.put("status", -2);
+					}
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 :sendNumMap.get(bill.getString("billId")));
 					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
@@ -1332,6 +1336,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				for (JSONObject bill : billList) {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
+					//当接单量为大于等于5时，设置状态为已满
+					if(bill.getInteger("sendNum") >= 5) {
+						bill.put("status", -2);
+					}
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
 					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
@@ -1417,7 +1425,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	public List<JSONObject> getAllSendBillList(JSONObject reqData) {
 		List<JSONObject> billList = null;
 		billList = billService.getAllInTheSingleBill();
-		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
+		Teacher teacher = teacherH5Dao.selectTeacherByTeacherId(reqData.getString("teacherId"));
 		Map<String, Object> sendNumMap = new HashMap<String, Object>();
 		List<JSONObject> sendNums = billService.getBillSendNum();
 		if (CollectionUtils.isNotEmpty(sendNums)) {
@@ -1437,6 +1445,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				for (JSONObject bill : billList) {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
 							: sendNumMap.get(bill.getString("billId")));
+					//当接单量大于等于5时，设置状态为已满
+					if(bill.getInteger("sendNum") >= 5) {
+						bill.put("status", -2);
+					}
 					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
 					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {

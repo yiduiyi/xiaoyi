@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil;
+import com.xiaoyi.common.utils.ConstantUtil.Education;
+import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.manager.dao.ISchoolDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.dao.IUserDao;
@@ -89,6 +92,30 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 			if(null!=result){
 				String schoolId = result.getString("schoolId");
 				/*String gradeId = result.getString("gradeId");*/		
+				//转换学历及教师等级
+				try {
+					Integer education = result.getInteger("education");
+					Integer teachingLevel = result.getInteger("teachingLevel");
+					
+					for(Education edu : Education.values()){
+						if(edu.getValue() == education){
+							result.put("education", edu.toString());
+							break;
+						}
+					}
+					
+					for(TeachingLevel tl : TeachingLevel.values()){
+						if(tl.getValue() == teachingLevel){
+							result.put("teachingLevel", tl.toString());
+							break;
+						}
+					}
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+				
 				
 				//转换性别
 				try {

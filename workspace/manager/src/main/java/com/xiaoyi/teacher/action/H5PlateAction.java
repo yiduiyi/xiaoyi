@@ -48,7 +48,6 @@ public class H5PlateAction {
 		String openId = (String) request.getSession().getAttribute("openid");
 		logger.info("openId:" + openId);
 
-		
 		if (null == openId) {
 			//教师端模板消息
 			if(StringUtils.isNotEmpty(reqData.getString("openId"))){
@@ -57,8 +56,8 @@ public class H5PlateAction {
 			}else if(null==openId){
 				openId = setSessionOpenId(request);
 			}
-		}
-
+		}		
+		
 		try {
 			if (StringUtils.isNotEmpty(openId)) {
 				int status = h5PlateService.queryBindStatus(openId);
@@ -515,6 +514,10 @@ public class H5PlateAction {
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
+		
+		int code = rtCode.getCode();
+		String msg = rtCode.toString();
+				
 		String openId = (String) request.getSession().getAttribute("openid");
 		logger.info("openId:" + openId);
 
@@ -526,12 +529,18 @@ public class H5PlateAction {
 			JSONObject data = h5PlateService.getTeacherBillSet(reqData);
 			if(null!=data){
 				result.put("data", data);
-				rtCode = RtConstants.SUCCESS;
+				
+				if(data.size()==0){
+					code = 1;
+					msg = "设置为空！";
+				}
+			}else{
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		setReturnMsg(result, code, msg);
 		return result;
 	}
 	
