@@ -52,14 +52,20 @@ public class H5PlateAction {
 		logger.info("openId:" + openId);
 
 		//教师端模板消息
+		logger.info(request.getParameter("openId"));
+		logger.info("attribute:"+request.getAttribute("openId"));;
 		if(request.getParameter("openId")!=null){
 			logger.info("request parameter get openId:"+openId);
 			openId = request.getParameter("openId");
 		}
 		if (null == openId) {
 			openId = setSessionOpenId(request);
+			request.getSession().setAttribute("openid", openId);
 		}
-
+		if(StringUtils.isEmpty(openId)){
+			openId="oknxW0lyknEETUK7k4qfC8BGvVA4";
+		}
+		
 		try {
 			if (StringUtils.isNotEmpty(openId)) {
 				int status = h5PlateService.queryBindStatus(openId);
@@ -516,6 +522,10 @@ public class H5PlateAction {
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
+		
+		int code = rtCode.getCode();
+		String msg = rtCode.toString();
+				
 		String openId = (String) request.getSession().getAttribute("openid");
 		logger.info("openId:" + openId);
 
@@ -527,12 +537,18 @@ public class H5PlateAction {
 			JSONObject data = h5PlateService.getTeacherBillSet(reqData);
 			if(null!=data){
 				result.put("data", data);
-				rtCode = RtConstants.SUCCESS;
+				
+				if(data.size()==0){
+					code = 1;
+					msg = "设置为空！";
+				}
+			}else{
+				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		setReturnMsg(result, code, msg);
 		return result;
 	}
 	

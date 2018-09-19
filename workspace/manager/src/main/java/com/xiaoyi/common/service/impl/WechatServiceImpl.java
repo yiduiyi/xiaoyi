@@ -518,8 +518,8 @@ public class WechatServiceImpl implements IWechatService {
 				sendData.put("keyword"+n, showData);
 			}
 		}
+		StringBuffer sb = new StringBuffer();
 		if(params != null){
-			StringBuffer sb = new StringBuffer();
 			int n=0;
 			for(String key : params.keySet()){
 				sb.append(redirect_url);
@@ -535,6 +535,6 @@ public class WechatServiceImpl implements IWechatService {
 		}				
 		
 		logger.info("sendData:"+sendData);
-		return sendTempletMsg(appId,appSecret,templeteId, redirect_url, openId, sendData);
+		return sendTempletMsg(appId,appSecret,templeteId, sb.toString(), openId, sendData);
 	}
 }
