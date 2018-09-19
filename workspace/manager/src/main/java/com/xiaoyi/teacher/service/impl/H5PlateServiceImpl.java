@@ -1417,7 +1417,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	public List<JSONObject> getAllSendBillList(JSONObject reqData) {
 		List<JSONObject> billList = null;
 		billList = billService.getAllInTheSingleBill();
-		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
+		Teacher teacher = teacherH5Dao.selectTeacherByTeacherId(reqData.getString("teacherId"));
 		Map<String, Object> sendNumMap = new HashMap<String, Object>();
 		List<JSONObject> sendNums = billService.getBillSendNum();
 		if (CollectionUtils.isNotEmpty(sendNums)) {

@@ -179,6 +179,7 @@ public class BillServiceImpl implements IBillService {
 		BillRecordRelation record = new BillRecordRelation();
 		record.setBillRecordId(reqData.getString("billRecordId"));
 		record.setStatus(status);
+		record.setUpdateTime(new Date());
 		//判断投递成功还是投递失败
 		if(status == ConstantUtil.BILL_RECORD_STATUS_IS_OK) {
 			resultType = billRecordRelationService.updateBillRecord(record);
@@ -187,6 +188,7 @@ public class BillServiceImpl implements IBillService {
 				Bill bill = new Bill();
 				bill.setBillId(reqData.getString("billId"));
 				bill.setStatus(ConstantUtil.BILL_STATUS_IS_SENT_OVER);
+				bill.setUpdateTime(new Date());
 				resultType = billDao.updateByPrimaryKeySelective(bill);
 			}
 		}else if(status == ConstantUtil.BILL_RECORD_STATUS_IS_PASS) {
@@ -199,6 +201,7 @@ public class BillServiceImpl implements IBillService {
 		Bill bill = new Bill();
 		bill.setBillId(reqData.getString("billId"));
 		bill.setStatus(ConstantUtil.BILL_STATUS_REMOVE);
+		bill.setUpdateTime(new Date());
 		return billDao.updateByPrimaryKeySelective(bill);
 	}
 	@Override
