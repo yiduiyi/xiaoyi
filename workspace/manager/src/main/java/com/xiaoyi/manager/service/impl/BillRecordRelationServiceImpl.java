@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Sex;
@@ -100,6 +101,16 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 	@Override
 	public Integer getBillRecordSendNumByBillId(String billId) {
 		return billRecordRelationDao.getBillRecordSendNumByBillId(billId);
+	}
+	@Override
+	public void updateOtherBillRecord(String billId, String billRecordId) {
+		List<BillRecordRelation> list = billRecordRelationDao.getAllOtherBillRecord(billId,billRecordId);
+		if(CollectionUtils.isNotEmpty(list)) {
+			for (BillRecordRelation billRecordRelation : list) {
+				billRecordRelation.setStatus(ConstantUtil.BILL_RECORD_STATUS_IS_PASS);
+			}
+			billRecordRelationDao.batchUpdateOtherBillRecord(list);
+		}
 	}
 
 }

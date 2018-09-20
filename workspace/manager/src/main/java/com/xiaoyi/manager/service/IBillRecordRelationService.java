@@ -14,5 +14,7 @@ public interface IBillRecordRelationService {
 	public int insert(BillRecordRelation billRecordRelation);
 	//查询订单投递数量
 	public Integer getBillRecordSendNumByBillId(String billId);
+	//修改未被选中的订单为接单失败
+	public void updateOtherBillRecord(String billId, String billRecordId);
 
 }

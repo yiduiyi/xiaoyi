@@ -126,4 +126,22 @@
   <select id="getBillRecordSendNumByBillId" parameterType="java.lang.String" resultType="java.lang.Integer">
   	SELECT COUNT(1) FROM bill_record_r WHERE bill_id = #{billId} AND `status` = 0
   </select>
+  <select id="getAllOtherBillRecord" parameterType="java.lang.String" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from bill_record_r
+    where bill_id = #{billId} AND bill_record_id != #{billRecordId}
+  </select>
+  <update id="batchUpdateOtherBillRecord" parameterType="java.util.List">
+  	update bill_record_r set status = 
+	<if test="list!=null and list.size&gt;0">
+		<foreach collection="list" item="item" index="index" separator=" " open="case bill_record_id" close="end">
+			when  #{item.billRecordId} then #{item.status}
+		</foreach>
+		where bill_record_id IN 
+		<foreach collection="list" item="item" open="(" close=")" separator=",">
+			#{item.billRecordId}
+		</foreach>
+	</if>
+</update>
 </mapper>

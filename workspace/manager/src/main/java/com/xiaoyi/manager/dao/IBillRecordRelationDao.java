@@ -23,4 +23,8 @@ public interface IBillRecordRelationDao {
 	public List<JSONObject> getBillRecordList(@Param("billId") String billId);
 	//查询订单投递数量
 	public Integer getBillRecordSendNumByBillId(String billId);
+	//查询该订单billRecordId以外的所有投递记录
+	public List<BillRecordRelation> getAllOtherBillRecord(@Param("billId")String billId,@Param("billRecordId") String billRecordId);
+	//修改未被选中的订单为接单失败
+	public void batchUpdateOtherBillRecord(List<BillRecordRelation> list);
 }

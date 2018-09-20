@@ -1482,22 +1482,22 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	public List<JSONObject> getAllSendBillList(JSONObject reqData) {
 		List<JSONObject> billList = null;
 		billList = billService.getAllInTheSingleBill();
-		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));//.selectTeacherByTeacherId(reqData.getString("teacherId"));
-		Map<String, Object> sendNumMap = new HashMap<String, Object>();
-		List<JSONObject> sendNums = billService.getBillSendNum();
-		if (CollectionUtils.isNotEmpty(sendNums)) {
-			for (JSONObject sendNum : sendNums) {
-				sendNumMap.put(sendNum.getString("billId"), sendNum.getString("sendNum"));
-			}
-		}
-		Map<String, Object> recordStatusMap = new HashMap<String, Object>();
-		List<JSONObject> recordStatus = billService.getRecordStatus(teacher.getTeacherid());
-		if (CollectionUtils.isNotEmpty(recordStatus)) {
-			for (JSONObject recordStatu : recordStatus) {
-				recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
-			}
-		}
+		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
 		if(null != teacher) {
+			Map<String, Object> sendNumMap = new HashMap<String, Object>();
+			List<JSONObject> sendNums = billService.getBillSendNum();
+			if (CollectionUtils.isNotEmpty(sendNums)) {
+				for (JSONObject sendNum : sendNums) {
+					sendNumMap.put(sendNum.getString("billId"), sendNum.getString("sendNum"));
+				}
+			}
+			Map<String, Object> recordStatusMap = new HashMap<String, Object>();
+			List<JSONObject> recordStatus = billService.getRecordStatus(teacher.getTeacherid());
+			if (CollectionUtils.isNotEmpty(recordStatus)) {
+				for (JSONObject recordStatu : recordStatus) {
+					recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
+				}
+			}
 			if (CollectionUtils.isNotEmpty(billList)) {
 				for (JSONObject bill : billList) {
 					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
