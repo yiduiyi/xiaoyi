@@ -1541,6 +1541,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Override
 	public JSONObject getTeacherIntegralSum(JSONObject reqData) {
 		try {
+			int i = 0;
 			JSONObject jsonObject = new JSONObject();
 			TeacherIntegralSum teacherIntegralSum = new TeacherIntegralSum();
 			Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
@@ -1548,17 +1549,28 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
 				Integer teachingLevel = 0;
 				//同步修改教师等级
-				if (null != teacherIntegralSum) {
+				if (null == teacherIntegralSum) {
+					TeacherIntegralSum newTeacherIntegralSum = new TeacherIntegralSum();
+					newTeacherIntegralSum.setTeacherid(teacher.getTeacherid());
+					newTeacherIntegralSum.setIntegralCount(0.0f);
+					newTeacherIntegralSum.setStatus(ConstantUtil.TEACHER_INTEGRAL_STATUS_NORMAL);
+					newTeacherIntegralSum.setCreateTime(new Date());
+					i = teacherIntegralSumService.insert(newTeacherIntegralSum);
+				}
+				if(i > 0) {
+					teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
 					teachingLevel = getTeachingLevelByIntegralCount(teacherIntegralSum.getIntegralCount());
 					teacher.setTeachinglevel(teachingLevel.byteValue());
 					teacherH5Dao.updateTeacherByOpenId(teacher);
-				}
-				String jsonString = JSONObject.toJSONString(teacherIntegralSum);
-				jsonObject = JSONObject.parseObject(jsonString);
-				for (TeachingLevel level : TeachingLevel.values()) {
-					if (teachingLevel == level.getValue()) {
-						jsonObject.put("teachingLevel", level.toString());
-						break;
+					String jsonString = JSONObject.toJSONString(teacherIntegralSum);
+					jsonObject = JSONObject.parseObject(jsonString);
+					if(null != jsonObject) {
+						for (TeachingLevel level : TeachingLevel.values()) {
+							if (teachingLevel == level.getValue()) {
+								jsonObject.put("teachingLevel", level.toString());
+								break;
+							}
+						}
 					}
 				}
 			}

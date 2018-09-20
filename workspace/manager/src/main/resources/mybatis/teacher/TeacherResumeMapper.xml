@@ -28,7 +28,7 @@
   <!-- 获取默认设置 -->
   <select id="selectTeacherDefaultResult" resultType="com.alibaba.fastjson.JSONObject" 
   		parameterType="java.lang.String">
-  	select a.teacherId,b.introduce,c.is_remind
+  	select a.teacherId AS teacherId,b.introduce AS introduce,c.is_remind AS isRemind
 	FROM teacher_resume_r a 
 	LEFT JOIN teacher_resume b
 		ON a.teacher_resume_id = b.teacher_resume_id

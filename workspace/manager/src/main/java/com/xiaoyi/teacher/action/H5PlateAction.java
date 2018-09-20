@@ -522,7 +522,6 @@ public class H5PlateAction {
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
-		
 		int code = rtCode.getCode();
 		String msg = rtCode.toString();
 				
@@ -537,13 +536,13 @@ public class H5PlateAction {
 			JSONObject data = h5PlateService.getTeacherBillSet(reqData);
 			if(null!=data){
 				result.put("data", data);
-				
 				if(data.size()==0){
 					code = 1;
 					msg = "设置为空！";
+				}else {
+					code = 0;
+					msg="操作成功";
 				}
-			}else{
-				
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -759,7 +758,7 @@ public class H5PlateAction {
 		return result;
 	}
 	/**
-	 * 查询阅读课时费排行榜
+	 * 查询月度课时费排行榜
 	 * @param request
 	 * @param response
 	 * @return
