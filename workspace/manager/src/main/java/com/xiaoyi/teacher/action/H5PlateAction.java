@@ -41,30 +41,22 @@ public class H5PlateAction {
 	@RequestMapping(value = "/getBindStatus", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject getBindStatus(HttpServletRequest request,
-			HttpServletResponse response/*
-										 * ,
-										 * 
-										 * @RequestBody JSONObject reqData
-										 */) {
+			HttpServletResponse response,@RequestBody JSONObject reqData
+										 ) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		String openId = (String) request.getSession().getAttribute("openid");
 		logger.info("openId:" + openId);
 
-		//教师端模板消息
-		logger.info(request.getParameter("openId"));
-		logger.info("attribute:"+request.getAttribute("openId"));;
-		if(request.getParameter("openId")!=null){
-			logger.info("request parameter get openId:"+openId);
-			openId = request.getParameter("openId");
-		}
 		if (null == openId) {
-			openId = setSessionOpenId(request);
-			request.getSession().setAttribute("openid", openId);
-		}
-		if(StringUtils.isEmpty(openId)){
-			openId="oknxW0lyknEETUK7k4qfC8BGvVA4";
-		}
+			//教师端模板消息
+			if(StringUtils.isNotEmpty(reqData.getString("openId"))){
+				openId = reqData.getString("openId");
+				logger.info("request parameter get openId:"+openId);
+			}else if(null==openId){
+				openId = setSessionOpenId(request);
+			}
+		}		
 		
 		try {
 			if (StringUtils.isNotEmpty(openId)) {
@@ -569,7 +561,13 @@ public class H5PlateAction {
 		logger.info("openId:" + openId);
 
 		if (null == openId) {
-			openId = setSessionOpenId(request);
+			//教师端模板消息
+			if(StringUtils.isNotEmpty(reqData.getString("openId"))){
+				openId = reqData.getString("openId");
+				logger.info("request parameter get openId:"+openId);
+			}else if(null==openId){
+				openId = setSessionOpenId(request);
+			}
 		}
 		try {
 			reqData.put("openId", openId);
