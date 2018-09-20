@@ -504,6 +504,25 @@ public class H5PlateServiceImpl implements IH5PlateService {
 								- (o2.getActualPay() - o2.getWithdrawed()));
 					}
 				});
+				
+				//判断课时费及收益是否多余提现金额
+				float allRemaiderLessonPay = teacherBalance.getBalanceProfitLeft();
+				for (LessonTrade record : lessonTradeList) {
+					if (record.getActualPay() == null) {
+						record.setActualPay(0f);
+					}
+					if (record.getWithdrawed() == null) {
+						record.setWithdrawed(0f);
+					}
+					// 计算剩余
+					float remain = record.getActualPay() - record.getWithdrawed();
+					allRemaiderLessonPay += remain;					
+				}
+				if(withdrawing > allRemaiderLessonPay){
+					throw new CommonRunException(-8, "课时费不足,请重新输入提现金额！");
+				}
+				
+				
 				//synchronized (this) {
 					for (LessonTrade record : lessonTradeList) {
 						if (record.getActualPay() == null) {
@@ -549,14 +568,16 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				StringBuffer sb = new StringBuffer();
 				if (!CollectionUtils.isEmpty(lessonTradeIdList)) {
 					for (String lessonTradeId : lessonTradeIdList) {
-						sb.append(lessonTradeId);
-						sb.append(",");
+						if(StringUtils.isNotEmpty(lessonTradeId)){
+							sb.append(lessonTradeId);
+							sb.append(",");
+						}
 					}
 				}
 				if (sb.length() > 0) {
 					teacherBalance.setBalanceFrom(sb.substring(0, sb.length() - 1));
 				} else {
-					teacherBalance.setBalanceFrom("");
+					teacherBalance.setBalanceFrom(null);
 				}
 				logger.info("更新后课时来源：" + teacherBalance.getBalanceFrom());
 			}
@@ -588,7 +609,13 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				float leftProfit = teacherBalance.getBalanceProfitLeft();
 				if (tobeWithdrawed > 0) { // 需要提现余额
 					balanceAccount = 0;
-					leftProfit -= tobeWithdrawed;
+					
+					if(leftProfit < tobeWithdrawed){
+						leftProfit = 0;
+						logger.error("账目出错！提现剩余收益：{},提取收益：{}",leftProfit,tobeWithdrawed);
+					}else{
+						leftProfit -= tobeWithdrawed;
+					}
 				} /*
 					 * leftProfit = (balanceAccount)>=teacherBalance.getBalanceProfitLeft()?
 					 * teacherBalance.getBalanceProfitLeft():(balanceAccount);
@@ -1425,7 +1452,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	public List<JSONObject> getAllSendBillList(JSONObject reqData) {
 		List<JSONObject> billList = null;
 		billList = billService.getAllInTheSingleBill();
-		Teacher teacher = teacherH5Dao.selectTeacherByTeacherId(reqData.getString("teacherId"));
+		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));//.selectTeacherByTeacherId(reqData.getString("teacherId"));
 		Map<String, Object> sendNumMap = new HashMap<String, Object>();
 		List<JSONObject> sendNums = billService.getBillSendNum();
 		if (CollectionUtils.isNotEmpty(sendNums)) {

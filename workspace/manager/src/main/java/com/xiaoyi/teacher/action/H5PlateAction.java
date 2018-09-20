@@ -51,8 +51,8 @@ public class H5PlateAction {
 		if (null == openId) {
 			//教师端模板消息
 			if(StringUtils.isNotEmpty(reqData.getString("openId"))){
+				openId = reqData.getString("openId");
 				logger.info("request parameter get openId:"+openId);
-				openId = request.getParameter("openId");
 			}else if(null==openId){
 				openId = setSessionOpenId(request);
 			}
@@ -562,7 +562,13 @@ public class H5PlateAction {
 		logger.info("openId:" + openId);
 
 		if (null == openId) {
-			openId = setSessionOpenId(request);
+			//教师端模板消息
+			if(StringUtils.isNotEmpty(reqData.getString("openId"))){
+				openId = reqData.getString("openId");
+				logger.info("request parameter get openId:"+openId);
+			}else if(null==openId){
+				openId = setSessionOpenId(request);
+			}
 		}
 		try {
 			reqData.put("openId", openId);
