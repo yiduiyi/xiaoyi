@@ -18,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
@@ -172,6 +173,7 @@ public class BillServiceImpl implements IBillService {
 		}
 		return resultType;
 	}
+	@Transactional
 	@Override
 	public int updateBillRecord(JSONObject reqData) {
 		int resultType = 0;
@@ -190,6 +192,10 @@ public class BillServiceImpl implements IBillService {
 				bill.setStatus(ConstantUtil.BILL_STATUS_IS_SENT_OVER);
 				bill.setUpdateTime(new Date());
 				resultType = billDao.updateByPrimaryKeySelective(bill);
+				//同步修改其他投递者的投递记录为接单失败
+				if(resultType > 0) {
+					billRecordRelationService.updateOtherBillRecord(reqData.getString("billId"),reqData.getString("billRecordId"));
+				}
 			}
 		}else if(status == ConstantUtil.BILL_RECORD_STATUS_IS_PASS) {
 			resultType = billRecordRelationService.updateBillRecord(record);
