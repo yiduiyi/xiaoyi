@@ -576,6 +576,14 @@ public class H5PlateAction {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+	
+			if(e instanceof CommonRunException){
+				logger.warn("申请失败,原因：【{}】！"+e.getMessage());
+				CommonRunException ex = (CommonRunException)e;
+				result.put("code", ex.getCode());
+				result.put("msg", ex.getMessage());
+				return result;
+			}
 		}
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;

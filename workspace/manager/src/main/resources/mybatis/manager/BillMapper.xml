@@ -243,4 +243,14 @@
   	SELECT bill_id AS billId,serial_number AS serialNumber,grade_id AS gradeId,course_id AS courseId,consultant_id AS consultantId,class_time AS classTime,
   	class_address AS classAddress,demand AS demand,`status` AS `status`,update_time AS updateTime FROM bill WHERE `status` = 1
   </select>
+  
+  <!-- 查询老师当前接单列表 -->
+  <select id="selectTeacherBills" resultType="com.alibaba.fastjson.JSONObject" 
+  		parameterType="java.lang.String">
+  	SELECT a.`status` AS bill_status, b.`status` AS record_status
+	FROM bill_record_r b LEFT JOIN bill a 
+		ON a.bill_id=b.bill_id
+	WHERE teacherId=#{teacherId}
+		AND (a.`status`=1 OR a.`status`=2) AND b.`status`&lt;&gt;-1
+  </select>
 </mapper>

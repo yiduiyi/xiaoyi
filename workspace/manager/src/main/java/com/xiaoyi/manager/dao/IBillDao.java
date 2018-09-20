@@ -43,5 +43,6 @@ public interface IBillDao {
 	public List<JSONObject> getAllSendBillList(@Param("billIdList")List<String> billIdList);
 	//查询所有未被派出的订单
 	public List<JSONObject> getAllInTheSingleBill();
-
+	//查询老师当前接单列表
+	public List<JSONObject> selectTeacherBills(@Param("teacherId")String teacherId);
 }

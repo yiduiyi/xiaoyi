@@ -39,6 +39,7 @@ import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.common.utils.XMLUtil;
+import com.xiaoyi.manager.dao.IBillDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.ITeacherDao;
@@ -127,6 +128,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 	@Resource
 	ITeacherResumeDao resumeDao;
+	
+	@Resource
+	IBillDao billDao;
 	
 	@Resource
 	private ITeacherResumeService teacherResumeService;
@@ -1223,6 +1227,32 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		int resultType = 0;
 		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
 		if (null != teacher) {
+			//判断老师当前是否有申请资格
+			try {
+				List<JSONObject> teacherRecordBills = 
+						billDao.selectTeacherBills(teacher.getTeacherid());
+				
+				if(CollectionUtils.isNotEmpty(teacherRecordBills)){
+					int currentTeachingBill = 0;
+					int currentApplingBill = 0;
+					for(JSONObject recordBill : teacherRecordBills){
+						Integer billStatus = recordBill.getInteger("");
+						Integer recordStatus = recordBill.getInteger("");
+						
+						if(recordStatus==ConstantUtil.BILL_RECORD_STATUS_IS_OK
+								&& ++currentTeachingBill>=2){	//成功接单的订单
+							throw new CommonRunException(-1, "申请失败,当前所带学生数超额 ！");
+						} else if(1==billStatus 
+								&& ++currentApplingBill>=5){	//同时申请派单数不能超过5
+							throw new CommonRunException(-1, "申请失败,审核中的订单不能超过 5！");
+						}
+					}
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
+			
 			TeacherResumeRelation teacherResumeRelation = teacherResumeRelationService
 					.getDefaultResumeByTeacherId(teacher.getTeacherid());
 			Teacher updateTeacher = new Teacher();
