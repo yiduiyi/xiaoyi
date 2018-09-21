@@ -1351,6 +1351,17 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							}
 						}
 					}
+					if(bill.getInteger("status") == -2) {
+						bill.put("billStatus", "-2");
+					}else if(bill.getInteger("status") == 2) {
+						bill.put("billStatus", "2");
+					}if(bill.getInteger("status") == 1) {
+						if(bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1 || bill.getInteger("recordStatus") == 0) {
+							bill.put("billStatus", "1");
+						}else if (bill.getInteger("recordStatus") == 2){
+							bill.put("billStatus", "0");
+						}
+					}
 				}
 				// 按照投递数排序
 				Collections.sort(billList, new Comparator<JSONObject>() {
@@ -1397,7 +1408,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					if(bill.getInteger("sendNum") >= 5) {
 						bill.put("status", -2);
 					}
-					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
+					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")));
 					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
@@ -1414,6 +1425,17 @@ public class H5PlateServiceImpl implements IH5PlateService {
 								bill.put("courseName", course.toString());
 								break;
 							}
+						}
+					}
+					if(bill.getInteger("status") == -2) {
+						bill.put("billStatus", "-2");
+					}else if(bill.getInteger("status") == 2) {
+						bill.put("billStatus", "2");
+					}if(bill.getInteger("status") == 1) {
+						if(bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1 || bill.getInteger("recordStatus") == 0) {
+							bill.put("billStatus", "1");
+						}else if (bill.getInteger("recordStatus") == 2){
+							bill.put("billStatus", "0");
 						}
 					}
 				}
@@ -1506,7 +1528,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					if(bill.getInteger("sendNum") >= 5) {
 						bill.put("status", -2);
 					}
-					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")) == null);
+					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")));
 					Integer gradeId = bill.getInteger("gradeId");
 					if (null != gradeId) {
 						for (Grade grade : Grade.values()) {
@@ -1523,6 +1545,17 @@ public class H5PlateServiceImpl implements IH5PlateService {
 								bill.put("courseName", course.toString());
 								break;
 							}
+						}
+					}
+					if(bill.getInteger("status") == -2) {
+						bill.put("billStatus", "-2");
+					}else if(bill.getInteger("status") == 2) {
+						bill.put("billStatus", "2");
+					}if(bill.getInteger("status") == 1) {
+						if(bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1 || bill.getInteger("recordStatus") == 0) {
+							bill.put("billStatus", "1");
+						}else if (bill.getInteger("recordStatus") == 2){
+							bill.put("billStatus", "0");
 						}
 					}
 				}
