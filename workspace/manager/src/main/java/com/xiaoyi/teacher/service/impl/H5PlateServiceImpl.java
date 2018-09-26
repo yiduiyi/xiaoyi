@@ -219,7 +219,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			// 绑定微信Id
 			teacher.setOpenId((String) params.get("openId"));
 			try {
-				teacherH5Dao.updateTeacherByOpenId(teacher);
+				//teacherH5Dao.updateTeacherByOpenId(teacher);
+				teacherH5Dao.updateByPrimaryKeySelective(teacher);
 			} catch (Exception e) {
 				logger.error("关联老师微信号失败！【params】：" + teacher.toString());
 				e.printStackTrace();
@@ -540,7 +541,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 						logger.info("lessonTradeId:" + record.getLessontradeid());
 						logger.info("提现金额剩余：" + remain);
-
+						logger.info("总课时费：{}, 其中已提现课时费：{}",record.getActualPay(), record.getWithdrawed());
+						logger.info("从课时费中扣除:" + tobeWithdrawed);
+						
 						if (remain > /* withdrawing */tobeWithdrawed) {
 							record.setWithdrawed(record.getWithdrawed() + withdrawing);
 							tobeWithdrawed = 0;
