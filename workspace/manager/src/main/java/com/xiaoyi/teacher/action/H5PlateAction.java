@@ -277,7 +277,6 @@ public class H5PlateAction {
 		JSONObject result = new JSONObject();
 		int code = 1;
 		String msg = "获取任教关系失败！";
-
 		try {
 			JSONObject reqParams = new JSONObject();
 			reqParams.put("openId", request.getSession().getAttribute("openid"));

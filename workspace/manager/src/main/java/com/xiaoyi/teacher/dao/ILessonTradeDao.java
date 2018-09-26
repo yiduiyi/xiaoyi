@@ -3,6 +3,8 @@ package com.xiaoyi.teacher.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.xiaoyi.teacher.domain.LessonTrade;
 
 public interface ILessonTradeDao {
@@ -24,4 +26,6 @@ public interface ILessonTradeDao {
     
     //查询某月份学情报告
     List<LessonTrade> selectByParams(Map<String,Object> params);
+    //获取教师订单数量
+	public Integer getOrderNumByTeacherId(@Param("teacherId")String teacherId);
 }

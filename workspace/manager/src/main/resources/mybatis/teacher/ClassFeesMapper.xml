@@ -6,14 +6,15 @@
     <result column="grade_id" jdbcType="VARCHAR" property="gradeId" />
     <result column="teaching_type" jdbcType="INTEGER" property="teachingType" />
     <result column="teaching_level" jdbcType="TINYINT" property="teachingLevel" />
+    <result column="feedback" jdbcType="VARCHAR" property="feedback" />
     <result column="class_cost" jdbcType="REAL" property="classCost" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    class_fee_id, grade_id, teaching_type, teaching_level, class_cost, create_time, update_time, 
-    status
+    class_fee_id, grade_id, teaching_type, teaching_level, feedback, class_cost, create_time, 
+    update_time, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -27,11 +28,13 @@
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.teacher.domain.ClassFees">
     insert into class_fees (class_fee_id, grade_id, teaching_type, 
-      teaching_level, class_cost, create_time, 
-      update_time, status)
+      teaching_level, feedback, class_cost, 
+      create_time, update_time, status
+      )
     values (#{classFeeId,jdbcType=VARCHAR}, #{gradeId,jdbcType=VARCHAR}, #{teachingType,jdbcType=INTEGER}, 
-      #{teachingLevel,jdbcType=TINYINT}, #{classCost,jdbcType=REAL}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
+      #{teachingLevel,jdbcType=TINYINT}, #{feedback,jdbcType=VARCHAR}, #{classCost,jdbcType=REAL}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.ClassFees">
     insert into class_fees
@@ -47,6 +50,9 @@
       </if>
       <if test="teachingLevel != null">
         teaching_level,
+      </if>
+      <if test="feedback != null">
+        feedback,
       </if>
       <if test="classCost != null">
         class_cost,
@@ -74,6 +80,9 @@
       <if test="teachingLevel != null">
         #{teachingLevel,jdbcType=TINYINT},
       </if>
+      <if test="feedback != null">
+        #{feedback,jdbcType=VARCHAR},
+      </if>
       <if test="classCost != null">
         #{classCost,jdbcType=REAL},
       </if>
@@ -100,6 +109,9 @@
       <if test="teachingLevel != null">
         teaching_level = #{teachingLevel,jdbcType=TINYINT},
       </if>
+      <if test="feedback != null">
+        feedback = #{feedback,jdbcType=VARCHAR},
+      </if>
       <if test="classCost != null">
         class_cost = #{classCost,jdbcType=REAL},
       </if>
@@ -120,6 +132,7 @@
     set grade_id = #{gradeId,jdbcType=VARCHAR},
       teaching_type = #{teachingType,jdbcType=INTEGER},
       teaching_level = #{teachingLevel,jdbcType=TINYINT},
+      feedback = #{feedback,jdbcType=VARCHAR},
       class_cost = #{classCost,jdbcType=REAL},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -135,5 +148,10 @@
   		</if>
   		AND `status` = 0
   	</where>
+  </select>
+  <select id="getClassFeesByParam" parameterType="hashmap" resultType="com.xiaoyi.teacher.domain.ClassFees">
+  	select 
+    <include refid="Base_Column_List" />
+    from class_fees where grade_id = #{gradeId} AND teaching_type = teachingType AND teaching_level = #{teachingLevel} AND feedback = #{feedback} AND `status` = 0 ORDER BY update_time limit 1
   </select>
 </mapper>

@@ -22,7 +22,9 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.service.IWechatService;
+import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Type;
@@ -47,6 +49,7 @@ import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.Suggestions;
 import com.xiaoyi.teacher.domain.TeachingRecord;
+import com.xiaoyi.teacher.service.ITeacherIntegralService;
 import com.xiaoyi.teacher.service.ITeachingRecordService;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 
@@ -85,6 +88,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 
 	@Autowired
 	private IAccountService accountService;
+	
+	@Resource
+	private ITeacherIntegralService teacherIntegralService;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -394,7 +400,39 @@ public class TeachingRecordService implements ITeachingRecordService {
 						e.printStackTrace();
 						throw e;
 					}
-
+					//添加教师课时提现积分
+					try {
+						if(allSubmitLessons > 0) {
+							Float integralConductValue = 0f;
+							//计算本次提现新增积分数
+							integralConductValue = allSubmitLessons * (Float)ConstantUtil.INTEGRAL_CONDUCT_VALUE_MAP.get(ConstantUtil.INTEGRAL_CONDUCT_ID_ONE_LESSONS);
+							JSONObject jsonObject = new JSONObject();
+							jsonObject.put("teacherId", teacherId);
+							jsonObject.put("integralConductId", ConstantUtil.INTEGRAL_CONDUCT_ID_ONE_LESSONS);
+							jsonObject.put("integralConductValue", integralConductValue);
+							teacherIntegralService.updateTeacherIntegral(jsonObject);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new CommonRunException(-1, " 修改教师积分失败！");
+					}
+					//添加教师首次接单和二次接单上课的积分数
+					try {
+						Integer orderNum = lessonTradeDao.getOrderNumByTeacherId(teacherId);
+						JSONObject jsonObject = new JSONObject();
+						jsonObject.put("teacherId", teacherId);
+						if(orderNum == 1 ) {
+							jsonObject.put("integralConductId", ConstantUtil.INTEGRAL_CONDUCT_ID_ONE_ORDER);
+							jsonObject.put("integralConductValue", ConstantUtil.INTEGRAL_CONDUCT_VALUE_MAP.get(ConstantUtil.INTEGRAL_CONDUCT_ID_ONE_ORDER));
+						}else if(orderNum == 2) {
+							jsonObject.put("integralConductId", ConstantUtil.INTEGRAL_CONDUCT_ID_TWO_ORDER);
+							jsonObject.put("integralConductValue", ConstantUtil.INTEGRAL_CONDUCT_VALUE_MAP.get(ConstantUtil.INTEGRAL_CONDUCT_ID_TWO_ORDER));
+						}
+						teacherIntegralService.updateTeacherIntegral(jsonObject);
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new CommonRunException(-1, " 添加教师首次接单和二次接单上课的积分数失败！");
+					}
 					try {
 						logger.info("根据家长parentId查询家长【params】：" + parentId);
 						Parents parents = parentDao.selectByPrimaryKey(parentId);

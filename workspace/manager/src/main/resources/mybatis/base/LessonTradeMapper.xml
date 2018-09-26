@@ -240,4 +240,8 @@
 			</foreach>
 		</if>
 	</update>
+	<select id="getOrderNumByTeacherId" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM (
+			SELECT COUNT(1) FROM lessontrade  WHERE teacherId = #{teacherId}  GROUP BY lessonType,memberId,parentId ) t
+	</select>
 </mapper>
