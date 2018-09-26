@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.teacher.dao.IClassFeesDao;
+import com.xiaoyi.teacher.domain.ClassFees;
 import com.xiaoyi.teacher.service.IClassFeesService;
 @Service("classFeesService")
 public class ClassFeesServiceImpl implements IClassFeesService {
@@ -42,6 +43,10 @@ public class ClassFeesServiceImpl implements IClassFeesService {
 			}
 		}
 		return data;
+	}
+	@Override
+	public ClassFees getClassFeesByParam(JSONObject jsonObject) {
+		return classFeesDao.getClassFeesByParam(jsonObject);
 	}
 
 }

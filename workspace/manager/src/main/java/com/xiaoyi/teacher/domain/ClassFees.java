@@ -11,6 +11,8 @@ public class ClassFees {
 
     private Byte teachingLevel;
 
+    private String feedback;
+
     private Float classCost;
 
     private Date createTime;
@@ -49,6 +51,14 @@ public class ClassFees {
 
     public void setTeachingLevel(Byte teachingLevel) {
         this.teachingLevel = teachingLevel;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback == null ? null : feedback.trim();
     }
 
     public Float getClassCost() {
