@@ -86,11 +86,11 @@ public class ConstantUtil {
 		public String toString(){
 			switch(teachingLevel) {
 			case -1: return "黑名单";
-			case 1: return "潜力";
-			case 2:	return "银牌";
-			case 3: return "金牌";
-			case 4: return "特聘";
-			case 0: return "普通";
+			case 1: return "潜力讲师";
+			case 2:	return "银牌讲师";
+			case 3: return "金牌讲师";
+			case 4: return "特聘讲师";
+			case 0: return "普通讲师";
 			}
 			
 			return "";		
