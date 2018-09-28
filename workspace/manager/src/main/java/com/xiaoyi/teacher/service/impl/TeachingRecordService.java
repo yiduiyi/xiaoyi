@@ -424,11 +424,12 @@ public class TeachingRecordService implements ITeachingRecordService {
 						if(orderNum == 1 ) {
 							jsonObject.put("integralConductId", ConstantUtil.INTEGRAL_CONDUCT_ID_ONE_ORDER);
 							jsonObject.put("integralConductValue", ConstantUtil.INTEGRAL_CONDUCT_VALUE_MAP.get(ConstantUtil.INTEGRAL_CONDUCT_ID_ONE_ORDER));
+							teacherIntegralService.updateTeacherIntegral(jsonObject);
 						}else if(orderNum == 2) {
 							jsonObject.put("integralConductId", ConstantUtil.INTEGRAL_CONDUCT_ID_TWO_ORDER);
 							jsonObject.put("integralConductValue", ConstantUtil.INTEGRAL_CONDUCT_VALUE_MAP.get(ConstantUtil.INTEGRAL_CONDUCT_ID_TWO_ORDER));
+							teacherIntegralService.updateTeacherIntegral(jsonObject);
 						}
-						teacherIntegralService.updateTeacherIntegral(jsonObject);
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw new CommonRunException(-1, " 添加教师首次接单和二次接单上课的积分数失败！");

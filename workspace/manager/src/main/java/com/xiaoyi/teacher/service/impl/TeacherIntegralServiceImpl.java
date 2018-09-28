@@ -110,7 +110,7 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 			teacherIntegral.setTeacherIntegralId(UUIDUtil.getUUIDPrimary());
 			teacherIntegral.setTeacherid(jsonObject.getString("teacherId"));
 			teacherIntegral.setIntegralConductName(integralConduct.getIntegralConductName());
-			teacherIntegral.setIntegralConductValue(jsonObject.getFloat("integralConductId"));
+			teacherIntegral.setIntegralConductValue(jsonObject.getFloat("integralConductValue"));
 			teacherIntegral.setIntegralConductDesc(integralConduct.getIntegralConductDesc());
 			teacherIntegral.setIntegralConductType(integralConduct.getIntegralConductType());
 			teacherIntegral.setCreateTime(new Date());
@@ -120,9 +120,9 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 				updateTeacherIntegralSumVo.setTeacherid(teacherIntegralSum.getTeacherid());
 				updateTeacherIntegralSumVo.setOldIntegralCount(teacherIntegralSum.getIntegralCount());
 				if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_SUB) {
-					updateTeacherIntegralSumVo.setUpdateIntegralValue(-jsonObject.getFloat("integralConductId"));
+					updateTeacherIntegralSumVo.setUpdateIntegralValue(-jsonObject.getFloat("integralConductValue"));
 				}else if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_ADD || integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_REWARD) {
-					updateTeacherIntegralSumVo.setUpdateIntegralValue(+jsonObject.getFloat("integralConductId"));
+					updateTeacherIntegralSumVo.setUpdateIntegralValue(+jsonObject.getFloat("integralConductValue"));
 				}
 				resultType = teacherIntegralSumService.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 			}
@@ -140,7 +140,7 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 				teacherIntegral.setTeacherIntegralId(UUIDUtil.getUUIDPrimary());
 				teacherIntegral.setTeacherid(jsonObject.getString("teacherId"));
 				teacherIntegral.setIntegralConductName(integralConduct.getIntegralConductName());
-				teacherIntegral.setIntegralConductValue(jsonObject.getFloat("integralConductId"));
+				teacherIntegral.setIntegralConductValue(jsonObject.getFloat("integralConductValue"));
 				teacherIntegral.setIntegralConductDesc(integralConduct.getIntegralConductDesc());
 				teacherIntegral.setIntegralConductType(integralConduct.getIntegralConductType());
 				teacherIntegral.setCreateTime(new Date());
@@ -150,9 +150,9 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 					updateTeacherIntegralSumVo.setTeacherid(teacherIntegralSum.getTeacherid());
 					updateTeacherIntegralSumVo.setOldIntegralCount(teacherIntegralSum.getIntegralCount());
 					if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_SUB) {
-						updateTeacherIntegralSumVo.setUpdateIntegralValue(-jsonObject.getFloat("integralConductId"));
+						updateTeacherIntegralSumVo.setUpdateIntegralValue(-jsonObject.getFloat("integralConductValue"));
 					}else if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_ADD || integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_REWARD) {
-						updateTeacherIntegralSumVo.setUpdateIntegralValue(+jsonObject.getFloat("integralConductId"));
+						updateTeacherIntegralSumVo.setUpdateIntegralValue(+jsonObject.getFloat("integralConductValue"));
 					}
 					resultType = teacherIntegralSumService.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 				}
