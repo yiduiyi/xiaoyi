@@ -19,5 +19,7 @@ public interface IMonitorDao {
 	public List<JSONObject> getEvaluatioList(String teachingId);
 	//按月份查询每月的教师评价
 	public JSONObject getMonthEvaluatio(Map<String, Object> reqData);
+	//教学监控-获取上周/这周上课课时数
+	public List<JSONObject> selectTeacherWeekTeachingList(List<String> teachingIdList);
 
 }
