@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -1336,7 +1337,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					bill.put("status", -2);
 				}
 				bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2
-						: sendNumMap.get(bill.getString("billId")));
+						: recordStatusMap.get(bill.getString("billId")));
 				Integer gradeId = bill.getInteger("gradeId");
 				if (null != gradeId) {
 					for (Grade grade : Grade.values()) {
@@ -1380,8 +1381,25 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					return 0;
 				}
 			});
+			
+			billList = sortBillList(billList);
 		}
 		return billList;
+	}
+
+	private List<JSONObject> sortBillList(List<JSONObject> billList) {
+		LinkedList<JSONObject> list = new LinkedList<JSONObject>();
+		Iterator<JSONObject> iterator = billList.iterator();
+		while (iterator.hasNext()) {
+			JSONObject object = iterator.next();
+			if(object.getInteger("billStatus") == 0) {
+				list.addFirst(object);
+			}else {
+				list.addLast(object);
+			}
+		}
+		List<JSONObject> objects = new ArrayList<JSONObject>(list);
+		return objects;
 	}
 
 	@Override
@@ -1460,6 +1478,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					return 0;
 				}
 			});
+			billList = sortBillList(billList);
 		}
 		return billList;
 	}
@@ -1490,6 +1509,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							}
 						}
 					}
+					bill.put("standbyTelNumber", teacher.getStandbyTelNumber());
 				}
 				// 按照投递时间
 				Collections.sort(billList, new Comparator<JSONObject>() {
