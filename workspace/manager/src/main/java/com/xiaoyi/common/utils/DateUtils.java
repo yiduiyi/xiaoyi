@@ -15,7 +15,7 @@ public class DateUtils {
 	public static final String YYYYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
 	public static final String YYYYMMDD = "yyyy-MM-dd";
 	public static final String MMDD = "MM月dd日";
-
+	public static final String MMPointDD = "MM.dd";
 	public static final String HHMM = "HH:mm";
 
 	public static String toYYYYMMDDHHMMSSString(Date date) {
@@ -32,7 +32,11 @@ public class DateUtils {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(MMDD);
 		return dateFormat.format(date);
 	}
-
+	
+	public static String toMMPointDDString(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(MMPointDD);
+		return dateFormat.format(date);
+	}
 	public static Date toYYYYMMDDHHMMSSDate(String dateString) throws ParseException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(YYYYMMDDHHMMSS);
 		return dateFormat.parse(dateString);

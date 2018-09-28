@@ -942,6 +942,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			}
 
 			result = teacherH5Dao.selectHistoryTeachingRecords(params);
+			if(CollectionUtils.isNotEmpty(result)) {
+				for (JSONObject jsonObject : result) {
+					jsonObject.put("teachingDate", DateUtils.toMMPointDDString(jsonObject.getDate("teachingDate")));
+				}
+			}
 		} catch (Exception e) {
 			logger.error("查询历史课时提交记录失败！");
 		}
@@ -1284,6 +1289,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	public List<JSONObject> getSuitBillList(JSONObject reqData) {
 		List<JSONObject> billList = null;
 		List<Integer> goodAtList = new ArrayList<Integer>();
+		Map<String, Object> sendNumMap = new HashMap<String, Object>();
+		Map<String, Object> recordStatusMap = new HashMap<String, Object>();
 		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
 		// 解析教师所选的可任教科目
 		if (null != teacher) {
@@ -1294,30 +1301,22 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					goodAtList.add(courseId);
 				}
 			}
-			Map<String, Object> sendNumMap = new HashMap<String, Object>();
 			List<JSONObject> sendNums = billService.getBillSendNum();
 			if (CollectionUtils.isNotEmpty(sendNums)) {
 				for (JSONObject sendNum : sendNums) {
 					sendNumMap.put(sendNum.getString("billId"), sendNum.getString("sendNum"));
 				}
 			}
-			Map<String, Object> recordStatusMap = new HashMap<String, Object>();
 			List<JSONObject> recordStatus = billService.getRecordStatus(teacher.getTeacherid());
 			if (CollectionUtils.isNotEmpty(recordStatus)) {
 				for (JSONObject recordStatu : recordStatus) {
 					recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
 				}
 			}
-			/*
-			 * TeacherConsultantRelation teacherConsultantRelation =
-			 * teacherConsultantRelationService
-			 * .selectTeacherConsultantRelationByTeacherId(teacher.getTeacherid()); if(null
-			 * != teacherConsultantRelation) { billList =
-			 * billService.selectSuitBillListByConsultantId(teacherConsultantRelation.
-			 * getConsultantId()); }
-			 */
-			billList = billService.getAllBillList();
-			if (CollectionUtils.isNotEmpty(billList)) {
+		}
+		billList = billService.getAllBillList();
+		if (CollectionUtils.isNotEmpty(billList)) {
+			if (CollectionUtils.isNotEmpty(goodAtList)) {
 				Iterator<JSONObject> iterator = billList.iterator();
 				// 判断教师所选的可任教科目是否包含订单所选的科目，如果没有，则删除该订单
 				while (iterator.hasNext()) {
@@ -1327,57 +1326,60 @@ public class H5PlateServiceImpl implements IH5PlateService {
 						iterator.remove();
 					}
 				}
-				// 添加该订单的
-				for (JSONObject bill : billList) {
-					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
-							: sendNumMap.get(bill.getString("billId")));
-					//当接单量大于等于5时，设置状态为已满
-					if(bill.getInteger("sendNum") >= 5) {
-						bill.put("status", -2);
-					}
-					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 :sendNumMap.get(bill.getString("billId")));
-					Integer gradeId = bill.getInteger("gradeId");
-					if (null != gradeId) {
-						for (Grade grade : Grade.values()) {
-							if (grade.getValue() == gradeId) {
-								bill.put("gradeName", grade.getFullGradeName());
-								break;
-							}
-						}
-					}
-					Integer courseId = bill.getInteger("courseId");
-					if (null != courseId) {
-						for (Course course : Course.values()) {
-							if (course.getValue() == courseId) {
-								bill.put("courseName", course.toString());
-								break;
-							}
-						}
-					}
-					if(bill.getInteger("status") == -2) {
-						bill.put("billStatus", "-2");
-					}else if(bill.getInteger("status") == 2) {
-						bill.put("billStatus", "2");
-					}if(bill.getInteger("status") == 1) {
-						if(bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1 || bill.getInteger("recordStatus") == 0) {
-							bill.put("billStatus", "1");
-						}else if (bill.getInteger("recordStatus") == 2){
-							bill.put("billStatus", "0");
+			}
+			// 添加该订单的
+			for (JSONObject bill : billList) {
+				bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
+						: sendNumMap.get(bill.getString("billId")));
+				// 当接单量大于等于5时，设置状态为已满
+				if (bill.getInteger("sendNum") >= 5) {
+					bill.put("status", -2);
+				}
+				bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2
+						: sendNumMap.get(bill.getString("billId")));
+				Integer gradeId = bill.getInteger("gradeId");
+				if (null != gradeId) {
+					for (Grade grade : Grade.values()) {
+						if (grade.getValue() == gradeId) {
+							bill.put("gradeName", grade.getFullGradeName());
+							break;
 						}
 					}
 				}
-				// 按照投递数排序
-				Collections.sort(billList, new Comparator<JSONObject>() {
-					@Override
-					public int compare(JSONObject o1, JSONObject o2) {
-						if (null != o1 && null != o2 && o1.getString("sendNum") != null
-								&& o2.getString("sendNum") != null) {
-							return o1.getString("sendNum").compareTo(o2.getString("sendNum"));
+				Integer courseId = bill.getInteger("courseId");
+				if (null != courseId) {
+					for (Course course : Course.values()) {
+						if (course.getValue() == courseId) {
+							bill.put("courseName", course.toString());
+							break;
 						}
-						return 0;
 					}
-				});
+				}
+				if (bill.getInteger("status") == -2) {
+					bill.put("billStatus", "-2");
+				} else if (bill.getInteger("status") == 2) {
+					bill.put("billStatus", "2");
+				}
+				if (bill.getInteger("status") == 1) {
+					if (bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1
+							|| bill.getInteger("recordStatus") == 0) {
+						bill.put("billStatus", "1");
+					} else if (bill.getInteger("recordStatus") == 2) {
+						bill.put("billStatus", "0");
+					}
+				}
 			}
+			// 按照投递数排序
+			Collections.sort(billList, new Comparator<JSONObject>() {
+				@Override
+				public int compare(JSONObject o1, JSONObject o2) {
+					if (null != o1 && null != o2 && o1.getString("sendNum") != null
+							&& o2.getString("sendNum") != null) {
+						return o1.getString("sendNum").compareTo(o2.getString("sendNum"));
+					}
+					return 0;
+				}
+			});
 		}
 		return billList;
 	}
@@ -1401,60 +1403,63 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
 				}
 			}
-			billList = billService.getAllBillList();
-			if (CollectionUtils.isNotEmpty(billList)) {
-				// 添加该订单的sendNum和recordStatus
-				for (JSONObject bill : billList) {
-					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
-							: sendNumMap.get(bill.getString("billId")));
-					//当接单量为大于等于5时，设置状态为已满
-					if(bill.getInteger("sendNum") >= 5) {
-						bill.put("status", -2);
-					}
-					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")));
-					Integer gradeId = bill.getInteger("gradeId");
-					if (null != gradeId) {
-						for (Grade grade : Grade.values()) {
-							if (grade.getValue() == gradeId) {
-								bill.put("gradeName", grade.getFullGradeName());
-								break;
-							}
-						}
-					}
-					Integer courseId = bill.getInteger("courseId");
-					if (null != courseId) {
-						for (Course course : Course.values()) {
-							if (course.getValue() == courseId) {
-								bill.put("courseName", course.toString());
-								break;
-							}
-						}
-					}
-					if(bill.getInteger("status") == -2) {
-						bill.put("billStatus", "-2");
-					}else if(bill.getInteger("status") == 2) {
-						bill.put("billStatus", "2");
-					}if(bill.getInteger("status") == 1) {
-						if(bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1 || bill.getInteger("recordStatus") == 0) {
-							bill.put("billStatus", "1");
-						}else if (bill.getInteger("recordStatus") == 2){
-							bill.put("billStatus", "0");
+		}
+		billList = billService.getAllBillList();
+		if (CollectionUtils.isNotEmpty(billList)) {
+			// 添加该订单的sendNum和recordStatus
+			for (JSONObject bill : billList) {
+				bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
+						: sendNumMap.get(bill.getString("billId")));
+				// 当接单量为大于等于5时，设置状态为已满
+				if (bill.getInteger("sendNum") >= 5) {
+					bill.put("status", -2);
+				}
+				bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2
+						: recordStatusMap.get(bill.getString("billId")));
+				Integer gradeId = bill.getInteger("gradeId");
+				if (null != gradeId) {
+					for (Grade grade : Grade.values()) {
+						if (grade.getValue() == gradeId) {
+							bill.put("gradeName", grade.getFullGradeName());
+							break;
 						}
 					}
 				}
-				// 按照投递数排序
-				Collections.sort(billList, new Comparator<JSONObject>() {
-					@Override
-					public int compare(JSONObject o1, JSONObject o2) {
-						if (null != o1 && null != o2 && o1.getString("sendNum") != null
-								&& o2.getString("sendNum") != null) {
-
-							return o1.getString("sendNum").compareTo(o2.getString("sendNum"));
+				Integer courseId = bill.getInteger("courseId");
+				if (null != courseId) {
+					for (Course course : Course.values()) {
+						if (course.getValue() == courseId) {
+							bill.put("courseName", course.toString());
+							break;
 						}
-						return 0;
 					}
-				});
+				}
+				if (bill.getInteger("status") == -2) {
+					bill.put("billStatus", "-2");
+				} else if (bill.getInteger("status") == 2) {
+					bill.put("billStatus", "2");
+				}
+				if (bill.getInteger("status") == 1) {
+					if (bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1
+							|| bill.getInteger("recordStatus") == 0) {
+						bill.put("billStatus", "1");
+					} else if (bill.getInteger("recordStatus") == 2) {
+						bill.put("billStatus", "0");
+					}
+				}
 			}
+			// 按照投递数排序
+			Collections.sort(billList, new Comparator<JSONObject>() {
+				@Override
+				public int compare(JSONObject o1, JSONObject o2) {
+					if (null != o1 && null != o2 && o1.getString("sendNum") != null
+							&& o2.getString("sendNum") != null) {
+
+						return o1.getString("sendNum").compareTo(o2.getString("sendNum"));
+					}
+					return 0;
+				}
+			});
 		}
 		return billList;
 	}
@@ -1650,21 +1655,20 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					newTeacherIntegralSum.setCreateTime(new Date());
 					i = teacherIntegralSumService.insert(newTeacherIntegralSum);
 				}
-				if(i > 0) {
-					teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
-					teachingLevel = getTeachingLevelByIntegralCount(teacherIntegralSum.getIntegralCount());
-					teacher.setTeachinglevel(teachingLevel.byteValue());
-					teacherH5Dao.updateTeacherByOpenId(teacher);
-					String jsonString = JSONObject.toJSONString(teacherIntegralSum);
-					jsonObject = JSONObject.parseObject(jsonString);
-					if(null != jsonObject) {
-						for (TeachingLevel level : TeachingLevel.values()) {
-							if (teachingLevel == level.getValue()) {
-								jsonObject.put("teachingLevel", level.toString());
-								break;
-							}
+				teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
+				teachingLevel = getTeachingLevelByIntegralCount(teacherIntegralSum.getIntegralCount());
+				teacher.setTeachinglevel(teachingLevel.byteValue());
+				teacherH5Dao.updateTeacherByOpenId(teacher);
+				String jsonString = JSONObject.toJSONString(teacherIntegralSum);
+				jsonObject = JSONObject.parseObject(jsonString);
+				if (null != jsonObject) {
+					for (TeachingLevel level : TeachingLevel.values()) {
+						if (teachingLevel == level.getValue()) {
+							jsonObject.put("teachingLevel", level.toString());
+							break;
 						}
 					}
+					jsonObject.put("createTime", DateUtils.toYYYYMMDDHHMMSSString(jsonObject.getDate("createTime")));
 				}
 			}
 			return jsonObject;

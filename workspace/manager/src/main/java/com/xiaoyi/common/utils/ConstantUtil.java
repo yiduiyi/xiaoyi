@@ -86,11 +86,11 @@ public class ConstantUtil {
 		public String toString(){
 			switch(teachingLevel) {
 			case -1: return "黑名单";
-			case 1: return "潜力";
-			case 2:	return "银牌";
-			case 3: return "金牌";
-			case 4: return "特聘";
-			case 0: return "普通";
+			case 1: return "潜力讲师";
+			case 2:	return "银牌讲师";
+			case 3: return "金牌讲师";
+			case 4: return "特聘讲师";
+			case 0: return "普通讲师";
 			}
 			
 			return "";		
@@ -593,18 +593,18 @@ public class ConstantUtil {
 		public static final String INTEGRAL_CONDUCT_ID_NOT_FEEDBAK = "1000012";//未按时填写课时反馈
 		// 积分行为值
 		public static final Map<String, Object> INTEGRAL_CONDUCT_VALUE_MAP = new HashMap<String, Object>();
-		{
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000001", 100);//首次接单
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000002", 50);//二次接单上课
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000003", 2);//上课 1 小时
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000004", 20);//新学期家长续费
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000005", 1);//分享家教信息单
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000006", 0.5);//签到
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000007", 5);//完善个人资料
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000008", 50);//甩单
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000009", 50);//弃单
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000010", 100);//故意试讲失败
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000011", 50);//正式上课家长投诉
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000012", 2);//未按时填写课时反馈
+		static {
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000001", 100f);//首次接单
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000002", 50f);//二次接单上课
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000003", 2f);//上课 1 小时
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000004", 20f);//新学期家长续费
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000005", 1f);//分享家教信息单
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000006", 0.5f);//签到
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000007", 5f);//完善个人资料
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000008", 50f);//甩单
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000009", 50f);//弃单
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000010", 100f);//故意试讲失败
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000011", 50f);//正式上课家长投诉
+			INTEGRAL_CONDUCT_VALUE_MAP.put("1000012", 2f);//未按时填写课时反馈
 		}
 }
