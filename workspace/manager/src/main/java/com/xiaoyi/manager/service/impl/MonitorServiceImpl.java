@@ -94,7 +94,9 @@ public class MonitorServiceImpl implements IMonitorService {
 					}
 					
 					//补充查询结果字段（周课时）
-					for(JSONObject singleResult : result){
+					Iterator<JSONObject>teacherIter = result.iterator();
+					while(teacherIter.hasNext()){
+						JSONObject singleResult = teacherIter.next();
 						String teachingId = singleResult.getString("teachingId");
 						Integer totalWeekNum = teachingIdTotalTeachingNumMap.get(teachingId);
 						Integer lastWeekNum = teachingIdLastWeekTeachingNumMap.get(teachingId);
@@ -104,6 +106,12 @@ public class MonitorServiceImpl implements IMonitorService {
 								(lastWeekNum==null)?0 : lastWeekNum);
 						singleResult.put("currentWeekTeachingNum", (curWeekNum==null)?0:curWeekNum);
 						singleResult.put("totalTeachingNum", (totalWeekNum==null)?0 : totalWeekNum);
+					
+						//去掉不全的数据
+						if(StringUtils.isEmpty(singleResult.getString("teacherName")) 
+								|| StringUtils.isEmpty(singleResult.getString("telNumber"))){
+							teacherIter.remove();
+						}
 					}
 					
 				}				
@@ -121,7 +129,8 @@ public class MonitorServiceImpl implements IMonitorService {
 		Iterator<JSONObject> iterator = result.iterator();
 		if(null != lessThan) {
 			while(iterator.hasNext()) {
-				JSONObject teacher = iterator.next();
+				JSONObject teacher = iterator.next();			
+				
 				logger.info(teacher.getString("teacherId")+"该教师所提现的课时"+"上周课时"+teacher.getString("latestWeekTeachingNum")+"本周课时"+teacher.getString("currentWeekTeachingNum")+"总课时"+teacher.getString("totalTeachingNum"));
 				Integer latestWeekTeachingNum = teacher.getInteger("latestWeekTeachingNum");
 				if(null != latestWeekTeachingNum) {

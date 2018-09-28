@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaoyi.manager.dao.IMonitorDao">
 	<select id="getTeachersList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT OTR.teachingId, T.telNumber, T.teacherName, T.sex, T.teachingLevel, S.`name`
+		SELECT OTR.teachingId, T.telNumber, T.teacherName, T.sex, T.teachingLevel, S.`name` AS studentName 
 		FROM order_teaching_r OTR 
 			LEFT JOIN teacher T ON OTR.teacherId = T.teacherId
 			LEFT JOIN student S ON OTR.memberId = S.memberId
