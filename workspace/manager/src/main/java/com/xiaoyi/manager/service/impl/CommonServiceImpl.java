@@ -93,9 +93,9 @@ public class CommonServiceImpl implements ICommonService {
 								&& !telNum.equals(parents.getTelnum())
 								/*&& null!=parentsDao.selectByTelNum(params.getString("telNum"))*/){
 							//暂时记录该家长信息（孤立信息, 没有任何绑定）
-							if(null!=parentsDao.selectByTelNum(telNum)){
+							if(null==parentsDao.selectByTelNum(telNum)){
 								Parents addParent = new Parents();
-								addParent.setOpenid("");
+								addParent.setOpenid(UUID.randomUUID().toString());
 								addParent.setParentid(UUID.randomUUID().toString());
 								addParent.setParentname(parentName);
 								addParent.setTelnum(telNum);
@@ -173,7 +173,8 @@ public class CommonServiceImpl implements ICommonService {
 								List<Student> stuList = studentDao.selectByStuIds(stuIds);
 								if(null!=stuList){
 									for(Student s : stuList){
-										if(null!=s.getName() && s.getName().equals(stuName)
+										if(null!=s.getName() 
+												&& (s.getName().equals(stuName) || s.getName().equals(stuName + sb.toString()))
 												|| (StringUtils.isEmpty(s.getName()) && StringUtils.isEmpty(stuName))){
 											hasRelation = true;
 											studentId = s.getMemberid();

@@ -1,8 +1,11 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -13,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil.FeedBack;
 import com.xiaoyi.common.utils.ConstantUtil.Sex;
 import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
@@ -28,14 +32,89 @@ public class MonitorServiceImpl implements IMonitorService {
 	@Override
 	public List<JSONObject> getTeachingProcess(JSONObject reqData) {
 		List<JSONObject> result = null;
-		try {
-			
-			result = iMonitorDao.getTeachersList(reqData);
-			
+		try {			
+			result = iMonitorDao.getTeachersList(reqData);			
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw e;
+			throw new CommonRunException(-1, "查询老师-学生关系出错！");
 		}
+		
+		
+		//查询老师上周、这周、总上课课时数
+		if(CollectionUtils.isNotEmpty(result)){
+			List<String> teachingIdList = null;
+			
+			//有老师查询条件时，增加过滤条件
+			if(StringUtils.isNotEmpty(reqData.getString("teacherName"))){
+				teachingIdList = new ArrayList<String>();
+				for(JSONObject singleResult : result){
+					teachingIdList.add(singleResult.getString("teachingId"));
+				}
+			}
+			
+			try {
+				List<JSONObject> weekTeachingNumMap = 
+						iMonitorDao.selectTeacherWeekTeachingList(teachingIdList );
+				
+				if(CollectionUtils.isNotEmpty(weekTeachingNumMap)){
+					//老师总共课时数、本周课时数、上周课时数映射表
+					Map<String,Integer> teachingIdTotalTeachingNumMap = new HashMap<String,Integer>();
+					Map<String,Integer> teachingIdLastWeekTeachingNumMap = new HashMap<String,Integer>();
+					Map<String,Integer> teachingIdCurWeekTeachingNumMap = new HashMap<String,Integer>();
+					
+					for(JSONObject weekTeachingNum : weekTeachingNumMap){
+						Integer weekFromNow = weekTeachingNum.getInteger("weekFromNow");
+						Integer teachingNum = weekTeachingNum.getInteger("teachingNum");
+						String teachingId = weekTeachingNum.getString("teachingId");
+						
+						if(teachingNum==null){
+							continue;
+						}
+						
+						//第一次
+						Integer totalTeachingNum = teachingIdTotalTeachingNumMap.get(teachingId);
+						if(null==totalTeachingNum){
+							totalTeachingNum = 0;
+						}
+						totalTeachingNum += teachingNum;
+						teachingIdTotalTeachingNumMap.put(teachingId, totalTeachingNum);
+						
+						if(null!=weekFromNow){
+							switch(weekFromNow){
+							case 0:	//本周
+								teachingIdCurWeekTeachingNumMap.put(teachingId, teachingNum);
+								break;
+							case 1:	//上周
+								teachingIdLastWeekTeachingNumMap.put(teachingId, teachingNum);
+								break;
+								default:
+									break;
+							}
+						}						
+					}
+					
+					//补充查询结果字段（周课时）
+					for(JSONObject singleResult : result){
+						String teachingId = singleResult.getString("teachingId");
+						Integer totalWeekNum = teachingIdTotalTeachingNumMap.get(teachingId);
+						Integer lastWeekNum = teachingIdLastWeekTeachingNumMap.get(teachingId);
+						Integer curWeekNum = teachingIdCurWeekTeachingNumMap.get(teachingId);
+						
+						singleResult.put("latestWeekTeachingNum", 
+								(lastWeekNum==null)?0 : lastWeekNum);
+						singleResult.put("currentWeekTeachingNum", (curWeekNum==null)?0:curWeekNum);
+						singleResult.put("totalTeachingNum", (totalWeekNum==null)?0 : totalWeekNum);
+					}
+					
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("查询老师周课时失败！");
+				throw new CommonRunException(-1, "查询老师周课时失败！");
+			}
+		}
+		
+		
 		long startTime = System.currentTimeMillis();
 		//上周课时低于lessThan课时
 		Integer lessThan = reqData.getInteger("lessThan");

@@ -991,7 +991,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				record.setStarttime(teachingDetail.getString("startTime"));
 
 				// 适配日期
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 				String teachingDate = teachingDetail.getString("teachingDate");
 				if (null == teachingDate) { // 没有时间记录的,视为无效记录

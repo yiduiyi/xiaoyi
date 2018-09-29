@@ -2,7 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.xiaoyi.manager.dao.IMonitorDao">
 	<select id="getTeachersList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT A.teachingId,A.teacherName,A.sex,A.telNumber,A.teachingLevel,A.studentName,
+		SELECT OTR.teachingId, T.telNumber, T.teacherName, T.sex, T.teachingLevel, S.`name`
+		FROM order_teaching_r OTR 
+			LEFT JOIN teacher T ON OTR.teacherId = T.teacherId
+			LEFT JOIN student S ON OTR.memberId = S.memberId
+		<where>
+			<if test="teacherName != null">
+				T.teacherName LIKE CONCAT('%',#{teacherName},'%')
+			</if>
+			<if test="telNumber != null">
+				AND T.telNumber = #{telNumber}
+			</if>
+			<if test="teachingLevel != null">
+				AND T.teachingLevel = #{teachingLevel}
+			</if>
+		</where>
+		<!-- SELECT A.teachingId,A.teacherName,A.sex,A.telNumber,A.teachingLevel,A.studentName,
 		(SELECT SUM(T.teachingNum) FROM teachingrecord T INNER JOIN lessontrade L ON T.lessonTradeId = L.lessonTradeId WHERE L.teacherId = A.teacherId AND L.memberId = A.memberId AND L.parentId = A.parentId AND YEARWEEK(teachingDate) = YEARWEEK(now())-1) as latestWeekTeachingNum,
 		(SELECT SUM(T.teachingNum) FROM teachingrecord T INNER JOIN lessontrade L ON T.lessonTradeId = L.lessonTradeId WHERE L.teacherId = A.teacherId AND L.memberId = A.memberId AND L.parentId = A.parentId AND YEARWEEK(teachingDate) = YEARWEEK(now())) as currentWeekTeachingNum,
 		(SELECT SUM(T.teachingNum) FROM teachingrecord T INNER JOIN lessontrade L ON T.lessonTradeId = L.lessonTradeId WHERE L.teacherId = A.teacherId AND L.memberId = A.memberId AND L.parentId = A.parentId) as totalTeachingNum
@@ -17,8 +32,25 @@
 			<if test="teachingLevel != null">
 				AND T.teachingLevel = #{teachingLevel}
 			</if>
-		</where> ) A
+		</where> ) A -->
 	</select>
+	
+	<!-- 教学监控-获取上周/这周上课课时数 -->
+	<select id="selectTeacherWeekTeachingList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT teachingId,YEARWEEK(teachingDate)-YEARWEEK(NOW()) AS weekFromNow,SUM(teachingNum) AS teachingNum
+		FROM teachingrecord 
+		<where>	
+			<if test="list != null">
+				AND teachingId IN 
+				<foreach collection="list" item="item" open="(" close=")"
+					separator=",">
+				#{item}
+			</foreach>
+			</if>
+		</where>
+		GROUP BY teachingId,weekFromNow
+	</select>
+	
 	<select id="getLatestWeekTeachingNum" parameterType="hashmap" resultType="java.lang.Integer">
 		SELECT SUM(teachingNum) as latestWeekTeachingNum FROM teachingrecord WHERE 
 		lessonTradeId IN (SELECT lessonTradeId FROM lessontrade WHERE teacherId = #{teacherId} 
