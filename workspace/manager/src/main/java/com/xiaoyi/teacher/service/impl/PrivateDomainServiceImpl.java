@@ -106,7 +106,7 @@ public class PrivateDomainServiceImpl implements IPrivateDomainService {
 					
 					for(TeachingLevel tl : TeachingLevel.values()){
 						if(tl.getValue() == teachingLevel){
-							result.put("teachingLevel", tl.toString());
+							result.put("teachingLevelName", tl.toString());
 							break;
 						}
 					}

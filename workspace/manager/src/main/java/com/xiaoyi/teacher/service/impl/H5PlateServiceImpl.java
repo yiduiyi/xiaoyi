@@ -1684,7 +1684,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				if (null != jsonObject) {
 					for (TeachingLevel level : TeachingLevel.values()) {
 						if (teachingLevel == level.getValue()) {
-							jsonObject.put("teachingLevel", level.toString());
+							jsonObject.put("teachingLevelName", level.toString());
 							break;
 						}
 					}
