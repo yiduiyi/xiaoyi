@@ -62,7 +62,7 @@ public class MonitorServiceImpl implements IMonitorService {
 				if(null!=teachingLevel) {
 					for(TeachingLevel level : TeachingLevel.values()) {
 						if(teachingLevel==level.getValue()) {
-							teacher.put("teachingLevelName", level.toString());
+							teacher.put("teachingLevel", level.toString());
 							break;
 						}
 					}
