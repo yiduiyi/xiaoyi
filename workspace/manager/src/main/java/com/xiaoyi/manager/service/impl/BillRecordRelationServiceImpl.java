@@ -66,7 +66,7 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 				if(null!=teachingLevel) {
 					for(TeachingLevel level : TeachingLevel.values()) {
 						if(teachingLevel==level.getValue()) {
-							jsonObject.put("teachingLevel", level.toString());
+							jsonObject.put("teachingLevelName", level.toString());
 							break;
 						}
 					}
