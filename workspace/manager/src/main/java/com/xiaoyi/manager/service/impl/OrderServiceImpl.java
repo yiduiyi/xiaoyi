@@ -397,15 +397,11 @@ public class OrderServiceImpl implements IOrderService {
 						}
 					}
 					//转换年级代码->名称
-					Integer grade = order.getInteger("lessonType");
-					if(null!=grade) {						
-						if(grade.intValue()<0) {
-							grade*=-1;
-						}
-						if(grade > 331){	//一对二
-							grade -= 300;
-						}
-						
+					Integer grade = order.getIntValue("lessonType");
+					if(grade.intValue()<0) {
+						grade*=-1;
+					}
+					if(null!=grade) {
 						for(Level curLevel : Level.values()) {
 							if(curLevel.getValue() == grade/10) {
 								order.put("gradeName", curLevel.toString());
@@ -569,18 +565,12 @@ public class OrderServiceImpl implements IOrderService {
 			if(null!=mTeachingList){
 				for(JSONObject mTeaching : mTeachingList){
 					Integer status = mTeaching.getInteger("status");
-					Integer feedback = mTeaching.getInteger("feedback");
-					
-					//默认为未确认
-					mTeaching.put("feedback", "3");	//未确认
-					if(null!=status){
-						if(feedback!=null){	//家长评价
-							mTeaching.put("feedback", feedback);	
-						}else{	//默认为满意
-							mTeaching.put("feedback", 1);	
-						}
+					if(null!=status && status==1){
+						mTeaching.put("feedback", "3");
 					}
-					
+					if(mTeaching.get("feedback") == null){
+						mTeaching.put("feedback", "1");
+					}
 				}
 			}
 			
