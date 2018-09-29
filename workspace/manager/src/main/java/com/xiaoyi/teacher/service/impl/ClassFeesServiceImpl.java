@@ -35,7 +35,7 @@ public class ClassFeesServiceImpl implements IClassFeesService {
 				if(null != teachingLevels) {
 					for(TeachingLevel teachingLevel : TeachingLevel.values()) {
 						if(teachingLevel.getValue() == teachingLevels) {
-							jsonObject.put("teachingLevel", teachingLevel.toString());
+							jsonObject.put("teachingLevelName", teachingLevel.toString());
 							break;
 						}
 					}

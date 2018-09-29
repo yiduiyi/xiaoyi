@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -1336,7 +1337,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					bill.put("status", -2);
 				}
 				bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2
-						: sendNumMap.get(bill.getString("billId")));
+						: recordStatusMap.get(bill.getString("billId")));
 				Integer gradeId = bill.getInteger("gradeId");
 				if (null != gradeId) {
 					for (Grade grade : Grade.values()) {
@@ -1380,8 +1381,25 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					return 0;
 				}
 			});
+			
+			billList = sortBillList(billList);
 		}
 		return billList;
+	}
+
+	private List<JSONObject> sortBillList(List<JSONObject> billList) {
+		LinkedList<JSONObject> list = new LinkedList<JSONObject>();
+		Iterator<JSONObject> iterator = billList.iterator();
+		while (iterator.hasNext()) {
+			JSONObject object = iterator.next();
+			if(object.getInteger("billStatus") == 0) {
+				list.addFirst(object);
+			}else {
+				list.addLast(object);
+			}
+		}
+		List<JSONObject> objects = new ArrayList<JSONObject>(list);
+		return objects;
 	}
 
 	@Override
@@ -1460,6 +1478,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					return 0;
 				}
 			});
+			billList = sortBillList(billList);
 		}
 		return billList;
 	}
@@ -1490,6 +1509,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 							}
 						}
 					}
+					bill.put("standbyTelNumber", teacher.getStandbyTelNumber());
 				}
 				// 按照投递时间
 				Collections.sort(billList, new Comparator<JSONObject>() {
@@ -1639,7 +1659,6 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Override
 	public JSONObject getTeacherIntegralSum(JSONObject reqData) {
 		try {
-			int i = 0;
 			JSONObject jsonObject = new JSONObject();
 			TeacherIntegralSum teacherIntegralSum = new TeacherIntegralSum();
 			Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
@@ -1653,7 +1672,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					newTeacherIntegralSum.setIntegralCount(0.0f);
 					newTeacherIntegralSum.setStatus(ConstantUtil.TEACHER_INTEGRAL_STATUS_NORMAL);
 					newTeacherIntegralSum.setCreateTime(new Date());
-					i = teacherIntegralSumService.insert(newTeacherIntegralSum);
+					teacherIntegralSumService.insert(newTeacherIntegralSum);
 				}
 				teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
 				teachingLevel = getTeachingLevelByIntegralCount(teacherIntegralSum.getIntegralCount());
@@ -1664,7 +1683,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				if (null != jsonObject) {
 					for (TeachingLevel level : TeachingLevel.values()) {
 						if (teachingLevel == level.getValue()) {
-							jsonObject.put("teachingLevel", level.toString());
+							jsonObject.put("teachingLevel", teachingLevel);
+							jsonObject.put("teachingLevelName", level.toString());
 							break;
 						}
 					}
