@@ -1659,7 +1659,6 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	@Override
 	public JSONObject getTeacherIntegralSum(JSONObject reqData) {
 		try {
-			int i = 0;
 			JSONObject jsonObject = new JSONObject();
 			TeacherIntegralSum teacherIntegralSum = new TeacherIntegralSum();
 			Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
@@ -1673,7 +1672,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					newTeacherIntegralSum.setIntegralCount(0.0f);
 					newTeacherIntegralSum.setStatus(ConstantUtil.TEACHER_INTEGRAL_STATUS_NORMAL);
 					newTeacherIntegralSum.setCreateTime(new Date());
-					i = teacherIntegralSumService.insert(newTeacherIntegralSum);
+					teacherIntegralSumService.insert(newTeacherIntegralSum);
 				}
 				teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
 				teachingLevel = getTeachingLevelByIntegralCount(teacherIntegralSum.getIntegralCount());
@@ -1684,6 +1683,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				if (null != jsonObject) {
 					for (TeachingLevel level : TeachingLevel.values()) {
 						if (teachingLevel == level.getValue()) {
+							jsonObject.put("teachingLevel", teachingLevel);
 							jsonObject.put("teachingLevelName", level.toString());
 							break;
 						}
