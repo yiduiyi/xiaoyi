@@ -64,8 +64,10 @@ public class ConstantUtil {
 	/**
 	 * 教师等级（-1：黑名单
             0: 普通
-            1:中等
-            2：优秀
+            1:潜力的
+            2：银牌
+            3：金牌
+            4：特聘
                     ）
 	 * @author dengzhihua
 	 *

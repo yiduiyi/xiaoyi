@@ -84,7 +84,7 @@ public class MonitorServiceImpl implements IMonitorService {
 							case 0:	//本周
 								teachingIdCurWeekTeachingNumMap.put(teachingId, teachingNum);
 								break;
-							case 1:	//上周
+							case -1:	//上周
 								teachingIdLastWeekTeachingNumMap.put(teachingId, teachingNum);
 								break;
 								default:

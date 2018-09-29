@@ -494,8 +494,8 @@ public class CumstomServiceImpl implements ICustomService {
 				}
 			}
 
-			List<String> lessonTradeIdList = new ArrayList<String>();
 			// 根据openId获取家长登录信息(非点击模板消息的方式)
+			List<String> lessonTradeIdList = new ArrayList<String>();
 			if (StringUtils.isNotEmpty(openId) && StringUtils.isEmpty(questLessonTradeId)) {
 				Parents parent = parentDao.selectByOpenId(openId);
 				Map<String, Object> reqData = new HashMap<String, Object>();
@@ -634,6 +634,8 @@ public class CumstomServiceImpl implements ICustomService {
 												status = 2;
 											}
 											data.put("status", status);
+											data.put("parentId", lessonTrade.getParentid());
+											data.put("memberId", lessonTrade.getMemberid());
 											// 已经确认-补充家长评价
 											if (isConfirmed) {
 												data.put("notes", lessonTrade.getNotes());
