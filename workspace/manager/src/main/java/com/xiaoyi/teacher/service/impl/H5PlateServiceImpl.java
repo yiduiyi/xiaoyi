@@ -1532,74 +1532,79 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	public List<JSONObject> getAllSendBillList(JSONObject reqData) {
 		List<JSONObject> billList = null;
 		billList = billService.getAllInTheSingleBill();
+		Map<String, Object> sendNumMap = new HashMap<String, Object>();
+		Map<String, Object> recordStatusMap = new HashMap<String, Object>();
 		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(reqData.getString("openId"));
-		if(null != teacher) {
-			Map<String, Object> sendNumMap = new HashMap<String, Object>();
+		if (null != teacher) {
 			List<JSONObject> sendNums = billService.getBillSendNum();
 			if (CollectionUtils.isNotEmpty(sendNums)) {
 				for (JSONObject sendNum : sendNums) {
 					sendNumMap.put(sendNum.getString("billId"), sendNum.getString("sendNum"));
 				}
 			}
-			Map<String, Object> recordStatusMap = new HashMap<String, Object>();
+
 			List<JSONObject> recordStatus = billService.getRecordStatus(teacher.getTeacherid());
 			if (CollectionUtils.isNotEmpty(recordStatus)) {
 				for (JSONObject recordStatu : recordStatus) {
 					recordStatusMap.put(recordStatu.getString("billId"), recordStatu.getString("recordStatus"));
 				}
 			}
-			if (CollectionUtils.isNotEmpty(billList)) {
-				for (JSONObject bill : billList) {
-					bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
-							: sendNumMap.get(bill.getString("billId")));
-					//当接单量大于等于5时，设置状态为已满
-					if(bill.getInteger("sendNum") >= 5) {
-						bill.put("status", -2);
-					}
-					bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2 : recordStatusMap.get(bill.getString("billId")));
-					Integer gradeId = bill.getInteger("gradeId");
-					if (null != gradeId) {
-						for (Grade grade : Grade.values()) {
-							if (grade.getValue() == gradeId) {
-								bill.put("gradeName", grade.getFullGradeName());
-								break;
-							}
-						}
-					}
-					Integer courseId = bill.getInteger("courseId");
-					if (null != courseId) {
-						for (Course course : Course.values()) {
-							if (course.getValue() == courseId) {
-								bill.put("courseName", course.toString());
-								break;
-							}
-						}
-					}
-					if(bill.getInteger("status") == -2) {
-						bill.put("billStatus", "-2");
-					}else if(bill.getInteger("status") == 2) {
-						bill.put("billStatus", "2");
-					}if(bill.getInteger("status") == 1) {
-						if(bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1 || bill.getInteger("recordStatus") == 0) {
-							bill.put("billStatus", "1");
-						}else if (bill.getInteger("recordStatus") == 2){
-							bill.put("billStatus", "0");
+		}
+		if (CollectionUtils.isNotEmpty(billList)) {
+			for (JSONObject bill : billList) {
+				bill.put("sendNum", sendNumMap.get(bill.getString("billId")) == null ? 0
+						: sendNumMap.get(bill.getString("billId")));
+				// 当接单量大于等于5时，设置状态为已满
+				if (bill.getInteger("sendNum") >= 5) {
+					bill.put("status", -2);
+				}
+				bill.put("recordStatus", recordStatusMap.get(bill.getString("billId")) == null ? 2
+						: recordStatusMap.get(bill.getString("billId")));
+				Integer gradeId = bill.getInteger("gradeId");
+				if (null != gradeId) {
+					for (Grade grade : Grade.values()) {
+						if (grade.getValue() == gradeId) {
+							bill.put("gradeName", grade.getFullGradeName());
+							break;
 						}
 					}
 				}
-				// 按照投递数排序
-				Collections.sort(billList, new Comparator<JSONObject>() {
-					@Override
-					public int compare(JSONObject o1, JSONObject o2) {
-						if (null != o1 && null != o2 && o1.getDate("updateTime") != null
-								&& o2.getDate("updateTime") != null) {
-
-							return o2.getDate("updateTime").compareTo(o1.getDate("updateTime"));
+				Integer courseId = bill.getInteger("courseId");
+				if (null != courseId) {
+					for (Course course : Course.values()) {
+						if (course.getValue() == courseId) {
+							bill.put("courseName", course.toString());
+							break;
 						}
-						return 0;
 					}
-				});
+				}
+				if (bill.getInteger("status") == -2) {
+					bill.put("billStatus", "-2");
+				} else if (bill.getInteger("status") == 2) {
+					bill.put("billStatus", "2");
+				}
+				if (bill.getInteger("status") == 1) {
+					if (bill.getInteger("recordStatus") == -1 || bill.getInteger("recordStatus") == 1
+							|| bill.getInteger("recordStatus") == 0) {
+						bill.put("billStatus", "1");
+					} else if (bill.getInteger("recordStatus") == 2) {
+						bill.put("billStatus", "0");
+					}
+				}
 			}
+			// 按照投递数排序
+			Collections.sort(billList, new Comparator<JSONObject>() {
+				@Override
+				public int compare(JSONObject o1, JSONObject o2) {
+					if (null != o1 && null != o2 && o1.getDate("updateTime") != null
+							&& o2.getDate("updateTime") != null) {
+
+						return o2.getDate("updateTime").compareTo(o1.getDate("updateTime"));
+					}
+					return 0;
+				}
+			});
+			billList = sortBillList(billList);
 		}
 		return billList;
 	}
