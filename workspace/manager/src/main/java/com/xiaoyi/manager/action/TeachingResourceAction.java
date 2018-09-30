@@ -156,12 +156,23 @@ public class TeachingResourceAction {
 					if(null!=teachingLevel) {
 						for(TeachingLevel level : TeachingLevel.values()) {
 							if(teachingLevel==level.getValue()) {
-								teaching.put("teachingLevel", level.toString());
+								teaching.put("teachingLevel", level.getValue());
+								teaching.put("teachingLevelName", level.toString());
 								break;
 							}
 						}
 					}
 					
+					//老师性别转换
+					try {
+						Boolean sex = teaching.getBoolean("sex");
+						if(null!=sex){
+							teaching.put("sex", sex?1:0);
+						}						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
 				}
 			}
 			result.put("data", teachers);
