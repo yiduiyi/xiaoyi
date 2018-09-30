@@ -119,7 +119,7 @@
   		SELECT TRR.teacher_resume_r_id AS teacherResumeRId,T.teacherId,TR.taught_subject AS taughtSubject,TR.introduce AS introduce FROM teacher_resume_r TRR 
   		LEFT JOIN teacher T ON TRR.teacherId = T.teacherId 
   		LEFT JOIN teacher_resume TR ON TRR.teacher_resume_id = TR.teacher_resume_id WHERE
-  		 TRR.`status` = 0 AND TRR.is_default = 1 AND TR.`status` = 0
+  		 TRR.`status` = 0 AND TR.`status` = 0
   </select>
   <select id="getDefaultResumeByTeacherId" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select 
