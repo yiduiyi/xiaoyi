@@ -132,6 +132,6 @@
     where teacher_integral_id = #{teacherIntegralId,jdbcType=VARCHAR}
   </update>
    <select id="getTeacherTreaty" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT integral_conduct_name AS integralConductName,create_time AS createTime FROM teacher_integral WHERE teacherId = #{teacherId}
+  	SELECT integral_conduct_name AS integralConductName,create_time AS createTime FROM teacher_integral WHERE teacherId = #{teacherId} AND integral_conduct_type = -1
   </select>
 </mapper>

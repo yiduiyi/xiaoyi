@@ -57,12 +57,8 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 			if(resultType > 0) {
 				UpdateTeacherIntegralSumVo updateTeacherIntegralSumVo = new UpdateTeacherIntegralSumVo();
 				updateTeacherIntegralSumVo.setTeacherid(teacherIntegralSum.getTeacherid());
-				updateTeacherIntegralSumVo.setOldIntegralCount(teacherIntegralSum.getIntegralCount());
-				if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_SUB) {
-					updateTeacherIntegralSumVo.setUpdateIntegralValue(-integralConduct.getIntegralConductValue());
-				}else if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_ADD || integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_REWARD) {
-					updateTeacherIntegralSumVo.setUpdateIntegralValue(+integralConduct.getIntegralConductValue());
-				}
+				Float updateTeacherIntegralSum = teacherIntegralSum.getIntegralCount() + integralConduct.getIntegralConductValue() ;
+				updateTeacherIntegralSumVo.setUpdateIntegralValue(updateTeacherIntegralSum);
 				resultType = teacherIntegralSumService.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 			}
 		}else {
@@ -87,12 +83,8 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 				if(resultType > 0) {
 					UpdateTeacherIntegralSumVo updateTeacherIntegralSumVo = new UpdateTeacherIntegralSumVo();
 					updateTeacherIntegralSumVo.setTeacherid(teacherIntegralSum.getTeacherid());
-					updateTeacherIntegralSumVo.setOldIntegralCount(teacherIntegralSum.getIntegralCount());
-					if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_SUB) {
-						updateTeacherIntegralSumVo.setUpdateIntegralValue(-integralConduct.getIntegralConductValue());
-					}else if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_ADD || integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_REWARD) {
-						updateTeacherIntegralSumVo.setUpdateIntegralValue(+integralConduct.getIntegralConductValue());
-					}
+					Float updateTeacherIntegralSum = teacherIntegralSum.getIntegralCount() + integralConduct.getIntegralConductValue() ;
+					updateTeacherIntegralSumVo.setUpdateIntegralValue(updateTeacherIntegralSum);
 					resultType = teacherIntegralSumService.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 				}
 			}
@@ -118,12 +110,8 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 			if(resultType > 0) {
 				UpdateTeacherIntegralSumVo updateTeacherIntegralSumVo = new UpdateTeacherIntegralSumVo();
 				updateTeacherIntegralSumVo.setTeacherid(teacherIntegralSum.getTeacherid());
-				updateTeacherIntegralSumVo.setOldIntegralCount(teacherIntegralSum.getIntegralCount());
-				if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_SUB) {
-					updateTeacherIntegralSumVo.setUpdateIntegralValue(-jsonObject.getFloat("integralConductValue"));
-				}else if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_ADD || integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_REWARD) {
-					updateTeacherIntegralSumVo.setUpdateIntegralValue(+jsonObject.getFloat("integralConductValue"));
-				}
+				Float updateTeacherIntegralSum = teacherIntegralSum.getIntegralCount() + integralConduct.getIntegralConductValue() ;
+				updateTeacherIntegralSumVo.setUpdateIntegralValue(updateTeacherIntegralSum);
 				resultType = teacherIntegralSumService.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 			}
 		}else {
@@ -148,12 +136,8 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 				if(resultType > 0) {
 					UpdateTeacherIntegralSumVo updateTeacherIntegralSumVo = new UpdateTeacherIntegralSumVo();
 					updateTeacherIntegralSumVo.setTeacherid(teacherIntegralSum.getTeacherid());
-					updateTeacherIntegralSumVo.setOldIntegralCount(teacherIntegralSum.getIntegralCount());
-					if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_SUB) {
-						updateTeacherIntegralSumVo.setUpdateIntegralValue(-jsonObject.getFloat("integralConductValue"));
-					}else if(integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_ADD || integralConduct.getIntegralConductType() == ConstantUtil.INTEGRAL_CONDUCT_TYPE_REWARD) {
-						updateTeacherIntegralSumVo.setUpdateIntegralValue(+jsonObject.getFloat("integralConductValue"));
-					}
+					Float updateTeacherIntegralSum = teacherIntegralSum.getIntegralCount() + integralConduct.getIntegralConductValue() ;
+					updateTeacherIntegralSumVo.setUpdateIntegralValue(updateTeacherIntegralSum);
 					resultType = teacherIntegralSumService.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 				}
 			}

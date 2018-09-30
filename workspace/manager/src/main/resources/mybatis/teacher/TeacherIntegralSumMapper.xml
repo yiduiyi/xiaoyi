@@ -88,8 +88,6 @@
 		teacher_integral_sum WHERE `status` = 0
 	</select>
 	<update id="updateTeacherIntegralSum" parameterType="com.xiaoyi.teacher.vo.UpdateTeacherIntegralSumVo">
-		UPDATE teacher_integral_sum SET integral_count = integral_count +
-		#{updateIntegralValue} WHERE teacherId = #{teacherid} AND
-		integral_count = #{oldIntegralCount}
+		UPDATE teacher_integral_sum SET integral_count = #{updateIntegralValue} WHERE teacherId = #{teacherid}
 	</update>
 </mapper>
