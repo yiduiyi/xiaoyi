@@ -441,7 +441,7 @@ public class ConstantUtil {
 		 * @return
 		 */
 		public int getType(){
-			return type/Math.abs(type);
+			return type<0?1:(type>400)?2:0;/*type/Math.abs(type);*/
 		}
 		public String getTypeName(){
 			return (type>0)?

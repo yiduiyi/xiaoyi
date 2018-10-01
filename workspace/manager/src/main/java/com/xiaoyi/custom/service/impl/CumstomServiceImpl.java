@@ -699,7 +699,7 @@ public class CumstomServiceImpl implements ICustomService {
 				JSONObject jsonObject = new JSONObject();
 				for (LessonType lessonTypes : LessonType.values()) {
 					if (lessonType == lessonTypes.getValue()) {
-						gradeId = lessonTypes.getGradeId(true);
+						gradeId = lessonTypes.getGradeId(false);
 						teachingType = lessonTypes.getType();
 
 					}
