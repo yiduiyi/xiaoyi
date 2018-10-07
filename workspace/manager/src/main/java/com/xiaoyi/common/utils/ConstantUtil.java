@@ -462,6 +462,36 @@ public class ConstantUtil {
 		}
 	}
 	
+	public static enum VideoCourseType{
+		SYNC_COURSE(1),EXAM_COURSE(21),HIGH_COURSE(22),WINTER_COURSE(31),SUMMER_COURSE(32);
+		private int videoCourseType;
+
+		private VideoCourseType(int videoCourseType) {
+			this.videoCourseType = videoCourseType;
+		}
+		public int getValue(){
+			return videoCourseType;
+		}
+		@Override
+		public String toString() {
+			switch(videoCourseType){
+			case 1:
+				return "同步课程";
+			case 21: 
+				return "中考";
+			case 22:
+				return "拔高";
+			case 31:
+				return "寒假";
+			case 32:
+				return "暑假";
+			default :
+				return "";
+			}
+			
+		}
+	}
+	
 	public static enum FeedBack{
 		GOOD(1),NORMAL(0),BAD(-1);
 		private int feedback;
@@ -580,33 +610,36 @@ public class ConstantUtil {
 	public static final Integer INTEGRAL_CONDUCT_TYPE_SUB = -1;// 投递失败
 	public static final Integer INTEGRAL_CONDUCT_TYPE_ADD = 0;// 正常
 	public static final Integer INTEGRAL_CONDUCT_TYPE_REWARD = 1;// 投递成功
-	//积分行为ID
-		public static final String INTEGRAL_CONDUCT_ID_ONE_ORDER = "1000001";//首次接单
-		public static final String INTEGRAL_CONDUCT_ID_TWO_ORDER = "1000002";//二次接单上课
-		public static final String INTEGRAL_CONDUCT_ID_ONE_LESSONS = "1000003";//上课 1 小时
-		public static final String INTEGRAL_CONDUCT_ID_RENEWAL = "1000004";//新学期家长续费
-		public static final String INTEGRAL_CONDUCT_ID_SHARE = "1000005";//分享家教信息单
-		public static final String INTEGRAL_CONDUCT_ID_SIGN = "1000006";//签到
-		public static final String INTEGRAL_CONDUCT_ID_PERSONAL_DATA = "1000007";//完善个人资料
-		public static final String INTEGRAL_CONDUCT_ID_JILT_SINGLE = "1000008";//甩单
-		public static final String INTEGRAL_CONDUCT_ID_ABANDON_SINGLE = "1000009";//弃单
-		public static final String INTEGRAL_CONDUCT_ID_SPEAK_FAILED = "1000010";//故意试讲失败
-		public static final String INTEGRAL_CONDUCT_ID_COMPLAIN = "1000011";//正式上课家长投诉
-		public static final String INTEGRAL_CONDUCT_ID_NOT_FEEDBAK = "1000012";//未按时填写课时反馈
-		// 积分行为值
-		public static final Map<String, Object> INTEGRAL_CONDUCT_VALUE_MAP = new HashMap<String, Object>();
-		static {
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000001", 100f);//首次接单
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000002", 50f);//二次接单上课
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000003", 2f);//上课 1 小时
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000004", 20f);//新学期家长续费
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000005", 1f);//分享家教信息单
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000006", 0.5f);//签到
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000007", 5f);//完善个人资料
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000008", 50f);//甩单
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000009", 50f);//弃单
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000010", 100f);//故意试讲失败
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000011", 50f);//正式上课家长投诉
-			INTEGRAL_CONDUCT_VALUE_MAP.put("1000012", 2f);//未按时填写课时反馈
-		}
+	// 积分行为ID
+	public static final String INTEGRAL_CONDUCT_ID_ONE_ORDER = "1000001";// 首次接单
+	public static final String INTEGRAL_CONDUCT_ID_TWO_ORDER = "1000002";// 二次接单上课
+	public static final String INTEGRAL_CONDUCT_ID_ONE_LESSONS = "1000003";// 上课 1 小时
+	public static final String INTEGRAL_CONDUCT_ID_RENEWAL = "1000004";// 新学期家长续费
+	public static final String INTEGRAL_CONDUCT_ID_SHARE = "1000005";// 分享家教信息单
+	public static final String INTEGRAL_CONDUCT_ID_SIGN = "1000006";// 签到
+	public static final String INTEGRAL_CONDUCT_ID_PERSONAL_DATA = "1000007";// 完善个人资料
+	public static final String INTEGRAL_CONDUCT_ID_JILT_SINGLE = "1000008";// 甩单
+	public static final String INTEGRAL_CONDUCT_ID_ABANDON_SINGLE = "1000009";// 弃单
+	public static final String INTEGRAL_CONDUCT_ID_SPEAK_FAILED = "1000010";// 故意试讲失败
+	public static final String INTEGRAL_CONDUCT_ID_COMPLAIN = "1000011";// 正式上课家长投诉
+	public static final String INTEGRAL_CONDUCT_ID_NOT_FEEDBAK = "1000012";// 未按时填写课时反馈
+	// 积分行为值
+	public static final Map<String, Object> INTEGRAL_CONDUCT_VALUE_MAP = new HashMap<String, Object>();
+	static {
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000001", 100f);// 首次接单
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000002", 50f);// 二次接单上课
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000003", 2f);// 上课 1 小时
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000004", 20f);// 新学期家长续费
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000005", 1f);// 分享家教信息单
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000006", 0.5f);// 签到
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000007", 5f);// 完善个人资料
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000008", 50f);// 甩单
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000009", 50f);// 弃单
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000010", 100f);// 故意试讲失败
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000011", 50f);// 正式上课家长投诉
+		INTEGRAL_CONDUCT_VALUE_MAP.put("1000012", 2f);// 未按时填写课时反馈
+	}
+	//学期分类
+	public static final String LAST_SEMASTER = "上学期";
+	public static final String NEXT_SEMASTER = "下学期";
 }
