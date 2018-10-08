@@ -11,5 +11,7 @@ public interface ITeacherIntegralService {
 	public int insertTeacherTreaty(JSONObject reqData);
 	//根据情景更新教师积分修改
 	public int updateTeacherIntegral(JSONObject jsonObject);
+	//查询只能单次插入的积分行为当前次数
+	public Integer getIntegralNumberByTeacherId(String teacherId, String integralConductId);
 
 }

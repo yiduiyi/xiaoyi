@@ -23,4 +23,6 @@ public interface ITeacherIntegralDao {
     int updateByPrimaryKey(TeacherIntegral record);
     //查询教师违约记录
   	public List<JSONObject> getTeacherTreaty(@Param("teacherId")String teacherId);
+  	//查询只能单次插入的积分行为当前次数
+	public Integer getIntegralNumberByTeacherId(@Param("teacherId")String teacherId, @Param("integralConductName")String integralConductName);
 }

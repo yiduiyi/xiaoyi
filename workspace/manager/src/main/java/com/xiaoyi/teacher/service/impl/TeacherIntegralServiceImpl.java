@@ -145,5 +145,14 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 		return resultType;
 	
 	}
+	@Override
+	public Integer getIntegralNumberByTeacherId(String teacherId, String integralConductId) {
+		Integer integralNumber = 0;
+		IntegralConduct integralConduct = integralConductService.getIntegralConductByIntegralConductId(integralConductId);
+		if(null != integralConduct) {
+			integralNumber = teacherIntegralDao.getIntegralNumberByTeacherId(teacherId,integralConduct.getIntegralConductName());
+		}
+		return integralNumber;
+	}
 
 }
