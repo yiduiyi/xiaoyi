@@ -1126,7 +1126,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		JSONObject result = new JSONObject();
 		Teacher teacher = teacherH5Dao.selectTeacherByOpenId(openId);
 		if (null != teacher) {
-			String[] teacherGoodAtArr = teacher.getGoodAt().split(",");
+			String[] teacherGoodAtArr = {};
+			if(null!=teacher.getGoodAt()){
+				teacherGoodAtArr = teacher.getGoodAt().split(",");				
+			}
 			
 			StringBuffer courseNames = new StringBuffer();
 			StringBuffer courseIds = new StringBuffer();
