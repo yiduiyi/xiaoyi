@@ -140,7 +140,7 @@
     where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
   </update>
   <select id="getDaulLessonList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT grade_id AS gradeId,semaster AS semaster,video_course_name AS videoName,h5_video_link AS h5VideoLink FROM video_course
+  	SELECT video_course_id AS videoCourseId,grade_id AS gradeId,semaster AS semaster,video_course_name AS videoName,h5_video_link AS h5VideoLink FROM video_course
   	<where>
   		<if test="gradeId != null">
   			AND grade_id  = #{gradeId}
@@ -158,5 +158,8 @@
   			AND video_course_name LIKE CONCAT('%',#{name},'%')
   		</if>
   	</where>
+  </select>
+  <select id="getDaulLessonListByCourseId" parameterType="java.lang.Byte" resultType="com.alibaba.fastjson.JSONObject">
+  	
   </select>
 </mapper>
