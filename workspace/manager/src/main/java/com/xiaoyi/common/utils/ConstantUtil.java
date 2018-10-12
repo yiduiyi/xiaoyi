@@ -98,6 +98,42 @@ public class ConstantUtil {
 			return "";		
 		}
 	}
+
+	public static enum TeachingWay {
+		STU_GO(0),
+		TEA_GO(1),
+		ONE_TO_TWO(2),
+		DOUBLE_TEACHER(3),
+		DOUBLE_TEACHER_LESSON(4),
+		DOUBLE_TEACHER_VIDEO(5);
+		
+		private int type;
+		private TeachingWay(int type){
+			this.type=type;
+		}
+		
+		public int getValue(){
+			return type;
+		}
+		@Override
+		public String toString(){
+			switch(type){
+			case 0:
+				return "学生上门";
+			case 1:
+				return "老师上门";	
+			case 2:
+				return "一对二";
+			case 3:
+				return "双师课程";
+			case 4:
+				return "双师一对一辅导";
+			case 5:
+				return "双师视频课程";
+			}
+			return "";
+		}
+	}
 	
 	public static enum Type {
 		STU_GO(1),
@@ -172,6 +208,36 @@ public class ConstantUtil {
 				return "高";
 			}
 			return "null";
+		}
+	}
+	
+	public static enum Semaster {
+		FIRST(1), SECOND(2), SUMMER(3), WINTER(4);
+		
+		private int semaster;
+		
+		private Semaster(int semaster){
+			this.semaster = semaster;
+		}
+		
+		public int getValue(){
+			return semaster;
+		}
+		
+		@Override
+		public String toString(){
+			switch(semaster){
+			case 1:
+				return "上";
+			case 2:
+				return "下";
+			case 3:
+				return "暑假";
+			case 4:
+				return "寒假";
+				default:
+					return "";
+			}
 		}
 	}
 	

@@ -10,10 +10,11 @@
     <result column="totalLessonNum" property="totallessonnum" />
     <result column="lessonLeftNum" property="lessonleftnum" />
     <result column="teachingIds" property="teachingids" jdbcType="VARCHAR" />
+    <result column="teachingWay" property="teachingWay" />
   </resultMap>
   <sql id="Base_Column_List" >
     lessonType, memberId, orderId, parentId, purchaseTime, totalLessonNum, lessonLeftNum, 
-    teachingIds
+    teachingIds, teachingWay
   </sql>
   
   <select id="selectOrderSumBatchByKey" resultMap="BaseResultMap" 
@@ -53,6 +54,9 @@
     		<if test="lessontype!=null">
     			and lessonType = #{lessontype,jdbcType=INTEGER}
     		</if>
+    		<if test="teachingWay!=null">
+    			and teachingWay = #{teachingWay}
+    		</if>
     	</otherwise>
     </choose>
   </select>
@@ -62,6 +66,7 @@
       and memberId = #{memberid,jdbcType=VARCHAR}
       and orderId = #{orderid,jdbcType=VARCHAR}
       and parentId = #{parentid,jdbcType=VARCHAR}
+      and teachingWay = #{teachingWay}
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.OrderSum" >
     insert into ordersum (lessonType, memberId, orderId, 
@@ -98,6 +103,9 @@
       <if test="teachingids != null" >
         teachingIds,
       </if>
+      <if test="teachingWay != null" >
+        teachingWay,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="lessontype != null" >
@@ -124,6 +132,9 @@
       <if test="teachingids != null" >
         #{teachingids,jdbcType=VARCHAR},
       </if>
+      <if test="teachingWay != null" >
+        #{teachingWay},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.OrderSum" >
@@ -141,6 +152,9 @@
       <if test="teachingids != null" >
         teachingIds = #{teachingids,jdbcType=VARCHAR},
       </if>
+      <if test="teachingWay != null" >
+        teachingWay = #{teachingWay},
+      </if>
     </set>
     where 
     <choose>
@@ -151,6 +165,7 @@
     		lessonType = #{lessontype,jdbcType=INTEGER}
       			and memberId = #{memberid,jdbcType=VARCHAR}
       			and parentId = #{parentid,jdbcType=VARCHAR}
+      			and teachingWay = #{teachingWay}
     	</otherwise>
     </choose>
     

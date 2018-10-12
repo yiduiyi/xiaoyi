@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.apache.commons.lang.RandomStringUtils;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -15,6 +17,8 @@ public class test {
 
     public static void main(String[] args) throws Exception {
 
+    	
+    	System.out.println(Math.floor(3.71));
         // HostnameVerifier hnv = new HostnameVerifier() {
         //     public boolean verify(String hostname, SSLSession session) {
         //         // Always return true，接受任意域名服务器
@@ -84,7 +88,11 @@ public class test {
         }
 
 		
-        System.out.println(resp);*/Calendar   cal1   =   Calendar.getInstance();
+        System.out.println(resp);*/
+    	
+    	String nonceStr = RandomStringUtils.random(32, "5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
+    	
+    	Calendar   cal1   =   Calendar.getInstance();
         cal1.add(Calendar.DATE,   -7);
         String yesterdays = new SimpleDateFormat("yyyy-MM-dd").format(cal1.getTime());
         System.out.println(yesterdays);	

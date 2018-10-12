@@ -389,7 +389,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 		// verify params
 		String openId = params.getString("openId");
 		Float withdrawing = params.getFloat("withdrawing");
-
+		withdrawing = (float) Math.floor(withdrawing);	//去掉小数点
+		
 		logger.info("params:" + params.toJSONString());
 		if (null == openId || null == withdrawing) {
 			logger.info("参数错误！");
@@ -1047,6 +1048,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			order.setPurchasenum(-totalLessons);
 			order.setHasBook((short) 0);
 
+			//+++++++++++++++   added 2018-10-10  (daul teacher version)
+			order.setTeachingWay(orderSum.getTeachingWay());
+			
 			// 提现记录入库
 			ordersDao.insert(order);
 

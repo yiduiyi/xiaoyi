@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.manager.dao.IVideoCourseDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.VideoCourse">
+		<id column="video_course_id" property="videoCourseId" jdbcType="VARCHAR" />
+		<result column="video_course_name" property="videoCourseName"
+			jdbcType="VARCHAR" />
+		<result column="grade_id" property="gradeId" jdbcType="SMALLINT" />
+		<result column="semaster" property="semaster" jdbcType="TINYINT" />
+		<result column="course_id" property="courseId" jdbcType="SMALLINT" />
+		<result column="video_course_type" property="videoCourseType"
+			jdbcType="TINYINT" />
+		<result column="h5_video_link" property="h5VideoLink" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="chapter_id" property="chapterId" jdbcType="VARCHAR" />
+		<result column="upload_time" property="uploadTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		video_course_id, video_course_name, grade_id, semaster, course_id, video_course_type,
+		h5_video_link, status, chapter_id, upload_time, update_time
+	</sql>
+	
+	<!-- 根据条件查找视频课程 -->
+	<select id="selectVideoCourseListByConditions" resultMap="BaseResultMap" 
+		parameterType="com.alibaba.fastjson.JSONObject">
+		select 
+		<include refid="Base_Column_List" />
+		from video_course 
+		<where>
+			<if test="videoCourseId != null">
+				videoCourseId = #{videoCourseId,jdbcType=VARCHAR}
+			</if>
+			<if test="gradeId != null">
+				AND gradeId = #{gradeId,jdbcType=SMALLINT}
+			</if>
+			<if test="semaster != null">
+				AND semaster = #{semaster,jdbcType=TINYINT}
+			</if>
+			<if test="courseId != null">
+				AND courseId = #{courseId,jdbcType=SMALLINT}
+			</if>
+			<if test="videoCourseType != null">
+				AND videoCourseType = #{videoCourseType,jdbcType=TINYINT}
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT}
+			</if>
+			<if test="chapterId != null">
+				AND chapterId = #{chapterId,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from video_course
+		where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from video_course
+		where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.xiaoyi.manager.domain.VideoCourse">
+		insert into video_course (video_course_id, video_course_name,
+		grade_id,
+		semaster, course_id, video_course_type,
+		h5_video_link, status, chapter_id,
+		upload_time, update_time)
+		values (#{videoCourseId,jdbcType=VARCHAR},
+		#{videoCourseName,jdbcType=VARCHAR}, #{gradeId,jdbcType=SMALLINT},
+		#{semaster,jdbcType=TINYINT}, #{courseId,jdbcType=SMALLINT},
+		#{videoCourseType,jdbcType=TINYINT},
+		#{h5VideoLink,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{chapterId,jdbcType=VARCHAR},
+		#{uploadTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.VideoCourse">
+		insert into video_course
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="videoCourseId != null">
+				video_course_id,
+			</if>
+			<if test="videoCourseName != null">
+				video_course_name,
+			</if>
+			<if test="gradeId != null">
+				grade_id,
+			</if>
+			<if test="semaster != null">
+				semaster,
+			</if>
+			<if test="courseId != null">
+				course_id,
+			</if>
+			<if test="videoCourseType != null">
+				video_course_type,
+			</if>
+			<if test="h5VideoLink != null">
+				h5_video_link,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="chapterId != null">
+				chapter_id,
+			</if>
+			<if test="uploadTime != null">
+				upload_time,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="videoCourseId != null">
+				#{videoCourseId,jdbcType=VARCHAR},
+			</if>
+			<if test="videoCourseName != null">
+				#{videoCourseName,jdbcType=VARCHAR},
+			</if>
+			<if test="gradeId != null">
+				#{gradeId,jdbcType=SMALLINT},
+			</if>
+			<if test="semaster != null">
+				#{semaster,jdbcType=TINYINT},
+			</if>
+			<if test="courseId != null">
+				#{courseId,jdbcType=SMALLINT},
+			</if>
+			<if test="videoCourseType != null">
+				#{videoCourseType,jdbcType=TINYINT},
+			</if>
+			<if test="h5VideoLink != null">
+				#{h5VideoLink,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="chapterId != null">
+				#{chapterId,jdbcType=VARCHAR},
+			</if>
+			<if test="uploadTime != null">
+				#{uploadTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.VideoCourse">
+		update video_course
+		<set>
+			<if test="videoCourseName != null">
+				video_course_name = #{videoCourseName,jdbcType=VARCHAR},
+			</if>
+			<if test="gradeId != null">
+				grade_id = #{gradeId,jdbcType=SMALLINT},
+			</if>
+			<if test="semaster != null">
+				semaster = #{semaster,jdbcType=TINYINT},
+			</if>
+			<if test="courseId != null">
+				course_id = #{courseId,jdbcType=SMALLINT},
+			</if>
+			<if test="videoCourseType != null">
+				video_course_type = #{videoCourseType,jdbcType=TINYINT},
+			</if>
+			<if test="h5VideoLink != null">
+				h5_video_link = #{h5VideoLink,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="chapterId != null">
+				chapter_id = #{chapterId,jdbcType=VARCHAR},
+			</if>
+			<if test="uploadTime != null">
+				upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.VideoCourse">
+		update video_course
+		set video_course_name = #{videoCourseName,jdbcType=VARCHAR},
+		grade_id = #{gradeId,jdbcType=SMALLINT},
+		semaster = #{semaster,jdbcType=TINYINT},
+		course_id = #{courseId,jdbcType=SMALLINT},
+		video_course_type = #{videoCourseType,jdbcType=TINYINT},
+		h5_video_link = #{h5VideoLink,jdbcType=VARCHAR},
+		status = #{status,jdbcType=TINYINT},
+		chapter_id = #{chapterId,jdbcType=VARCHAR},
+		upload_time = #{uploadTime,jdbcType=TIMESTAMP},
+		update_time = #{updateTime,jdbcType=TIMESTAMP}
+		where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+	</update>
+</mapper>

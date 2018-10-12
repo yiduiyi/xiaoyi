@@ -15,11 +15,12 @@
 		<result column="frozenLessons" property="frozenLessons" />
 		<result column="actualPay" property="actualPay" />
 		<result column="withdrawed" property="withdrawed" />
+		<result column="teachingWay" property="teachingWay"/>
 	</resultMap>
 	<sql id="Base_Column_List">
 		lessonTradeId, lessonType, teacherId, memberId, parentId, notes, status,
 		applyLessons,
-		feedback, applyTime, frozenLessons,actualPay,withdrawed
+		feedback, applyTime, frozenLessons,actualPay,withdrawed,teachingWay
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap2"
 		parameterType="java.lang.String">
@@ -130,6 +131,9 @@
 			<if test="actualPay!=null">
 				actualPay,
 			</if>
+			<if test="teachingWay!=null">
+				teachingWay,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="lessontradeid != null">
@@ -167,6 +171,9 @@
 			</if>
 			<if test="actualPay!=null">
 				#{actualPay},
+			</if>
+			<if test="teachingWay!=null">
+				#{teachingWay},
 			</if>
 		</trim>
 	</insert>

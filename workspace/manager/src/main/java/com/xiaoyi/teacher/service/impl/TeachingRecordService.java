@@ -158,13 +158,17 @@ public class TeachingRecordService implements ITeachingRecordService {
 			String memberId = params.getString("memberId");
 
 			//处理代买的情况（家长不一样）
+			Short teachingWay = null;
 			try {
 				OrderSumKey key = new OrderSumKey();
 				key.setOrderid(orderId);
 				OrderSum orderSum = orderSumDao.selectByPrimaryKey(key);
-				if(null!=orderSum && !parentId.equals(orderSum.getParentid())){
-					parentId = orderSum.getParentid();
-				}
+				if(null!=orderSum){
+					teachingWay = orderSum.getTeachingWay();
+					if(!parentId.equals(orderSum.getParentid())){
+						parentId = orderSum.getParentid();
+					}
+				}								
 			} catch (Exception e) {
 				logger.info("查询订单汇总表失败！");
 				e.printStackTrace();
@@ -312,6 +316,11 @@ public class TeachingRecordService implements ITeachingRecordService {
 				lessonTrade.setTeacherid(teacherId);
 				lessonTrade.setStatus((byte) 1); // -1：提现失败 0：已提现 1：已提交，待家长确认
 													// 2：家长已确认，待管理员审核中
+				
+				//+++++++++++  added 2018-10-10 (daul teacher version)
+				logger.info("apply teaching records:[teachingWay] "+teachingWay);
+				lessonTrade.setTeachingWay(teachingWay);
+				
 				lessonTrade.setApplytime(
 						new Date()/* lessonTradeIdDateMap.get(lessonTradeId) */);
 
@@ -382,6 +391,9 @@ public class TeachingRecordService implements ITeachingRecordService {
 						order.setParentid(orderSum.getParentid());
 						order.setPurchasenum(-totalLessons);
 
+						//+++++++++++    added 2018-10-10  (daul teacher verison)
+						order.setTeachingWay(orderSum.getTeachingWay());
+						
 						// 提现记录入库
 						ordersDao.insert(order);
 

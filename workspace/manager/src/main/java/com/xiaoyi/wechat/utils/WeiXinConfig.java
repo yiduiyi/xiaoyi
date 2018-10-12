@@ -64,7 +64,9 @@ public class WeiXinConfig {
 	public static String TEACHER_TAKE_BILL_TEMPLETE_ID;
 	public static String BILL_LIST_REDIRECT_URL;
 	
-
+	public static String XIAO_E_TONG_APPID;
+	public static String XIAO_E_TONG_APPSECRET;
+	
 	// 证书url
 	public static final String CA_LICENSE = "F:" + File.separator + "xiaoyi" + File.separator + "cert" + File.separator
 			+ "apiclient_cert.p12";
@@ -103,6 +105,9 @@ public class WeiXinConfig {
 		NOTIFY_URL = properties.getProperty("NOTIFY_URL"); 
 		TEACHER_TAKE_BILL_TEMPLETE_ID = properties.getProperty("TEACHER_TAKE_BILL_TEMPLETE_ID"); 
 		BILL_LIST_REDIRECT_URL = properties.getProperty("BILL_LIST_REDIRECT_URL");
+	
+		XIAO_E_TONG_APPID=properties.getProperty("xiaoe.appId");
+		XIAO_E_TONG_APPSECRET=properties.getProperty("xiaoe.appSecret");
 	}
 
 	public static String getRequestXml(SortedMap<String, String> parameters) {

@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -225,6 +226,7 @@ public class AccountServiceImpl implements IAccountService{
 				//根据家长openId开始推送消息（确认老师提现）
 				//消息推送给家长，进行确认
 				logger.info("开始组装发送数据...");
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				for(JSONObject record : shortageRecords){
 					JSONObject data = new JSONObject();
 					JSONObject first = new JSONObject();
@@ -238,7 +240,7 @@ public class AccountServiceImpl implements IAccountService{
 					data.put("keyword1", keyword1);
 					
 					JSONObject keyword2 = new JSONObject();
-					keyword2.put("value", new Date()+"(截至时间)");
+					keyword2.put("value", sdf.format(new Date())+"(截至时间)");
 					keyword2.put("color", "#173177");		
 					data.put("keyword2", keyword2);
 					
