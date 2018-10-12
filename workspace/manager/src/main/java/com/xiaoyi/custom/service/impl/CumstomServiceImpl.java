@@ -389,21 +389,15 @@ public class CumstomServiceImpl implements ICustomService {
 				record.setNotes(notes); // 对老师的建议
 
 				// 计算提现金额
-				logger.info("teacherId:" + record.getTeacherid());
-				logger.info("applylessons:" + record.getApplylessons());
-				logger.info("lessontype:" + record.getLessontype());
-				logger.info("feedback:" + feedback);
-				/* Float amount = *//* calcTeacherPay(record); *//*
-																	 * record.getTeacherid(), record.getApplylessons(),
-																	 * record.getLessontype(), feedback
-																	 */
-				// record.setActualPay(amount);
-
+				logger.info("teacherId: " + record.getTeacherid());
+				logger.info("applylessons: " + record.getApplylessons());
+				logger.info("lessontype: " + record.getLessontype());
+				logger.info("feedback: " + feedback);
+				logger.info("teachingWay: "+ record.getTeachingWay());
+				
 				// 计算提现金额&解冻课时数
-				/* Float amount = */
 				calcTeacherPay(record);
-				// record.setActualPay(amount);
-
+				
 				// 更新老师课时提现状态
 				try {
 					lessonTradeDao.updateByPrimaryKeySelective(record);
@@ -694,14 +688,14 @@ public class CumstomServiceImpl implements ICustomService {
 		if (null != teacher) {
 			if (null != lessonType && applylessons != null) {
 				Integer gradeId = 0;
-				Integer teachingType = 0;
+				Short teachingType = trade.getTeachingWay();//0;
 				Byte teachingLevel = 0;
 				JSONObject jsonObject = new JSONObject();
 				for (LessonType lessonTypes : LessonType.values()) {
 					if (lessonType == lessonTypes.getValue()) {
-						gradeId = lessonTypes.getGradeId(true);
-						teachingType = lessonTypes.getType();
-
+						gradeId = lessonTypes.getGradeId(false);
+						//teachingType = lessonTypes.getType();
+						break;
 					}
 				}
 				teachingLevel = teacher.getTeachinglevel();

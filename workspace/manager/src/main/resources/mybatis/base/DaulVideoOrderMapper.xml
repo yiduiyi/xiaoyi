@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.custom.dao.IDaulVideoOrderDao">
+	<resultMap id="BaseResultMap" type="com.xiaoyi.custom.domain.DaulVideoOrder">
+		<id column="daul_order_id" property="daulOrderId" jdbcType="VARCHAR" />
+		<result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+		<result column="student_id" property="studentId" jdbcType="VARCHAR" />
+		<result column="order_comes_from" property="orderComesFrom"
+			jdbcType="SMALLINT" />
+		<result column="video_course_id" property="videoCourseId"
+			jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="grade_id" property="gradeId" jdbcType="SMALLINT" />
+		<result column="semaster" property="semaster" jdbcType="SMALLINT" />
+		<result column="video_course_type" property="videoCourseType"
+			jdbcType="SMALLINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		daul_order_id, parent_id, student_id, order_comes_from, video_course_id,
+		create_time,
+		grade_id, semaster, video_course_type
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from daul_video_order
+		where daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from daul_video_order
+		where daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
+	</delete>
+	
+	<!-- 批量插入双师同步课程订单 -->
+	<insert id="insertDaulOrderList" parameterType="java.util.List">
+		insert into daul_video_order (daul_order_id, parent_id, student_id,
+			order_comes_from, video_course_id, create_time,
+			grade_id, semaster, video_course_type)
+		values
+		<foreach collection="list" item="item" index= "index" separator =",">
+		(
+			#{daulOrderId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR},
+			#{studentId,jdbcType=VARCHAR},
+			#{orderComesFrom,jdbcType=SMALLINT}, #{videoCourseId,jdbcType=VARCHAR}, 
+			#{createTime,jdbcType=TIMESTAMP},
+			#{gradeId,jdbcType=SMALLINT}, #{semaster,jdbcType=SMALLINT},
+			#{videoCourseType,jdbcType=SMALLINT}
+		)
+		</foreach>
+	</insert>
+	
+	<insert id="insert" parameterType="com.xiaoyi.custom.domain.DaulVideoOrder">
+		insert into daul_video_order (daul_order_id, parent_id, student_id,
+		order_comes_from, video_course_id, create_time,
+		grade_id, semaster, video_course_type
+		)
+		values (#{daulOrderId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR},
+		#{studentId,jdbcType=VARCHAR},
+		#{orderComesFrom,jdbcType=SMALLINT}, #{videoCourseId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+		#{gradeId,jdbcType=SMALLINT}, #{semaster,jdbcType=SMALLINT},
+		#{videoCourseType,jdbcType=SMALLINT}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.xiaoyi.custom.domain.DaulVideoOrder">
+		insert into daul_video_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="daulOrderId != null">
+				daul_order_id,
+			</if>
+			<if test="parentId != null">
+				parent_id,
+			</if>
+			<if test="studentId != null">
+				student_id,
+			</if>
+			<if test="orderComesFrom != null">
+				order_comes_from,
+			</if>
+			<if test="videoCourseId != null">
+				video_course_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="gradeId != null">
+				grade_id,
+			</if>
+			<if test="semaster != null">
+				semaster,
+			</if>
+			<if test="videoCourseType != null">
+				video_course_type,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="daulOrderId != null">
+				#{daulOrderId,jdbcType=VARCHAR},
+			</if>
+			<if test="parentId != null">
+				#{parentId,jdbcType=VARCHAR},
+			</if>
+			<if test="studentId != null">
+				#{studentId,jdbcType=VARCHAR},
+			</if>
+			<if test="orderComesFrom != null">
+				#{orderComesFrom,jdbcType=SMALLINT},
+			</if>
+			<if test="videoCourseId != null">
+				#{videoCourseId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gradeId != null">
+				#{gradeId,jdbcType=SMALLINT},
+			</if>
+			<if test="semaster != null">
+				#{semaster,jdbcType=SMALLINT},
+			</if>
+			<if test="videoCourseType != null">
+				#{videoCourseType,jdbcType=SMALLINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.custom.domain.DaulVideoOrder">
+		update daul_video_order
+		<set>
+			<if test="parentId != null">
+				parent_id = #{parentId,jdbcType=VARCHAR},
+			</if>
+			<if test="studentId != null">
+				student_id = #{studentId,jdbcType=VARCHAR},
+			</if>
+			<if test="orderComesFrom != null">
+				order_comes_from = #{orderComesFrom,jdbcType=SMALLINT},
+			</if>
+			<if test="videoCourseId != null">
+				video_course_id = #{videoCourseId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gradeId != null">
+				grade_id = #{gradeId,jdbcType=SMALLINT},
+			</if>
+			<if test="semaster != null">
+				semaster = #{semaster,jdbcType=SMALLINT},
+			</if>
+			<if test="videoCourseType != null">
+				video_course_type = #{videoCourseType,jdbcType=SMALLINT},
+			</if>
+		</set>
+		where daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.custom.domain.DaulVideoOrder">
+		update daul_video_order
+		set parent_id = #{parentId,jdbcType=VARCHAR},
+		student_id = #{studentId,jdbcType=VARCHAR},
+		order_comes_from = #{orderComesFrom,jdbcType=SMALLINT},
+		video_course_id = #{videoCourseId,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		grade_id = #{gradeId,jdbcType=SMALLINT},
+		semaster = #{semaster,jdbcType=SMALLINT},
+		video_course_type = #{videoCourseType,jdbcType=SMALLINT}
+		where daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
+	</update>
+</mapper>

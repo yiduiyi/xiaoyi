@@ -29,7 +29,20 @@ public class LessonTrade {
     
     private Float withdrawed;
 
-    public String getLessontradeid() {
+    /**
+     * ==================  added 2018-10-10 (daul teacher version)==========
+     */
+    private Short teachingWay;
+    
+    public Short getTeachingWay() {
+		return teachingWay;
+	}
+
+	public void setTeachingWay(Short teachingWay) {
+		this.teachingWay = teachingWay;
+	}
+
+	public String getLessontradeid() {
         return lessontradeid;
     }
 

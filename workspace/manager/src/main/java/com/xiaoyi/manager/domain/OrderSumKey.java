@@ -8,7 +8,20 @@ public class OrderSumKey {
     private String orderid;
 
     private String parentid;
+    
+    /**
+     * ==================  added 2018-10-10 (daul teacher version)==========
+     */
+    private Short teachingWay;
+    
+    public Short getTeachingWay() {
+		return teachingWay;
+	}
 
+	public void setTeachingWay(Short teachingWay) {
+		this.teachingWay = teachingWay;
+	}
+    
     public Integer getLessontype() {
         return lessontype;
     }

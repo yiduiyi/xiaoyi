@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.Resource;
 
@@ -25,11 +27,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
+import com.xiaoyi.common.utils.HttpClient;
+import com.xiaoyi.common.utils.XiaoeSDK;
+import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
+import com.xiaoyi.custom.domain.DaulVideoOrder;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOTRelationDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
 import com.xiaoyi.manager.dao.IOrdersDao;
 import com.xiaoyi.manager.dao.ITeacherLesRelationDao;
+import com.xiaoyi.manager.dao.IUserOuterSyncDao;
+import com.xiaoyi.manager.dao.IVideoCourseDao;
 import com.xiaoyi.manager.dao.order.IOrderManageDao;
 import com.xiaoyi.manager.domain.LessonType;
 import com.xiaoyi.manager.domain.LessonTypeKey;
@@ -39,8 +47,12 @@ import com.xiaoyi.manager.domain.OrderTeachingRelation;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.ParentStuRelation;
 import com.xiaoyi.manager.domain.TeacherLesRelationKey;
+import com.xiaoyi.manager.domain.UserOuterSync;
+import com.xiaoyi.manager.domain.UserOuterSyncKey;
+import com.xiaoyi.manager.domain.VideoCourse;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.manager.service.IOrderService;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 @Service("orderService")
 public class OrderServiceImpl implements IOrderService {
@@ -62,10 +74,23 @@ public class OrderServiceImpl implements IOrderService {
 	@Resource
 	private ITeacherLesRelationDao tlRelationDao;
 	
-	@Resource ILessonTypeDao lessonTypeDao;
+	@Resource 
+	ILessonTypeDao lessonTypeDao;
+	
+	@Resource
+	IUserOuterSyncDao userSyncDao;
+	
+	@Resource
+	IVideoCourseDao videoCourseDao;
+	
+	@Resource
+	IDaulVideoOrderDao daulOrderDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	
+	//下单进程
+	ExecutorService excutors = Executors.newFixedThreadPool(2);
+	
 	/**
 	 * 扣款成功后调用此接口
 	 */
@@ -77,6 +102,8 @@ public class OrderServiceImpl implements IOrderService {
 			//查询/生成家长ID、学生Id
 			String parentId = null;
 			String studentId = null;			
+			String openId = params.getString("openId");
+			String phone = params.getString("telNum");
 			
 			//新增/获取家长-学生关系信息
 			try {
@@ -97,105 +124,316 @@ public class OrderServiceImpl implements IOrderService {
 			synchronized(this){
 				//查询订单总表
 				Integer lessonType = params.getInteger("lessonType");
-				String orderSumId = null;
-				OrderSum orderSum = null;
-				try {
-					OrderSumKey orderSumKey = new OrderSumKey();
-					//只存年级和上门类型
-					orderSumKey.setLessontype(lessonType/*/100*/);
-					
-					orderSumKey.setMemberid(studentId);
-					orderSumKey.setParentid(parentId);
-					
-					orderSum = orderSumDao.selectByPrimaryKey(orderSumKey);
-				} catch (Exception e) {
-					logger.info("查询订单总表出错！");
-					throw e;
-				}
+				Short teachingWay = params.getShort("teachingWay");
 				
-				//添加订单条目
-				Float purchaseNum = params.getFloat("purchaseNum")==null?
-						0:params.getFloat("purchaseNum");	
-				Short hasBook = params.getShort("hasBook");
+				//转换双师任教类型
+				Short daulTeachingWay = 
+						(teachingWay==4) ? 3 : teachingWay;
 				
-				Orders order = new Orders();				
-				try {
-					order.setOrderid(UUID.randomUUID().toString());
-				
-					order.setCreatetime(new Date());
-					order.setLessontype(lessonType);
-					order.setMemberid(studentId);
-					order.setParentid(parentId);
-					order.setPurchasenum(purchaseNum);				
-					order.setHasBook(hasBook );
-					order.setOrderType(params.getInteger("orderType"));
-					
-					//=================== 2018-04-25 added ==============
-					//补充订单付款详细信息
+				//普通订单（非同步视频课程订单）
+				if(teachingWay != 5){	
+					String orderSumId = null;
+					OrderSum orderSum = null;
 					try {
-						LessonTypeKey key = new LessonTypeKey();
-						key.setCoursecnt(purchaseNum.shortValue());
-						key.setLessontype(lessonType);
+						OrderSumKey orderSumKey = new OrderSumKey();
+						//只存年级和上门类型
+						orderSumKey.setLessontype(lessonType);
+						orderSumKey.setTeachingWay(daulTeachingWay);
+						orderSumKey.setMemberid(studentId);
+						orderSumKey.setParentid(parentId);
 						
-						LessonType lesson = lessonTypeDao.selectByPrimaryKey(key);
-					
-						if(null!=lesson){
-							float actualPay = lesson.getDiscountprice();
-							if(hasBook == 1){
-								actualPay += 50 ;
-							}							
-							order.setActualPay(actualPay);
-							order.setOrderStatus(null);
-							order.setSingleLessonPrice(lesson.getSinglecourseprice());
-							order.setTotalLessonPrice(lesson.getLessonprice());
-						}
+						orderSum = orderSumDao.selectByPrimaryKey(orderSumKey);
 					} catch (Exception e) {
-						logger.info("查询购买课程类型出错！");
-						e.printStackTrace();
-					}					
-					//========================= end =====================
+						logger.info("查询订单总表出错！");
+						throw e;
+					}
 					
-					orderDao.insertSelective(order);
-				} catch (Exception e) {
-					logger.info("插入订单失败！");
-					throw e;
+					//添加订单条目
+					Float purchaseNum = params.getFloat("purchaseNum")==null?
+							0:params.getFloat("purchaseNum");	
+					Short hasBook = params.getShort("hasBook");
+					
+					Orders order = new Orders();				
+					try {
+						String orderId = params.getString("nonce_str");
+						if(StringUtils.isEmpty(orderId)){
+							orderId = UUID.randomUUID().toString();
+						}					
+						order.setOrderid(orderId);
+					
+						order.setCreatetime(new Date());
+						order.setLessontype(lessonType);
+						order.setMemberid(studentId);
+						order.setParentid(parentId);
+						order.setPurchasenum(purchaseNum);				
+						order.setHasBook(hasBook);
+						order.setOrderType(params.getInteger("orderType"));
+						
+						//=================== 2018-10-10 added (daul teacher version)==============
+						order.setTeachingWay(teachingWay);
+						
+						//=================== 2018-04-25 added ==============
+						//补充订单付款详细信息
+						try {
+							LessonTypeKey key = new LessonTypeKey();
+							key.setCoursecnt(purchaseNum.shortValue());
+							key.setLessontype(lessonType);
+							key.setTeachingWay(teachingWay);
+							
+							LessonType lesson = lessonTypeDao.selectByPrimaryKey(key);
+						
+							if(null!=lesson){
+								float actualPay = lesson.getDiscountprice();
+								if(hasBook == 1){
+									actualPay += 50 ;
+								}							
+								order.setActualPay(actualPay);
+								order.setOrderStatus(null);
+								order.setSingleLessonPrice(lesson.getSinglecourseprice());
+								order.setTotalLessonPrice(lesson.getLessonprice());
+							}
+						} catch (Exception e) {
+							logger.info("查询购买课程类型出错！");
+							e.printStackTrace();
+						}					
+						//========================= end =====================
+						
+						orderDao.insertSelective(order);
+					} catch (Exception e) {
+						logger.info("插入订单失败！");
+						throw e;
+					}
+					
+					//更新订单总表				
+					//if(5!=teachingWay){	//剔除双师视频课程
+					try {
+						boolean isNewOrder = false;
+						//第一次插入订单总表(取该家长-学生-课程类型一致的订单ID作为订单总表ID)
+						if(null == orderSum){
+							orderSum = new OrderSum();
+							orderSumId = order.getOrderid();
+							isNewOrder = true;
+						}
+						orderSum.setOrderid(orderSumId);
+						orderSum.setMemberid(studentId);
+						orderSum.setParentid(parentId);
+						orderSum.setPurchasetime(new Date());
+						orderSum.setLessontype(lessonType);
+						orderSum.setLessonleftnum(isNewOrder?purchaseNum:(orderSum.getLessonleftnum()+purchaseNum));
+						orderSum.setTotallessonnum(isNewOrder?purchaseNum:(short)(orderSum.getTotallessonnum()+purchaseNum));
+						orderSum.setTeachingWay(teachingWay);
+						
+						if(isNewOrder){
+							orderSumDao.insertSelective(orderSum);
+						} else{
+							orderSumDao.updateByPrimaryKeySelective(orderSum);
+						}
+					
+					} catch (Exception e) {
+						logger.error("插入/更新订单总表出错！");
+						throw new CommonRunException(-1, "插入/更新订单总表出错！");
+					}
 				}
 				
-				//更新订单总表
-				try {
-					boolean isNewOrder = false;
-					//第一次插入订单总表(取该家长-学生-课程类型一致的订单ID作为订单总表ID)
-					if(null == orderSum){
-						orderSum = new OrderSum();
-						orderSumId = order.getOrderid();
-						isNewOrder = true;
-					}
-					orderSum.setOrderid(orderSumId);
-					orderSum.setMemberid(studentId);
-					orderSum.setParentid(parentId);
-					orderSum.setPurchasetime(new Date());
-					orderSum.setLessontype(lessonType/*/100*/);
-					orderSum.setLessonleftnum(isNewOrder?purchaseNum:(orderSum.getLessonleftnum()+purchaseNum));
-					orderSum.setTotallessonnum(isNewOrder?purchaseNum:(short)(orderSum.getTotallessonnum()+purchaseNum));
-					
-					if(isNewOrder){
-						orderSumDao.insertSelective(orderSum);
-					}else{
-						orderSumDao.updateByPrimaryKeySelective(orderSum);
-					}
-				} catch (Exception e) {
-					logger.error("插入/更新订单总表出错！");
-					throw e;
+				//双师视频课程 & 双师课堂（增加用户同步课堂观看权限）
+				if(3==teachingWay){
+					logger.info("开始购买双师课堂");
+					addDaulOrder(teachingWay, openId, parentId, studentId, phone, lessonType);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RuntimeException();
+			throw new CommonRunException(-1,"生成订单失败！");
 		}
 		
 		return 0;
 	}
 
+	/**
+	 * 增加双师同步视频课程
+	 * @param teachingWay
+	 * @param openId
+	 * @param parentId
+	 * @param studentId
+	 * @param phone
+	 * @param lessonType
+	 * @return
+	 */
+	private int addDaulOrder(int teachingWay, String openId, 
+			String parentId, String studentId, String phone, Integer lessonType){
+		int result = 0;
+		
+		//双师视频课程 & 双师课堂（增加用户同步课堂观看权限）
+		logger.info("当前购买课时包类型：" + teachingWay);
+		//if(teachingWay==31 || teachingWay == 3){
+		try {
+			//同步用户
+			//获取access_token
+			logger.info("调用微信接口获取access_token...");
+			StringBuffer getTockenBuffer = new StringBuffer();
+			getTockenBuffer
+				.append("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential")
+				.append("&appid=").append(WeiXinConfig.APPID)
+				.append("&secret=").append(WeiXinConfig.SECRET);
+			String getTockenUrl = getTockenBuffer.toString();
+			String tokenResult = HttpClient.httpGetRequest(getTockenUrl);
+			logger.info("获取access_token结果：" + tokenResult);
+			
+			JSONObject jsonResult = JSONObject.parseObject(tokenResult);
+			String token = jsonResult.getString("access_token");
+			
+			//获取union_id
+			logger.info("调用微信接口获取union_id...");
+			StringBuffer getUnionIdBuffer = new StringBuffer();
+			getUnionIdBuffer.append("https://api.weixin.qq.com/cgi-bin/user/info")
+				.append("?access_token=").append(token)
+				.append("&openid=").append(openId)
+				.append("&lang=zh_CN");
+			String getUnionIdUrl = getUnionIdBuffer.toString();
+			String rs = HttpClient.httpGetRequest(getUnionIdUrl);
+			logger.info("返回union_id结果：" + rs);
+			
+			JSONObject unionIdResult = JSONObject.parseObject(rs);
+			String wxUnionId = unionIdResult.getString("unionid");
+			String avatar = unionIdResult.getString("headimgurl");
+			String nickname = unionIdResult.getString("nickname");
+			
+			//判断是否已同步此家长信息
+			logger.info("根据union_id:{}查询本地同步用户表..." + wxUnionId);
+			UserOuterSyncKey key = new UserOuterSyncKey();
+			//key.setParentId(parentId);
+			key.setWxUnionId(wxUnionId);
+			UserOuterSync userOuterSync = userSyncDao.selectByPrimaryKey(key);
+			
+			if(null==userOuterSync){
+				userOuterSync = new UserOuterSync();													
+			}
+			
+			//没有同步用户（调用小鹅通SDK创建用户 & 同步回本地）
+			XiaoeSDK sdk  = 
+					new XiaoeSDK(WeiXinConfig.APPID, WeiXinConfig.SECRET); 
+			if(StringUtils.isEmpty(userOuterSync.getUserId())){
+				logger.info("调用小鹅通SDK注册用户...");
+				org.json.JSONObject data = new org.json.JSONObject();
+				data.put("phone", phone);	
+				data.put("nick_name", nickname);
+				data.put("country", unionIdResult.get("country"));
+				data.put("province", unionIdResult.get("province"));
+				data.put("city", unionIdResult.get("city"));
+				data.put("language", unionIdResult.get("language"));
+				data.put("user_tag", "parent");
+				data.put("gender", unionIdResult.get("sex"));
+				data.put("wx_union_id", wxUnionId);
+				org.json.JSONObject regResult = sdk.send("users.register", data, 1, "1.0");
+				logger.info("注册返回结果：" + regResult);
+				
+				if(null!=regResult){
+					//回写本地用户同步表
+					logger.info("回写本地用户同步表...");
+					org.json.JSONObject user_data = regResult.getJSONObject("data");
+					userOuterSync.setParentId(parentId);
+					userOuterSync.setWxUnionId(wxUnionId);
+					userOuterSync.setWxOpenId(openId);
+					userOuterSync.setAvatar(avatar);
+					userOuterSync.setNickname(nickname);
+					userOuterSync.setPhone(phone);	
+					userOuterSync.setCreateTime(new Date());
+					userOuterSync.setUpdateTime(new Date());
+					userOuterSync.setUserId(user_data.getString("user_id"));
+					try {										
+						userSyncDao.insertSelective(userOuterSync);								
+					} catch (Exception e) {
+						logger.warn("同步用户信息表出错（写入小鹅通user_id）！");
+					}
+				}														
+			}
+			
+			//同步系统和小鹅通订单
+			int gradeId = lessonType/10;
+			//查询同步 课堂信息
+			JSONObject queryParams = new JSONObject();
+			queryParams.put("gradeId", gradeId);
+			queryParams.put("videoCourseType", "1");	//同步课程
+			List<VideoCourse> videoCourseList = null;
+			try {
+				videoCourseList = 
+						videoCourseDao.selectVideoCourseListByConditions(queryParams);							
+				if(0==videoCourseList.size()){
+					logger.warn("本地课程列表中没有查到对应的课时包,年级: " + gradeId +"videoCourseType: 1");
+					return 0;
+				}
+			} catch (Exception e) {
+				logger.error("查询视频课程失败！");
+				e.printStackTrace();
+				throw new CommonRunException(-1,"查询视频课程失败！");
+			}
+			
+			//查询
+			List<String> resourceIdList = new ArrayList<String>();
+			List<DaulVideoOrder> recordList = new ArrayList<DaulVideoOrder>();
+			for(VideoCourse videoCourse : videoCourseList){
+				DaulVideoOrder videoOrder = new DaulVideoOrder();
+				String daulOrderId = UUID.randomUUID().toString();
+				
+				videoOrder.setCreateTime(new Date());
+				videoOrder.setDaulOrderId(daulOrderId);
+				videoOrder.setGradeId((short)gradeId);
+				videoOrder.setParentId(parentId);
+				videoOrder.setStudentId(studentId);
+				videoOrder.setSemaster((short)videoCourse.getSemaster());
+				videoOrder.setVideoCourseType((short)1);
+				videoOrder.setVideoCourseId(videoCourse.getVideoCourseId());
+				
+				recordList.add(videoOrder);
+				resourceIdList.add(videoCourse.getVideoCourseId());
+				
+				//调用小鹅通SDK同步下单
+				logger.info("generated userId: " + userOuterSync.getUserId());
+				if(!StringUtils.isEmpty(userOuterSync.getUserId())){
+					//生成订单
+					logger.info("调用小鹅通SdK生成订单...");
+					org.json.JSONObject data = new org.json.JSONObject();
+					data.put("payment_type", 3); //2-单笔（单个商品）、3-付费产品包（专栏会员等）,
+			        //data.put("resource_type", 3); //单笔购买时为必要参数，资源类型：1-图文、2-音频、3-视频、4-直播
+			        //data.put("resource_id", "p_5bb6e34718b2d_HlWYvm9z");//单笔购买时为必要参数，资源id
+			        data.put("product_id", videoCourse.getVideoCourseId()); //购买产品包时为必要参数，产品包id
+			        data.put("user_id", userOuterSync.getUserId());//'user_id':'u_asdwjdnjkxkcasjb3847832478',
+			        data.put("out_order_id", daulOrderId);//'out_order_id':'order_2017564065'
+			        org.json.JSONObject orderRs = sdk.send("orders.create", data, 1, "1.0");
+			        logger.info("返回结果："+orderRs);
+			        
+			        org.json.JSONObject orderData = orderRs.getJSONObject("data");//
+			        String orderId = orderData.getString("order_id");
+			        
+			        //确认订单（修改订单状态为已购买）
+			        logger.info("调用小鹅通SdK修改订单状态...");
+			        org.json.JSONObject comfirmOrder = new org.json.JSONObject();
+			        comfirmOrder.put("order_id", orderId);
+			        comfirmOrder.put("order_state", "1");
+			        org.json.JSONObject updateResult = sdk.send("orders.state.update", data, 1, "1.0");
+			        logger.info("修改结果：" + updateResult);								
+				}
+			}
+			
+			//本地下单（同步视频课程订单入库）
+			try {
+				logger.info("本地下单（同步视频课程订单入库）...");
+				result = daulOrderDao.insertDaulOrderList(recordList);							
+			} catch (Exception e) {
+				logger.error("同步视频课程订单入库失败！");
+				e.printStackTrace();
+				throw new CommonRunException(-1,"同步视频课程订单入库失败！");
+			}
+
+		} catch (Exception e) {
+			logger.error("同步双师课程订单出错！");
+			throw new CommonRunException(-1,"同步双师课程订单出错！");
+		}
+		
+		return result;
+	}
+	
+	
 	@Transactional
 	@Override
 	public int updateOrder(JSONObject params) {
@@ -342,6 +580,7 @@ public class OrderServiceImpl implements IOrderService {
 			throw new RuntimeException();
 		}
 	}
+	
 	@Transactional
 	@Override
 	public List<JSONObject> getOrderList(JSONObject params) {
@@ -757,6 +996,12 @@ public class OrderServiceImpl implements IOrderService {
 			return -1;
 		}
 		return 0;
+	}
+
+	@Override
+	public Orders queryOrderById(String orderId) {
+		// TODO Auto-generated method stub
+		return orderDao.selectOrderById(orderId);
 	}
 
 	

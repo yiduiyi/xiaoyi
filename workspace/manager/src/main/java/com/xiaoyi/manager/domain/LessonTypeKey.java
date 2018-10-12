@@ -7,7 +7,17 @@ public class LessonTypeKey {
 
     private Integer lessontype;
 
-    public Short getCoursecnt() {
+    private Short teachingWay;
+    
+    public Short getTeachingWay() {
+		return teachingWay;
+	}
+
+	public void setTeachingWay(Short teachingWay) {
+		this.teachingWay = teachingWay;
+	}
+
+	public Short getCoursecnt() {
         return coursecnt;
     }
 

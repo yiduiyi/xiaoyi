@@ -1,10 +1,14 @@
 package com.xiaoyi.manager.dao;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.OrdersKey;
 
 public interface IOrdersDao {
-    int deleteByPrimaryKey(OrdersKey key);
+    Orders selectOrderById(@Param("orderId") String orderId);
+	
+	int deleteByPrimaryKey(OrdersKey key);
 
     int insert(Orders record);
 

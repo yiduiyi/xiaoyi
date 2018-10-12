@@ -128,18 +128,12 @@ public class CustomerAction {
 		String openid = (String) request.getSession().getAttribute("openid");
 		logger.info("确认订单-openId:" + openid);
 		if (null == openid) { // 从其他界面直接跳转的
-			logger.info("查询openId：");
-			// TODO 重复设置字符编码
-//			request.setCharacterEncoding("utf-8");
+			logger.info("查询openId：" + openid);
 			request.setCharacterEncoding("utf-8");
-			String code = request.getParameter("code");
-			if (code != null && !"authdeny".equals(code)) {
-				WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID,
-						WeiXinConfig.SECRET, code);
-				openid = weixinOauth2Token.getOpenId();
-				request.getSession().setAttribute("openid", openid);
-				logger.info("确认订单模块-查找 openid====>" + openid);
-			}
+			
+			result.put("code", -1);
+			result.put("msg", "没有授权登录, 退出公众号后重新进入！");
+			return result;
 		}
 		try {
 			if (null != lessonTradeId) {
