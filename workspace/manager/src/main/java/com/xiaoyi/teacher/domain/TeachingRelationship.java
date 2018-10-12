@@ -2,7 +2,7 @@ package com.xiaoyi.teacher.domain;
 
 import java.util.Date;
 
-public class TeachingRelationShip {
+public class TeachingRelationship {
     private String teachingId;
 
     private String teacherId;

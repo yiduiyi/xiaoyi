@@ -1,17 +1,17 @@
 package com.xiaoyi.teacher.dao;
 
-import com.xiaoyi.teacher.domain.TeachingRelationShip;
+import com.xiaoyi.teacher.domain.TeachingRelationship;
 
 public interface ITeachingRelationShipDao {
     int deleteByPrimaryKey(String teachingId);
 
-    int insert(TeachingRelationShip record);
+    int insert(TeachingRelationship record);
 
-    int insertSelective(TeachingRelationShip record);
+    int insertSelective(TeachingRelationship record);
 
-    TeachingRelationShip selectByPrimaryKey(String teachingId);
+    TeachingRelationship selectByPrimaryKey(String teachingId);
 
-    int updateByPrimaryKeySelective(TeachingRelationShip record);
+    int updateByPrimaryKeySelective(TeachingRelationship record);
 
-    int updateByPrimaryKey(TeachingRelationShip record);
+    int updateByPrimaryKey(TeachingRelationship record);
 }
