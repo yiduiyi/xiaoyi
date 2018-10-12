@@ -62,4 +62,5 @@ public class StudentTask extends StudentTaskKey {
     public void setNotes(String notes) {
         this.notes = notes == null ? null : notes.trim();
     }
+
 }

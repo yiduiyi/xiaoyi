@@ -110,7 +110,7 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 			if(resultType > 0) {
 				UpdateTeacherIntegralSumVo updateTeacherIntegralSumVo = new UpdateTeacherIntegralSumVo();
 				updateTeacherIntegralSumVo.setTeacherid(teacherIntegralSum.getTeacherid());
-				Float updateTeacherIntegralSum = teacherIntegralSum.getIntegralCount() + integralConduct.getIntegralConductValue() ;
+				Float updateTeacherIntegralSum = teacherIntegralSum.getIntegralCount() + jsonObject.getFloat("integralConductValue");
 				updateTeacherIntegralSumVo.setUpdateIntegralValue(updateTeacherIntegralSum);
 				resultType = teacherIntegralSumService.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 			}
@@ -136,7 +136,7 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 				if(resultType > 0) {
 					UpdateTeacherIntegralSumVo updateTeacherIntegralSumVo = new UpdateTeacherIntegralSumVo();
 					updateTeacherIntegralSumVo.setTeacherid(teacherIntegralSum.getTeacherid());
-					Float updateTeacherIntegralSum = teacherIntegralSum.getIntegralCount() + integralConduct.getIntegralConductValue() ;
+					Float updateTeacherIntegralSum = teacherIntegralSum.getIntegralCount() + jsonObject.getFloat("integralConductValue");
 					updateTeacherIntegralSumVo.setUpdateIntegralValue(updateTeacherIntegralSum);
 					resultType = teacherIntegralSumService.updateTeacherIntegralSum(updateTeacherIntegralSumVo);
 				}
@@ -144,6 +144,15 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 		}
 		return resultType;
 	
+	}
+	@Override
+	public Integer getIntegralNumberByTeacherId(String teacherId, String integralConductId) {
+		Integer integralNumber = 0;
+		IntegralConduct integralConduct = integralConductService.getIntegralConductByIntegralConductId(integralConductId);
+		if(null != integralConduct) {
+			integralNumber = teacherIntegralDao.getIntegralNumberByTeacherId(teacherId,integralConduct.getIntegralConductName());
+		}
+		return integralNumber;
 	}
 
 }

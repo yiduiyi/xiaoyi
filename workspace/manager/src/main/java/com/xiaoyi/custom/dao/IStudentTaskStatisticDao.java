@@ -4,6 +4,7 @@ import com.xiaoyi.custom.domain.StudentTaskStatistic;
 import com.xiaoyi.custom.domain.StudentTaskStatisticKey;
 
 public interface IStudentTaskStatisticDao{
+
     int deleteByPrimaryKey(StudentTaskStatisticKey key);
 
     int insert(StudentTaskStatistic record);

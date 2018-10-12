@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.domain;
 
+
 import java.util.Date;
 
 public class VideoCourse {
@@ -20,6 +21,7 @@ public class VideoCourse {
     private Byte status;
 
     private String chapterId;
+
 
     private Date uploadTime;
 

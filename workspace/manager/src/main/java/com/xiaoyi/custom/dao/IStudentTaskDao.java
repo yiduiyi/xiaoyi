@@ -3,7 +3,9 @@ package com.xiaoyi.custom.dao;
 import com.xiaoyi.custom.domain.StudentTask;
 import com.xiaoyi.custom.domain.StudentTaskKey;
 
-public interface IStudentTaskDao{
+
+public interface IStudentTaskDao {
+
     int deleteByPrimaryKey(StudentTaskKey key);
 
     int insert(StudentTask record);

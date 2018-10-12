@@ -3,6 +3,7 @@ package com.xiaoyi.custom.domain;
 import java.util.Date;
 
 public class StudentTaskStatistic extends StudentTaskStatisticKey {
+
     private Short finishCount;
 
     private Short unfinishCount;
@@ -10,6 +11,7 @@ public class StudentTaskStatistic extends StudentTaskStatisticKey {
     private Short totalTasks;
 
     private Short accomplishRate;
+
 
     private Short gradeId;
 
@@ -49,6 +51,7 @@ public class StudentTaskStatistic extends StudentTaskStatisticKey {
 
     public void setAccomplishRate(Short accomplishRate) {
         this.accomplishRate = accomplishRate;
+
     }
 
     public Short getGradeId() {
