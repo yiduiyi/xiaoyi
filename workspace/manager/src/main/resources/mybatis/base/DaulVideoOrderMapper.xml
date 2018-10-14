@@ -20,6 +20,32 @@
 		create_time,
 		grade_id, semaster, video_course_type
 	</sql>
+	
+	<!-- 根据条件查找双师同步视频订单 -->
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="com.alibaba.fastjson.JSONObject">
+		select
+		<include refid="Base_Column_List" />
+		from daul_video_order
+		<where>
+			<if test="daulOrderId!=null">
+				daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
+			</if>
+			<if test="parentId!=null">
+				parent_id = #{parentId}
+			</if>
+			<if test="studentId!=null">
+				student_id = #{studentId}
+			</if>
+			<if test="studentId!=null">
+				grade_id = #{gradeId}
+			</if>
+			<if test="semaster!=null">
+				semaster = #{semaster}
+			</if>
+		</where>
+	</select>
+	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
 		select
@@ -40,12 +66,12 @@
 		values
 		<foreach collection="list" item="item" index= "index" separator =",">
 		(
-			#{daulOrderId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR},
-			#{studentId,jdbcType=VARCHAR},
-			#{orderComesFrom,jdbcType=SMALLINT}, #{videoCourseId,jdbcType=VARCHAR}, 
-			#{createTime,jdbcType=TIMESTAMP},
-			#{gradeId,jdbcType=SMALLINT}, #{semaster,jdbcType=SMALLINT},
-			#{videoCourseType,jdbcType=SMALLINT}
+			#{item.daulOrderId,jdbcType=VARCHAR}, #{item.parentId,jdbcType=VARCHAR},
+			#{item.studentId,jdbcType=VARCHAR},
+			#{item.orderComesFrom,jdbcType=SMALLINT}, #{item.videoCourseId,jdbcType=VARCHAR}, 
+			#{item.createTime,jdbcType=TIMESTAMP},
+			#{item.gradeId,jdbcType=SMALLINT}, #{item.semaster,jdbcType=SMALLINT},
+			#{item.videoCourseType,jdbcType=SMALLINT}
 		)
 		</foreach>
 	</insert>

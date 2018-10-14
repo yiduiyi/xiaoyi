@@ -291,6 +291,7 @@ public class OrderServiceImpl implements IOrderService {
 				.append("&lang=zh_CN");
 			String getUnionIdUrl = getUnionIdBuffer.toString();
 			String rs = HttpClient.httpGetRequest(getUnionIdUrl);
+			rs = new String(rs.getBytes("ISO-8859-1"),"UTF-8");
 			logger.info("返回union_id结果：" + rs);
 			
 			JSONObject unionIdResult = JSONObject.parseObject(rs);
@@ -328,9 +329,30 @@ public class OrderServiceImpl implements IOrderService {
 				logger.info("注册返回结果：" + regResult);
 				
 				if(null!=regResult){
+					String userId = "";
+					if(regResult.getInt("code")!=0){ 	//用户已占用
+						//调用小鹅通SDK 获取用户user_id
+						org.json.JSONObject userParams = new org.json.JSONObject();						
+						userParams.put("wx_union_id", wxUnionId);
+						logger.info("调用小鹅通SDK 获取用户user_id...");
+						org.json.JSONObject getUserInfo = 
+								sdk.send("users.getinfo", userParams, 1, "1.0");
+						logger.info("调用小鹅通SDK获取用户结果：" + getUserInfo);
+						
+						org.json.JSONArray userData = getUserInfo.getJSONArray("data");
+						if(null!=userData && userData.length()>0){				
+							userId = userData.getJSONObject(0).getString("user_id");												
+						}
+					}else{
+						org.json.JSONObject user_data = regResult.getJSONObject("data");
+						if(null!=user_data){
+							userId = user_data.getString("user_id");
+						}
+					}
+					
 					//回写本地用户同步表
 					logger.info("回写本地用户同步表...");
-					org.json.JSONObject user_data = regResult.getJSONObject("data");
+
 					userOuterSync.setParentId(parentId);
 					userOuterSync.setWxUnionId(wxUnionId);
 					userOuterSync.setWxOpenId(openId);
@@ -339,7 +361,7 @@ public class OrderServiceImpl implements IOrderService {
 					userOuterSync.setPhone(phone);	
 					userOuterSync.setCreateTime(new Date());
 					userOuterSync.setUpdateTime(new Date());
-					userOuterSync.setUserId(user_data.getString("user_id"));
+					userOuterSync.setUserId(userId);
 					try {										
 						userSyncDao.insertSelective(userOuterSync);								
 					} catch (Exception e) {
@@ -786,6 +808,8 @@ public class OrderServiceImpl implements IOrderService {
 				order.setMemberid(record.getMemberid());
 				order.setParentid(record.getParentid());
 				order.setPurchasenum(operateNum);				
+				//++++++++++  added 2018-10-14 (daul teacher version)
+				order.setTeachingWay(record.getTeachingWay());
 				
 				order.setOrderType(/*++*/type);
 				orderDao.insertSelective(order);

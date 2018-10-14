@@ -37,7 +37,7 @@
 	
 	<!-- 教学监控-获取上周/这周上课课时数 -->
 	<select id="selectTeacherWeekTeachingList" parameterType="hashmap" resultType="com.alibaba.fastjson.JSONObject">
-		SELECT teachingId,YEARWEEK(teachingDate)-YEARWEEK(NOW()) AS weekFromNow,SUM(teachingNum) AS teachingNum
+		SELECT teachingId,YEARWEEK(teachingDate,1)-YEARWEEK(NOW(),1) AS weekFromNow,SUM(teachingNum) AS teachingNum
 		FROM teachingrecord 
 		<where>	
 			<if test="list != null">

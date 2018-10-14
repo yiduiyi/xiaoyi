@@ -49,4 +49,6 @@ public interface ICustomService {
 	public List<JSONObject> getPSRList(String openid);
 	//获取某月学生上课记录详情
 	public List<JSONObject> getStuTeachingDetailByMonth(JSONObject reqData);
+	
+	public List<JSONObject> getDaulTransactionCourses(String openId);
 }

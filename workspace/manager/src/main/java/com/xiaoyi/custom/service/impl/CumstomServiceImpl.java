@@ -23,10 +23,14 @@ import org.springframework.util.CollectionUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
+import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
+import com.xiaoyi.common.utils.ConstantUtil.Semaster;
 import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.custom.dao.ICustomDao;
+import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
+import com.xiaoyi.custom.domain.DaulVideoOrder;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -109,6 +113,8 @@ public class CumstomServiceImpl implements ICustomService {
 
 	@Resource
 	private IClassFeesService classFeesService;
+	
+	@Resource IDaulVideoOrderDao daulOrderDao;
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -145,13 +151,52 @@ public class CumstomServiceImpl implements ICustomService {
 
 			SimpleDateFormat myFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			JSONObject lessonSummary = new JSONObject(); // 学生生门
+			JSONObject lessonSummary1 = new JSONObject();	//一对二
 			JSONObject lessonSummary2 = new JSONObject(); // 老师上门
+			JSONObject lessonSummary3 = new JSONObject(); // 双师
 			for (Orders order : orderList) {
 				JSONArray details = null;
 
 				// 学生上门
 				JSONObject detail = new JSONObject();
-				if (order.getLessontype() > 0) {
+				switch(order.getTeachingWay()){
+				case 0:
+					details = lessonSummary.getJSONArray("details");
+					if (null == details) {
+						details = new JSONArray();										
+					}
+					lessonSummary.put("details", details);
+					lessonSummary.put("orderType", 0);
+					break;
+				case 1:
+					details = lessonSummary2.getJSONArray("details");
+					if (null == details) {
+						details = new JSONArray();										
+					}
+					lessonSummary2.put("details", details);
+					lessonSummary2.put("orderType", 1);
+					break;					
+				case 2:
+					details = lessonSummary1.getJSONArray("details");
+					if (null == details) {
+						details = new JSONArray();										
+					}
+					lessonSummary1.put("details", details);
+					lessonSummary1.put("orderType", 2);
+					break;
+				case 3:
+				case 4:
+					details = lessonSummary3.getJSONArray("details");
+					if (null == details) {
+						details = new JSONArray();										
+					}
+					lessonSummary3.put("details", details);
+					lessonSummary3.put("orderType", 3);
+					break;
+				}				
+				detail.put("teachingTime", myFmt.format(order.getCreatetime()));
+				
+				/*if (order.getLessontype() > 0) {
 					details = lessonSummary.getJSONArray("details");
 					if (null == details) {
 						details = new JSONArray();
@@ -168,7 +213,7 @@ public class CumstomServiceImpl implements ICustomService {
 						lessonSummary2.put("orderType", "on");
 					}
 					detail.put("usedTime", myFmt.format(order.getCreatetime()));
-				}
+				}*/
 				detail.put("transactionType", order.getOrderType());
 				detail.put("cnt", order.getPurchasenum());
 				detail.put("transDate", myFmt.format(order.getCreatetime()));
@@ -177,17 +222,27 @@ public class CumstomServiceImpl implements ICustomService {
 			}
 
 			if (CollectionUtils.isEmpty(lessonSummary)) {
-				lessonSummary.put("orderType", "on");
+				lessonSummary.put("orderType", 0);
 				lessonSummary.put("details", new JSONArray());
 			}
+			if (CollectionUtils.isEmpty(lessonSummary1)) {
+				lessonSummary1.put("orderType", 2);
+				lessonSummary1.put("details", new JSONArray());
+			}
 			if (CollectionUtils.isEmpty(lessonSummary2)) {
-				lessonSummary2.put("orderType", "on");
+				lessonSummary2.put("orderType", 1);
 				lessonSummary2.put("details", new JSONArray());
 			}
-
+			if (CollectionUtils.isEmpty(lessonSummary3)) {
+				lessonSummary3.put("orderType", 3);
+				lessonSummary3.put("details", new JSONArray());
+			}
+			
 			datas.add(lessonSummary);
+			datas.add(lessonSummary1);
 			datas.add(lessonSummary2);
-
+			datas.add(lessonSummary3);
+			
 			return datas;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -872,6 +927,76 @@ public class CumstomServiceImpl implements ICustomService {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	@Override
+	public List<JSONObject> getDaulTransactionCourses(String openId) {
+		// TODO Auto-generated method stub
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		try {
+			Parents p = parentDao.selectByOpenId(openId);
+			String parentId = p.getParentid();
+			
+			JSONObject params = new JSONObject();
+			params.put("parentId", parentId);
+			List<DaulVideoOrder> daulVideoOrders = daulOrderDao.selectByParams(params);
+			
+			if(!CollectionUtils.isEmpty(daulVideoOrders)){
+				for(DaulVideoOrder order : daulVideoOrders){
+					JSONObject data = new JSONObject();
+					
+					//转换年级
+					Short gradeId = order.getGradeId();
+					data.put("gradeId", gradeId);
+					if(null!=gradeId){
+						for(Grade g : Grade.values()){
+							if(g.getValue() == gradeId){
+								data.put("gradeName", g.getFullGradeName());
+								break;
+							}
+						}
+					}
+					
+					//获取courseName					
+					Short videoCourseType = order.getVideoCourseType();
+					data.put("videoCourseType", videoCourseType);
+					
+					Short semaster = order.getSemaster();
+					data.put("semaster", semaster);
+					
+					StringBuffer courseName = new StringBuffer();
+					if(null!=videoCourseType){
+						switch(videoCourseType){
+						case 1:
+							courseName.append("同步");
+							break;
+						case 2:
+							courseName.append("专题");
+							break;
+						case 3:
+							courseName.append("假期");							
+							break;
+						}
+					}
+					for(Semaster s : Semaster.values()){
+						if(s.getValue() == semaster){
+							courseName.append(s.toString()+"册");
+							break;
+						}
+					}
+					
+					data.put("courseName", courseName.toString());					
+					
+					datas.add(data);
+				}
+			}			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			logger.error("查询家长购买双师同步视频订单出错！");
+		}
+		
+		return datas;
 	}
 
 }

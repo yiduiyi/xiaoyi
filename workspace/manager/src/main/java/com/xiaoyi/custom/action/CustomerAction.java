@@ -39,9 +39,9 @@ public class CustomerAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		String openid = (String) request.getSession().getAttribute("openid");
 		logger.info("获取课时交易记录-openId:" + openid);
-		/*
-		 * if(logger.isDebugEnabled()) { openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70"; }
-		 */
+		
+		if(logger.isDebugEnabled()) { openid="oknxW0lyknEETUK7k4qfC8BGvVA4"; }
+		 
 		try {
 			result.put("data", customService.queryTransactionCourses(openid));
 			rtCode = RtConstants.SUCCESS;
@@ -315,6 +315,33 @@ public class CustomerAction {
 		return result;
 	}
 
+		//url：/custom/daul/getDaulTransactionCourses.do
+		// 获取购买的同步课程
+		@RequestMapping(value = "/daul/getDaulTransactionCourses", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject getDaulTransactionCourses(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.FAILED;
+			try {	
+				String openId =  (String) request
+						.getSession()
+						.getAttribute("openid");
+				//测试
+				if(openId==null){
+					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
+				}
+				List<JSONObject> studentsList = customService.getDaulTransactionCourses(openId);
+				result.put("data", studentsList);
+				rtCode = RtConstants.SUCCESS;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+			return result;
+		}
+	
+	
 	/**
 	 * 获取用户openId
 	 * @param req
@@ -341,7 +368,7 @@ public class CustomerAction {
 		return null;
 	}
 	
-	//
+
 	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {
 		result.put("code", code);
 		result.put("msg", rtString);
