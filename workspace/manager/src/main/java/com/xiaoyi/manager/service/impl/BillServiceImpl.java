@@ -98,9 +98,9 @@ public class BillServiceImpl implements IBillService {
 				}else{
 					jsonObject.put("billQuantityNum", billQuantityNum);	
 					
-					if(jsonObject.getInteger("billQuantityNum")>= 5){	//设置派单已满状态
+					/*if(jsonObject.getInteger("billQuantityNum")>= 5){	//设置派单已满状态
 						jsonObject.put("status", "3");
-					}
+					}*/
 				}
 				Integer gradeId = jsonObject.getInteger("gradeId");
 				if(null!=gradeId) {
