@@ -1,5 +1,8 @@
 package com.xiaoyi.manager.domain;
 
+
+import java.util.Date;
+
 public class VideoCourse {
     private String videoCourseId;
 
@@ -18,6 +21,11 @@ public class VideoCourse {
     private Byte status;
 
     private String chapterId;
+
+
+    private Date uploadTime;
+
+    private Date updateTime;
 
     public String getVideoCourseId() {
         return videoCourseId;
@@ -89,5 +97,21 @@ public class VideoCourse {
 
     public void setChapterId(String chapterId) {
         this.chapterId = chapterId == null ? null : chapterId.trim();
+    }
+
+    public Date getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(Date uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

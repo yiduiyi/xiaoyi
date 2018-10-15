@@ -149,9 +149,9 @@
   		AND `status` = 0
   	</where>
   </select>
-  <select id="getClassFeesByParam" parameterType="hashmap" resultType="com.xiaoyi.teacher.domain.ClassFees">
+  <select id="getClassFeesByParam" parameterType="hashmap" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />
-    from class_fees where grade_id = #{gradeId} AND teaching_type = teachingType AND teaching_level = #{teachingLevel} AND feedback = #{feedback} AND `status` = 0 ORDER BY update_time limit 1
+    from class_fees where grade_id = #{gradeId} AND teaching_type = #{teachingType} AND teaching_level = #{teachingLevel} AND feedback = #{feedback} AND `status` = 0 ORDER BY update_time limit 1
   </select>
 </mapper>

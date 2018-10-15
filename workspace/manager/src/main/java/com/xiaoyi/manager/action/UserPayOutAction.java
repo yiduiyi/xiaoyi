@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
@@ -84,6 +85,12 @@ public class UserPayOutAction {
 		//Integer purchaseNum = request.getInteger("purchaseNum");
 		String lessonId = request.getString("lessonId");
 		Integer hasBook = request.getInteger("hasBook");
+		Integer teachingWay = request.getInteger("teachingWay");
+		
+		//测试用
+		if(null == teachingWay){
+			teachingWay = 2;
+		}
 		
 		JSONObject attach = new JSONObject();
 		//JSONObject body = new JSONObject();
@@ -93,14 +100,11 @@ public class UserPayOutAction {
 		}
 		
 		attach.put("stu", stuName);
-		attach.put("parent", parentName);
-		/*attach.put("studentName", stuName);
-		attach.put("parentName", parentName);*/		
-		
-		attach.put("lesType", courseType);
-		attach.put("book", hasBook);
-		/*attach.put("telNum", telphone)*/;
+		attach.put("parent", parentName);		
+		attach.put("type", courseType);
+		attach.put("book", hasBook);		
 		attach.put("tel", telphone);
+		attach.put("tw", teachingWay);	//teachingWay
 		
 		JSONObject parm = new JSONObject();
 		parm.put("uuid", uuid);
@@ -210,17 +214,31 @@ public class UserPayOutAction {
 		 SortedMap<String, String> parameters = new TreeMap<String, String>();
 		 Iterator<String> it = jsonObject.keys();
 		 String key = null;
-		  while(it.hasNext()){ 
+		 while(it.hasNext()){ 
 			  key =   it.next();
 			  if ("sign".equals(key)) {
 				 continue;
 			  }
 			  parameters.put(key,  jsonObject.getString(key));
-           }  
+	     }
+		 
+		//去重重复回调++++++++++++++++   added 2018-10-11 +++++++++++++
+		 String nonce_str = jsonObject.getString("nonce_str");
+		 Orders order = null;
+		 try {
+			 order = orderService.queryOrderById(nonce_str);				
+		 } catch (Exception e) {
+			logger.warn("查询是否已存在订单出错！");
+			throw new CommonRunException(-1,"查询是否已存在订单出错！");
+		 }		 		 
+		 
 		 String sign = createSign(parameters);
-		 if (sign.equals(jsonObject.getString("sign"))) {
+		 if (sign.equals(jsonObject.getString("sign")) && order==null) {
 			 logger.error("验证==>" + sign);
-			 JSONObject parm = new JSONObject(); 
+			 JSONObject parm = new JSONObject(); 						 			 			 			 
+			 
+			 parm.put("nonce_str", nonce_str);
+			 
 			 parm.put("openId", jsonObject.getString("openid"));
 			 parm.put("orderNum", jsonObject.getString("out_trade_no"));
 			 parm.put("status", 1l);
@@ -229,11 +247,15 @@ public class UserPayOutAction {
 			 
 			 parm.put("studentName", attach.get("stu"));
 			 parm.put("parentName", attach.get("parent"));
-			 parm.put("lessonType", attach.get("lesType"));
+			 parm.put("lessonType", attach.get("type"));
 			 parm.put("purchaseNum", attach.get("courseCnt"));
 			 parm.put("hasBook", attach.get("book"));
 			 parm.put("orderType", 2);	//家长支付
 			 parm.put("telNum", attach.get("tel"));
+			 
+			 //加入teachingWay作为一个订单的区分字段
+			 Integer teachingWay = attach.getInt("tw");
+			 parm.put("teachingWay", teachingWay);
 			 
 			 try {
 				orderService.addOrder(parm);
@@ -249,9 +271,9 @@ public class UserPayOutAction {
   		     //busiService.updateNoticeArrival(parm); 
 		 }
 		
-		 PrintWriter writer;
+		PrintWriter writer;
 		try {
-			writer = res.getWriter();
+			 writer = res.getWriter();
 			 writer.write(getRequestXml(parameters));
 			 writer.flush();
 			 writer.close();

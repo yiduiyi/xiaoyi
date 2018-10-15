@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.manager.dao.ILessonTypeDao" >
+<mapper namespace="com.xiaoyi.manager.dao.ILessonTypeDao">
 	<resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.LessonType">
 		<id column="courseCnt" property="coursecnt" jdbcType="SMALLINT" />
 		<id column="lessonType" property="lessontype" jdbcType="INTEGER" />
 		<id column="lessonId" property="lessonId" jdbcType="VARCHAR" />
-		<result column="teachingWay" property="teachingway" jdbcType="TINYINT" />
+		<id column="teachingWay" property="teachingWay" jdbcType="SMALLINT" />
 		<result column="gradeId" property="gradeid" jdbcType="SMALLINT" />
 		<result column="lessonPrice" property="lessonprice" jdbcType="REAL" />
 		<result column="lessonName" property="lessonname" jdbcType="VARCHAR" />
@@ -16,12 +16,17 @@
 		<result column="isholiday" property="isholiday" jdbcType="TINYINT" />
 		<result column="singleCoursePrice" property="singlecourseprice"
 			jdbcType="REAL" />
+
+		<!-- 双师参数 -->
+		<result column="semaster" property="semaster" />
+		<result column="daul_course_count" property="daulCourseCount" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		lessonId,courseCnt, lessonType, teachingWay, gradeId, lessonPrice,
+		lessonId,courseCnt, lessonType, teachingWay, gradeId,
+		lessonPrice,
 		lessonName, gradeName,
 		needBook, discountPrice, isholiday,
-		singleCoursePrice
+		singleCoursePrice,semaster,daul_course_count
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="com.xiaoyi.manager.domain.LessonTypeKey">
@@ -38,38 +43,46 @@
 			<if test="lessontype!=null">
 				and lessonType = #{lessontype,jdbcType=INTEGER}
 			</if>
+			<if test="teachingWay!=null">
+				and teachingWay = #{teachingWay}
+			</if>
 		</where>
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.LessonTypeKey">
 		delete from
 		lessontype
 		<where>
-		<if test="lessonId!=null">
-			lessonId = #{lessonId}
-		</if>
-		<if test="coursecnt != null and lessontype!=null">
-			courseCnt = #{coursecnt,jdbcType=SMALLINT}
-			and
-			lessonType = #{lessontype,jdbcType=INTEGER}	
-		</if>
+			<if test="lessonId!=null">
+				lessonId = #{lessonId}
+			</if>
+			<if test="coursecnt != null and lessontype!=null">
+				courseCnt = #{coursecnt,jdbcType=SMALLINT}
+				and
+				lessonType =
+				#{lessontype,jdbcType=INTEGER}
+			</if>
 		</where>
 	</delete>
 	<insert id="insert" parameterType="com.xiaoyi.manager.domain.LessonType">
 		insert into lessontype
 		(lessonId,courseCnt, lessonType, teachingWay,
-		gradeId, lessonPrice, lessonName,
+		gradeId, lessonPrice,
+		lessonName,
 		gradeName, needBook, discountPrice,
-		isholiday, singleCoursePrice)
+		isholiday,
+		singleCoursePrice)
 		values (#{lessonId,jdbcType=VARCHAR},
 		#{coursecnt,jdbcType=SMALLINT},
 		#{lessontype,jdbcType=INTEGER},
 		#{teachingway,jdbcType=TINYINT},
-		#{gradeid,jdbcType=SMALLINT}, #{lessonprice,jdbcType=REAL},
+		#{gradeid,jdbcType=SMALLINT},
+		#{lessonprice,jdbcType=REAL},
 		#{lessonname,jdbcType=VARCHAR},
 		#{gradename,jdbcType=VARCHAR},
 		#{needbook,jdbcType=BIT},
 		#{discountprice,jdbcType=REAL},
-		#{isholiday,jdbcType=TINYINT}, #{singlecourseprice,jdbcType=REAL})
+		#{isholiday,jdbcType=TINYINT},
+		#{singlecourseprice,jdbcType=REAL})
 	</insert>
 	<insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.LessonType">
 		insert into lessontype
@@ -220,15 +233,7 @@
 				AND lessonType = #{lessontype,jdbcType=INTEGER}
 			</if>
 			<if test="teachingWay!=null">
-				<if test="teachingWay==0">
-					teachingWay = 0
-				</if> 
-				<if test="teachingWay==1">
-					teachingWay = 1
-				</if>
-				<if test="teachingWay==2">
-					teachingWay=2
-				</if>
+				teachingWay = #{teachingWay}
 			</if>
 		</where>
 	</select>

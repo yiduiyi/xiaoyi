@@ -18,8 +18,13 @@ public interface IVideoCourseDao {
     int updateByPrimaryKeySelective(VideoCourse record);
 
     int updateByPrimaryKey(VideoCourse record);
+
+    
+    List<VideoCourse> selectVideoCourseListByConditions(JSONObject params);
+
     //获取双师课程列表
     public List<JSONObject> getDaulLessonList(Map<String, Object> reqData);
     //根据courseId获取双师课程列表
     public List<JSONObject> getDaulLessonListByCourseId(Byte courseId);
+
 }

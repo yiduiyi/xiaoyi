@@ -148,6 +148,30 @@ public class ConstantCommonAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
 		return result;
 	}
+	
+	@RequestMapping(value="/daul/getDaulCoursePrice.do",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getDaulCoursePrice(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		    	    	
+    	try {
+    		List<JSONObject> datas = commonDataService.getDaulCoursePrice(reqData);
+    		
+    		if(null!=datas) {
+    			rtCode = RtConstants.SUCCESS;
+    		}
+    		result.put("data", datas);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		setReturnMsg(result, rtCode.getCode(), rtCode.toString());		
+		return result;
+	}
+	///
 	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
 		result.put("code", code);
 		result.put("msg", rtString);

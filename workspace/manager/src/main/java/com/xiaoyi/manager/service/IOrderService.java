@@ -7,6 +7,8 @@ import com.xiaoyi.manager.domain.Orders;
 
 public interface IOrderService {
 	
+	Orders queryOrderById(String orderId);
+	
 	/**
 	 * 增加订单记录
 	 * Params：{

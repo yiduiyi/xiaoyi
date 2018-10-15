@@ -58,13 +58,13 @@ public class MonitorServiceImpl implements IMonitorService {
 				
 				if(CollectionUtils.isNotEmpty(weekTeachingNumMap)){
 					//老师总共课时数、本周课时数、上周课时数映射表
-					Map<String,Integer> teachingIdTotalTeachingNumMap = new HashMap<String,Integer>();
-					Map<String,Integer> teachingIdLastWeekTeachingNumMap = new HashMap<String,Integer>();
-					Map<String,Integer> teachingIdCurWeekTeachingNumMap = new HashMap<String,Integer>();
+					Map<String,Float> teachingIdTotalTeachingNumMap = new HashMap<String,Float>();
+					Map<String,Float> teachingIdLastWeekTeachingNumMap = new HashMap<String,Float>();
+					Map<String,Float> teachingIdCurWeekTeachingNumMap = new HashMap<String,Float>();
 					
 					for(JSONObject weekTeachingNum : weekTeachingNumMap){
 						Integer weekFromNow = weekTeachingNum.getInteger("weekFromNow");
-						Integer teachingNum = weekTeachingNum.getInteger("teachingNum");
+						Float teachingNum = weekTeachingNum.getFloat("teachingNum");
 						String teachingId = weekTeachingNum.getString("teachingId");
 						
 						if(teachingNum==null){
@@ -72,9 +72,9 @@ public class MonitorServiceImpl implements IMonitorService {
 						}
 						
 						//第一次
-						Integer totalTeachingNum = teachingIdTotalTeachingNumMap.get(teachingId);
+						Float totalTeachingNum = teachingIdTotalTeachingNumMap.get(teachingId);
 						if(null==totalTeachingNum){
-							totalTeachingNum = 0;
+							totalTeachingNum = 0f;
 						}
 						totalTeachingNum += teachingNum;
 						teachingIdTotalTeachingNumMap.put(teachingId, totalTeachingNum);
@@ -98,9 +98,9 @@ public class MonitorServiceImpl implements IMonitorService {
 					while(teacherIter.hasNext()){
 						JSONObject singleResult = teacherIter.next();
 						String teachingId = singleResult.getString("teachingId");
-						Integer totalWeekNum = teachingIdTotalTeachingNumMap.get(teachingId);
-						Integer lastWeekNum = teachingIdLastWeekTeachingNumMap.get(teachingId);
-						Integer curWeekNum = teachingIdCurWeekTeachingNumMap.get(teachingId);
+						Float totalWeekNum = teachingIdTotalTeachingNumMap.get(teachingId);
+						Float lastWeekNum = teachingIdLastWeekTeachingNumMap.get(teachingId);
+						Float curWeekNum = teachingIdCurWeekTeachingNumMap.get(teachingId);
 						
 						singleResult.put("latestWeekTeachingNum", 
 								(lastWeekNum==null)?0 : lastWeekNum);

@@ -13,6 +13,8 @@ public class StudentTask extends StudentTaskKey {
 
     private Byte taskStatus;
 
+    private String notes;
+
     public String getTeacherId() {
         return teacherId;
     }
@@ -52,4 +54,13 @@ public class StudentTask extends StudentTaskKey {
     public void setTaskStatus(Byte taskStatus) {
         this.taskStatus = taskStatus;
     }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes == null ? null : notes.trim();
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.xiaoyi.manager.domain;
 
 public class LessonType extends LessonTypeKey {
-    private Byte teachingway;
+    //private Byte teachingway;
 
     private Short gradeid;
 
@@ -19,13 +19,38 @@ public class LessonType extends LessonTypeKey {
 
     private Float singlecourseprice;
 
-    public Byte getTeachingway() {
+    
+    /**
+     * ==================  added 2018-10-10 (daul teacher version)==========
+     */
+    private Short semaster;
+    
+    private Short daulCourseCount;
+    
+    
+    public Short getDaulCourseCount() {
+		return daulCourseCount;
+	}
+
+	public void setDaulCourseCount(Short daulCourseCount) {
+		this.daulCourseCount = daulCourseCount;
+	}
+
+	public Short getSemaster() {
+		return semaster;
+	}
+
+	public void setSemaster(Short semaster) {
+		this.semaster = semaster;
+	}
+
+	/*public Byte getTeachingway() {
         return teachingway;
     }
 
     public void setTeachingway(Byte teachingway) {
         this.teachingway = teachingway;
-    }
+    }*/
 
     public Short getGradeid() {
         return gradeid;

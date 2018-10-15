@@ -153,6 +153,8 @@ public class BillServiceImpl implements IBillService {
 			updateBill.setClassAddress(reqData.getString("classAddress"));
 			updateBill.setUpdateTime(new Date());
 			updateBill.setDemand(reqData.getString("demand"));
+			updateBill.setSerialNumber(reqData.getString("serialNumber"));
+			
 			resultType =  billDao.updateByPrimaryKeySelective(updateBill);
 		}
 		return resultType;

@@ -34,6 +34,7 @@ import com.xiaoyi.manager.domain.Picture;
 import com.xiaoyi.manager.domain.School;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.manager.domain.User;
+import com.xiaoyi.manager.domain.UserKey;
 import com.xiaoyi.manager.service.ITeachingResourceService;
 import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
@@ -440,14 +441,30 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 		return 0;
 	}
 
+	@Transactional
 	@Override
 	public int deleteTeachingTeacher(String teacherId) {
 		try {
-			return teacherDao.deleteByPrimaryKey(teacherId); 
+			//删除老师登录信息
+			try {
+				UserKey key = new UserKey();
+				key.setUseraccountid(teacherId);
+				key.setUserid(teacherId);
+				userDao.deleteByPrimaryKey(key);
+			} catch (Exception e) {
+				throw new CommonRunException(-1, "删除用户登录信息失败！");
+			}
+			
+			try {
+				return teacherDao.deleteByPrimaryKey(teacherId); 				
+			} catch (Exception e) {
+				throw new CommonRunException(-1, "删除教师信息表出错！");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.info("删除老师失败！");
+			throw new CommonRunException(-1,"删除老师失败！");
 		}
-		return -1;
 	}
 	
 	/**

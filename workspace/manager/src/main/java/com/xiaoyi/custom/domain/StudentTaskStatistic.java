@@ -3,13 +3,15 @@ package com.xiaoyi.custom.domain;
 import java.util.Date;
 
 public class StudentTaskStatistic extends StudentTaskStatisticKey {
-    private Short accomplishedCount;
 
-    private Short unfinishedCount;
+    private Short finishCount;
 
-    private Short totalAssignedTask;
+    private Short unfinishCount;
 
-    private Short accomplishedRate;
+    private Short totalTasks;
+
+    private Short accomplishRate;
+
 
     private Short gradeId;
 
@@ -19,36 +21,37 @@ public class StudentTaskStatistic extends StudentTaskStatisticKey {
 
     private Date updateTime;
 
-    public Short getAccomplishedCount() {
-        return accomplishedCount;
+    public Short getFinishCount() {
+        return finishCount;
     }
 
-    public void setAccomplishedCount(Short accomplishedCount) {
-        this.accomplishedCount = accomplishedCount;
+    public void setFinishCount(Short finishCount) {
+        this.finishCount = finishCount;
     }
 
-    public Short getUnfinishedCount() {
-        return unfinishedCount;
+    public Short getUnfinishCount() {
+        return unfinishCount;
     }
 
-    public void setUnfinishedCount(Short unfinishedCount) {
-        this.unfinishedCount = unfinishedCount;
+    public void setUnfinishCount(Short unfinishCount) {
+        this.unfinishCount = unfinishCount;
     }
 
-    public Short getTotalAssignedTask() {
-        return totalAssignedTask;
+    public Short getTotalTasks() {
+        return totalTasks;
     }
 
-    public void setTotalAssignedTask(Short totalAssignedTask) {
-        this.totalAssignedTask = totalAssignedTask;
+    public void setTotalTasks(Short totalTasks) {
+        this.totalTasks = totalTasks;
     }
 
-    public Short getAccomplishedRate() {
-        return accomplishedRate;
+    public Short getAccomplishRate() {
+        return accomplishRate;
     }
 
-    public void setAccomplishedRate(Short accomplishedRate) {
-        this.accomplishedRate = accomplishedRate;
+    public void setAccomplishRate(Short accomplishRate) {
+        this.accomplishRate = accomplishRate;
+
     }
 
     public Short getGradeId() {
