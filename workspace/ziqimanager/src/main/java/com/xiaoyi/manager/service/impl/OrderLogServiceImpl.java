@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -166,12 +167,14 @@ public class OrderLogServiceImpl implements IOrderLogService {
 	public void getXiaoETongOrderLog() {
 		List<OrderLog> orderLogs = new ArrayList<OrderLog>();
 		org.json.JSONObject xiaoEResult = new org.json.JSONObject();
-		JSONObject data = new JSONObject();
+		org.json.JSONObject data = new org.json.JSONObject();
 		String orderBy = "created_at:desc";
 		Integer pageIndex = 0;
 		Integer pageSize = 50;
-		String beginTime = DateUtils.getUnixTimestamp(DateUtils.getDayMin(DateUtils.getLastDay()));
-		String endTime = DateUtils.getUnixTimestamp(DateUtils.getDayMax(DateUtils.getLastDay()));
+		/*String beginTime = DateUtils.getUnixTimestamp(DateUtils.getDayMin(DateUtils.getLastDay()));
+		String endTime = DateUtils.getUnixTimestamp(DateUtils.getDayMax(DateUtils.getLastDay()));*/
+		String beginTime = DateUtils.getUnixTimestamp(DateUtils.getDayMin(new Date()));
+		String endTime = DateUtils.getUnixTimestamp(DateUtils.getDayMax(new Date()));
 		String orderState = "1";
 		Boolean flag = true;
 		while (flag) {
@@ -183,36 +186,35 @@ public class OrderLogServiceImpl implements IOrderLogService {
 			data.put("order_state", orderState);
 			//查询小鹅通订单记录
 			xiaoEResult = sdk.send(ConstantUtil.XIAOE_ORDER_LIST_GET_CMD, data, 3, "1.0");
-			if (xiaoEResult.getString("code").equals("0")) {
-				String datas = xiaoEResult.getString("data");
-				if (StringUtils.isEmpty(datas)) {
-					JSONArray orderLogData = JSONArray.parseArray(datas);
-					if(CollectionUtils.isNotEmpty(orderLogData)) {
-						for (int i = 0; i < orderLogData.size(); i++) {
-							JSONObject userData = new JSONObject();
-							OrderLog orderLog = new OrderLog();
-							JSONObject orderLogJson = orderLogData.getJSONObject(i);
-							String userId = orderLogJson.getString("user_id");
-							userData.put("user_id", userId);
-							//获取该条订单用户记录
-							org.json.JSONObject xiaoEUserResult = sdk.send(ConstantUtil.XIAOE_ORDER_USERS_GETINFO, userData, 3, "1.0");
-							JSONObject usersData = JSONObject.parseObject(xiaoEUserResult.getString("data"));
-							//构建orderLog记录
-							orderLog.setOrderLogId(UUIDUtil.getUUIDPrimary());
-							if(null != usersData) {
-								orderLog.setWxOpenid(usersData.getString("wx_open_id"));
+			if ((xiaoEResult.getBigInteger("code")).toString().equals("0")) {
+				org.json.JSONArray datas = xiaoEResult.getJSONArray("data");
+				if (null != datas) {
+					for (int i = 0; i < datas.length(); i++) {
+						org.json.JSONObject userData = new org.json.JSONObject();
+						OrderLog orderLog = new OrderLog();
+						org.json.JSONObject orderLogJson = datas.getJSONObject(i);
+						String userId = orderLogJson.getString("user_id");
+						userData.put("user_id", userId);
+						//获取该条订单用户记录
+						org.json.JSONObject xiaoEUserResult = sdk.send(ConstantUtil.XIAOE_ORDER_USERS_GETINFO, userData, 3, "1.0");
+						org.json.JSONArray usersData = xiaoEUserResult.getJSONArray("data");
+						//构建orderLog记录
+						orderLog.setOrderLogId(UUIDUtil.getUUIDPrimary());
+						if(null != usersData) {
+							if(null != usersData.getJSONObject(0).get("wx_open_id")) {
+								orderLog.setWxOpenid(usersData.getJSONObject(0).getString("wx_open_id"));
 							}
-							orderLog.setXiaoeResourceId(orderLogJson.getString("id"));
-							orderLog.setXiaoeOrderId(orderLogJson.getString("order_id"));
-							orderLog.setXiaoeUserId(userId);
-							orderLog.setPrice(orderLogJson.getFloat("price"));
-							orderLog.setTitle(orderLogJson.getString("title"));
-							orderLog.setOrderState(orderLogJson.getInteger("order_state"));
-							orderLog.setPaymentType(orderLogJson.getInteger("payment_type"));
-							orderLog.setResourceType(orderLogJson.getInteger("resource_type"));
-							orderLog.setCreatedAt(orderLogJson.getString("created_at"));
-							orderLogs.add(orderLog);
 						}
+						orderLog.setXiaoeResourceId(orderLogJson.getString("id"));
+						orderLog.setXiaoeOrderId(orderLogJson.getString("order_id"));
+						orderLog.setXiaoeUserId(userId);
+						orderLog.setPrice((float)orderLogJson.getInt("price"));
+						orderLog.setTitle(orderLogJson.getString("title"));
+						orderLog.setOrderState(orderLogJson.getInt("order_state"));
+						orderLog.setPaymentType(orderLogJson.getInt("payment_type"));
+						orderLog.setResourceType(orderLogJson.getInt("resource_type"));
+						orderLog.setCreatedAt(orderLogJson.getString("created_at"));
+						orderLogs.add(orderLog);
 					}
 				} else {
 					flag = false;

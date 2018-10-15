@@ -14,110 +14,34 @@
 
 	<!-- 定义目标bean和bean中的方法 -->
 	<!-- =====================日常任务job========================== -->
-	<!-- <bean id="MyTask" class="com.xiaoyi.common.service.impl.WechatServiceImpl" />
+	<bean id="MyTask" class="com.xiaoyi.manager.service.impl.OrderLogServiceImpl" />
 	<bean id="MyTaskMethod"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
 			<ref bean="MyTask" />
 		</property>
-		<property name="targetMethod">  要执行的方法名称
-			<value>sendQuarzMsg</value>
+		<property name="targetMethod"><!-- 要执行的方法名称 -->
+			<value>getXiaoETongOrderLog</value>
 		</property>
 	</bean>
-
-	<bean id="MyTask2" class="com.xiaoyi.manager.service.impl.AccountServiceImpl" />
-	<bean id="MyTaskMethod2"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject">
-			<ref bean="MyTask2" />
-		</property>
-		<property name="targetMethod">  要执行的方法名称
-			<value>sendNotEnoughLessonQuarzMsgToCustom</value>
-		</property>
-	</bean>
-
-	<bean id="MyTask3" class="com.xiaoyi.teacher.service.impl.H5PlateServiceImpl" />
-	<bean id="MyTaskMethod3"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject">
-			<ref bean="MyTask3" />
-		</property>
-		<property name="targetMethod">  要执行的方法名称
-			<value>computeBalanceProfit</value>
-		</property>
-	</bean>
-
-	<bean id="MyTask4" class="com.xiaoyi.teacher.service.impl.H5PlateServiceImpl" />
-	<bean id="MyTaskMethod4"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject">
-			<ref bean="MyTask4" />
-		</property>
-		<property name="targetMethod">  要执行的方法名称
-			<value>withdrawLessonIncomeToBalance</value>
-		</property>
-	</bean>
-
-	<bean id="MyTask5" class="com.xiaoyi.manager.service.impl.BillServiceImpl" />
-	<bean id="MyTaskMethod5"
-		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject">
-			<ref bean="MyTask5" />
-		</property>
-		<property name="targetMethod">  要执行的方法名称
-			<value>sendAllInTheSingleBillQuarzMsgToTeacher</value>
-		</property>
-	</bean> -->
 
 	<!-- ======================== 调度触发器 ======================== -->
-	<!-- 更新提现状态(自动确认)
+	<!-- 更新提现状态(自动确认)-->
 	<bean id="DailyTaskCronTriggerBean"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod" />
-		每天一点出发一次
-		<property name="cronExpression" value="0 0 1 * * ?" />
-		每个月10-15号凌晨1点触发
-		<property name="cronExpression" value="0 0 14 1-10 * ?" />
+		<!-- 每天一点出发一次 -->
+		<!-- <property name="cronExpression" value="0 0 1 * * ?" /> -->
+		<!-- 每个月10-15号凌晨1点触发 -->
+		<property name="cronExpression" value="0 15 18 * * ? *" />
 	</bean>
-
-	每月十五号发送课时不足提醒消息
-	<bean id="DailyTaskCronTriggerBean2"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="MyTaskMethod2" />
-		每个月15号凌晨1点触发
-		<property name="cronExpression" value="0 0 1 15 * ?" />
-	</bean>
-
-	每月7-17号凌晨12:20点提现课时费到余额
-	<bean id="DailyTaskCronTriggerBean4"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="MyTaskMethod4" />
-		<property name="cronExpression" value="1 20 0 7-17 * ?" />
-	</bean>
-
-	每天凌晨1点更新余额收益
-	<bean id="DailyTaskCronTriggerBean3"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="MyTaskMethod3" />
-		<property name="cronExpression" value="0 2 0 * * ?"></property>
-		<property name="cronExpression" value="0 40 23 * * ?" />
-	</bean>
-
-	每天下午九点推送未派出订单
-	<bean id="DailyTaskCronTriggerBean5"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="MyTaskMethod5" />
-		<property name="cronExpression" value="0 2 0 * * ?"></property>
-		<property name="cronExpression" value="0 30 10 * * ?" />
-
-	</bean> -->
 	<!-- ======================== 调度工厂 ======================== -->
 	<bean id="SpringJobSchedulerFactoryBean"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<!-- <ref bean="DailyTaskCronTriggerBean" />
-				<ref bean="DailyTaskCronTriggerBean2" />
+				<ref bean="DailyTaskCronTriggerBean" />
+				<!-- <ref bean="DailyTaskCronTriggerBean2" />
 				<ref bean="DailyTaskCronTriggerBean3" />
 				<ref bean="DailyTaskCronTriggerBean4" />
 				<ref bean="DailyTaskCronTriggerBean5" /> -->
