@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoyi.manager.dao.IBigColumnDao">
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.BigColumn">
+    <id column="big_column_id" jdbcType="VARCHAR" property="bigColumnId" />
+    <result column="big_column_name" jdbcType="VARCHAR" property="bigColumnName" />
+    <result column="big_column_type" jdbcType="TINYINT" property="bigColumnType" />
+    <result column="big_column_link" jdbcType="VARCHAR" property="bigColumnLink" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    big_column_id, big_column_name, big_column_type, big_column_link, create_time, update_time, 
+    status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bigcolumn
+    where big_column_id = #{bigColumnId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from bigcolumn
+    where big_column_id = #{bigColumnId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.BigColumn">
+    insert into bigcolumn (big_column_id, big_column_name, big_column_type, 
+      big_column_link, create_time, update_time, 
+      status)
+    values (#{bigColumnId,jdbcType=VARCHAR}, #{bigColumnName,jdbcType=VARCHAR}, #{bigColumnType,jdbcType=TINYINT}, 
+      #{bigColumnLink,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.BigColumn">
+    insert into bigcolumn
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="bigColumnId != null">
+        big_column_id,
+      </if>
+      <if test="bigColumnName != null">
+        big_column_name,
+      </if>
+      <if test="bigColumnType != null">
+        big_column_type,
+      </if>
+      <if test="bigColumnLink != null">
+        big_column_link,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bigColumnId != null">
+        #{bigColumnId,jdbcType=VARCHAR},
+      </if>
+      <if test="bigColumnName != null">
+        #{bigColumnName,jdbcType=VARCHAR},
+      </if>
+      <if test="bigColumnType != null">
+        #{bigColumnType,jdbcType=TINYINT},
+      </if>
+      <if test="bigColumnLink != null">
+        #{bigColumnLink,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.BigColumn">
+    update bigcolumn
+    <set>
+      <if test="bigColumnName != null">
+        big_column_name = #{bigColumnName,jdbcType=VARCHAR},
+      </if>
+      <if test="bigColumnType != null">
+        big_column_type = #{bigColumnType,jdbcType=TINYINT},
+      </if>
+      <if test="bigColumnLink != null">
+        big_column_link = #{bigColumnLink,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+    </set>
+    where big_column_id = #{bigColumnId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.BigColumn">
+    update bigcolumn
+    set big_column_name = #{bigColumnName,jdbcType=VARCHAR},
+      big_column_type = #{bigColumnType,jdbcType=TINYINT},
+      big_column_link = #{bigColumnLink,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=TINYINT}
+    where big_column_id = #{bigColumnId,jdbcType=VARCHAR}
+  </update>
+  <select id="getBigColumnList" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT big_column_id AS bigColumnId,big_column_name AS bigColumnName,big_column_type AS bigColumnType,big_column_link AS bigColumnLink,
+  	`status` AS `status` FROM bigcolumn WHERE `status` = '0'
+  </select>
+</mapper>
