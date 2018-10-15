@@ -3,6 +3,7 @@ package com.xiaoyi.manager.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -236,7 +237,7 @@ public class OrderServiceImpl implements IOrderService {
 				}
 				
 				//双师视频课程 & 双师课堂（增加用户同步课堂观看权限）
-				if(3==teachingWay){
+				if(3==teachingWay || teachingWay==5){
 					logger.info("开始购买双师课堂");
 					addDaulOrder(teachingWay, openId, parentId, studentId, phone, lessonType);
 				}
@@ -312,7 +313,7 @@ public class OrderServiceImpl implements IOrderService {
 			
 			//没有同步用户（调用小鹅通SDK创建用户 & 同步回本地）
 			XiaoeSDK sdk  = 
-					new XiaoeSDK(WeiXinConfig.APPID, WeiXinConfig.SECRET); 
+					new XiaoeSDK(WeiXinConfig.XIAO_E_TONG_APPID, WeiXinConfig.XIAO_E_TONG_APPSECRET); 
 			if(StringUtils.isEmpty(userOuterSync.getUserId())){
 				logger.info("调用小鹅通SDK注册用户...");
 				org.json.JSONObject data = new org.json.JSONObject();
@@ -372,15 +373,56 @@ public class OrderServiceImpl implements IOrderService {
 			
 			//同步系统和小鹅通订单
 			int gradeId = lessonType/10;
+			//获取当前月份 -》计算当前学期（3-9：下，9-3：上）
+			Calendar cal = Calendar.getInstance();
+			Integer month = cal.get(Calendar.MONTH) + 1;
+			int semaster = (month+3)%12>=6?2:1;
+			
 			//查询同步 课堂信息
 			JSONObject queryParams = new JSONObject();
-			queryParams.put("gradeId", gradeId);
+			queryParams.put("gradeId", gradeId);	//年级
 			queryParams.put("videoCourseType", "1");	//同步课程
+			queryParams.put("courseId", "0");	//大专栏（学年学期）
+			
+			//高中阶段购买不赠送延伸学期
+			if(gradeId>30){
+				queryParams.put("semaster", semaster);	//学期			
+			}
+			
 			List<VideoCourse> videoCourseList = null;
 			try {
 				videoCourseList = 
 						videoCourseDao.selectVideoCourseListByConditions(queryParams);							
-				if(0==videoCourseList.size()){
+				
+				if(semaster==2 && gradeId<30){ 	//初中阶段额外赠送延伸下班学期视频课程
+					//赠送下个年级的上半学期视频课程
+					int stage = gradeId/10;	//小初高 
+					int gradeLevel = gradeId%10;	//1-6
+					if(stage==1){
+						if(gradeLevel==6){
+							stage++;
+						}
+					}else if(gradeLevel==3){
+						stage++;
+					}
+					if(stage != gradeId/10){	//已升级年级
+						gradeLevel = 1;
+					}else {
+						gradeLevel++;
+					}
+					StringBuffer newGradeId = new StringBuffer();
+					newGradeId.append(stage).append(gradeLevel);
+					
+					queryParams.put("gradeId", newGradeId.toString());
+					queryParams.put("semaster", 1);						
+					
+					List<VideoCourse> extraVideoCourseList = 
+							videoCourseDao.selectVideoCourseListByConditions(queryParams);	
+					if(!CollectionUtils.isEmpty(extraVideoCourseList) && videoCourseList!=null){
+						videoCourseList.addAll(extraVideoCourseList);
+					}
+				}
+				if(CollectionUtils.isEmpty(videoCourseList)){
 					logger.warn("本地课程列表中没有查到对应的课时包,年级: " + gradeId +"videoCourseType: 1");
 					return 0;
 				}
@@ -432,7 +474,7 @@ public class OrderServiceImpl implements IOrderService {
 			        org.json.JSONObject comfirmOrder = new org.json.JSONObject();
 			        comfirmOrder.put("order_id", orderId);
 			        comfirmOrder.put("order_state", "1");
-			        org.json.JSONObject updateResult = sdk.send("orders.state.update", data, 1, "1.0");
+			        org.json.JSONObject updateResult = sdk.send("orders.state.update", comfirmOrder, 1, "1.0");
 			        logger.info("修改结果：" + updateResult);								
 				}
 			}

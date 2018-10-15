@@ -40,7 +40,7 @@ public class CustomerAction {
 		String openid = (String) request.getSession().getAttribute("openid");
 		logger.info("获取课时交易记录-openId:" + openid);
 		
-		if(logger.isDebugEnabled()) { openid="oknxW0lyknEETUK7k4qfC8BGvVA4"; }
+		//if(logger.isDebugEnabled()) { openid="oknxW0lyknEETUK7k4qfC8BGvVA4"; }
 		 
 		try {
 			result.put("data", customService.queryTransactionCourses(openid));
