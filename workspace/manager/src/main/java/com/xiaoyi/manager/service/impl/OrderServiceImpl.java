@@ -385,7 +385,7 @@ public class OrderServiceImpl implements IOrderService {
 			queryParams.put("courseId", "0");	//大专栏（学年学期）
 			
 			//高中阶段购买不赠送延伸学期
-			if(gradeId>30){
+			if(gradeId>30 || semaster==2){
 				queryParams.put("semaster", semaster);	//学期			
 			}
 			
