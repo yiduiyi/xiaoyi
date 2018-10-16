@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -16,7 +15,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.DateUtils;
@@ -171,10 +169,10 @@ public class OrderLogServiceImpl implements IOrderLogService {
 		String orderBy = "created_at:desc";
 		Integer pageIndex = 0;
 		Integer pageSize = 50;
-		/*String beginTime = DateUtils.getUnixTimestamp(DateUtils.getDayMin(DateUtils.getLastDay()));
-		String endTime = DateUtils.getUnixTimestamp(DateUtils.getDayMax(DateUtils.getLastDay()));*/
-		String beginTime = DateUtils.getUnixTimestamp(DateUtils.getDayMin(new Date()));
-		String endTime = DateUtils.getUnixTimestamp(DateUtils.getDayMax(new Date()));
+		String beginTime = DateUtils.getUnixTimestamp(DateUtils.getDayMin(DateUtils.getLastDay()));
+		String endTime = DateUtils.getUnixTimestamp(DateUtils.getDayMax(DateUtils.getLastDay()));
+		/*String beginTime = DateUtils.getUnixTimestamp(DateUtils.getDayMin(new Date()));
+		String endTime = DateUtils.getUnixTimestamp(DateUtils.getDayMax(new Date()));*/
 		String orderState = "1";
 		Boolean flag = true;
 		while (flag) {
@@ -188,7 +186,7 @@ public class OrderLogServiceImpl implements IOrderLogService {
 			xiaoEResult = sdk.send(ConstantUtil.XIAOE_ORDER_LIST_GET_CMD, data, 3, "1.0");
 			if ((xiaoEResult.getBigInteger("code")).toString().equals("0")) {
 				org.json.JSONArray datas = xiaoEResult.getJSONArray("data");
-				if (null != datas) {
+				if (datas.length() > 0) {
 					for (int i = 0; i < datas.length(); i++) {
 						org.json.JSONObject userData = new org.json.JSONObject();
 						OrderLog orderLog = new OrderLog();
@@ -200,10 +198,12 @@ public class OrderLogServiceImpl implements IOrderLogService {
 						org.json.JSONArray usersData = xiaoEUserResult.getJSONArray("data");
 						//构建orderLog记录
 						orderLog.setOrderLogId(UUIDUtil.getUUIDPrimary());
-						if(null != usersData) {
-							if(null != usersData.getJSONObject(0).get("wx_open_id")) {
+						if(usersData.length() > 0) {
+							Object aa =  usersData.getJSONObject(0).get("wx_open_id");
+							if(null != aa) {
 								orderLog.setWxOpenid(usersData.getJSONObject(0).getString("wx_open_id"));
 							}
+							
 						}
 						orderLog.setXiaoeResourceId(orderLogJson.getString("id"));
 						orderLog.setXiaoeOrderId(orderLogJson.getString("order_id"));

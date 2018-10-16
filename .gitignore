@@ -23,4 +23,5 @@ workspace/manager/src/main/resources/config/jdbc.properties
 workspace/manager/.classpath
 ~WRL3874.tmp
 ~WRL0005.tmp
-workspace/ziqimanager/target/m2e-wtp/web-resources/META-INF/maven/com.yduiy/manager/pom.properties
+workspace/ziqimanager/target
+

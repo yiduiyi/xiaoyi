@@ -33,7 +33,7 @@
 		<!-- 每天一点出发一次 -->
 		<!-- <property name="cronExpression" value="0 0 1 * * ?" /> -->
 		<!-- 每个月10-15号凌晨1点触发 -->
-		<property name="cronExpression" value="0 15 18 * * ? *" />
+		<property name="cronExpression" value="0 23 10 * * ? *" />
 	</bean>
 	<!-- ======================== 调度工厂 ======================== -->
 	<bean id="SpringJobSchedulerFactoryBean"
