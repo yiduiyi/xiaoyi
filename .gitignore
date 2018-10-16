@@ -22,3 +22,6 @@ workspace/manager/src/main/resources/config/jdbc.properties
 *.docx
 workspace/manager/.classpath
 ~WRL3874.tmp
+~WRL0005.tmp
+workspace/ziqimanager/target
+
