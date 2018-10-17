@@ -44,7 +44,10 @@
 				AND video_course_type = #{videoCourseType,jdbcType=TINYINT}
 			</if>
 			<if test="status != null">
-				#{status,jdbcType=TINYINT}
+				AND status = #{status,jdbcType=TINYINT}
+			</if>
+			<if test="name!=null">
+				AND video_course_name LIKE '%${name}%'
 			</if>
 			<if test="chapterId != null">
 				AND chapter_id = #{chapterId,jdbcType=VARCHAR}
