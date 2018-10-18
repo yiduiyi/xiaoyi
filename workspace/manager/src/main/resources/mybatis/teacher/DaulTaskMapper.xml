@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoyi.teacher.dao.IDaulTaskDao">
+  <!-- 查找老师和家长,学生绑定关系 -->
+  <select id="selectPSTBondingRelations" parameterType="java.lang.String" 
+  	resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT a.teachingId, a.parentId, p.parentName, p.telNum as telephone, 
+  			a.memberId as studentId, s.`name` as studentName
+	FROM order_teaching_r a LEFT JOIN parents p ON a.parentId=p.parentId
+		LEFT JOIN student s ON a.memberId=s.memberId
+	WHERE 
+		a.teacherId = #{teacherId}
+  </select>
+</mapper>
