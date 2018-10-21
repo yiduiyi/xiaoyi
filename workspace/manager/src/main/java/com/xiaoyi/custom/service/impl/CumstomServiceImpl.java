@@ -1168,7 +1168,66 @@ public class CumstomServiceImpl implements ICustomService {
 	@Override
 	public List<JSONObject> getAvailableVideos(JSONObject params) {
 		// TODO Auto-generated method stub
-		return null;
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		try {
+			String parentId = null;
+			try {
+				logger.info("根据openId查询家长【openId】：" + params.getString("openId"));
+				Parents parent = parentDao.selectByOpenId(params.getString("openId"));
+				
+				parentId = parent.getParentid();
+			} catch (Exception e) {
+				throw new CommonRunException(-1, "查询家长出错！");
+			}
+			
+			//查询视频列表
+			List<JSONObject> availableVideos = null;
+			try {
+				params.put("semaster", Semaster.getCurrentSemaster());//只显示当前学期的视频课程
+				params.put("parentId", parentId);
+				
+				availableVideos = daulOrderDao.selectAvailableVideoCourses(params);
+			} catch (Exception e) {
+				logger.warn("查询可用双师视频课程列表出错！");
+				throw new CommonRunException(-1, "查询可用双师视频课程列表出错！");				
+			}
+			
+			//拼装数据
+			if(!CollectionUtils.isEmpty(availableVideos)){
+				Map<Integer,JSONArray> videoGroupMap = new HashMap<Integer, JSONArray>();
+				for(JSONObject video : availableVideos){
+					Integer group = video.getInteger("videoCourseType");
+					if(null==group){
+						continue;
+					}
+					
+					JSONArray videoGroup = videoGroupMap.get(group);
+					if(null==videoGroup){
+						videoGroup = new JSONArray();
+						videoGroupMap.put(group, videoGroup);
+						
+						videoGroup.add(video);						
+					}					
+				}
+				
+				//组合各个组（三大类：同步，专题和假期）
+				for(Integer videoCourseType : videoGroupMap.keySet()){
+					JSONObject videoGroup = new JSONObject();
+					
+					videoGroup.put("videoCourseType", videoCourseType);
+					videoGroup.put("videoCourseTasks", videoGroupMap.get(videoCourseType));
+					datas.add(videoGroup);
+				}
+			}
+			
+		} catch (CommonRunException e) {
+			throw e;
+		}catch (Exception e) {
+			// TODO: handle exception
+			throw new CommonRunException(-1, "内部错误！");
+		}
+		
+		return datas;
 	}
 
 }

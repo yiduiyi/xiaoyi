@@ -32,20 +32,49 @@
 				daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
 			</if>
 			<if test="parentId!=null">
-				parent_id = #{parentId}
+				AND parent_id = #{parentId}
 			</if>
 			<if test="studentId!=null">
-				student_id = #{studentId}
+				AND student_id = #{studentId}
 			</if>
 			<if test="studentId!=null">
-				grade_id = #{gradeId}
+				AND grade_id = #{gradeId}
 			</if>
 			<if test="semaster!=null">
-				semaster = #{semaster}
+				AND semaster = #{semaster}
 			</if>
 		</where>
 	</select>
 	
+	<!-- 查找家长购买的双十课程列表（名师回放）  -->
+	<select id="selectAvailableVideoCourses" parameterType="com.alibaba.fastjson.JSONObject"
+		resultType="com.alibaba.fastjson.JSONObject">
+		SELECT DVO.grade_id AS gradeId,VC.course_id AS courseId, VC.h5_video_link AS h5VideoLink,
+			VC.video_course_name AS videoCourseName,VC.video_course_type AS videoCourseType
+		FROM daul_video_order DVO LEFT JOIN video_course VC 
+				ON DVO.grade_id = VC.grade_id
+		WHERE
+			VC.chapter_id &lt;&gt; 0
+		<if test="daulOrderId!=null">
+			AND DVO.daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
+		</if>
+		<if test="parentId!=null">
+			AND DVO.parent_id = #{parentId}
+		</if>
+		<if test="studentId!=null">
+			AND DVO.student_id = #{studentId}
+		</if>
+		<if test="studentId!=null">
+			AND VC.grade_id = #{gradeId}
+		</if>
+		<if test="courseId!=null">
+			AND VC.course_id = #{courseId}
+		</if>
+		<if test="semaster!=null">
+			AND VC.semaster = #{semaster}
+		</if>		 
+		GROUP BY DVO.video_course_id
+	</select>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
 		select

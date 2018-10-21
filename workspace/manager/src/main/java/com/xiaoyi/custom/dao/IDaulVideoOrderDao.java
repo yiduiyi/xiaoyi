@@ -22,6 +22,10 @@ public interface IDaulVideoOrderDao{
 
     int updateByPrimaryKey(DaulVideoOrder record);
     
-    //获取名师回放视频列表
+    /**
+     * 获取名师回放视频列表
+     * @param params {gradeId,courseId,parentId}
+     * @return
+     */
     List<JSONObject> selectAvailableVideoCourses(JSONObject params);
 }

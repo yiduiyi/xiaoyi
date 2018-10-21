@@ -1,5 +1,6 @@
 package com.xiaoyi.common.utils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -253,6 +254,15 @@ public class ConstantUtil {
 				default:
 					return "";
 			}
+		}
+		
+		public static int getCurrentSemaster(){
+			//获取当前月份 -》计算当前学期（3-9：下，9-3：上）
+			Calendar cal = Calendar.getInstance();
+			Integer month = cal.get(Calendar.MONTH) + 1;
+			int semaster = (month+3)%12>=6?2:1;
+			
+			return semaster;
 		}
 	}
 	
