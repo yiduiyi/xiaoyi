@@ -50,5 +50,12 @@ public interface ICustomService {
 	//获取某月学生上课记录详情
 	public List<JSONObject> getStuTeachingDetailByMonth(JSONObject reqData);
 	
+	//========================   双师        ================================
 	public List<JSONObject> getDaulTransactionCourses(String openId);
+	
+	public List<JSONObject> getStudentBondCourses(String openId);
+	
+	public List<JSONObject> getBondSubGrades(JSONObject params);
+	
+	public List<JSONObject> getAvailableVideos(JSONObject params);
 }

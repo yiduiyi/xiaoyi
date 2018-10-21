@@ -25,6 +25,61 @@
 		from teaching_relationship
 		where teaching_id = #{teachingId,jdbcType=VARCHAR}
 	</select>
+	
+	<!-- 根据参数查询任教（双师）关系  -->
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="com.alibaba.fastjson.JSONObject">
+		select
+		<include refid="Base_Column_List" />
+		from teaching_relationship
+		<where>
+			<if test="teachingId!=null">
+				teaching_id = #{teachingId}
+			</if>
+			<if test="teachingId!=null">
+				AND teacher_id = #{teacherId}
+			</if>
+			<if test="studentId!=null">
+				AND student_id = #{studentId}
+			</if>
+			<if test="gradeId!=null">
+				AND grade_id = #{gradeId}
+			</if>
+			<if test="status!=null">
+				AND status = #{status}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查找老师对应的学生作业完成率  -->
+	<select id="selectTeachingRelationshipAndAccomplishRate" 
+		resultType="com.alibaba.fastjson.JSONObject"
+		parameterType="java.util.List">
+		SELECT tr.teacher_id as teacherId, tr.student_id AS studentId, tr.grade_id as gradeId, 
+			tr.course_id as courseId,sts.accomplish_rate as accomplishRate
+		FROM teaching_relationship tr 
+			LEFT JOIN student_task_statistic sts ON tr.student_id = sts.student_id AND tr.teacher_id = sts.teacher_id
+			<if test="list!=null">
+				where 
+				tr.student_id IN 
+				<foreach collection="list" item="item" separator="," open="(" close=")">
+					#{item}
+				</foreach>
+			</if>
+		<!-- <where>
+			<if test="studentId!=null">
+				tr.student_id = #{studentId}
+			</if>
+			<if test="gradeId!=null">
+				AND tr.grade_id=gradeId
+			</if>
+			<if test="courseId!=null">
+				AND tr.course_id=courseId
+			</if>
+		</where> -->
+	</select>
+	
+	
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
 		delete from teaching_relationship
 		where teaching_id = #{teachingId,jdbcType=VARCHAR}

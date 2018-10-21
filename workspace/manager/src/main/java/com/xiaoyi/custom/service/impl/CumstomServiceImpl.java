@@ -22,6 +22,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
@@ -56,21 +57,23 @@ import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.dao.ISuggestionsDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceFromDao;
+import com.xiaoyi.teacher.dao.ITeachingRelationshipDao;
 import com.xiaoyi.teacher.domain.ClassFees;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.Suggestions;
 import com.xiaoyi.teacher.domain.TeachingRecord;
+import com.xiaoyi.teacher.domain.TeachingRelationship;
 import com.xiaoyi.teacher.service.IClassFeesService;
 
 @Service("customService")
 public class CumstomServiceImpl implements ICustomService {
 
 	@Resource
-	private IParentsDao parentDao;
+	IParentsDao parentDao;
 
 	@Resource
-	private ICustomDao customDao;
+	ICustomDao customDao;
 
 	@Resource
 	IScheduleDao scheduleDao;
@@ -100,22 +103,26 @@ public class CumstomServiceImpl implements ICustomService {
 	ILessonTypeDao lessonTypeDao;
 
 	@Resource
-	private ITeacherBalanceFromDao balanceFromDao;
+	ITeacherBalanceFromDao balanceFromDao;
 
 	@Resource
-	private ITeacherBalanceDao balanceDao;
+	ITeacherBalanceDao balanceDao;
 
 	@Resource
-	private ICommonService commonService;
+	ICommonService commonService;
 
 	@Resource
 	ITradeComplainsDao tradeCompainsDao;
 
 	@Resource
-	private IClassFeesService classFeesService;
+	IClassFeesService classFeesService;
 	
-	@Resource IDaulVideoOrderDao daulOrderDao;
-
+	@Resource 
+	IDaulVideoOrderDao daulOrderDao;
+	
+	@Resource 
+	ITeachingRelationshipDao teachingRelationshipDao;
+	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -980,7 +987,7 @@ public class CumstomServiceImpl implements ICustomService {
 					}
 					for(Semaster s : Semaster.values()){
 						if(s.getValue() == semaster){
-							courseName.append(s.toString()+"册");
+							courseName.append(s.getSimpleName()+"册");
 							break;
 						}
 					}
@@ -997,6 +1004,171 @@ public class CumstomServiceImpl implements ICustomService {
 		}
 		
 		return datas;
+	}
+
+	@Override
+	public List<JSONObject> getStudentBondCourses(String openId) {
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		
+		try {
+			List<JSONObject> psrList = null;
+			try {
+				psrList = customDao.getPSRList(openId);				
+			} catch (Exception e) {
+				logger.error("查询家长-学生关系出错![openId]:" + openId);
+				throw new CommonRunException(-1, "查询家长-学生关系出错！");
+			}
+			if(!CollectionUtils.isEmpty(psrList)){
+				List<String> studentIds = new ArrayList<String>();
+				for(JSONObject psr : psrList){
+					studentIds.add(psr.getString("studentId"));
+				}
+
+				//(年级)科目列表 & 作业完成率
+				List<JSONObject> relationshipList = null;
+				try {
+					relationshipList = teachingRelationshipDao.selectTeachingRelationshipAndAccomplishRate(studentIds);						
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new CommonRunException(-1, "查询老师所带学生&作业完成率失败！");
+				}
+				
+				//学生列表
+				for(JSONObject psr : psrList){
+					JSONObject stu = new JSONObject();
+					
+					stu.put("studentId", psr.get("studentId"));
+					stu.put("studentName", psr.get("studentName"));
+
+					if(!CollectionUtils.isEmpty(relationshipList)){
+						JSONArray courseList = new JSONArray();
+						for(JSONObject course : relationshipList){
+							//过滤其他学生
+							if(course.getString("studentId")==null 
+									|| !course.getString("studentId").equals(psr.get("studentId"))){
+								continue;
+							}
+							
+							//年级
+							Integer gradeId = course.getInteger("gradeId");
+							for(Grade g : Grade.values()){
+								if(gradeId == g.getValue()){
+									course.put("gradeName", g.getFullGradeName());									
+								}
+							}
+							
+							//科目
+							Integer courseId = course.getInteger("courseId");
+							for(Course c : Course.values()){
+								if(c.getValue() == courseId){
+									course.put("courseName", c.toString());									
+								}
+							}
+							
+							//作业完成率
+							if(StringUtils.isEmpty(course.getString("accomplishRate"))){
+								course.put("accomplishRate", 100);
+							}
+							
+							courseList.add(course);
+						}
+						
+						//只有老师设定了作业（年级+科目）才会在家长端显示作业
+						if(courseList.size()!=0){
+							stu.put("courseList", courseList);
+							datas.add(stu);
+						}
+					}
+				}				
+			}
+		
+		} catch (CommonRunException e) {
+			
+		} catch (Exception e) {
+			logger.error("获取学生绑定的科目失败！");
+			throw new CommonRunException(-1, "获取学生绑定的科目失败！");
+		}
+		return datas;
+	}
+
+	@Override
+	public List<JSONObject> getBondSubGrades(JSONObject params) {
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		
+		try {
+			String openId = params.getString("openId");
+			List<JSONObject> psrList = null;
+
+			//查询家长-学生关系
+			List<String> studentIds = new ArrayList<String>();
+			try {
+				psrList = customDao.getPSRList(openId);								
+				//判空
+				if(CollectionUtils.isEmpty(psrList)){
+					return datas;
+				}												
+			} catch (Exception e) {
+				logger.error("查询家长-学生关系出错![openId]:" + openId);
+				throw new CommonRunException(-1, "查询家长-学生关系出错！");
+			}
+			
+			//查找年级-科目
+			try {					
+				for(JSONObject psr : psrList){
+					studentIds.add(psr.getString("studentId"));
+				}
+				if(studentIds.size()==0){
+					return datas;
+				}
+				List<JSONObject> relations = 
+						teachingRelationshipDao.selectTeachingRelationshipAndAccomplishRate(studentIds);
+				List<String> subGrades = new ArrayList<String>();
+				for(JSONObject relation : relations){
+					StringBuffer sb = new StringBuffer();
+					Short courseId = relation.getShort("courseId");
+					Short gradeId = relation.getShort("gradeId");
+					sb.append(courseId);
+					sb.append("-");
+					sb.append(gradeId);
+					
+					if(subGrades.contains(sb.toString())){
+						continue;
+					}
+					subGrades.add(sb.toString());
+					
+					//补充年级，科目名称
+					for(Course c : Course.values()){
+						if(c.getValue() == courseId){
+							relation.put("courseName", c.toString());
+							break;
+						}
+					}
+					for(Grade g : Grade.values()){
+						if(g.getValue() == gradeId){
+							relation.put("gradeName", g.getFullGradeName());
+							break;
+						}
+					}
+					datas.add(relation);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("查找年级-科目失败！");
+				throw new CommonRunException(-1, "查找年级-科目失败！");
+			}
+		} catch (CommonRunException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new CommonRunException(-1, "内部错误！");
+		}
+		return datas;
+	}
+
+	@Override
+	public List<JSONObject> getAvailableVideos(JSONObject params) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

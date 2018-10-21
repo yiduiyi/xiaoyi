@@ -1,6 +1,7 @@
 package com.xiaoyi.teacher.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -9,6 +10,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
@@ -113,6 +116,36 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 		}
 		
 		return relations;
+	}
+
+	@Override
+	public int setBondGrade(JSONObject params) {
+		try {
+			TeachingRelationship record = new TeachingRelationship();
+			if(StringUtils.isEmpty(params.getString("teachingId"))){
+				throw new CommonRunException(-1, "参数错误,teachingId必传！");
+			}
+			record.setTeachingId(params.getString("teachingId"));
+			record.setCourseId(params.getShort("courseId"));
+			record.setUpdateTime(new Date());
+			record.setCreateTime(new Date());
+			Short lessonType = params.getShort("lessonType");
+			if(lessonType!=null){
+				record.setLessonType(lessonType);
+				record.setGradeId((short)(lessonType/10));
+			}
+			record.setStudentId(params.getString("studentId"));
+			record.setTeacherId(params.getString("teacherId"));
+			record.setStatus((short)0);
+			
+			return teachingRelationshipDao.insertSelective(record);
+		}catch (CommonRunException e) {
+			throw e;
+		}catch (Exception e) {
+			e.printStackTrace();
+			logger.error("插入绑定任教关系失败！");
+			throw new CommonRunException(-1, "插入绑定任教关系失败！");
+		}
 	}
 
 

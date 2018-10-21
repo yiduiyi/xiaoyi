@@ -21,4 +21,7 @@ public interface IDaulVideoOrderDao{
     int updateByPrimaryKeySelective(DaulVideoOrder record);
 
     int updateByPrimaryKey(DaulVideoOrder record);
+    
+    //获取名师回放视频列表
+    List<JSONObject> selectAvailableVideoCourses(JSONObject params);
 }

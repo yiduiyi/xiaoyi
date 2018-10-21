@@ -19,7 +19,11 @@ public interface ICustomDao {
     List<Schedule> selectScheduleByParentsId(String parentId);
     
     List<TeachingRecord> selectTeachingRecordsByTeachingId(Map<String,Object> params);
-    //获取家长对应的学生列表
+    /**
+     * 获取家长对应的学生列表
+     * @param openid
+     * @return	parentId,studentId,studentName
+     */
 	public List<JSONObject> getPSRList(@Param("openid")String openid);
 	//获取某月学生上课记录详情
 	public List<JSONObject> getStuTeachingDetailByMonth(Map<String,Object> reqData);
