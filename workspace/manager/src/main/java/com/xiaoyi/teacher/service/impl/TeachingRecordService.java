@@ -743,6 +743,10 @@ public class TeachingRecordService implements ITeachingRecordService {
 			
 			if(!CollectionUtils.isEmpty(teachingRecords)){
 				for(TeachingRecord tr : teachingRecords){
+					if(!StringUtils.isEmpty(tr.getLessonTradeId())){
+						continue;
+					}
+					
 					JSONObject record = new JSONObject();
 					record.put("recordId", tr.getRecordid());
 					record.put("teachingDate", tr.getTeachingdate());

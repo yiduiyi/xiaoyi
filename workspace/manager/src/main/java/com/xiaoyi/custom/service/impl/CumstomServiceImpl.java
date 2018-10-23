@@ -22,11 +22,18 @@ import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
+import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.LessonType;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
+import com.xiaoyi.common.utils.ConstantUtil.Semaster;
 import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.custom.dao.ICustomDao;
+import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
+import com.xiaoyi.custom.dao.IStudentTaskDao;
+import com.xiaoyi.custom.domain.DaulVideoOrder;
+import com.xiaoyi.custom.domain.StudentTask;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -52,21 +59,23 @@ import com.xiaoyi.teacher.dao.ILessonTradeSumDao;
 import com.xiaoyi.teacher.dao.ISuggestionsDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceDao;
 import com.xiaoyi.teacher.dao.ITeacherBalanceFromDao;
+import com.xiaoyi.teacher.dao.ITeachingRelationshipDao;
 import com.xiaoyi.teacher.domain.ClassFees;
 import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.Suggestions;
 import com.xiaoyi.teacher.domain.TeachingRecord;
+import com.xiaoyi.teacher.domain.TeachingRelationship;
 import com.xiaoyi.teacher.service.IClassFeesService;
 
 @Service("customService")
 public class CumstomServiceImpl implements ICustomService {
 
 	@Resource
-	private IParentsDao parentDao;
+	IParentsDao parentDao;
 
 	@Resource
-	private ICustomDao customDao;
+	ICustomDao customDao;
 
 	@Resource
 	IScheduleDao scheduleDao;
@@ -96,20 +105,29 @@ public class CumstomServiceImpl implements ICustomService {
 	ILessonTypeDao lessonTypeDao;
 
 	@Resource
-	private ITeacherBalanceFromDao balanceFromDao;
+	ITeacherBalanceFromDao balanceFromDao;
 
 	@Resource
-	private ITeacherBalanceDao balanceDao;
+	ITeacherBalanceDao balanceDao;
 
 	@Resource
-	private ICommonService commonService;
+	ICommonService commonService;
 
 	@Resource
 	ITradeComplainsDao tradeCompainsDao;
 
 	@Resource
-	private IClassFeesService classFeesService;
-
+	IClassFeesService classFeesService;
+	
+	@Resource 
+	IDaulVideoOrderDao daulOrderDao;
+	
+	@Resource 
+	ITeachingRelationshipDao teachingRelationshipDao;
+	
+	@Resource
+	IStudentTaskDao studentTaskDao;
+	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
@@ -145,13 +163,52 @@ public class CumstomServiceImpl implements ICustomService {
 
 			SimpleDateFormat myFmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			JSONObject lessonSummary = new JSONObject(); // 学生生门
+			JSONObject lessonSummary1 = new JSONObject();	//一对二
 			JSONObject lessonSummary2 = new JSONObject(); // 老师上门
+			JSONObject lessonSummary3 = new JSONObject(); // 双师
 			for (Orders order : orderList) {
 				JSONArray details = null;
 
 				// 学生上门
 				JSONObject detail = new JSONObject();
-				if (order.getLessontype() > 0) {
+				switch(order.getTeachingWay()){
+				case 0:
+					details = lessonSummary.getJSONArray("details");
+					if (null == details) {
+						details = new JSONArray();										
+					}
+					lessonSummary.put("details", details);
+					lessonSummary.put("orderType", 0);
+					break;
+				case 1:
+					details = lessonSummary2.getJSONArray("details");
+					if (null == details) {
+						details = new JSONArray();										
+					}
+					lessonSummary2.put("details", details);
+					lessonSummary2.put("orderType", 1);
+					break;					
+				case 2:
+					details = lessonSummary1.getJSONArray("details");
+					if (null == details) {
+						details = new JSONArray();										
+					}
+					lessonSummary1.put("details", details);
+					lessonSummary1.put("orderType", 2);
+					break;
+				case 3:
+				case 4:
+					details = lessonSummary3.getJSONArray("details");
+					if (null == details) {
+						details = new JSONArray();										
+					}
+					lessonSummary3.put("details", details);
+					lessonSummary3.put("orderType", 3);
+					break;
+				}				
+				detail.put("teachingTime", myFmt.format(order.getCreatetime()));
+				
+				/*if (order.getLessontype() > 0) {
 					details = lessonSummary.getJSONArray("details");
 					if (null == details) {
 						details = new JSONArray();
@@ -168,7 +225,7 @@ public class CumstomServiceImpl implements ICustomService {
 						lessonSummary2.put("orderType", "on");
 					}
 					detail.put("usedTime", myFmt.format(order.getCreatetime()));
-				}
+				}*/
 				detail.put("transactionType", order.getOrderType());
 				detail.put("cnt", order.getPurchasenum());
 				detail.put("transDate", myFmt.format(order.getCreatetime()));
@@ -177,17 +234,27 @@ public class CumstomServiceImpl implements ICustomService {
 			}
 
 			if (CollectionUtils.isEmpty(lessonSummary)) {
-				lessonSummary.put("orderType", "on");
+				lessonSummary.put("orderType", 0);
 				lessonSummary.put("details", new JSONArray());
 			}
+			if (CollectionUtils.isEmpty(lessonSummary1)) {
+				lessonSummary1.put("orderType", 2);
+				lessonSummary1.put("details", new JSONArray());
+			}
 			if (CollectionUtils.isEmpty(lessonSummary2)) {
-				lessonSummary2.put("orderType", "on");
+				lessonSummary2.put("orderType", 1);
 				lessonSummary2.put("details", new JSONArray());
 			}
-
+			if (CollectionUtils.isEmpty(lessonSummary3)) {
+				lessonSummary3.put("orderType", 3);
+				lessonSummary3.put("details", new JSONArray());
+			}
+			
 			datas.add(lessonSummary);
+			datas.add(lessonSummary1);
 			datas.add(lessonSummary2);
-
+			datas.add(lessonSummary3);
+			
 			return datas;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -872,6 +939,379 @@ public class CumstomServiceImpl implements ICustomService {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	@Override
+	public List<JSONObject> getDaulTransactionCourses(String openId) {
+		// TODO Auto-generated method stub
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		try {
+			Parents p = parentDao.selectByOpenId(openId);
+			String parentId = p.getParentid();
+			
+			JSONObject params = new JSONObject();
+			params.put("parentId", parentId);
+			List<DaulVideoOrder> daulVideoOrders = daulOrderDao.selectByParams(params);
+			
+			if(!CollectionUtils.isEmpty(daulVideoOrders)){
+				for(DaulVideoOrder order : daulVideoOrders){
+					JSONObject data = new JSONObject();
+					
+					//转换年级
+					Short gradeId = order.getGradeId();
+					data.put("gradeId", gradeId);
+					if(null!=gradeId){
+						for(Grade g : Grade.values()){
+							if(g.getValue() == gradeId){
+								data.put("gradeName", g.getFullGradeName());
+								break;
+							}
+						}
+					}
+					
+					//获取courseName					
+					Short videoCourseType = order.getVideoCourseType();
+					data.put("videoCourseType", videoCourseType);
+					
+					Short semaster = order.getSemaster();
+					data.put("semaster", semaster);
+					
+					StringBuffer courseName = new StringBuffer();
+					if(null!=videoCourseType){
+						switch(videoCourseType){
+						case 1:
+							courseName.append("同步");
+							break;
+						case 2:
+							courseName.append("专题");
+							break;
+						case 3:
+							courseName.append("假期");							
+							break;
+						}
+					}
+					for(Semaster s : Semaster.values()){
+						if(s.getValue() == semaster){
+							courseName.append(s.getSimpleName()+"册");
+							break;
+						}
+					}
+					
+					data.put("courseName", courseName.toString());					
+					
+					datas.add(data);
+				}
+			}			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			logger.error("查询家长购买双师同步视频订单出错！");
+		}
+		
+		return datas;
+	}
+
+	@Override
+	public List<JSONObject> getStudentBondCourses(String openId) {
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		
+		try {
+			List<JSONObject> psrList = null;
+			try {
+				psrList = customDao.getPSRList(openId);				
+			} catch (Exception e) {
+				logger.error("查询家长-学生关系出错![openId]:" + openId);
+				throw new CommonRunException(-1, "查询家长-学生关系出错！");
+			}
+			if(!CollectionUtils.isEmpty(psrList)){
+				List<String> studentIds = new ArrayList<String>();
+				for(JSONObject psr : psrList){
+					studentIds.add(psr.getString("studentId"));
+				}
+
+				//(年级)科目列表 & 作业完成率
+				List<JSONObject> relationshipList = null;
+				try {
+					relationshipList = teachingRelationshipDao.selectTeachingRelationshipAndAccomplishRate(studentIds);						
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new CommonRunException(-1, "查询老师所带学生&作业完成率失败！");
+				}
+				
+				//学生列表
+				for(JSONObject psr : psrList){
+					JSONObject stu = new JSONObject();
+					
+					stu.put("studentId", psr.get("studentId"));
+					stu.put("studentName", psr.get("studentName"));
+
+					if(!CollectionUtils.isEmpty(relationshipList)){
+						JSONArray courseList = new JSONArray();
+						for(JSONObject course : relationshipList){
+							//过滤其他学生
+							if(course.getString("studentId")==null 
+									|| !course.getString("studentId").equals(psr.get("studentId"))){
+								continue;
+							}
+							
+							//年级
+							Integer gradeId = course.getInteger("gradeId");
+							for(Grade g : Grade.values()){
+								if(gradeId == g.getValue()){
+									course.put("gradeName", g.getFullGradeName());									
+								}
+							}
+							
+							//科目
+							Integer courseId = course.getInteger("courseId");
+							for(Course c : Course.values()){
+								if(c.getValue() == courseId){
+									course.put("courseName", c.toString());									
+								}
+							}
+							
+							//作业完成率
+							if(StringUtils.isEmpty(course.getString("accomplishRate"))){
+								course.put("accomplishRate", 100);
+							}
+							
+							courseList.add(course);
+						}
+						
+						//只有老师设定了作业（年级+科目）才会在家长端显示作业
+						if(courseList.size()!=0){
+							stu.put("courseList", courseList);
+							datas.add(stu);
+						}
+					}
+				}				
+			}
+		
+		} catch (CommonRunException e) {
+			
+		} catch (Exception e) {
+			logger.error("获取学生绑定的科目失败！");
+			throw new CommonRunException(-1, "获取学生绑定的科目失败！");
+		}
+		return datas;
+	}
+
+	@Override
+	public List<JSONObject> getBondSubGrades(JSONObject params) {
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		
+		try {
+			String openId = params.getString("openId");
+			List<JSONObject> psrList = null;
+
+			//查询家长-学生关系
+			List<String> studentIds = new ArrayList<String>();
+			try {
+				psrList = customDao.getPSRList(openId);								
+				//判空
+				if(CollectionUtils.isEmpty(psrList)){
+					return datas;
+				}												
+			} catch (Exception e) {
+				logger.error("查询家长-学生关系出错![openId]:" + openId);
+				throw new CommonRunException(-1, "查询家长-学生关系出错！");
+			}
+			
+			//查找年级-科目
+			try {					
+				for(JSONObject psr : psrList){
+					studentIds.add(psr.getString("studentId"));
+				}
+				if(studentIds.size()==0){
+					return datas;
+				}
+				List<JSONObject> relations = 
+						teachingRelationshipDao.selectTeachingRelationshipAndAccomplishRate(studentIds);
+				List<String> subGrades = new ArrayList<String>();
+				for(JSONObject relation : relations){
+					StringBuffer sb = new StringBuffer();
+					Short courseId = relation.getShort("courseId");
+					Short gradeId = relation.getShort("gradeId");
+					sb.append(courseId);
+					sb.append("-");
+					sb.append(gradeId);
+					
+					if(subGrades.contains(sb.toString())){
+						continue;
+					}
+					subGrades.add(sb.toString());
+					
+					//补充年级，科目名称
+					for(Course c : Course.values()){
+						if(c.getValue() == courseId){
+							relation.put("courseName", c.toString());
+							break;
+						}
+					}
+					for(Grade g : Grade.values()){
+						if(g.getValue() == gradeId){
+							relation.put("gradeName", g.getFullGradeName());
+							break;
+						}
+					}
+					datas.add(relation);
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error("查找年级-科目失败！");
+				throw new CommonRunException(-1, "查找年级-科目失败！");
+			}
+		} catch (CommonRunException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new CommonRunException(-1, "内部错误！");
+		}
+		return datas;
+	}
+
+	@Override
+	public List<JSONObject> getAvailableVideos(JSONObject params) {
+		// TODO Auto-generated method stub
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		try {
+			String parentId = null;
+			try {
+				logger.info("根据openId查询家长【openId】：" + params.getString("openId"));
+				Parents parent = parentDao.selectByOpenId(params.getString("openId"));
+				
+				parentId = parent.getParentid();
+			} catch (Exception e) {
+				throw new CommonRunException(-1, "查询家长出错！");
+			}
+			
+			//查询视频列表
+			List<JSONObject> availableVideos = null;
+			try {
+				params.put("semaster", Semaster.getCurrentSemaster());//只显示当前学期的视频课程
+				params.put("parentId", parentId);
+				
+				availableVideos = daulOrderDao.selectAvailableVideoCourses(params);
+			} catch (Exception e) {
+				logger.warn("查询可用双师视频课程列表出错！");
+				throw new CommonRunException(-1, "查询可用双师视频课程列表出错！");				
+			}
+			
+			//拼装数据
+			if(!CollectionUtils.isEmpty(availableVideos)){
+				Map<Integer,JSONArray> videoGroupMap = new HashMap<Integer, JSONArray>();
+				for(JSONObject video : availableVideos){
+					Integer group = video.getInteger("videoCourseType");
+					if(null==group){
+						continue;
+					}
+					
+					JSONArray videoGroup = videoGroupMap.get(group);
+					if(null==videoGroup){
+						videoGroup = new JSONArray();
+						videoGroupMap.put(group, videoGroup);
+						
+						videoGroup.add(video);						
+					}					
+				}
+				
+				//组合各个组（三大类：同步，专题和假期）
+				for(Integer videoCourseType : videoGroupMap.keySet()){
+					JSONObject videoGroup = new JSONObject();
+					
+					videoGroup.put("videoCourseType", videoCourseType);
+					videoGroup.put("videoCourseTasks", videoGroupMap.get(videoCourseType));
+					datas.add(videoGroup);
+				}
+			}
+			
+		} catch (CommonRunException e) {
+			throw e;
+		}catch (Exception e) {
+			// TODO: handle exception
+			throw new CommonRunException(-1, "内部错误！");
+		}
+		
+		return datas;
+	}
+
+	@Override
+	public List<JSONObject> getDistributedTasks(JSONObject params) {
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		List<JSONObject> tasks = null;
+		try {
+			//验证参数
+			if(params.get("studentId")==null
+					|| params.get("gradeId")==null
+					|| params.get("courseId")==null){
+				logger.info("入参【params】：" + params);
+				throw new CommonRunException(-1, "参数错误！");
+			}
+			
+			try {
+				tasks = studentTaskDao.selectAllByParams(params);				
+			} catch (Exception e) {
+				logger.error("查询老师布置的作业失败！");
+				throw new CommonRunException(-1, "查询老师布置的作业失败！");
+			}
+			
+			//拼装数据
+			if(null!=tasks){
+				Map<Byte,JSONArray> taskTypeMap = new HashMap<Byte, JSONArray>();
+				for(JSONObject task : tasks){
+					Byte taskType = task.getByte("videoTaskType");
+					if(null == taskType){
+						continue;
+					}
+					
+					JSONArray taskList = taskTypeMap.get(taskType);
+					if(null == taskList){
+						taskList = new JSONArray();
+						taskTypeMap.put(taskType, taskList);
+					}
+					taskList.add(task);					
+				}
+				
+				//归类
+				for(Byte taskType : taskTypeMap.keySet()){
+					JSONObject task = new JSONObject();
+					task.put("videoCourseType", taskType);
+					task.put("taskList", taskTypeMap.get(taskType));
+					
+					datas.add(task);
+				}
+			}
+			
+		}  catch (CommonRunException e) {
+			throw e;
+		}catch (Exception e) {
+			// TODO: handle exception
+			logger.error("内部错误！");
+			throw new CommonRunException(-1, "内部错误！");
+		}
+		
+		return datas;
+	}
+
+	@Override
+	public int modifyTaskStatus(JSONObject params) {
+		try {
+			//验证参数
+			if(params.getString("studentTaskId")==null){
+				throw new CommonRunException(-1, "参数错误！");
+			}
+			
+			StudentTask record = new StudentTask();
+			record.setStudentTaskId(params.getString("studentTaskId"));
+			record.setTaskStatus((byte)2);
+			record.setVideoCourseId(params.getString("videoCourseId"));
+			
+			studentTaskDao.updateByPrimaryKeySelective(record);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new CommonRunException(-1, "修改作业状态（已完成）失败！");
+		}
+		return 0;
 	}
 
 }

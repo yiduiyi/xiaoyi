@@ -28,26 +28,29 @@
 		<include refid="Base_Column_List" />
 		from video_course 
 		<where>
-			<if test="videoCourseId != null">
-				videoCourseId = #{videoCourseId,jdbcType=VARCHAR}
+			<if test="video_course_id != null">
+				video_course_id = #{videoCourseId,jdbcType=VARCHAR}
 			</if>
 			<if test="gradeId != null">
-				AND gradeId = #{gradeId,jdbcType=SMALLINT}
+				AND grade_id = #{gradeId,jdbcType=SMALLINT}
 			</if>
 			<if test="semaster != null">
 				AND semaster = #{semaster,jdbcType=TINYINT}
 			</if>
 			<if test="courseId != null">
-				AND courseId = #{courseId,jdbcType=SMALLINT}
+				AND course_id = #{courseId,jdbcType=SMALLINT}
 			</if>
 			<if test="videoCourseType != null">
-				AND videoCourseType = #{videoCourseType,jdbcType=TINYINT}
+				AND video_course_type = #{videoCourseType,jdbcType=TINYINT}
 			</if>
 			<if test="status != null">
-				#{status,jdbcType=TINYINT}
+				AND status = #{status,jdbcType=TINYINT}
+			</if>
+			<if test="name!=null">
+				AND video_course_name LIKE '%${name}%'
 			</if>
 			<if test="chapterId != null">
-				AND chapterId = #{chapterId,jdbcType=VARCHAR}
+				AND chapter_id = #{chapterId,jdbcType=VARCHAR}
 			</if>
 		</where>
 	</select>

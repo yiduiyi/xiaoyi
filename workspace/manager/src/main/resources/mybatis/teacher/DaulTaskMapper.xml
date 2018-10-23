@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoyi.teacher.dao.IDaulTaskDao">
+  <!-- 查找老师和家长,学生绑定关系 -->
+  <select id="selectPSTBondingRelations" parameterType="java.lang.String" 
+  	resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT a.teachingId, a.parentId, p.parentName, p.telNum as telephone, 
+  			a.memberId as studentId, s.`name` as studentName, o.lessonType
+	FROM order_teaching_r a LEFT JOIN parents p ON a.parentId=p.parentId
+		LEFT JOIN student s ON a.memberId=s.memberId
+		LEFT JOIN ordersum o ON a.orderId = o.orderId
+	WHERE 
+		o.teachingWay = 3
+		AND a.teacherId = #{teacherId}
+  </select>
+  
+  <!-- 查询可布置的视频课程列表 -->
+  <select id="selectAvailableTasks" resultType="com.alibaba.fastjson.JSONObject"
+  		parameterType="com.alibaba.fastjson.JSONObject">
+  	SELECT VC.video_course_id AS videoCourseId, VC.video_course_name AS videoCourseName,
+		VC.video_course_type AS videoCourseType, VC.h5_video_link AS h5VideoLink
+	FROM teaching_relationship TR LEFT JOIN video_course VC 
+		ON TR.grade_id = VC.grade_id AND TR.course_id = VC.course_id
+	<where>
+		<if test="studentId!=null">
+			TR.student_id = #{studentId}
+		</if>
+		<if test="studentId!=null">
+			AND TR.teacher_id = #{teacherId}
+		</if>
+		<if test="gradeId!=null">
+			AND TR.grade_id= #{gradeId}
+		</if>
+		<if test="courseId!=null">
+			AND TR.course_id= #{courseId}
+		</if>
+		<if test="semaster!=null">
+			AND semaster = #{semaster}
+		</if>
+	</where>
+  </select>
+</mapper>

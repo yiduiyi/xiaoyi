@@ -15,6 +15,12 @@ public class StudentTask extends StudentTaskKey {
 
     private String notes;
 
+    private Date updateTime;
+    
+    private Short gradeId;
+    
+    private Short courseId;
+    
     public String getTeacherId() {
         return teacherId;
     }
@@ -62,5 +68,29 @@ public class StudentTask extends StudentTaskKey {
     public void setNotes(String notes) {
         this.notes = notes == null ? null : notes.trim();
     }
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Short getGradeId() {
+		return gradeId;
+	}
+
+	public void setGradeId(Short gradeId) {
+		this.gradeId = gradeId;
+	}
+
+	public Short getCourseId() {
+		return courseId;
+	}
+
+	public void setCourseId(Short courseId) {
+		this.courseId = courseId;
+	}
 
 }

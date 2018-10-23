@@ -1080,6 +1080,11 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			throw new CommonRunException(-1, " 更新家长订单失败！");
 		}
 
+		//notify (是否发送确认通知) 微信端提交课时记录时,不推送
+		if(params.get("notify")!=null){
+			return 0;
+		}
+		
 		// 发送消息到家长微信端
 		// 根据家长openId开始推送消息（确认老师提现）
 		// 消息推送给家长，进行确认

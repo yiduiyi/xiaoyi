@@ -20,6 +20,62 @@
 		create_time,
 		grade_id, semaster, video_course_type
 	</sql>
+	
+	<!-- 根据条件查找双师同步视频订单 -->
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="com.alibaba.fastjson.JSONObject">
+		select
+		<include refid="Base_Column_List" />
+		from daul_video_order
+		<where>
+			<if test="daulOrderId!=null">
+				daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
+			</if>
+			<if test="parentId!=null">
+				AND parent_id = #{parentId}
+			</if>
+			<if test="studentId!=null">
+				AND student_id = #{studentId}
+			</if>
+			<if test="studentId!=null">
+				AND grade_id = #{gradeId}
+			</if>
+			<if test="semaster!=null">
+				AND semaster = #{semaster}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 查找家长购买的双师课程列表（名师回放）  -->
+	<select id="selectAvailableVideoCourses" parameterType="com.alibaba.fastjson.JSONObject"
+		resultType="com.alibaba.fastjson.JSONObject">
+		SELECT DVO.grade_id AS gradeId,VC.course_id AS courseId, VC.h5_video_link AS h5VideoLink,
+			VC.video_course_name AS videoCourseName,VC.video_course_type AS videoCourseType
+		FROM daul_video_order DVO LEFT JOIN video_course VC 
+				ON DVO.grade_id = VC.grade_id
+		WHERE
+			VC.chapter_id &lt;&gt; 0
+		<if test="daulOrderId!=null">
+			AND DVO.daul_order_id = #{daulOrderId,jdbcType=VARCHAR}
+		</if>
+		<if test="parentId!=null">
+			AND DVO.parent_id = #{parentId}
+		</if>
+		<if test="studentId!=null">
+			AND DVO.student_id = #{studentId}
+		</if>
+		<if test="studentId!=null">
+			AND VC.grade_id = #{gradeId}
+		</if>
+		<if test="courseId!=null">
+			AND VC.course_id = #{courseId}
+		</if>
+		<if test="semaster!=null">
+			AND VC.semaster = #{semaster}
+		</if>		 
+		GROUP BY DVO.video_course_id
+	</select>
+	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
 		select
@@ -40,12 +96,12 @@
 		values
 		<foreach collection="list" item="item" index= "index" separator =",">
 		(
-			#{daulOrderId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR},
-			#{studentId,jdbcType=VARCHAR},
-			#{orderComesFrom,jdbcType=SMALLINT}, #{videoCourseId,jdbcType=VARCHAR}, 
-			#{createTime,jdbcType=TIMESTAMP},
-			#{gradeId,jdbcType=SMALLINT}, #{semaster,jdbcType=SMALLINT},
-			#{videoCourseType,jdbcType=SMALLINT}
+			#{item.daulOrderId,jdbcType=VARCHAR}, #{item.parentId,jdbcType=VARCHAR},
+			#{item.studentId,jdbcType=VARCHAR},
+			#{item.orderComesFrom,jdbcType=SMALLINT}, #{item.videoCourseId,jdbcType=VARCHAR}, 
+			#{item.createTime,jdbcType=TIMESTAMP},
+			#{item.gradeId,jdbcType=SMALLINT}, #{item.semaster,jdbcType=SMALLINT},
+			#{item.videoCourseType,jdbcType=SMALLINT}
 		)
 		</foreach>
 	</insert>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.xiaoyi.custom.dao.IStudentTask_statisticDao" >
+<mapper namespace="com.xiaoyi.custom.dao.IStudentTaskStatisticDao" >
   <resultMap id="BaseResultMap" type="com.xiaoyi.custom.domain.StudentTaskStatistic" >
     <id column="student_id" property="studentId" jdbcType="VARCHAR" />
     <id column="teacher_id" property="teacherId" jdbcType="VARCHAR" />

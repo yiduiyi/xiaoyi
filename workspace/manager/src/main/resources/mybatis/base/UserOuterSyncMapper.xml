@@ -104,7 +104,7 @@
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
-    ON DUPLICATE KEY UPDATE userId=#{userId}
+    ON DUPLICATE KEY UPDATE user_id=#{userId}
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.UserOuterSync" >
     update user_outer_sync

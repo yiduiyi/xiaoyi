@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.wechat.utils.AdvancedUtil;
@@ -39,9 +40,9 @@ public class CustomerAction {
 		RtConstants rtCode = RtConstants.FAILED;
 		String openid = (String) request.getSession().getAttribute("openid");
 		logger.info("获取课时交易记录-openId:" + openid);
-		/*
-		 * if(logger.isDebugEnabled()) { openid="oVbXbw_Fz5o2-VHc5eIW5WY1JG70"; }
-		 */
+		
+		//if(logger.isDebugEnabled()) { openid="oknxW0lyknEETUK7k4qfC8BGvVA4"; }
+		 
 		try {
 			result.put("data", customService.queryTransactionCourses(openid));
 			rtCode = RtConstants.SUCCESS;
@@ -315,6 +316,203 @@ public class CustomerAction {
 		return result;
 	}
 
+		//==============================   双师课程模块       =====================================
+
+		// 获取购买的同步课程
+		//url：/custom/daul/getStudentBondCourses.do
+		@RequestMapping(value = "/daul/getStudentBondCourses", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject getStudentBondCourses(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.FAILED;
+			try {	
+				String openId =  (String) request
+						.getSession()
+						.getAttribute("openid");
+				//测试
+				/*if(openId==null){
+					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
+				}*/
+				List<JSONObject> studentsList = customService.getStudentBondCourses(openId);
+				result.put("data", studentsList);
+				rtCode = RtConstants.SUCCESS;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+			return result;
+		}
+		
+		
+		// 获取购买的同步课程
+		@RequestMapping(value = "/daul/getDaulTransactionCourses", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject getDaulTransactionCourses(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.FAILED;
+			try {	
+				String openId =  (String) request
+						.getSession()
+						.getAttribute("openid");
+				//测试
+				/*if(openId==null){
+					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
+				}*/
+				List<JSONObject> studentsList = customService.getDaulTransactionCourses(openId);
+				result.put("data", studentsList);
+				rtCode = RtConstants.SUCCESS;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+			return result;
+		}
+		
+		/**
+		 * 查询家长已购买双师课程所属年级、科目
+		 * @param request
+		 * @param response
+		 * @param reqData
+		 * @return
+		 */
+		@RequestMapping(value = "/daul/getStudentBondCoursesAndAccomplishRate", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject getStudentBondCoursesAndAccomplishRate(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.FAILED;
+			try {	
+				String openId =  (String) request
+						.getSession()
+						.getAttribute("openid");
+				//测试
+				/*if(openId==null){
+					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
+				}*/
+				List<JSONObject> datas = customService.getStudentBondCourses(openId);
+				result.put("data", datas);
+				rtCode = RtConstants.SUCCESS;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+			return result;
+		}
+		
+		/**
+		 * 查询课程列表-名师回放
+		 * @param request
+		 * @param response
+		 * @param reqData
+		 * @return
+		 */
+		@RequestMapping(value = "/daul/getBondSubGrades", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject getBondSubGrades(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.FAILED;
+			try {	
+				String openId =  (String) request
+						.getSession()
+						.getAttribute("openid");
+				//测试
+				/*if(openId==null){
+					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
+				}*/
+				reqData.put("openId", openId);
+				List<JSONObject> datas = customService.getBondSubGrades(reqData);
+				result.put("data", datas);
+				rtCode = RtConstants.SUCCESS;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+			return result;
+		}
+
+		/**
+		 * • 查询课程列表-名师回放（√）
+		 * @param request
+		 * @param response
+		 * @param reqData
+		 * @return
+		 */
+		@RequestMapping(value = "/daul/getAvailableVideos", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject getAvailableVideos(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.FAILED;
+			try {	
+				String openId =  (String) request
+						.getSession()
+						.getAttribute("openid");
+				//测试
+				/*if(openId==null){
+					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
+				}*/
+				reqData.put("openId", openId);
+				List<JSONObject> datas = customService.getAvailableVideos(reqData);
+				result.put("data", datas);
+				rtCode = RtConstants.SUCCESS;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+			return result;
+		}
+		
+		/**
+		 * • 查询老师给学生布置的作业列表
+		 * @param request
+		 * @param response
+		 * @param reqData
+		 * @return
+		 */
+		@RequestMapping(value = "/daul/getDistributedTasks", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject getDistributedTasks(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.FAILED;
+			try {	
+				List<JSONObject> datas = customService.getDistributedTasks(reqData);
+				result.put("data", datas);
+				rtCode = RtConstants.SUCCESS;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+			return result;
+		}
+	
+		/**
+		 * • 修改学生作业完成情况
+		 * @param request
+		 * @param response
+		 * @param reqData
+		 * @return
+		 */
+		@RequestMapping(value = "/daul/modifyTaskStatus", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject modifyTaskStatus(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.SUCCESS;
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+
+			try {	
+				customService.modifyTaskStatus(reqData);				
+			} catch (CommonRunException e) {
+				e.printStackTrace();
+				setReturnMsg(result, e.getCode(), e.getMessage());
+			}
+			return result;
+		}	
+
 	/**
 	 * 获取用户openId
 	 * @param req
@@ -339,9 +537,9 @@ public class CustomerAction {
 			e.printStackTrace();
 		}
 		return null;
-	}
+	}		
 	
-	//
+
 	private JSONObject setReturnMsg(JSONObject result, int code, String rtString) {
 		result.put("code", code);
 		result.put("msg", rtString);

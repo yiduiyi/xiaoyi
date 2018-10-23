@@ -1,5 +1,6 @@
 package com.xiaoyi.common.utils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -224,13 +225,28 @@ public class ConstantUtil {
 			return semaster;
 		}
 		
-		@Override
-		public String toString(){
+		public String getSimpleName(){
 			switch(semaster){
 			case 1:
 				return "上";
 			case 2:
 				return "下";
+			case 3:
+				return "暑";
+			case 4:
+				return "寒";
+				default:
+					return "";
+			}
+		}
+		
+		@Override
+		public String toString(){
+			switch(semaster){
+			case 1:
+				return "上学期";
+			case 2:
+				return "下学期";
 			case 3:
 				return "暑假";
 			case 4:
@@ -239,13 +255,22 @@ public class ConstantUtil {
 					return "";
 			}
 		}
+		
+		public static int getCurrentSemaster(){
+			//获取当前月份 -》计算当前学期（3-9：下，9-3：上）
+			Calendar cal = Calendar.getInstance();
+			Integer month = cal.get(Calendar.MONTH) + 1;
+			int semaster = (month+3)%12>=6?2:1;
+			
+			return semaster;
+		}
 	}
 	
 	public static enum Grade{
 		ONE(1),TWO(2),THREE(3),FOUR(4),FIVE(5),SIX(6)
 		,
 		PRIMARY_ONE(11),PRIMARY_TWO(12),PRIMARY_THREE(13),PRIMARY_FOUR(14),PRIMARY_FIVE(15),PRIMARY_SIX(16),
-		MIDDLE_TWO(22),MIDDLE_ONE(21),MIDDLE_THREE(23),
+		MIDDLE_ONE(21),MIDDLE_TWO(22),MIDDLE_THREE(23),
 		HIGH_ONE(31),HIGH_TWO(32),HIGH_THREE(33);
 		
 		private int grade;
@@ -321,10 +346,19 @@ public class ConstantUtil {
 	}
 	
 	public static enum Course{
-		CHN(1),MATH(2),ENG(3),POL(4),HIS(5),GEO(6),PHY(7),CHE(8),BIO(9);
+		ALL(0),CHN(1),MATH(2),ENG(3),POL(4),HIS(5),GEO(6),PHY(7),CHE(8),BIO(9);
 		private int courseId;
 		private Course(int courseId){
 			this.courseId = courseId;
+		}
+		
+		public static Course getInstance(int courseId){
+			for(Course c : Course.values()){
+				if(c.getValue() == courseId){
+					return c;
+				}
+			}
+			return null;
 		}
 		
 		public int getValue(){
@@ -333,6 +367,8 @@ public class ConstantUtil {
 		
 		public String getSimpleName(){
 			switch(courseId){
+			case 0:
+				return "全";
 			case 1:
 				return "语";
 			case 2:
@@ -358,6 +394,8 @@ public class ConstantUtil {
 		@Override
 		public String toString(){
 			switch(courseId){
+			case 0:
+				return "全科";
 			case 1:
 				return "语文";
 			case 2:
@@ -529,7 +567,13 @@ public class ConstantUtil {
 	}
 	
 	public static enum VideoCourseType{
-		SYNC_COURSE(1),EXAM_COURSE(21),HIGH_COURSE(22),WINTER_COURSE(31),SUMMER_COURSE(32);
+		SYNC_COURSE(1),	//同步课程
+			CHN_COURSE(11),MATH_COURSE(12),ENG_COURSE(13),POL_COURSE(14),
+			HIS_COURSE(15),GEO_COURSE(16),PHY_COURSE(17),CHE_COURSE(18),BIO_COURSE(19),
+		SPEC_COURSE(2),	//专题课程
+			EXAM_COURSE(21),HIGH_COURSE(22),
+		HOLI_COURSE(3),	//假期课程
+			WINTER_COURSE(31),SUMMER_COURSE(32);
 		private int videoCourseType;
 
 		private VideoCourseType(int videoCourseType) {
@@ -541,16 +585,27 @@ public class ConstantUtil {
 		@Override
 		public String toString() {
 			switch(videoCourseType){
+			//三大类
 			case 1:
 				return "同步课程";
-			case 21: 
-				return "中考";
-			case 22:
-				return "拔高";
-			case 31:
-				return "寒假";
-			case 32:
-				return "暑假";
+				//对应小类
+				case 11:case 12:case 13:case 14:case 15:case 16:
+				case 17:case 18:case 19: 
+					return Course.getInstance(videoCourseType%10).toString();
+			case 2:
+				return "专题课程";
+				//对应小类
+				case 21: 
+					return "中考";
+				case 22:
+					return "拔高";
+			case 3: 
+				return "假期课程";
+				//对应小类
+				case 31:
+					return "寒假";
+				case 32:
+					return "暑假";
 			default :
 				return "";
 			}

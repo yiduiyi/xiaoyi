@@ -363,6 +363,7 @@ public class H5PlateAction {
 			 * if(StringUtils.isEmpty(reqData.getString("openId"))){ reqData.put("openId",
 			 * "oknxW0lyknEETUK7k4qfC8BGvVA4"); }
 			 */
+			reqData.put("notify", "-1");
 			h5PlateService.submitTeachingRecord(reqData);
 
 			code = 0;

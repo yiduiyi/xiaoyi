@@ -34,6 +34,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="D:/Java/jar/dom4j-2.0.2.jar">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
@@ -44,5 +45,9 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+=======
+	<classpathentry kind="lib" path="H:/yduiy/jar/dom4j-2.0.2.jar"/>
+	<classpathentry kind="lib" path="H:/yduiy/jar/jdom-1.0.jar"/>
+>>>>>>> dev
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
