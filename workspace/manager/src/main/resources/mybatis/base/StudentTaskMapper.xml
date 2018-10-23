@@ -8,13 +8,17 @@
 		<result column="student_id" property="studentId" jdbcType="VARCHAR" />
 		<result column="task_type" property="taskType" jdbcType="TINYINT" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
 		<result column="task_status" property="taskStatus" jdbcType="TINYINT" />
 		<result column="notes" property="notes" jdbcType="VARCHAR" />
+		<result column="grade_id" property="gradeId" jdbcType="SMALLINT" />
+    	<result column="course_id" property="courseId" jdbcType="TINYINT" />
+		<result/>
 	</resultMap>
 	<sql id="Base_Column_List">
 		student_task_id, video_course_id, teacher_id, student_id,
-		task_type, create_time,
-		task_status, notes
+		task_type, create_time, update_time
+		task_status, notes, grade_id, course_id
 	</sql>
 
 	<!-- 查询已布置的视频课程列表（联合查询） -->

@@ -26,7 +26,6 @@ import com.xiaoyi.custom.dao.IStudentTaskStatisticDao;
 import com.xiaoyi.custom.domain.StudentTask;
 import com.xiaoyi.custom.domain.StudentTaskStatistic;
 import com.xiaoyi.custom.domain.StudentTaskStatisticKey;
-import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.teacher.dao.IDaulTaskDao;
 import com.xiaoyi.teacher.dao.ITH5PlateDao;
@@ -52,6 +51,9 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 	
 	@Resource
 	IStudentTaskDao studentTaskDao;
+	
+	@Resource
+	IStudentTaskStatisticDao taskStatisticDao;
 	
 	@Override
 	public List<JSONObject> getPSTRelations(String openId) {				
@@ -238,8 +240,7 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 
 	@Override
 	public int distributeTask(JSONObject params) {
-		// TODO Auto-generated method stub		
-		
+		// TODO Auto-generated method stub				
 		try {
 			//验证参数
 			if(params.get("studentId")==null 
@@ -259,13 +260,41 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 			record.setTeacherId(params.getString("teacherId"));
 			record.setTaskType(params.getByte("videoTaskType"));
 			record.setVideoCourseId(params.getString("videoCourseId"));
+			record.setGradeId(params.getShort("gradeId"));
+			record.setCourseId(params.getShort("courseId"));
 			
-			return studentTaskDao.insertSelective(record);
+			try {
+				studentTaskDao.insertSelective(record);				
+			} catch (Exception e) {
+				throw new CommonRunException(-1, "插入作业记录失败！");
+			}
+			
+			//更新/插入统计表
+			try {
+				StudentTaskStatisticKey key = new StudentTaskStatisticKey();
+				key.setStudentId(params.getString("studentId"));
+				key.setTeacherId(params.getString("teacherId"));
+				
+				StudentTaskStatistic taskStatistic = taskStatisticDao.selectByPrimaryKey(key); 
+				if(null == taskStatistic){		
+					taskStatistic = new StudentTaskStatistic();
+					taskStatistic.setAccomplishRate((short)100);
+					taskStatistic.s
+				}
+				
+				
+				taskStatisticDao.insertSelective(taskStatistic );
+			} catch (Exception e) {
+				throw new CommonRunException(-1, "更新/插入统计表失败！");
+			}
+			
 		} catch (CommonRunException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new CommonRunException(-1, "插入作业记录失败！");
 		}
+		
+		return 0;
 	}
 
 	@Override

@@ -160,13 +160,13 @@ public class DualTaskAction {
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		int code = 0;
-		String msg = "布置的视频课程作业成功！";
+		String msg = "获取视频课程作业成功！";
 		
 		try {
 			List<JSONObject> datas = daulTaskService.getStuTaskList(reqData);
 			result.put("data", datas);
 		} catch (CommonRunException e) {			
-			logger.error("布置的视频课程作业失败！");
+			logger.error("获取视频课程作业失败！");
 			code = e.getCode();
 			msg = e.getMessage();
 		}

@@ -12,7 +12,6 @@ public class StudentTaskStatistic extends StudentTaskStatisticKey {
 
     private Short accomplishRate;
 
-
     private Short gradeId;
 
     private Byte courseId;
