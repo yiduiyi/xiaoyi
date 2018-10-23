@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoyi.manager.dao.IConsultantGroupDao">
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.ConsultantGroup">
+    <id column="consultant_group_id" jdbcType="VARCHAR" property="consultantGroupId" />
+    <result column="consultant_group_name" jdbcType="VARCHAR" property="consultantGroupName" />
+    <result column="consultant_id" jdbcType="VARCHAR" property="consultantId" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    consultant_group_id, consultant_group_name, consultant_id, role_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from consultant_group
+    where consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from consultant_group
+    where consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.ConsultantGroup">
+    insert into consultant_group (consultant_group_id, consultant_group_name, 
+      consultant_id, role_id)
+    values (#{consultantGroupId,jdbcType=VARCHAR}, #{consultantGroupName,jdbcType=VARCHAR}, 
+      #{consultantId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.ConsultantGroup">
+    insert into consultant_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="consultantGroupId != null">
+        consultant_group_id,
+      </if>
+      <if test="consultantGroupName != null">
+        consultant_group_name,
+      </if>
+      <if test="consultantId != null">
+        consultant_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="consultantGroupId != null">
+        #{consultantGroupId,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantGroupName != null">
+        #{consultantGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantId != null">
+        #{consultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.ConsultantGroup">
+    update consultant_group
+    <set>
+      <if test="consultantGroupName != null">
+        consultant_group_name = #{consultantGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantId != null">
+        consultant_id = #{consultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.ConsultantGroup">
+    update consultant_group
+    set consultant_group_name = #{consultantGroupName,jdbcType=VARCHAR},
+      consultant_id = #{consultantId,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=VARCHAR}
+    where consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR}
+  </update>
+</mapper>

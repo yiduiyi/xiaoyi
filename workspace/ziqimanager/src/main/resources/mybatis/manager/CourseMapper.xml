@@ -196,6 +196,7 @@
   		<if test="courseName != null">
   			AND course_name LIKE CONCAT('%',#{courseName},'%')
   		</if>
+  		AND status = 0
   	</where>
   </select>
 </mapper>

@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.json.JSONArray;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -166,6 +168,7 @@ public class OrderLogServiceImpl implements IOrderLogService {
 		List<OrderLog> orderLogs = new ArrayList<OrderLog>();
 		org.json.JSONObject xiaoEResult = new org.json.JSONObject();
 		org.json.JSONObject data = new org.json.JSONObject();
+		JSONArray datas = new JSONArray();
 		String orderBy = "created_at:desc";
 		Integer pageIndex = 0;
 		Integer pageSize = 50;
@@ -185,7 +188,7 @@ public class OrderLogServiceImpl implements IOrderLogService {
 			//查询小鹅通订单记录
 			xiaoEResult = sdk.send(ConstantUtil.XIAOE_ORDER_LIST_GET_CMD, data, 3, "1.0");
 			if ((xiaoEResult.getBigInteger("code")).toString().equals("0")) {
-				org.json.JSONArray datas = xiaoEResult.getJSONArray("data");
+				 datas = xiaoEResult.getJSONArray("data");
 				if (datas.length() > 0) {
 					for (int i = 0; i < datas.length(); i++) {
 						org.json.JSONObject userData = new org.json.JSONObject();
@@ -194,16 +197,15 @@ public class OrderLogServiceImpl implements IOrderLogService {
 						String userId = orderLogJson.getString("user_id");
 						userData.put("user_id", userId);
 						//获取该条订单用户记录
-						org.json.JSONObject xiaoEUserResult = sdk.send(ConstantUtil.XIAOE_ORDER_USERS_GETINFO, userData, 3, "1.0");
+						org.json.JSONObject xiaoEUserResult = sdk.send(ConstantUtil.XIAOE_ORDER_USERS_GETINFO_CMD, userData, 3, "1.0");
 						org.json.JSONArray usersData = xiaoEUserResult.getJSONArray("data");
 						//构建orderLog记录
 						orderLog.setOrderLogId(UUIDUtil.getUUIDPrimary());
 						if(usersData.length() > 0) {
-							Object aa =  usersData.getJSONObject(0).get("wx_open_id");
-							if(null != aa) {
-								orderLog.setWxOpenid(usersData.getJSONObject(0).getString("wx_open_id"));
+							org.json.JSONObject aa =  usersData.getJSONObject(0);
+							if(!aa.isNull("wx_open_id")) {
+								orderLog.setWxOpenid(aa.getString("wx_open_id"));
 							}
-							
 						}
 						orderLog.setXiaoeResourceId(orderLogJson.getString("id"));
 						orderLog.setXiaoeOrderId(orderLogJson.getString("order_id"));
@@ -220,11 +222,35 @@ public class OrderLogServiceImpl implements IOrderLogService {
 					flag = false;
 				}
 			}
-			//分页查询小鹅通订单记录，每次50条
-			pageIndex += pageSize;
+			//分页查询小鹅通订单记录，每次接上一个循环查询的末尾
+			pageIndex += datas.length();
 		}
 		if(CollectionUtils.isNotEmpty(orderLogs)) {
-			orderLogDao.batchInsertOrderLog(orderLogs);
+			batchInsertOrderLog(orderLogs);
+		}
+	}
+	//剔除重复订单记录
+	private void batchInsertOrderLog(List<OrderLog> orderLogs) {
+		List<String> xiaoEOrderIds = new ArrayList<String>();
+		for (OrderLog orderLog : orderLogs) {
+			xiaoEOrderIds.add(orderLog.getXiaoeOrderId());
+		}
+		if(CollectionUtils.isNotEmpty(xiaoEOrderIds)) {
+			List<OrderLog> oldOrderLogs = orderLogDao.getOrderLogListByXiaoEOrderId(xiaoEOrderIds);
+			if(CollectionUtils.isNotEmpty(oldOrderLogs)) {
+				for (int i = 0; i < oldOrderLogs.size(); i++) {
+					Iterator<OrderLog> orderLogIterator = orderLogs.iterator();
+					while (orderLogIterator.hasNext()) {
+						OrderLog orderLog = orderLogIterator.next();
+						if(oldOrderLogs.get(i).getXiaoeOrderId().equals(orderLog.getXiaoeOrderId())) {
+							orderLogIterator.remove();
+						}
+					}
+				}
+			}
+			if(CollectionUtils.isNotEmpty(orderLogs)) {
+				orderLogDao.batchInsertOrderLog(orderLogs);
+			}
 		}
 	}
 

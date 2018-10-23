@@ -33,7 +33,7 @@ public class CourseServiceImpl implements ICourseService {
 		course.setH5Link(reqData.getString("h5Link"));
 		course.setCreateTime(new Date());
 		course.setUpdateTime(new Date());
-		course.setStatus(ConstantUtil.COURSE_STATUS_REMOVE);
+		course.setStatus(ConstantUtil.COURSE_STATUS_NORMAL);
 		return courseDao.insertSelective(course);
 	}
 	@Override

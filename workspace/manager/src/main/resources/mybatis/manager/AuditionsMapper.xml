@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoyi.manager.dao.IAuditionsDao">
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Auditions">
+    <id column="audition_id" jdbcType="VARCHAR" property="auditionId" />
+    <result column="student_id" jdbcType="VARCHAR" property="studentId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="grade_id" jdbcType="SMALLINT" property="gradeId" />
+    <result column="subject_id" jdbcType="SMALLINT" property="subjectId" />
+    <result column="come_from" jdbcType="SMALLINT" property="comeFrom" />
+    <result column="cooperator_id" jdbcType="VARCHAR" property="cooperatorId" />
+    <result column="status" jdbcType="SMALLINT" property="status" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="consultant_group_id" jdbcType="VARCHAR" property="consultantGroupId" />
+    <result column="consultant_id" jdbcType="VARCHAR" property="consultantId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    audition_id, student_id, parent_id, grade_id, subject_id, come_from, cooperator_id, 
+    status, order_id, notes, consultant_group_id, consultant_id, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from auditions
+    where audition_id = #{auditionId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from auditions
+    where audition_id = #{auditionId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Auditions">
+    insert into auditions (audition_id, student_id, parent_id, 
+      grade_id, subject_id, come_from, 
+      cooperator_id, status, order_id, 
+      notes, consultant_group_id, consultant_id, 
+      create_time, update_time)
+    values (#{auditionId,jdbcType=VARCHAR}, #{studentId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{gradeId,jdbcType=SMALLINT}, #{subjectId,jdbcType=SMALLINT}, #{comeFrom,jdbcType=SMALLINT}, 
+      #{cooperatorId,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{orderId,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{consultantGroupId,jdbcType=VARCHAR}, #{consultantId,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Auditions">
+    insert into auditions
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="auditionId != null">
+        audition_id,
+      </if>
+      <if test="studentId != null">
+        student_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="gradeId != null">
+        grade_id,
+      </if>
+      <if test="subjectId != null">
+        subject_id,
+      </if>
+      <if test="comeFrom != null">
+        come_from,
+      </if>
+      <if test="cooperatorId != null">
+        cooperator_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="notes != null">
+        notes,
+      </if>
+      <if test="consultantGroupId != null">
+        consultant_group_id,
+      </if>
+      <if test="consultantId != null">
+        consultant_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="auditionId != null">
+        #{auditionId,jdbcType=VARCHAR},
+      </if>
+      <if test="studentId != null">
+        #{studentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null">
+        #{gradeId,jdbcType=SMALLINT},
+      </if>
+      <if test="subjectId != null">
+        #{subjectId,jdbcType=SMALLINT},
+      </if>
+      <if test="comeFrom != null">
+        #{comeFrom,jdbcType=SMALLINT},
+      </if>
+      <if test="cooperatorId != null">
+        #{cooperatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantGroupId != null">
+        #{consultantGroupId,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantId != null">
+        #{consultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Auditions">
+    update auditions
+    <set>
+      <if test="studentId != null">
+        student_id = #{studentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null">
+        grade_id = #{gradeId,jdbcType=SMALLINT},
+      </if>
+      <if test="subjectId != null">
+        subject_id = #{subjectId,jdbcType=SMALLINT},
+      </if>
+      <if test="comeFrom != null">
+        come_from = #{comeFrom,jdbcType=SMALLINT},
+      </if>
+      <if test="cooperatorId != null">
+        cooperator_id = #{cooperatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null">
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantGroupId != null">
+        consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR},
+      </if>
+      <if test="consultantId != null">
+        consultant_id = #{consultantId,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where audition_id = #{auditionId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Auditions">
+    update auditions
+    set student_id = #{studentId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      grade_id = #{gradeId,jdbcType=SMALLINT},
+      subject_id = #{subjectId,jdbcType=SMALLINT},
+      come_from = #{comeFrom,jdbcType=SMALLINT},
+      cooperator_id = #{cooperatorId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=SMALLINT},
+      order_id = #{orderId,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR},
+      consultant_id = #{consultantId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where audition_id = #{auditionId,jdbcType=VARCHAR}
+  </update>
+</mapper>

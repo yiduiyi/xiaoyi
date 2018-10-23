@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoyi.manager.dao.IRoleDao">
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Role">
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_code" jdbcType="SMALLINT" property="roleCode" />
+    <result column="department_id" jdbcType="VARCHAR" property="departmentId" />
+    <result column="parent_role_code" jdbcType="VARCHAR" property="parentRoleCode" />
+    <result column="menu_code" jdbcType="SMALLINT" property="menuCode" />
+    <result column="grant_menu_type" jdbcType="SMALLINT" property="grantMenuType" />
+  </resultMap>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Role">
+    insert into role (role_id, role_name, role_code, 
+      department_id, parent_role_code, menu_code, 
+      grant_menu_type)
+    values (#{roleId,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, #{roleCode,jdbcType=SMALLINT}, 
+      #{departmentId,jdbcType=VARCHAR}, #{parentRoleCode,jdbcType=VARCHAR}, #{menuCode,jdbcType=SMALLINT}, 
+      #{grantMenuType,jdbcType=SMALLINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Role">
+    insert into role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="roleCode != null">
+        role_code,
+      </if>
+      <if test="departmentId != null">
+        department_id,
+      </if>
+      <if test="parentRoleCode != null">
+        parent_role_code,
+      </if>
+      <if test="menuCode != null">
+        menu_code,
+      </if>
+      <if test="grantMenuType != null">
+        grant_menu_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null">
+        #{roleCode,jdbcType=SMALLINT},
+      </if>
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentRoleCode != null">
+        #{parentRoleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuCode != null">
+        #{menuCode,jdbcType=SMALLINT},
+      </if>
+      <if test="grantMenuType != null">
+        #{grantMenuType,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>

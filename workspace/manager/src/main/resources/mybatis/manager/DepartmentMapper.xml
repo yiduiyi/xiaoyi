@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoyi.manager.dao.IDepartmentDao">
+  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Department">
+    <id column="department_id" jdbcType="VARCHAR" property="departmentId" />
+    <result column="department_type" jdbcType="SMALLINT" property="departmentType" />
+    <result column="department_desc" jdbcType="VARCHAR" property="departmentDesc" />
+    <result column="menu_code" jdbcType="SMALLINT" property="menuCode" />
+    <result column="parent_menu_code" jdbcType="SMALLINT" property="parentMenuCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    department_id, department_type, department_desc, menu_code, parent_menu_code, create_time, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from department
+    where department_id = #{departmentId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from department
+    where department_id = #{departmentId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Department">
+    insert into department (department_id, department_type, department_desc, 
+      menu_code, parent_menu_code, create_time, 
+      update_time)
+    values (#{departmentId,jdbcType=VARCHAR}, #{departmentType,jdbcType=SMALLINT}, #{departmentDesc,jdbcType=VARCHAR}, 
+      #{menuCode,jdbcType=SMALLINT}, #{parentMenuCode,jdbcType=SMALLINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Department">
+    insert into department
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="departmentId != null">
+        department_id,
+      </if>
+      <if test="departmentType != null">
+        department_type,
+      </if>
+      <if test="departmentDesc != null">
+        department_desc,
+      </if>
+      <if test="menuCode != null">
+        menu_code,
+      </if>
+      <if test="parentMenuCode != null">
+        parent_menu_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="departmentId != null">
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentType != null">
+        #{departmentType,jdbcType=SMALLINT},
+      </if>
+      <if test="departmentDesc != null">
+        #{departmentDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="menuCode != null">
+        #{menuCode,jdbcType=SMALLINT},
+      </if>
+      <if test="parentMenuCode != null">
+        #{parentMenuCode,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Department">
+    update department
+    <set>
+      <if test="departmentType != null">
+        department_type = #{departmentType,jdbcType=SMALLINT},
+      </if>
+      <if test="departmentDesc != null">
+        department_desc = #{departmentDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="menuCode != null">
+        menu_code = #{menuCode,jdbcType=SMALLINT},
+      </if>
+      <if test="parentMenuCode != null">
+        parent_menu_code = #{parentMenuCode,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where department_id = #{departmentId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Department">
+    update department
+    set department_type = #{departmentType,jdbcType=SMALLINT},
+      department_desc = #{departmentDesc,jdbcType=VARCHAR},
+      menu_code = #{menuCode,jdbcType=SMALLINT},
+      parent_menu_code = #{parentMenuCode,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where department_id = #{departmentId,jdbcType=VARCHAR}
+  </update>
+</mapper>

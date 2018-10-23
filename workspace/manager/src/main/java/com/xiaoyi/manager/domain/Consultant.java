@@ -7,6 +7,10 @@ public class Consultant {
 
     private String consultantName;
 
+    private String consultantGroupId;
+
+    private String roleId;
+
     private String picid;
 
     private String telnumber;
@@ -35,6 +39,22 @@ public class Consultant {
 
     public void setConsultantName(String consultantName) {
         this.consultantName = consultantName == null ? null : consultantName.trim();
+    }
+
+    public String getConsultantGroupId() {
+        return consultantGroupId;
+    }
+
+    public void setConsultantGroupId(String consultantGroupId) {
+        this.consultantGroupId = consultantGroupId == null ? null : consultantGroupId.trim();
+    }
+
+    public String getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(String roleId) {
+        this.roleId = roleId == null ? null : roleId.trim();
     }
 
     public String getPicid() {

@@ -188,4 +188,14 @@
   		(#{item.orderLogId},#{item.wxOpenid},#{item.xiaoeResourceId},#{item.xiaoeOrderId},#{item.xiaoeUserId},#{item.price},#{item.title},#{item.orderState},#{item.paymentType},#{item.resourceType},#{item.createdAt})
   	</foreach>
   </insert>
+  <select id="getOrderLogListByXiaoEOrderId" parameterType="list" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from order_log
+    where xiaoe_order_id IN
+    <foreach collection="list" item="item" open="(" close=")" separator=",">
+     #{item,jdbcType=VARCHAR}
+    </foreach>
+    
+  </select>
 </mapper>
