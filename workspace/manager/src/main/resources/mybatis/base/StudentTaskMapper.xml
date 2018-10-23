@@ -12,30 +12,84 @@
 		<result column="notes" property="notes" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		student_task_id, video_course_id, teacher_id, student_id, task_type, create_time,
+		student_task_id, video_course_id, teacher_id, student_id,
+		task_type, create_time,
 		task_status, notes
 	</sql>
+
+	<!-- 查询已布置的视频课程列表（联合查询） -->
+	<select id="selectAllByParams" resultType="com.alibaba.fastjson.JSONObject"
+		parameterType="com.alibaba.fastjson.JSONObject" >
+		SELECT ST.student_task_id AS studentTaskId, ST.video_course_id AS videoCourseId, VC.video_course_name AS videoCourseName, 
+				ST.task_status AS videoCourseStatus, VC.video_course_type AS videoTaskType
+		FROM student_task ST LEFT JOIN video_course VC
+			ON ST.video_course_id=VC.video_course_id
+		<where>
+			<if test="teacherId!=null">
+				ST.teacher_id = #{teacherId}
+			</if>
+			<if test="teacherId!=null">
+				AND ST.student_id = #{studentId}
+			</if>
+			<if test="gradeId!=null">
+				AND VC.grade_id = #{gradeId}
+			</if>
+			<if test="courseId!=null">
+				AND VC.course_id = #{courseId}
+			</if>
+		</where>		
+	</select>
+
+
+
+	<!-- 查询已布置的视频课程列表（原始数据） -->
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="com.alibaba.fastjson.JSONObject">
+		select
+		<include refid="Base_Column_List" />
+		from student_task
+		<where>
+			<if test="teacherId != null">
+				teacher_id = #{teacherId,jdbcType=VARCHAR}
+			</if>
+			<if test="studentId != null">
+				and student_id = #{studentId,jdbcType=VARCHAR}
+			</if>
+			<if test="taskType != null">
+				and task_type = #{taskType,jdbcType=TINYINT}
+			</if>
+		</where>
+	</select>
+
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="com.xiaoyi.custom.domain.StudentTaskKey">
 		select
 		<include refid="Base_Column_List" />
 		from student_task
-		where student_task_id = #{studentTaskId,jdbcType=VARCHAR}
-		and video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+		where student_task_id =
+		#{studentTaskId,jdbcType=VARCHAR}
+		and video_course_id =
+		#{videoCourseId,jdbcType=VARCHAR}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.custom.domain.StudentTaskKey">
-		delete from student_task
+		delete from
+		student_task
 		where student_task_id = #{studentTaskId,jdbcType=VARCHAR}
 		and video_course_id = #{videoCourseId,jdbcType=VARCHAR}
 	</delete>
 	<insert id="insert" parameterType="com.xiaoyi.custom.domain.StudentTask">
-		insert into student_task (student_task_id, video_course_id,
+		insert into student_task
+		(student_task_id, video_course_id,
 		teacher_id,
-		student_id, task_type, create_time,
+		student_id, task_type,
+		create_time,
 		task_status, notes)
-		values (#{studentTaskId,jdbcType=VARCHAR},
-		#{videoCourseId,jdbcType=VARCHAR}, #{teacherId,jdbcType=VARCHAR},
-		#{studentId,jdbcType=VARCHAR}, #{taskType,jdbcType=TINYINT},
+		values
+		(#{studentTaskId,jdbcType=VARCHAR},
+		#{videoCourseId,jdbcType=VARCHAR},
+		#{teacherId,jdbcType=VARCHAR},
+		#{studentId,jdbcType=VARCHAR},
+		#{taskType,jdbcType=TINYINT},
 		#{createTime,jdbcType=TIMESTAMP},
 		#{taskStatus,jdbcType=TINYINT}, #{notes,jdbcType=VARCHAR})
 	</insert>
@@ -117,17 +171,25 @@
 			</if>
 		</set>
 		where student_task_id = #{studentTaskId,jdbcType=VARCHAR}
-		and video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+		and
+		video_course_id = #{videoCourseId,jdbcType=VARCHAR}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.custom.domain.StudentTask">
-		update student_task
+		update
+		student_task
 		set teacher_id = #{teacherId,jdbcType=VARCHAR},
-		student_id = #{studentId,jdbcType=VARCHAR},
-		task_type = #{taskType,jdbcType=TINYINT},
-		create_time = #{createTime,jdbcType=TIMESTAMP},
-		task_status = #{taskStatus,jdbcType=TINYINT},
+		student_id
+		= #{studentId,jdbcType=VARCHAR},
+		task_type =
+		#{taskType,jdbcType=TINYINT},
+		create_time =
+		#{createTime,jdbcType=TIMESTAMP},
+		task_status =
+		#{taskStatus,jdbcType=TINYINT},
 		notes = #{notes,jdbcType=VARCHAR}
-		where student_task_id = #{studentTaskId,jdbcType=VARCHAR}
-		and video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+		where
+		student_task_id = #{studentTaskId,jdbcType=VARCHAR}
+		and video_course_id
+		= #{videoCourseId,jdbcType=VARCHAR}
 	</update>
 </mapper>

@@ -29,6 +29,13 @@ public class DualTaskAction {
 	@Resource
 	IDaulTaskService daulTaskService;
 	
+	/**
+	 * 查询老师绑定的学生、科目（任教关系）及作业完成率
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
 	@RequestMapping(value="/getBondingRelations",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject getBondingRelations(HttpServletRequest request
@@ -42,7 +49,10 @@ public class DualTaskAction {
 			logger.info("openId:" + openId);
 			
 			List<JSONObject> datas = daulTaskService.getPSTRelations(openId);
-			result.put("data", datas);
+			if(null!=datas){
+				result.put("data", datas);
+				rtCode = RtConstants.SUCCESS;
+			}
 		} catch (Exception e) {
 			logger.error("获取老师签约状态失败！");
 		}
@@ -78,6 +88,93 @@ public class DualTaskAction {
 		setReturnMsg(result, code, msg);		
 		return result;
 	}
+	
+	/**
+	 * 查询可布置的视频课程列表
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value="/getAvailableTasks",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getAvailableTasks(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		int code = 0;
+		String msg = "获取可布置的视频课程列表成功！";
+		
+		try {
+			List<JSONObject> datas = daulTaskService.getAvailableTasks(reqData);
+			result.put("data", datas);
+		} catch (CommonRunException e) {			
+			logger.error("获取可布置的视频课程列表失败！");
+			code = e.getCode();
+			msg = e.getMessage();
+		}
+		
+		setReturnMsg(result, code, msg);		
+		return result;
+	}
+	
+	/**
+	 * • 布置作业 
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value="/distributeTask",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject distributeTask(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		int code = 0;
+		String msg = "布置的视频课程作业成功！";
+		
+		try {
+			daulTaskService.distributeTask(reqData);			
+		} catch (CommonRunException e) {			
+			logger.error("布置的视频课程作业失败！");
+			code = e.getCode();
+			msg = e.getMessage();
+		}
+		
+		setReturnMsg(result, code, msg);		
+		return result;
+	}
+	
+	/**
+	 * • 查询老师给当前学生布置的双师课程作业列表
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value="/getStuTaskList",method=RequestMethod.POST)
+	@ResponseBody
+	public  JSONObject getStuTaskList(HttpServletRequest request
+			,HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		int code = 0;
+		String msg = "布置的视频课程作业成功！";
+		
+		try {
+			List<JSONObject> datas = daulTaskService.getStuTaskList(reqData);
+			result.put("data", datas);
+		} catch (CommonRunException e) {			
+			logger.error("布置的视频课程作业失败！");
+			code = e.getCode();
+			msg = e.getMessage();
+		}
+		
+		setReturnMsg(result, code, msg);		
+		return result;
+	}
+	
 	
 	private JSONObject setReturnMsg(JSONObject result,int code,String rtString){
 		result.put("code", code);

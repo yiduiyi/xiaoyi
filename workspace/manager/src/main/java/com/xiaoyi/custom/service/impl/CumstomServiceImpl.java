@@ -31,6 +31,7 @@ import com.xiaoyi.common.utils.ConstantUtil.Semaster;
 import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
+import com.xiaoyi.custom.dao.IStudentTaskDao;
 import com.xiaoyi.custom.domain.DaulVideoOrder;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
@@ -122,6 +123,9 @@ public class CumstomServiceImpl implements ICustomService {
 	
 	@Resource 
 	ITeachingRelationshipDao teachingRelationshipDao;
+	
+	@Resource
+	IStudentTaskDao studentTaskDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -1221,6 +1225,22 @@ public class CumstomServiceImpl implements ICustomService {
 			}
 			
 		} catch (CommonRunException e) {
+			throw e;
+		}catch (Exception e) {
+			// TODO: handle exception
+			throw new CommonRunException(-1, "内部错误！");
+		}
+		
+		return datas;
+	}
+
+	@Override
+	public List<JSONObject> getDistributedTasks(JSONObject params) {
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		
+		try {
+			studentTaskDao.selectByParams(params);
+		}  catch (CommonRunException e) {
 			throw e;
 		}catch (Exception e) {
 			// TODO: handle exception

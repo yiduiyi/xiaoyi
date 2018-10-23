@@ -58,4 +58,7 @@ public interface ICustomService {
 	public List<JSONObject> getBondSubGrades(JSONObject params);
 	
 	public List<JSONObject> getAvailableVideos(JSONObject params);
+	
+	//作业
+	public List<JSONObject> getDistributedTasks(JSONObject params);
 }

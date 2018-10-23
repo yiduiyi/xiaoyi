@@ -226,7 +226,11 @@ public class UserPayOutAction {
 		 String nonce_str = jsonObject.getString("nonce_str");
 		 Orders order = null;
 		 try {
-			 order = orderService.queryOrderById(nonce_str);				
+			 order = orderService.queryOrderById(nonce_str);	
+			 if(order!=null){	//重复回调-直接返回
+				parameters.put("return_code", "SUCCESS");
+				parameters.put("return_msg", "OK");
+			 }
 		 } catch (Exception e) {
 			logger.warn("查询是否已存在订单出错！");
 			throw new CommonRunException(-1,"查询是否已存在订单出错！");

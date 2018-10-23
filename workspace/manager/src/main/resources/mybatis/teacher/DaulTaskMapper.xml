@@ -13,4 +13,30 @@
 		o.teachingWay = 3
 		AND a.teacherId = #{teacherId}
   </select>
+  
+  <!-- 查询可布置的视频课程列表 -->
+  <select id="selectAvailableTasks" resultType="com.alibaba.fastjson.JSONObject"
+  		parameterType="com.alibaba.fastjson.JSONObject">
+  	SELECT VC.video_course_id AS videoCourseId, VC.video_course_name AS videoCourseName,
+		VC.video_course_type AS videoCourseType, VC.h5_video_link AS h5VideoLink
+	FROM teaching_relationship TR LEFT JOIN video_course VC 
+		ON TR.grade_id = VC.grade_id AND TR.course_id = VC.course_id
+	<where>
+		<if test="studentId!=null">
+			TR.student_id = #{studentId}
+		</if>
+		<if test="studentId!=null">
+			AND TR.teacher_id = #{teacherId}
+		</if>
+		<if test="gradeId!=null">
+			AND TR.grade_id= #{gradeId}
+		</if>
+		<if test="courseId!=null">
+			AND TR.course_id= #{courseId}
+		</if>
+		<if test="semaster!=null">
+			AND semaster = #{semaster}
+		</if>
+	</where>
+  </select>
 </mapper>

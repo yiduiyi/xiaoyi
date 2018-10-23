@@ -333,7 +333,7 @@ public class CustomerAction {
 				if(openId==null){
 					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
 				}
-				List<JSONObject> studentsList = customService.getDaulTransactionCourses(openId);
+				List<JSONObject> studentsList = customService.getStudentBondCourses(openId);
 				result.put("data", studentsList);
 				rtCode = RtConstants.SUCCESS;
 			} catch (Exception e) {
@@ -345,9 +345,9 @@ public class CustomerAction {
 		
 		
 		// 获取购买的同步课程
-		@RequestMapping(value = "/daul/getPurchasedGrades", method = RequestMethod.POST)
+		@RequestMapping(value = "/daul/getDaulTransactionCourses", method = RequestMethod.POST)
 		@ResponseBody
-		public JSONObject getPurchasedGrades(HttpServletRequest request, HttpServletResponse response,
+		public JSONObject getDaulTransactionCourses(HttpServletRequest request, HttpServletResponse response,
 				@RequestBody JSONObject reqData) {
 			JSONObject result = new JSONObject();
 			RtConstants rtCode = RtConstants.FAILED;
@@ -401,7 +401,7 @@ public class CustomerAction {
 		}
 		
 		/**
-		 * 查询”名师回放”课程列表
+		 * 查询课程列表-名师回放
 		 * @param request
 		 * @param response
 		 * @param reqData
@@ -432,6 +432,13 @@ public class CustomerAction {
 			return result;
 		}
 
+		/**
+		 * • 查询课程列表-名师回放（√）
+		 * @param request
+		 * @param response
+		 * @param reqData
+		 * @return
+		 */
 		@RequestMapping(value = "/daul/getAvailableVideos", method = RequestMethod.POST)
 		@ResponseBody
 		public JSONObject getAvailableVideos(HttpServletRequest request, HttpServletResponse response,
@@ -457,7 +464,37 @@ public class CustomerAction {
 			return result;
 		}
 		
-		
+		/**
+		 * • 查询学生作业列表
+		 * @param request
+		 * @param response
+		 * @param reqData
+		 * @return
+		 */
+		@RequestMapping(value = "/daul/getDistributedTasks", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject getDistributedTasks(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.FAILED;
+			try {	
+				String openId =  (String) request
+						.getSession()
+						.getAttribute("openid");
+				//测试
+				if(openId==null){
+					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
+				}
+				reqData.put("openId", openId);
+				List<JSONObject> datas = customService.getAvailableVideos(reqData);
+				result.put("data", datas);
+				rtCode = RtConstants.SUCCESS;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+			return result;
+		}
 	
 	/**
 	 * 获取用户openId

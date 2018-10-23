@@ -19,4 +19,11 @@ public interface IDaulTaskDao {
 	 */
     List<JSONObject> selectPSTBondingRelations(@Param("teacherId") String teacherId);
     
+    /**
+     * 查询可布置的视频课程列表
+     * @param params {teacherId,studentId,gradeId,courseId,semaster}
+     * @return
+     */
+    List<JSONObject> selectAvailableTasks(JSONObject params);
+    
 }
