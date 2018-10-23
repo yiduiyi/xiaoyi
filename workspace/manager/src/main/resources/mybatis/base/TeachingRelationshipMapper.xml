@@ -66,17 +66,6 @@
 					#{item}
 				</foreach>
 			</if>
-		<!-- <where>
-			<if test="studentId!=null">
-				tr.student_id = #{studentId}
-			</if>
-			<if test="gradeId!=null">
-				AND tr.grade_id=gradeId
-			</if>
-			<if test="courseId!=null">
-				AND tr.course_id=courseId
-			</if>
-		</where> -->
 	</select>
 	
 	

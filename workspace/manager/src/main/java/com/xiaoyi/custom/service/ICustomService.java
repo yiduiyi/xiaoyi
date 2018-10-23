@@ -59,6 +59,8 @@ public interface ICustomService {
 	
 	public List<JSONObject> getAvailableVideos(JSONObject params);
 	
-	//作业
+	//作业-查询老师布置的作业
 	public List<JSONObject> getDistributedTasks(JSONObject params);
+	
+	public int modifyTaskStatus(JSONObject params);
 }

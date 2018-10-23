@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 import com.xiaoyi.wechat.utils.AdvancedUtil;
@@ -330,9 +331,9 @@ public class CustomerAction {
 						.getSession()
 						.getAttribute("openid");
 				//测试
-				if(openId==null){
+				/*if(openId==null){
 					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
-				}
+				}*/
 				List<JSONObject> studentsList = customService.getStudentBondCourses(openId);
 				result.put("data", studentsList);
 				rtCode = RtConstants.SUCCESS;
@@ -356,9 +357,9 @@ public class CustomerAction {
 						.getSession()
 						.getAttribute("openid");
 				//测试
-				if(openId==null){
+				/*if(openId==null){
 					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
-				}
+				}*/
 				List<JSONObject> studentsList = customService.getDaulTransactionCourses(openId);
 				result.put("data", studentsList);
 				rtCode = RtConstants.SUCCESS;
@@ -387,9 +388,9 @@ public class CustomerAction {
 						.getSession()
 						.getAttribute("openid");
 				//测试
-				if(openId==null){
+				/*if(openId==null){
 					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
-				}
+				}*/
 				List<JSONObject> datas = customService.getStudentBondCourses(openId);
 				result.put("data", datas);
 				rtCode = RtConstants.SUCCESS;
@@ -418,9 +419,9 @@ public class CustomerAction {
 						.getSession()
 						.getAttribute("openid");
 				//测试
-				if(openId==null){
+				/*if(openId==null){
 					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
-				}
+				}*/
 				reqData.put("openId", openId);
 				List<JSONObject> datas = customService.getBondSubGrades(reqData);
 				result.put("data", datas);
@@ -450,9 +451,9 @@ public class CustomerAction {
 						.getSession()
 						.getAttribute("openid");
 				//测试
-				if(openId==null){
+				/*if(openId==null){
 					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
-				}
+				}*/
 				reqData.put("openId", openId);
 				List<JSONObject> datas = customService.getAvailableVideos(reqData);
 				result.put("data", datas);
@@ -465,7 +466,7 @@ public class CustomerAction {
 		}
 		
 		/**
-		 * • 查询学生作业列表
+		 * • 查询老师给学生布置的作业列表
 		 * @param request
 		 * @param response
 		 * @param reqData
@@ -478,15 +479,7 @@ public class CustomerAction {
 			JSONObject result = new JSONObject();
 			RtConstants rtCode = RtConstants.FAILED;
 			try {	
-				String openId =  (String) request
-						.getSession()
-						.getAttribute("openid");
-				//测试
-				if(openId==null){
-					openId = "oknxW0lyknEETUK7k4qfC8BGvVA4";
-				}
-				reqData.put("openId", openId);
-				List<JSONObject> datas = customService.getAvailableVideos(reqData);
+				List<JSONObject> datas = customService.getDistributedTasks(reqData);
 				result.put("data", datas);
 				rtCode = RtConstants.SUCCESS;
 			} catch (Exception e) {
@@ -496,6 +489,30 @@ public class CustomerAction {
 			return result;
 		}
 	
+		/**
+		 * • 修改学生作业完成情况
+		 * @param request
+		 * @param response
+		 * @param reqData
+		 * @return
+		 */
+		@RequestMapping(value = "/daul/modifyTaskStatus", method = RequestMethod.POST)
+		@ResponseBody
+		public JSONObject modifyTaskStatus(HttpServletRequest request, HttpServletResponse response,
+				@RequestBody JSONObject reqData) {
+			JSONObject result = new JSONObject();
+			RtConstants rtCode = RtConstants.SUCCESS;
+			setReturnMsg(result, rtCode.getCode(), rtCode.name());
+
+			try {	
+				customService.modifyTaskStatus(reqData);				
+			} catch (CommonRunException e) {
+				e.printStackTrace();
+				setReturnMsg(result, e.getCode(), e.getMessage());
+			}
+			return result;
+		}	
+
 	/**
 	 * 获取用户openId
 	 * @param req

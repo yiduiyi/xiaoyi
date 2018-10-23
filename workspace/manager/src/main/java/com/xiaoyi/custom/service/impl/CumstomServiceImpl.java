@@ -33,6 +33,7 @@ import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
 import com.xiaoyi.custom.dao.IStudentTaskDao;
 import com.xiaoyi.custom.domain.DaulVideoOrder;
+import com.xiaoyi.custom.domain.StudentTask;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -1237,17 +1238,80 @@ public class CumstomServiceImpl implements ICustomService {
 	@Override
 	public List<JSONObject> getDistributedTasks(JSONObject params) {
 		List<JSONObject> datas = new ArrayList<JSONObject>();
-		
+		List<JSONObject> tasks = null;
 		try {
-			studentTaskDao.selectByParams(params);
+			//验证参数
+			if(params.get("studentId")==null
+					|| params.get("gradeId")==null
+					|| params.get("courseId")==null){
+				logger.info("入参【params】：" + params);
+				throw new CommonRunException(-1, "参数错误！");
+			}
+			
+			try {
+				tasks = studentTaskDao.selectAllByParams(params);				
+			} catch (Exception e) {
+				logger.error("查询老师布置的作业失败！");
+				throw new CommonRunException(-1, "查询老师布置的作业失败！");
+			}
+			
+			//拼装数据
+			if(null!=tasks){
+				Map<Byte,JSONArray> taskTypeMap = new HashMap<Byte, JSONArray>();
+				for(JSONObject task : tasks){
+					Byte taskType = task.getByte("videoTaskType");
+					if(null == taskType){
+						continue;
+					}
+					
+					JSONArray taskList = taskTypeMap.get(taskType);
+					if(null == taskList){
+						taskList = new JSONArray();
+						taskTypeMap.put(taskType, taskList);
+					}
+					taskList.add(task);					
+				}
+				
+				//归类
+				for(Byte taskType : taskTypeMap.keySet()){
+					JSONObject task = new JSONObject();
+					task.put("videoCourseType", taskType);
+					task.put("taskList", taskTypeMap.get(taskType));
+					
+					datas.add(task);
+				}
+			}
+			
 		}  catch (CommonRunException e) {
 			throw e;
 		}catch (Exception e) {
 			// TODO: handle exception
+			logger.error("内部错误！");
 			throw new CommonRunException(-1, "内部错误！");
 		}
 		
 		return datas;
+	}
+
+	@Override
+	public int modifyTaskStatus(JSONObject params) {
+		try {
+			//验证参数
+			if(params.getString("studentTaskId")==null){
+				throw new CommonRunException(-1, "参数错误！");
+			}
+			
+			StudentTask record = new StudentTask();
+			record.setStudentTaskId(params.getString("studentTaskId"));
+			record.setTaskStatus((byte)2);
+			record.setVideoCourseId(params.getString("videoCourseId"));
+			
+			studentTaskDao.updateByPrimaryKeySelective(record);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new CommonRunException(-1, "修改作业状态（已完成）失败！");
+		}
+		return 0;
 	}
 
 }

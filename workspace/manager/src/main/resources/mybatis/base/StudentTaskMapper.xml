@@ -12,22 +12,24 @@
 		<result column="task_status" property="taskStatus" jdbcType="TINYINT" />
 		<result column="notes" property="notes" jdbcType="VARCHAR" />
 		<result column="grade_id" property="gradeId" jdbcType="SMALLINT" />
-    	<result column="course_id" property="courseId" jdbcType="TINYINT" />
-		<result/>
+		<result column="course_id" property="courseId" jdbcType="SMALLINT" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		student_task_id, video_course_id, teacher_id, student_id,
 		task_type, create_time, update_time
-		task_status, notes, grade_id, course_id
+		task_status, notes, grade_id,
+		course_id
 	</sql>
 
 	<!-- 查询已布置的视频课程列表（联合查询） -->
 	<select id="selectAllByParams" resultType="com.alibaba.fastjson.JSONObject"
-		parameterType="com.alibaba.fastjson.JSONObject" >
-		SELECT ST.student_task_id AS studentTaskId, ST.video_course_id AS videoCourseId, VC.video_course_name AS videoCourseName, 
-				ST.task_status AS videoCourseStatus, VC.video_course_type AS videoTaskType
-		FROM student_task ST LEFT JOIN video_course VC
-			ON ST.video_course_id=VC.video_course_id
+		parameterType="com.alibaba.fastjson.JSONObject">
+		SELECT ST.student_task_id AS studentTaskId, ST.video_course_id AS
+		videoCourseId, VC.video_course_name AS videoCourseName,
+		ST.task_status AS videoCourseStatus, VC.video_course_type AS videoTaskType
+		FROM
+		student_task ST LEFT JOIN video_course VC
+		ON ST.video_course_id=VC.video_course_id
 		<where>
 			<if test="teacherId!=null">
 				ST.teacher_id = #{teacherId}
@@ -41,7 +43,7 @@
 			<if test="courseId!=null">
 				AND VC.course_id = #{courseId}
 			</if>
-		</where>		
+		</where>
 	</select>
 
 

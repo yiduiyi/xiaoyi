@@ -256,12 +256,13 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 			record.setCreateTime(new Date());
 			record.setStudentId(params.getString("studentId"));
 			record.setStudentTaskId(UUID.randomUUID().toString());
-			record.setTaskStatus((byte)1);	//1：已布置
+			record.setTaskStatus((byte)1);	//1：已布置（未完成），2：已完成
 			record.setTeacherId(params.getString("teacherId"));
 			record.setTaskType(params.getByte("videoTaskType"));
 			record.setVideoCourseId(params.getString("videoCourseId"));
 			record.setGradeId(params.getShort("gradeId"));
 			record.setCourseId(params.getShort("courseId"));
+			record.setUpdateTime(new Date());
 			
 			try {
 				studentTaskDao.insertSelective(record);				
@@ -276,14 +277,33 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 				key.setTeacherId(params.getString("teacherId"));
 				
 				StudentTaskStatistic taskStatistic = taskStatisticDao.selectByPrimaryKey(key); 
+				boolean isNewRecord = false;
 				if(null == taskStatistic){		
 					taskStatistic = new StudentTaskStatistic();
-					taskStatistic.setAccomplishRate((short)100);
-					taskStatistic.s
+					taskStatistic.setAccomplishRate((short)0);
+					taskStatistic.setCourseId(params.getByte("courseId"));
+					taskStatistic.setCreateTime(new Date());
+					taskStatistic.setFinishCount((short)0);
+					taskStatistic.setGradeId(params.getShort("gradeId"));
+					taskStatistic.setStudentId(params.getString("studentId"));
+					taskStatistic.setTeacherId(params.getString("teacherId"));
+					taskStatistic.setTotalTasks((short)1);
+					taskStatistic.setUnfinishCount((short)1);
+					taskStatistic.setUpdateTime(new Date());
+					
+					isNewRecord = true;
+				} else{
+					taskStatistic.setAccomplishRate((short)(taskStatistic.getFinishCount()%taskStatistic.getTotalTasks()));					
+					taskStatistic.setTotalTasks((short)(taskStatistic.getTotalTasks() + 1));
+					taskStatistic.setUnfinishCount((short)(taskStatistic.getUnfinishCount()+1));
+					taskStatistic.setUpdateTime(new Date());
+				}				
+								
+				if(isNewRecord){
+					taskStatisticDao.insertSelective(taskStatistic);
+				} else{
+					taskStatisticDao.updateByPrimaryKey(taskStatistic);
 				}
-				
-				
-				taskStatisticDao.insertSelective(taskStatistic );
 			} catch (Exception e) {
 				throw new CommonRunException(-1, "更新/插入统计表失败！");
 			}
