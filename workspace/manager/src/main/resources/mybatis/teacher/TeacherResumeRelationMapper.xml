@@ -125,7 +125,7 @@
   	select 
     <include refid="Base_Column_List" />
     from teacher_resume_r
-    where teacherId = #{teacherid,jdbcType=VARCHAR} AND is_default = 1 AND `status` = 0
+    where teacherId = #{teacherid,jdbcType=VARCHAR} AND is_default = 1 AND `status` = 0 ORDER BY create_time DESC LIMIT 1
   </select>
   <update id="updateAllTeacherResumeRelationToNotDefault">
   	 update teacher_resume_r set is_default = 0 WHERE teacherId = #{teacherid}
