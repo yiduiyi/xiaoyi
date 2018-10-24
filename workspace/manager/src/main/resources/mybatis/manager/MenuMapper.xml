@@ -90,4 +90,8 @@
       parent_menu_code = #{parentMenuCode,jdbcType=SMALLINT}
     where menu_id = #{menuId,jdbcType=VARCHAR}
   </update>
+  <select id="getMenuList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT menuId,menuName,menuCode,parentMenuName,parentMenuCode FROM (SELECT menu_id AS menuId,menu_name AS menuName,menu_code AS menuCode ,
+  	(SELECT menu_name FROM menu WHERE menu_code = M.parent_menu_code) AS parentMenuName,parent_menu_code AS parentMenuCode FROM menu M WHERE M.menu_name LIKE CONCAT('%',#{menuName},'%')) T WHERE T.parentMenuName LIKE CONCAT('%',#{parentMenuName},'%')
+  </select>
 </mapper>
