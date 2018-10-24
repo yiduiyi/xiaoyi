@@ -200,9 +200,7 @@
   		<if test="consultantId != null">
   			AND B.consultant_id = #{consultantId}
   		</if>
-  		<if test="status != null">
-  			AND B.status = #{status}
-  		</if>
+  			AND B.status != -1
   	</where>
   </select>
   <select id="getBillQuantityNums" resultType="com.alibaba.fastjson.JSONObject">
