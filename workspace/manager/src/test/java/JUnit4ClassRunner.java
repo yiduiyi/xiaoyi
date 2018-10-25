@@ -15,6 +15,6 @@ public class JUnit4ClassRunner extends SpringJUnit4ClassRunner {
     }  
       
     public JUnit4ClassRunner(Class<?> clazz) throws InitializationError {  
-        super(clazz);  
+        super(clazz);
     }  
 }

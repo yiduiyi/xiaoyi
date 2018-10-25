@@ -108,6 +108,6 @@
   	select 
     <include refid="Base_Column_List" />
     from teacher_space_set
-    where teacherId = #{teacherid,jdbcType=VARCHAR}
+    where teacherId = #{teacherid,jdbcType=VARCHAR} ORDER BY create_time DESC LIMIT 1
   </select>
 </mapper>

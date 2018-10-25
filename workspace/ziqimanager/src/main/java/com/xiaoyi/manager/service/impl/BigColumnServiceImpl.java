@@ -15,7 +15,6 @@ public class BigColumnServiceImpl implements IBigColumnService {
 	private IBigColumnDao bigColumnDao;
 	@Override
 	public List<JSONObject> getBigColumnList(JSONObject reqData) {
-		// TODO Auto-generated method stub
 		return bigColumnDao.getBigColumnList();
 	}
 

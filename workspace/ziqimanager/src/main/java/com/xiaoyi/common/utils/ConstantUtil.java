@@ -208,24 +208,34 @@ public class ConstantUtil {
 		}
 		
 		public String getFullGradeName(){
-			switch(grade){
-			case 11:case 12:case 13:case 14:case 15:case 16:
-			case 21:case 22:case 23:
-			case 31:case 32:case 33:
-				StringBuffer levelName = new StringBuffer();
-				for(Level l : Level.values()) {
-					if(grade == l.getValue()) {
-						levelName.append(l.getSimpleName());
-						break;
+			StringBuffer levelName = new StringBuffer();
+			if(grade > 6) {
+				switch(grade){
+				case 11:case 12:case 13:case 14:case 15:case 16:
+				case 21:case 22:case 23:
+				case 31:case 32:case 33:
+					for(Level l : Level.values()) {
+						if(grade == l.getValue()) {
+							levelName.append(l.getSimpleName());
+							break;
+						}
 					}
+					for(Grade g : Grade.values()) {
+						if(grade == g.getValue()) {
+							levelName.append(g.getSimpleName());
+						}
+					}
+					return levelName.toString();
 				}
+			}else {
 				for(Grade g : Grade.values()) {
 					if(grade == g.getValue()) {
-						levelName.append(g.getSimpleName());
+						levelName.append(g.toString());
 					}
 				}
 				return levelName.toString();
 			}
+			
 			
 			return null;
 		}
@@ -588,5 +598,5 @@ public class ConstantUtil {
 	public static final String XIAOE_APPSECRET ="YA75aYpjrzGCPJ5eEpNvBGOfNvpenN0P";//小鹅通密钥
 	
 	public static final String XIAOE_ORDER_LIST_GET_CMD = "order.list.get";//获取订单记录列表
-	public static final String XIAOE_ORDER_USERS_GETINFO = "users.getinfo";//获取订单记录列表
+	public static final String XIAOE_ORDER_USERS_GETINFO_CMD = "users.getinfo";//获取订单记录列表
 }
