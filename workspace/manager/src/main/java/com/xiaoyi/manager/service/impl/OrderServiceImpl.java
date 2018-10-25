@@ -27,7 +27,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
+import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
+import com.xiaoyi.common.utils.ConstantUtil.Semaster;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.common.utils.XiaoeSDK;
 import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
@@ -654,8 +656,67 @@ public class OrderServiceImpl implements IOrderService {
 				result = orderManageDao.selectOrderList(params);				
 			} catch (Exception e) {
 				e.printStackTrace();
-				throw e;
+				logger.error("查询订单出错！");
+				throw new CommonRunException(-1, "查询订单出错！");
 			}
+			
+			//++++++++++++++++++++++ 双师另外补充购买的双师视频课程   ++++++++++++++++++++++++++++
+			Map<String,String> parentIdVideosMap = new HashMap<String,String>();
+			if(params.getInteger("lessonType")!=null 
+					&& params.getInteger("lessonType")==3){
+				try {
+					List<DaulVideoOrder>daulOrders = daulOrderDao.selectByParams(params);
+				
+					if(null!=daulOrders){
+						for(DaulVideoOrder daulOrder : daulOrders){
+							Short gradeId = daulOrder.getGradeId();
+							Short semaster = daulOrder.getSemaster();														
+							
+							//年级
+							StringBuffer videos = new StringBuffer();
+							for(Grade g : Grade.values()){
+								if(g.getValue() == gradeId){
+									videos.append(g.getFullGradeName());									
+									break;
+								}
+							}							
+							
+							//学期
+							for(Semaster s : Semaster.values()){
+								if(s.getValue() == semaster){
+									videos.append(s.getSimpleName());
+									break;
+								}
+							}
+							
+							//组合家长购买双师课时包
+							if(null!=parentIdVideosMap.get(daulOrder.getParentId())){
+								videos.append(",");								
+								videos.append(parentIdVideosMap.get(daulOrder.getParentId()));
+							}							
+							parentIdVideosMap.put(daulOrder.getParentId(), videos.toString());							
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error("查询双师订单出错！");
+					throw new CommonRunException(-1, "查询双师订单出错！");
+				}
+
+				//补充 syncCourses 字段
+				if(!CollectionUtils.isEmpty(result)){
+					
+					for(JSONObject order : result){
+						String parentId = order.getString("parentId"); 			
+						
+						order.put("syncCourses", parentIdVideosMap.get(parentId));
+					}
+				}
+			}
+			
+			
+			//+++++++++++++++++++++++++++++++++++++++  end +++++++++++++++++++++++++++++++++++++++++
+			
 			//查询是否有书
 			Map<String,Short> orderHasBookMap = new HashMap<String,Short>();
 			try {
@@ -672,6 +733,7 @@ public class OrderServiceImpl implements IOrderService {
 				logger.info("查询订单是否购买书籍出错！");
 				logger.error(e.getMessage());
 			}
+			
 			//查询关联老师			
 			if(!CollectionUtils.isEmpty(result)){
 				List<String> tIds = new ArrayList<String>();

@@ -44,6 +44,7 @@
 				AND semaster = #{semaster}
 			</if>
 		</where>
+		group by parent_id, semaster, video_course_type
 	</select>
 	
 	<!-- 查找家长购买的双师课程列表（名师回放）  -->
