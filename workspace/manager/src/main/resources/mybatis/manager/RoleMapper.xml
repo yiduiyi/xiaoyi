@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaoyi.manager.dao.IRoleDao">
   <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Role">
-    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <id column="role_id" jdbcType="VARCHAR" property="roleId" />
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
     <result column="role_code" jdbcType="SMALLINT" property="roleCode" />
     <result column="department_id" jdbcType="VARCHAR" property="departmentId" />
@@ -10,6 +10,19 @@
     <result column="menu_code" jdbcType="SMALLINT" property="menuCode" />
     <result column="grant_menu_type" jdbcType="SMALLINT" property="grantMenuType" />
   </resultMap>
+  <sql id="Base_Column_List">
+    role_id, role_name, role_code, department_id, parent_role_code, menu_code, grant_menu_type
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from role
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from role
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.Role">
     insert into role (role_id, role_name, role_code, 
       department_id, parent_role_code, menu_code, 
@@ -67,5 +80,52 @@
       </if>
     </trim>
   </insert>
-  
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Role">
+    update role
+    <set>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null">
+        role_code = #{roleCode,jdbcType=SMALLINT},
+      </if>
+      <if test="departmentId != null">
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentRoleCode != null">
+        parent_role_code = #{parentRoleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="menuCode != null">
+        menu_code = #{menuCode,jdbcType=SMALLINT},
+      </if>
+      <if test="grantMenuType != null">
+        grant_menu_type = #{grantMenuType,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Role">
+    update role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      role_code = #{roleCode,jdbcType=SMALLINT},
+      department_id = #{departmentId,jdbcType=VARCHAR},
+      parent_role_code = #{parentRoleCode,jdbcType=VARCHAR},
+      menu_code = #{menuCode,jdbcType=SMALLINT},
+      grant_menu_type = #{grantMenuType,jdbcType=SMALLINT}
+    where role_id = #{roleId,jdbcType=VARCHAR}
+  </update>
+  <select id="getRoleList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT role_id AS roleId,role_name AS roleName,role_code AS roleCode,department_id AS departmentId,parentRoleCode,menu_code AS menuCode,grant_menu_type AS grantMenuType FROM role
+  		<where>
+  			<if test="null != roleName">
+  				AND role_name LIKE CONCAT('%',#{roleName},'%')
+  			</if>
+  			<if test="">
+  				AND department_id = #{departmentId} 
+  			</if>
+  			<if test="null != menuCode">
+  				AND menu_code = #{menuCode} 
+  			</if>
+  		</where>
+  </select>
 </mapper>

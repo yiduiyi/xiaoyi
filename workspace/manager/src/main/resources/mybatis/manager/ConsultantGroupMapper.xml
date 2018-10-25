@@ -79,4 +79,7 @@
       role_id = #{roleId,jdbcType=VARCHAR}
     where consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR}
   </update>
+  <select id="getConsultantGroupList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT consultant_group_id AS consultantGroupId,consultant_group_name AS consultantGroupName,consultant_id AS consultantId ,role_id AS roleId FROM consultant_group
+  </select>
 </mapper>

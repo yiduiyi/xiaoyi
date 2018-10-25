@@ -79,4 +79,7 @@
       role_id = #{roleId,jdbcType=VARCHAR}
     where channel_manager_group_id = #{channelManagerGroupId,jdbcType=VARCHAR}
   </update>
+  <select id="getChannelManagerGroupList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT channel_manager_group_id AS channelManagerGroupId,channel_manager_group_name AS channelManagerGroupName,channel_manager_id AS channelManagerId,role_id AS roleId FROM channel_manager_group
+  </select>
 </mapper>

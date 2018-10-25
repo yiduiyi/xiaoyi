@@ -13,23 +13,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.manager.service.IRoleService;
+import com.xiaoyi.manager.service.IConsultantGroupService;
+import com.xiaoyi.manager.service.IConsultantService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 @Controller
-@RequestMapping("/role")
-public class RoleAction {
+@RequestMapping("/consultant")
+public class ConsultantAction {
 	@Resource
-	private IRoleService roleService;
+	private IConsultantService consultantService;
+	@Resource
+	private IConsultantGroupService consultantGroupService;
 
-	@RequestMapping(value = "/insertRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/insertConsultantGroup", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject insertRole(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject insertConsultantGroup(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if (roleService.insertRole(reqData) > 0) {
+			if (consultantGroupService.insertConsultantGroup(reqData) > 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
@@ -39,14 +42,14 @@ public class RoleAction {
 		return result;
 	}
 
-	@RequestMapping(value = "/updateRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/deleteConsultantGroup", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject updateRole(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject deleteConsultantGroup(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if (roleService.updateRole(reqData) > 0) {
+			if (consultantGroupService.deleteConsultantGroup(reqData) > 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
@@ -56,31 +59,14 @@ public class RoleAction {
 		return result;
 	}
 
-	@RequestMapping(value = "/deleteRole", method = RequestMethod.POST)
+	@RequestMapping(value = "/getConsultantGroupList", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject deleteRole(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject getConsultantGroupList(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if (roleService.deleteRole(reqData) > 0) {
-				rtCode = RtConstants.SUCCESS;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		setReturnMsg(result, rtCode.getCode(), rtCode.name());
-		return result;
-	}
-
-	@RequestMapping(value = "/getRoleList", method = RequestMethod.POST)
-	@ResponseBody
-	public JSONObject getRoleList(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody JSONObject reqData) {
-		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
-		try {
-			List<JSONObject> data = roleService.getRoleList(reqData);
+			List<JSONObject> data = consultantGroupService.getConsultantGroupList(reqData);
 			result.put("data", data);
 			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
