@@ -6,4 +6,6 @@ public interface IRoleDao {
     int insert(Role record);
 
     int insertSelective(Role record);
+
+	Role selectByPrimaryKey(String roleId);
 }

@@ -1,5 +1,7 @@
 package com.xiaoyi.manager.action;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,6 +64,22 @@ public class DepartmentAction {
 			if(departmentService.deleteDepartment(reqData) > 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	@RequestMapping(value = "/getDepartmentList", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getDepartmentList(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data=departmentService.getDepartmentList(reqData);
+			result.put("data", data);
+			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

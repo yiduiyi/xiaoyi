@@ -210,6 +210,11 @@ public class BillServiceImpl implements IBillService {
 		bill.setBillId(reqData.getString("billId"));
 		bill.setStatus(ConstantUtil.BILL_STATUS_REMOVE);
 		bill.setUpdateTime(new Date());
+		//自动PASS该订单投递的记录
+		List<JSONObject> billRecordRelations = billRecordRelationService.getBillRecordList(reqData);
+		if(CollectionUtils.isNotEmpty(billRecordRelations)) {
+			
+		}
 		return billDao.updateByPrimaryKeySelective(bill);
 	}
 	@Override
@@ -260,7 +265,7 @@ public class BillServiceImpl implements IBillService {
 		values.add("点击查看详情");
 		colors.add("#173177");
 		//查询所有接收推送的教师openId
-		List<JSONObject> teachers = h5PlateService.getAllRemindTeacherList();
+		List<JSONObject> teachers = h5PlateService.getAllTeacherList();
 		if (CollectionUtils.isNotEmpty(teachers)) {
 			Iterator<JSONObject> iterator = teachers.iterator();
 			while (iterator.hasNext()) {

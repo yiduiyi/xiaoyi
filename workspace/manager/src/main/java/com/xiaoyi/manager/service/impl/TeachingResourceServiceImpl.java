@@ -365,15 +365,17 @@ public class TeachingResourceServiceImpl implements ITeachingResourceService {
 	//根据积分匹配教师等级
 	private Integer getTeachingLevelByIntegralCount(Float integralCount) {
 		Integer teachingLevel = 0;
-		if(integralCount == 0) {
+		if (integralCount < 0) {
+			teachingLevel = -1;
+		} else if (integralCount == 0) {
 			teachingLevel = 0;
-		}else if(integralCount >= 0 && integralCount < 200) {
+		} else if (integralCount >= 0 && integralCount < 200) {
 			teachingLevel = 1;
-		}else if(integralCount >= 200 && integralCount < 500) {
+		} else if (integralCount >= 200 && integralCount < 500) {
 			teachingLevel = 2;
-		}else if(integralCount >= 500 && integralCount < 1000) {
+		} else if (integralCount >= 500 && integralCount < 1000) {
 			teachingLevel = 3;
-		}else if(integralCount == 1000) {
+		} else if (integralCount == 1000) {
 			teachingLevel = 4;
 		}
 		return teachingLevel;

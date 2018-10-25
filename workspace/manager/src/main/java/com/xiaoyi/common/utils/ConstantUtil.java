@@ -763,4 +763,7 @@ public class ConstantUtil {
 	//学期分类
 	public static final String LAST_SEMASTER = "上学期";
 	public static final String NEXT_SEMASTER = "下学期";
+	
+	//最大接单数
+	public static final Integer MAX_BILL_RECORD_SEND_NUM = 10;
 }

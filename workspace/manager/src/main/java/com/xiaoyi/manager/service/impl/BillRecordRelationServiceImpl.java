@@ -112,5 +112,4 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 			billRecordRelationDao.batchUpdateOtherBillRecord(list);
 		}
 	}
-
 }

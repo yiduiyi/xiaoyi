@@ -1264,26 +1264,25 @@ public class H5PlateServiceImpl implements IH5PlateService {
 								&& ++currentTeachingBill>=2){	//成功接单的订单
 							throw new CommonRunException(-1, "申请失败,当前所带学生数超额 ！");
 						} else if(1==billStatus 
-								&& ++currentApplingBill>=5){	//同时申请派单数不能超过5
-							throw new CommonRunException(-1, "申请失败,审核中的订单不能超过 5！");
+								&& ++currentApplingBill>=ConstantUtil.MAX_BILL_RECORD_SEND_NUM){	//同时申请派单数不能超过5
+							throw new CommonRunException(-1, "申请失败,审核中的订单不能超过 最大接单数！");
 						}
 					}
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
-			
-			
+
 			TeacherResumeRelation teacherResumeRelation = teacherResumeRelationService
 					.getDefaultResumeByTeacherId(teacher.getTeacherid());
 			Teacher updateTeacher = new Teacher();
 			updateTeacher.setTeacherid(teacher.getTeacherid());
 			updateTeacher.setStandbyTelNumber(reqData.getString("standbyTelNumber"));
 			teacherDao.updateByPrimaryKeySelective(updateTeacher);// 修改教师备用电话号码
-			// 查询订单当前投递数量，如果超过预定的五个就返回失败
+			// 查询订单当前投递数量，如果超过预定的最大接单数就返回失败
 			Integer billRecordSendNum = billRecordRelationService
 					.getBillRecordSendNumByBillId(reqData.getString("billId"));
-			if (null != teacherResumeRelation && billRecordSendNum < 5) {
+			if (null != teacherResumeRelation && billRecordSendNum < ConstantUtil.MAX_BILL_RECORD_SEND_NUM) {
 				BillRecordRelation billRecordRelation = new BillRecordRelation();
 				billRecordRelation.setBillRecordId(UUIDUtil.getUUIDPrimary());
 				billRecordRelation.setBillId(reqData.getString("billId"));
@@ -1293,6 +1292,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				billRecordRelation.setUpdateTime(new Date());
 				billRecordRelation.setStatus(ConstantUtil.BILL_RECORD_STATUS_NORMAL);
 				resultType = billRecordRelationService.insert(billRecordRelation);// 新增投递记录
+			}else {
+				return -1;
 			}
 		}
 		return resultType;
@@ -1733,7 +1734,9 @@ public class H5PlateServiceImpl implements IH5PlateService {
 	// 根据积分匹配教师等级
 	private Integer getTeachingLevelByIntegralCount(Float integralCount) {
 		Integer teachingLevel = 0;
-		if (integralCount == 0) {
+		if (integralCount < 0) {
+			teachingLevel = -1;
+		} else if (integralCount == 0) {
 			teachingLevel = 0;
 		} else if (integralCount >= 0 && integralCount < 200) {
 			teachingLevel = 1;
@@ -1745,5 +1748,10 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			teachingLevel = 4;
 		}
 		return teachingLevel;
+	}
+
+	@Override
+	public List<JSONObject> getAllTeacherList() {
+		return teacherH5Dao.getAllTeacherList();
 	}
 }
