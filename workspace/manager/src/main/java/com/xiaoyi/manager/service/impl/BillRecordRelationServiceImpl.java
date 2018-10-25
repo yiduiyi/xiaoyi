@@ -112,4 +112,14 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 			billRecordRelationDao.batchUpdateOtherBillRecord(list);
 		}
 	}
+	@Override
+	public void getAllBillRecordRelationListByBillId(String billId) {
+		List<BillRecordRelation> list = billRecordRelationDao.getAllBillRecordRelationListByBillId(billId);
+		if(CollectionUtils.isNotEmpty(list)) {
+			for (BillRecordRelation billRecordRelation : list) {
+				billRecordRelation.setStatus(ConstantUtil.BILL_RECORD_STATUS_IS_PASS);
+			}
+			billRecordRelationDao.batchUpdateOtherBillRecord(list);
+		}
+	}
 }

@@ -144,4 +144,10 @@
 		</foreach>
 	</if>
 </update>
+<select id="getAllBillRecordRelationListByBillId" parameterType="java.lang.String" resultMap="BaseResultMap">
+	select 
+    <include refid="Base_Column_List" />
+    from bill_record_r
+    where bill_id = #{billId}
+</select>
 </mapper>

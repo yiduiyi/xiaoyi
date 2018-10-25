@@ -16,5 +16,7 @@ public interface IBillRecordRelationService {
 	public Integer getBillRecordSendNumByBillId(String billId);
 	//修改未被选中的订单为接单失败
 	public void updateOtherBillRecord(String billId, String billRecordId);
+	//查询被删除订单下的所有订单投递记录
+	public void getAllBillRecordRelationListByBillId(String billId);
 
 }
