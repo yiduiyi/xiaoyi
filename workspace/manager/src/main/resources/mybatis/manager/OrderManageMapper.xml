@@ -12,7 +12,7 @@
 	
 	<!-- 获取订单列表 -->
 	<select id="selectOrderList" resultType="com.alibaba.fastjson.JSONObject" parameterType="hashmap">
-		SELECT a.orderId,a.purchaseTime,a.lessonType,a.lessonLeftNum,a.totalLessonNum,a.teachingIds,b.openId,b.parentName,b.telNum,c.name as studentName
+		SELECT a.orderId,a.purchaseTime,a.lessonType,a.lessonLeftNum,a.parentId,a.totalLessonNum,a.teachingIds,b.openId,b.parentName,b.telNum,c.name as studentName
 		FROM ordersum a INNER JOIN parents b ON a.parentId=b.parentId
 			INNER JOIN student c ON a.memberId=c.memberId
 		<where>
