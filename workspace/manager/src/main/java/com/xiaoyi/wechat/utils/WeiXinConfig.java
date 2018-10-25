@@ -3,7 +3,10 @@ package com.xiaoyi.wechat.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -12,6 +15,10 @@ import java.util.SortedMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.utils.HttpClient;
 
 /**
  * @author Administrator
@@ -170,4 +177,57 @@ public class WeiXinConfig {
 		return ip;
 	}
 
+	/**
+	 * 获取微信access_token
+	 * @param appId
+	 * @param appSecret
+	 * @return
+	 */
+	public static String getWechatAccessToken(String appId, String appSecret){
+		//获取access_token
+		//logger.info("调用微信接口获取access_token...");
+		StringBuffer getTockenBuffer = new StringBuffer();
+		getTockenBuffer
+			.append("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential")
+			.append("&appid=").append(appId)
+			.append("&secret=").append(appSecret);
+		String getTockenUrl = getTockenBuffer.toString();
+		String tokenResult = HttpClient.httpGetRequest(getTockenUrl);
+		//logger.info("获取access_token结果：" + tokenResult);
+		
+		JSONObject jsonResult = JSONObject.parseObject(tokenResult);
+		String token = jsonResult.getString("access_token");
+		
+		return token;
+	}
+	
+	/**
+	 * 获取关注公众号的所有openid
+	 * @param appId
+	 * @param appSecret
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	public List<String> getWechatOpenIds(String appId, String appSecret) throws UnsupportedEncodingException{
+		StringBuffer getUnionIdBuffer = new StringBuffer();
+		
+		String accessToken = getWechatAccessToken(appId, appSecret);
+		getUnionIdBuffer.append("https://api.weixin.qq.com/cgi-bin/user/get?access_token=")
+			.append(accessToken);
+		
+		String getUnionIdUrl = getUnionIdBuffer.toString();
+		String rs = HttpClient.httpGetRequest(getUnionIdUrl);
+		rs = new String(rs.getBytes("ISO-8859-1"),"UTF-8");
+		JSONObject unionIdResult = JSONObject.parseObject(rs);
+		
+		JSONObject data = unionIdResult.getJSONObject("data");
+		JSONArray openIds =	data.getJSONArray("openid");
+		
+		List<String> openIdList = new ArrayList<String>();
+		for(Object openId : openIds){
+			openIdList.add(String.valueOf(openId));
+		}
+		
+		return openIdList;
+	}
 }

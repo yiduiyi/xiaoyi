@@ -119,7 +119,7 @@ public class VideoCourseServiceImpl implements IVideoCourseService{
 	
 	@Override
 	public int updateDaulLesson(JSONObject reqData) {
-		String videoCourseId = reqData.getString("");
+		String videoCourseId = reqData.getString("videoCourseId");
 		if(StringUtils.isEmpty(videoCourseId)) {
 			return -1;
 		}
