@@ -265,7 +265,7 @@ public class BillServiceImpl implements IBillService {
 		//查询所有接收推送的教师openId
 		List<String> teachers;
 		try {
-			teachers = WeiXinConfig.getWechatOpenIds(WeiXinConfig.APPID, WeiXinConfig.SECRET);
+			teachers = WeiXinConfig.getWechatOpenIds(WeiXinConfig.TEACHER_PLATE_APPID, WeiXinConfig.TEACHER_PLATE_SECRET_KEY);
 			if (CollectionUtils.isNotEmpty(teachers)) {
 				Iterator<String> iterator = teachers.iterator();
 				while (iterator.hasNext()) {
