@@ -17,16 +17,18 @@
 		<result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		video_course_id, video_course_name, grade_id, semaster, course_id, video_course_type,
-		h5_video_link, status, chapter_id, upload_time, update_time
+		video_course_id, video_course_name, grade_id, semaster,
+		course_id, video_course_type,
+		h5_video_link, status, chapter_id,
+		upload_time, update_time
 	</sql>
-	
+
 	<!-- 根据条件查找视频课程 -->
-	<select id="selectVideoCourseListByConditions" resultMap="BaseResultMap" 
+	<select id="selectVideoCourseListByConditions" resultMap="BaseResultMap"
 		parameterType="com.alibaba.fastjson.JSONObject">
-		select 
+		select
 		<include refid="Base_Column_List" />
-		from video_course 
+		from video_course
 		<where>
 			<if test="video_course_id != null">
 				video_course_id = #{videoCourseId,jdbcType=VARCHAR}
@@ -40,8 +42,17 @@
 			<if test="courseId != null">
 				AND course_id = #{courseId,jdbcType=SMALLINT}
 			</if>
+
 			<if test="videoCourseType != null">
-				AND video_course_type = #{videoCourseType,jdbcType=TINYINT}
+				<choose>
+					<when test="videoCourseType &lt;= 3">
+						AND (video_course_type DIV 10 =
+						#{videoCourseType,jdbcType=TINYINT}
+						OR video_course_type = #{videoCourseType,jdbcType=TINYINT})
+					</when>
+					<otherwise>AND video_course_type =
+						#{videoCourseType,jdbcType=TINYINT}</otherwise>
+				</choose>
 			</if>
 			<if test="status != null">
 				AND status = #{status,jdbcType=TINYINT}
@@ -54,29 +65,35 @@
 			</if>
 		</where>
 	</select>
-	
+
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
 		select
 		<include refid="Base_Column_List" />
 		from video_course
-		where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+		where video_course_id =
+		#{videoCourseId,jdbcType=VARCHAR}
 	</select>
 	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-		delete from video_course
+		delete from
+		video_course
 		where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
 	</delete>
 	<insert id="insert" parameterType="com.xiaoyi.manager.domain.VideoCourse">
-		insert into video_course (video_course_id, video_course_name,
+		insert into video_course
+		(video_course_id, video_course_name,
 		grade_id,
-		semaster, course_id, video_course_type,
+		semaster, course_id,
+		video_course_type,
 		h5_video_link, status, chapter_id,
-		upload_time, update_time)
+		upload_time,
+		update_time)
 		values (#{videoCourseId,jdbcType=VARCHAR},
 		#{videoCourseName,jdbcType=VARCHAR}, #{gradeId,jdbcType=SMALLINT},
 		#{semaster,jdbcType=TINYINT}, #{courseId,jdbcType=SMALLINT},
 		#{videoCourseType,jdbcType=TINYINT},
-		#{h5VideoLink,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{chapterId,jdbcType=VARCHAR},
+		#{h5VideoLink,jdbcType=VARCHAR},
+		#{status,jdbcType=TINYINT}, #{chapterId,jdbcType=VARCHAR},
 		#{uploadTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
 	</insert>
 	<insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.VideoCourse">
@@ -189,17 +206,25 @@
 		where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
 	</update>
 	<update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.VideoCourse">
-		update video_course
-		set video_course_name = #{videoCourseName,jdbcType=VARCHAR},
-		grade_id = #{gradeId,jdbcType=SMALLINT},
+		update
+		video_course
+		set video_course_name =
+		#{videoCourseName,jdbcType=VARCHAR},
+		grade_id =
+		#{gradeId,jdbcType=SMALLINT},
 		semaster = #{semaster,jdbcType=TINYINT},
 		course_id = #{courseId,jdbcType=SMALLINT},
-		video_course_type = #{videoCourseType,jdbcType=TINYINT},
-		h5_video_link = #{h5VideoLink,jdbcType=VARCHAR},
+		video_course_type =
+		#{videoCourseType,jdbcType=TINYINT},
+		h5_video_link =
+		#{h5VideoLink,jdbcType=VARCHAR},
 		status = #{status,jdbcType=TINYINT},
 		chapter_id = #{chapterId,jdbcType=VARCHAR},
-		upload_time = #{uploadTime,jdbcType=TIMESTAMP},
-		update_time = #{updateTime,jdbcType=TIMESTAMP}
-		where video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+		upload_time =
+		#{uploadTime,jdbcType=TIMESTAMP},
+		update_time =
+		#{updateTime,jdbcType=TIMESTAMP}
+		where video_course_id =
+		#{videoCourseId,jdbcType=VARCHAR}
 	</update>
 </mapper>

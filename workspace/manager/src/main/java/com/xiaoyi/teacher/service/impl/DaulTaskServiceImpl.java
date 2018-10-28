@@ -1,5 +1,6 @@
 package com.xiaoyi.teacher.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,9 +19,11 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
+import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Semaster;
+import com.xiaoyi.common.utils.WXConstants;
 import com.xiaoyi.custom.dao.IStudentTaskDao;
 import com.xiaoyi.custom.dao.IStudentTaskStatisticDao;
 import com.xiaoyi.custom.domain.StudentTask;
@@ -32,6 +35,7 @@ import com.xiaoyi.teacher.dao.ITH5PlateDao;
 import com.xiaoyi.teacher.dao.ITeachingRelationshipDao;
 import com.xiaoyi.teacher.domain.TeachingRelationship;
 import com.xiaoyi.teacher.service.IDaulTaskService;
+import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 @Service("daulTaskServiceImpl")
 public class DaulTaskServiceImpl implements IDaulTaskService {
@@ -54,6 +58,9 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 	
 	@Resource
 	IStudentTaskStatisticDao taskStatisticDao;
+	
+	@Resource
+	IWechatService wechatService;
 	
 	@Override
 	public List<JSONObject> getPSTRelations(String openId) {				
@@ -304,6 +311,33 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 				} else{
 					taskStatisticDao.updateByPrimaryKey(taskStatistic);
 				}
+				
+				//推送作业消息通知
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				List<String> values = new ArrayList<String>();
+				values.add(sdf.format(new Date()));
+				Integer courseId = params.getInteger("courseId");
+				String courseName = "无";
+				if(null!=courseId){
+					for(Course course : Course.values()){
+						if(course.getValue() == courseId){
+							courseName = course.toString();
+							break;
+						}
+					}
+				}
+				values.add(courseName);
+				values.add("同步作业");
+				values.add(params.getString("videoCourseName"));
+				List<String> colors = new ArrayList<String>();
+				colors.add("#FF0000");colors.add("#FF0000");
+				colors.add("#FF0000");colors.add("#FF0000");
+				
+				wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_PLATE_APPID, 
+						WeiXinConfig.TEACHER_PLATE_SECRET_KEY, 
+						WeiXinConfig.TEACHER_DISTRIBUTE_TASK_TEMPLETE_ID, 
+						params.getString("h5VideoLink"), 
+						params.getString("openId"), values, colors, null);
 			} catch (Exception e) {
 				throw new CommonRunException(-1, "更新/插入统计表失败！");
 			}
