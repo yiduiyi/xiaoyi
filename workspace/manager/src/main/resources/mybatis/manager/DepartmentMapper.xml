@@ -115,4 +115,18 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where department_id = #{departmentId,jdbcType=VARCHAR}
   </update>
+  <select id="getDepartmentList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT department_id AS departmentId,department_type AS departmentType,department_desc AS departmentDesc,menu_code AS menuCode,parent_menu_code AS parentMenuCode FROM department 
+  		<where>
+  			<if test="null != departmentType">
+  				AND department_type = #{departmentType}
+  			</if>
+  			<if test="null != menuCode">
+  				AND menu_code = #{menuCode}
+  			</if>
+  			<if test="null != parentMenuCode">
+  				AND parent_menu_code = #{parentMenuCode}
+  			</if>
+  		</where>
+  </select>
 </mapper>

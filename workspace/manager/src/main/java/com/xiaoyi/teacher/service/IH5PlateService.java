@@ -67,4 +67,6 @@ public interface IH5PlateService {
 	public List<JSONObject> getMonthTeacherClassFeeRank();
 	//查询教师积分总量
 	public JSONObject getTeacherIntegralSum(JSONObject reqData);
+	//获取所有签约了的老师列表
+	public List<JSONObject> getAllTeacherList();
 }

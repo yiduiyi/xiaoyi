@@ -27,4 +27,6 @@ public interface IBillRecordRelationDao {
 	public List<BillRecordRelation> getAllOtherBillRecord(@Param("billId")String billId,@Param("billRecordId") String billRecordId);
 	//修改未被选中的订单为接单失败
 	public void batchUpdateOtherBillRecord(List<BillRecordRelation> list);
+
+	public List<BillRecordRelation> getAllBillRecordRelationListByBillId(@Param("billId")String billId);
 }

@@ -168,4 +168,8 @@
  		LEFT JOIN teacher T ON L.teacherId = T.teacherId 
  		WHERE date_format(L.applyTime, '%Y %m') = date_format(#{date},'%Y %m') GROUP BY L.teacherId ORDER BY classFee DESC limit 0,3
  	</select>
+ 	
+ 	<select id="getAllTeacherList" resultType="com.alibaba.fastjson.JSONObject">
+ 		
+ 	</select>
 </mapper>

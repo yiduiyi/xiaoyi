@@ -1,5 +1,9 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.ChannelManagerGroup;
 
 public interface IChannelManagerGroupDao {
@@ -14,4 +18,6 @@ public interface IChannelManagerGroupDao {
     int updateByPrimaryKeySelective(ChannelManagerGroup record);
 
     int updateByPrimaryKey(ChannelManagerGroup record);
+    
+	List<JSONObject> getChannelManagerGroupList(Map<String,Object> map);
 }

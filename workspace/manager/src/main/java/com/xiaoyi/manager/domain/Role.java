@@ -9,7 +9,7 @@ public class Role {
 
     private String departmentId;
 
-    private String parentRoleCode;
+    private Short parentRoleCode;
 
     private Short menuCode;
 
@@ -47,12 +47,12 @@ public class Role {
         this.departmentId = departmentId == null ? null : departmentId.trim();
     }
 
-    public String getParentRoleCode() {
+    public Short getParentRoleCode() {
         return parentRoleCode;
     }
 
-    public void setParentRoleCode(String parentRoleCode) {
-        this.parentRoleCode = parentRoleCode == null ? null : parentRoleCode.trim();
+    public void setParentRoleCode(Short parentRoleCode) {
+        this.parentRoleCode = parentRoleCode;
     }
 
     public Short getMenuCode() {

@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -210,6 +211,8 @@ public class BillServiceImpl implements IBillService {
 		bill.setBillId(reqData.getString("billId"));
 		bill.setStatus(ConstantUtil.BILL_STATUS_REMOVE);
 		bill.setUpdateTime(new Date());
+		//自动PASS该订单投递的记录
+		billRecordRelationService.getAllBillRecordRelationListByBillId(bill.getBillId());
 		return billDao.updateByPrimaryKeySelective(bill);
 	}
 	@Override
@@ -260,23 +263,29 @@ public class BillServiceImpl implements IBillService {
 		values.add("点击查看详情");
 		colors.add("#173177");
 		//查询所有接收推送的教师openId
-		List<JSONObject> teachers = h5PlateService.getAllRemindTeacherList();
-		if (CollectionUtils.isNotEmpty(teachers)) {
-			Iterator<JSONObject> iterator = teachers.iterator();
-			while (iterator.hasNext()) {
-				final JSONObject teacher = iterator.next();
-				logger.info("推送的教师主键："+teacher.getString("openId")+"————推送的内容："+values.toString());
-				executor.submit(new Runnable() {
-					@Override
-					public void run() {
-						wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_PLATE_APPID,
-								WeiXinConfig.TEACHER_PLATE_SECRET_KEY,
-								WeiXinConfig.TEACHER_TAKE_BILL_TEMPLETE_ID, WeiXinConfig.BILL_LIST_REDIRECT_URL, teacher.getString("openId"),
-								values, colors, teacher);
-					}
-				});
-			
+		List<String> teachers;
+		try {
+			teachers = WeiXinConfig.getWechatOpenIds(WeiXinConfig.APPID, WeiXinConfig.SECRET);
+			if (CollectionUtils.isNotEmpty(teachers)) {
+				Iterator<String> iterator = teachers.iterator();
+				while (iterator.hasNext()) {
+					final String teacherOpenId = iterator.next();
+					final JSONObject jsonObject = new JSONObject();
+					jsonObject.put("openId", teacherOpenId);
+					logger.info("推送的教师主键："+teacherOpenId+"————推送的内容："+values.toString());
+					executor.submit(new Runnable() {
+						@Override
+						public void run() {
+							wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_PLATE_APPID,
+									WeiXinConfig.TEACHER_PLATE_SECRET_KEY,
+									WeiXinConfig.TEACHER_TAKE_BILL_TEMPLETE_ID, WeiXinConfig.BILL_LIST_REDIRECT_URL, teacherOpenId,
+									values, colors, jsonObject);
+						}
+					});
+				}
 			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 	}
 	@Override

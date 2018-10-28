@@ -215,7 +215,7 @@ public class WeiXinConfig {
 	 * @return
 	 * @throws UnsupportedEncodingException 
 	 */
-	public List<String> getWechatOpenIds(String appId, String appSecret) throws UnsupportedEncodingException{
+	public static List<String> getWechatOpenIds(String appId, String appSecret) throws UnsupportedEncodingException{
 		StringBuffer getUnionIdBuffer = new StringBuffer();
 		
 		String accessToken = getWechatAccessToken(appId, appSecret);

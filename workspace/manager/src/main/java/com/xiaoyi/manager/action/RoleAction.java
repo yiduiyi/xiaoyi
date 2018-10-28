@@ -13,23 +13,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.manager.service.IDepartmentService;
+import com.xiaoyi.manager.service.IRoleService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 @Controller
-@RequestMapping(value = "/department")
-public class DepartmentAction {
+@RequestMapping("/role")
+public class RoleAction {
 	@Resource
-	private IDepartmentService departmentService;
+	private IRoleService roleService;
 
-	@RequestMapping(value = "/insertDepartment", method = RequestMethod.POST)
+	@RequestMapping(value = "/insertRole", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject insertDepartment(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject insertRole(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if(departmentService.insertDepartment(reqData) > 0) {
+			if (roleService.insertRole(reqData) > 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
@@ -38,14 +38,15 @@ public class DepartmentAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	@RequestMapping(value = "/updateDepartment", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/updateRole", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject updateDepartment(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject updateRole(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if(departmentService.updateDepartment(reqData) > 0) {
+			if (roleService.updateRole(reqData) > 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
@@ -54,14 +55,15 @@ public class DepartmentAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	@RequestMapping(value = "/deleteDepartment", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/deleteRole", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject deleteDepartment(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject deleteRole(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if(departmentService.deleteDepartment(reqData) > 0) {
+			if (roleService.deleteRole(reqData) > 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
@@ -70,14 +72,15 @@ public class DepartmentAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	@RequestMapping(value = "/getDepartmentList", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/getRoleList", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject getDepartmentList(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject getRoleList(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			List<JSONObject> data=departmentService.getDepartmentList(reqData);
+			List<JSONObject> data = roleService.getRoleList(reqData);
 			result.put("data", data);
 			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
@@ -86,6 +89,7 @@ public class DepartmentAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+
 	///
 	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {
 		result.put("code", code);

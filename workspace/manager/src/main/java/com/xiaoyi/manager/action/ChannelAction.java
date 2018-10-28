@@ -13,23 +13,23 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.manager.service.IDepartmentService;
+import com.xiaoyi.manager.service.IChannelManagerGroupService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 @Controller
-@RequestMapping(value = "/department")
-public class DepartmentAction {
+@RequestMapping("/channel")
+public class ChannelAction {
 	@Resource
-	private IDepartmentService departmentService;
+	private IChannelManagerGroupService channelGroupService;
 
-	@RequestMapping(value = "/insertDepartment", method = RequestMethod.POST)
+	@RequestMapping(value = "/insertChannelManagerGroup", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject insertDepartment(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject insertChannelManagerGroup(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if(departmentService.insertDepartment(reqData) > 0) {
+			if (channelGroupService.insertChannelManagerGroup(reqData) > 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
@@ -38,14 +38,15 @@ public class DepartmentAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	@RequestMapping(value = "/updateDepartment", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/deleteChannelManagerGroup", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject updateDepartment(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject deleteChannelManagerGroup(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if(departmentService.updateDepartment(reqData) > 0) {
+			if (channelGroupService.deleteChannelManagerGroup(reqData) > 0) {
 				rtCode = RtConstants.SUCCESS;
 			}
 		} catch (Exception e) {
@@ -54,30 +55,15 @@ public class DepartmentAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	@RequestMapping(value = "/deleteDepartment", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/getChannelManagerGroupList", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject deleteDepartment(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject getChannelManagerGroupList(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
-			if(departmentService.deleteDepartment(reqData) > 0) {
-				rtCode = RtConstants.SUCCESS;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		setReturnMsg(result, rtCode.getCode(), rtCode.name());
-		return result;
-	}
-	@RequestMapping(value = "/getDepartmentList", method = RequestMethod.POST)
-	@ResponseBody
-	public JSONObject getDepartmentList(HttpServletRequest request, HttpServletResponse response,
-			@RequestBody JSONObject reqData) {
-		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
-		try {
-			List<JSONObject> data=departmentService.getDepartmentList(reqData);
+			List<JSONObject> data = channelGroupService.getChannelManagerGroupList(reqData);
 			result.put("data", data);
 			rtCode = RtConstants.SUCCESS;
 		} catch (Exception e) {
@@ -86,6 +72,7 @@ public class DepartmentAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+
 	///
 	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {
 		result.put("code", code);

@@ -33,4 +33,6 @@ public interface ITH5PlateDao {
 	public List<JSONObject> getMonthTeacherClassFeeRank(@Param("date")Date date);
 	//根据教师主键查询教师信息
 	public Teacher selectTeacherByTeacherId(@Param("teacherId")String teacherId);
+	//获取所有签约的教师列表
+	public List<JSONObject> getAllTeacherList();
 }
