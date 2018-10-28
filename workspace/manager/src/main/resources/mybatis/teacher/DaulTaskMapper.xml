@@ -18,7 +18,7 @@
   <select id="selectAvailableTasks" resultType="com.alibaba.fastjson.JSONObject"
   		parameterType="com.alibaba.fastjson.JSONObject">
   	SELECT VC.video_course_id AS videoCourseId, VC.video_course_name AS videoCourseName,
-		VC.video_course_type AS videoCourseType, VC.h5_video_link AS h5VideoLink
+		VC.video_course_type AS videoCourseType, VC.h5_video_link AS h5VideoLink, VC.semaster
 	FROM teaching_relationship TR LEFT JOIN video_course VC 
 		ON TR.grade_id = VC.grade_id AND TR.course_id = VC.course_id
 	<where>
