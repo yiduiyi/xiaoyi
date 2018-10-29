@@ -1209,10 +1209,10 @@ public class CumstomServiceImpl implements ICustomService {
 					JSONArray videoGroup = videoGroupMap.get(group);
 					if(null==videoGroup){
 						videoGroup = new JSONArray();
-						videoGroupMap.put(group, videoGroup);
-						
-						videoGroup.add(video);						
+						videoGroupMap.put(group, videoGroup);						
 					}					
+					
+					videoGroup.add(video);						
 				}
 				
 				//组合各个组（三大类：同步，专题和假期）

@@ -34,7 +34,7 @@
 			<if test="teacherId!=null">
 				ST.teacher_id = #{teacherId}
 			</if>
-			<if test="teacherId!=null">
+			<if test="studentId!=null">
 				AND ST.student_id = #{studentId}
 			</if>
 			<if test="gradeId!=null">

@@ -23,12 +23,13 @@ import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Semaster;
-import com.xiaoyi.common.utils.WXConstants;
 import com.xiaoyi.custom.dao.IStudentTaskDao;
 import com.xiaoyi.custom.dao.IStudentTaskStatisticDao;
 import com.xiaoyi.custom.domain.StudentTask;
 import com.xiaoyi.custom.domain.StudentTaskStatistic;
 import com.xiaoyi.custom.domain.StudentTaskStatisticKey;
+import com.xiaoyi.manager.dao.IParentsDao;
+import com.xiaoyi.manager.domain.Parents;
 import com.xiaoyi.manager.domain.Teacher;
 import com.xiaoyi.teacher.dao.IDaulTaskDao;
 import com.xiaoyi.teacher.dao.ITH5PlateDao;
@@ -61,6 +62,9 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 	
 	@Resource
 	IWechatService wechatService;
+	
+	@Resource
+	IParentsDao parentDao;
 	
 	@Override
 	public List<JSONObject> getPSTRelations(String openId) {				
@@ -331,33 +335,44 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 				}
 				
 				//推送作业消息通知
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-				List<String> values = new ArrayList<String>();
-				values.add("");	//mark
-				values.add(sdf.format(new Date()));
-				Integer courseId = params.getInteger("courseId");
-				String courseName = "无";
-				if(null!=courseId){
-					for(Course course : Course.values()){
-						if(course.getValue() == courseId){
-							courseName = course.toString();
-							break;
+				//查找家长openId 用于推送消息
+				String openId = null;
+				try {
+					Parents p = parentDao.selectByPrimaryKey(params.getString("parentId"));
+					openId = p.getOpenid();
+				} catch (Exception e) {
+					throw new CommonRunException(-1, "查询家长失败！");
+				}
+				
+				if(!StringUtils.isEmpty(openId)){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+					List<String> values = new ArrayList<String>();
+					values.add("");	//mark
+					values.add(sdf.format(new Date()));
+					Integer courseId = params.getInteger("courseId");
+					String courseName = "无";
+					if(null!=courseId){
+						for(Course course : Course.values()){
+							if(course.getValue() == courseId){
+								courseName = course.toString();
+								break;
+							}
 						}
 					}
+					values.add(courseName);
+					values.add("同步作业");
+					values.add(params.getString("videoCourseName"));
+					List<String> colors = new ArrayList<String>();
+					colors.add("#FF0000");colors.add("#FF0000");colors.add("#FF0000");
+					colors.add("#FF0000");colors.add("#FF0000");
+					
+					logger.info("send task params:" + params);
+					wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_PLATE_APPID, 
+							WeiXinConfig.TEACHER_PLATE_SECRET_KEY, 
+							WeiXinConfig.TEACHER_DISTRIBUTE_TASK_TEMPLETE_ID, 
+							params.getString("h5VideoLink"), 
+							openId, values, colors, null);
 				}
-				values.add(courseName);
-				values.add("同步作业");
-				values.add(params.getString("videoCourseName"));
-				List<String> colors = new ArrayList<String>();
-				colors.add("#FF0000");colors.add("#FF0000");colors.add("#FF0000");
-				colors.add("#FF0000");colors.add("#FF0000");
-				
-				logger.info("send task params:" + params);
-				wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_PLATE_APPID, 
-						WeiXinConfig.TEACHER_PLATE_SECRET_KEY, 
-						WeiXinConfig.TEACHER_DISTRIBUTE_TASK_TEMPLETE_ID, 
-						params.getString("h5VideoLink"), 
-						params.getString("openId"), values, colors, null);
 			} catch (Exception e) {
 				throw new CommonRunException(-1, "更新/插入统计表失败！");
 			}
