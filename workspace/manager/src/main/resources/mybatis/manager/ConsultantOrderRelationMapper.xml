@@ -68,4 +68,8 @@
     where order_id = #{orderId,jdbcType=VARCHAR}
       and consultant_id = #{consultantId,jdbcType=VARCHAR}
   </update>
+  <select id="getConsultantOrderList" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT COR.order_id AS orderId,COR.consultant_id AS consultantId,C.consultant_name AS consultantName FROM consultant_order_r COR 
+  	INNER JOIN consultant C ON COR.consultant_id = C.consultant_id
+  </select>
 </mapper>

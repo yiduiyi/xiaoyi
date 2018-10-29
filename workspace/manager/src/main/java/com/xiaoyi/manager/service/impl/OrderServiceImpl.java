@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +27,7 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
+import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
@@ -54,6 +56,7 @@ import com.xiaoyi.manager.domain.UserOuterSync;
 import com.xiaoyi.manager.domain.UserOuterSyncKey;
 import com.xiaoyi.manager.domain.VideoCourse;
 import com.xiaoyi.manager.service.ICommonService;
+import com.xiaoyi.manager.service.IConsultantOrderRelationService;
 import com.xiaoyi.manager.service.IOrderService;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 
@@ -88,6 +91,8 @@ public class OrderServiceImpl implements IOrderService {
 	
 	@Resource
 	IDaulVideoOrderDao daulOrderDao;
+	@Resource
+	private IConsultantOrderRelationService consultantOrderRelationService;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -840,7 +845,7 @@ public class OrderServiceImpl implements IOrderService {
 			
 			return result;
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -1128,9 +1133,46 @@ public class OrderServiceImpl implements IOrderService {
 
 	@Override
 	public Orders queryOrderById(String orderId) {
-		// TODO Auto-generated method stub
 		return orderDao.selectOrderById(orderId);
 	}
 
+	@Override
+	public List<JSONObject> getClaimOrderList(JSONObject reqData) {
+		List<JSONObject> result = orderSumDao.getClaimOrderList(reqData);
+		Map<String, Object>  consultantOrderMap = new HashMap<String, Object>();
+		List<String> orderIdList = new ArrayList<String>();
+		if(!CollectionUtils.isEmpty(result)) {
+			for (JSONObject jsonObject : result) {
+				Integer lessonType = jsonObject.getInteger("lessonType");
+				if(null != lessonType) {
+					for (com.xiaoyi.common.utils.ConstantUtil.LessonType lessonTypes : com.xiaoyi.common.utils.ConstantUtil.LessonType.values()) {
+						if(lessonType == lessonTypes.getValue()) {
+							jsonObject.put("gradeName", lessonTypes.getGradeName(true));
+						}
+					}
+				}
+			}
+			//当查询所有已认领的订单时，匹配课程顾问名称，删除未认领订单
+			if(reqData.getInteger("isClaim").equals(ConstantUtil.IS_CLAIM_TRUE)) {
+				List<JSONObject> consultantOrderList= consultantOrderRelationService.getConsultantOrderList();
+				if(!CollectionUtils.isEmpty(consultantOrderList)) {
+					for (JSONObject jsonObject : consultantOrderList) {
+						consultantOrderMap.put(jsonObject.getString("orderId"), jsonObject.getString("consultantName"));
+						orderIdList.add(jsonObject.getString("orderId"));
+					}
+					Iterator<JSONObject> iterator = result.iterator();
+					while (iterator.hasNext()) {
+						JSONObject jsonObject = iterator.next();
+						if(orderIdList.contains(jsonObject.getString("orderId"))) {
+							jsonObject.put("consultantName", consultantOrderMap.get(jsonObject.getString("orderId")) == null ? "" : consultantOrderMap.get(jsonObject.getString("orderId")));
+						}else {
+							iterator.remove();
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
 	
 }

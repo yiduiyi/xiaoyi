@@ -251,4 +251,16 @@
 	WHERE teacherId=#{teacherId}
 		AND (a.`status`=1 OR a.`status`=2) AND b.`status`&lt;&gt;-1
   </select>
+  <select id="selectSendBillNumRankListByTime" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT B.consultant_id AS consultantId,C.consultant_name AS consultantName,COUNT(1) AS billNum FROM bill B 
+  	INNER JOIN consultant C ON B.consultant_id =C.consultant_id GROUP BY B.consultant_id
+  	<where>
+  		<if test="null != startTime">
+  			 AND create_time &gt;= #{startTime}
+  		</if>
+  		<if test="null != endTime">
+  			 AND create_time &lt;= #{endTime}
+  		</if>
+  	</where>
+  </select>
 </mapper>

@@ -1,5 +1,8 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.ConsultantOrderRelation;
 import com.xiaoyi.manager.domain.ConsultantOrderRelationKey;
 
@@ -15,4 +18,6 @@ public interface IConsultantOrderRelationDao {
     int updateByPrimaryKeySelective(ConsultantOrderRelation record);
 
     int updateByPrimaryKey(ConsultantOrderRelation record);
+
+	List<JSONObject> getConsultantOrderList();
 }

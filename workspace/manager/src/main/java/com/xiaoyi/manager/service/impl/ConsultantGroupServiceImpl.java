@@ -22,7 +22,7 @@ public class ConsultantGroupServiceImpl implements IConsultantGroupService {
 		consultantGroup.setConsultantGroupId(UUIDUtil.getUUIDPrimary());
 		consultantGroup.setConsultantGroupName(reqData.getString("consultantGroupName"));
 		consultantGroup.setConsultantId(reqData.getString("consultantId"));
-		consultantGroup.setRoleId(reqData.getString("roleId"));
+		consultantGroup.setRoleIds(reqData.getString("roleIds"));
 		return consultantGroupDao.insertSelective(consultantGroup);
 	}
 	@Override
@@ -32,6 +32,10 @@ public class ConsultantGroupServiceImpl implements IConsultantGroupService {
 	@Override
 	public List<JSONObject> getConsultantGroupList(JSONObject reqData) {
 		return consultantGroupDao.getConsultantGroupList(reqData);
+	}
+	@Override
+	public Integer addConsultantGroup(ConsultantGroup consultantGroup) {
+		return consultantGroupDao.insertSelective(consultantGroup);
 	}
 
 }

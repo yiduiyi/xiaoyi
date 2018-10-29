@@ -181,4 +181,24 @@
       and orderId = #{orderid,jdbcType=VARCHAR}
       and parentId = #{parentid,jdbcType=VARCHAR}
   </update>
+  <select id="getClaimOrderList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT P.openId AS openId,O.purchaseTime AS createTime,O.lessonType AS lessonType,O.teachingWay AS teachingWay,O.totalLessonNum AS totalLessonNum,S.`name` AS studentName,
+  	P.parentName AS parentName,P.telNum AS telPhone FROM ordersum O 
+  	INNER JOIN parents P ON O.parentId = P.parentId 
+  	INNER JOIN student S ON O.memberId = S.memberId 
+  		<where>
+  			<if test="null != studentName">
+  				AND S.`name` LIKE CONCAT('%',#{studentName},'%')
+  			</if>
+  			<if test="null != parentName">
+  				AND P.parentName LIKE CONCAT('%',#{parentName},'%')
+  			</if>
+  			<if test="null != telPhone">
+  				AND P.telNum = #{telPhone}
+  			</if>
+  			<if test="null != teachingType">
+  				AND O.teachingWay = #{teachingType}
+  			</if>
+  		</where>
+  </select>
 </mapper>

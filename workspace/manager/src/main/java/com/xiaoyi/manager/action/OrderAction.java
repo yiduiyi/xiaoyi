@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
+import com.xiaoyi.manager.service.IConsultantOrderRelationService;
 import com.xiaoyi.manager.service.IOrderService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
@@ -28,6 +29,8 @@ public class OrderAction {
 	
 	@Resource
 	private IOrderService orderService;
+	@Resource
+	private IConsultantOrderRelationService consultantOrderRelationService;
 	
 	@RequestMapping(value="/queryOrders",method=RequestMethod.POST)
 	@ResponseBody
@@ -260,7 +263,50 @@ public class OrderAction {
 		setReturnMsg(result, code, msg);		
 		return result;
 	}
-	
+	/**
+	 * 获取认领订单列表
+	 * @param result
+	 * @param code
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/getClaimOrderList",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getClaimOrderList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data = orderService.getClaimOrderList(reqData);
+			result.put("data", data);
+			rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	/**
+	 * 获取认领订单列表
+	 * @param result
+	 * @param code
+	 * @param msg
+	 * @return
+	 */
+	@RequestMapping(value = "/setClaimOrder",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject setClaimOrder(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			if(consultantOrderRelationService.setClaimOrder(reqData) > 0) {
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
 	///
 	private JSONObject setReturnMsg(JSONObject result,int code, String msg){
 		result.put("code", code);

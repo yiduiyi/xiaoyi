@@ -16,6 +16,7 @@ public class DateUtils {
 	public static final String YYYYMMDD = "yyyy-MM-dd";
 	public static final String MMDD = "MM月dd日";
 	public static final String MMPointDD = "MM.dd";
+	public static final String YYYYPointMMPointDD = "yyyy.MM.dd";
 	public static final String HHMM = "HH:mm";
 
 	public static String toYYYYMMDDHHMMSSString(Date date) {
@@ -37,6 +38,11 @@ public class DateUtils {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(MMPointDD);
 		return dateFormat.format(date);
 	}
+	
+	public static String toYYYYPointMMPointDDString(Date date) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(YYYYPointMMPointDD);
+		return dateFormat.format(date);
+	}
 	public static Date toYYYYMMDDHHMMSSDate(String dateString) throws ParseException {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(YYYYMMDDHHMMSS);
 		return dateFormat.parse(dateString);
@@ -47,7 +53,7 @@ public class DateUtils {
 		return dateFormat.parse(dateString);
 	}
 
-	public static StringBuilder starTimeJoinEndTime(Date startTime, Date endTime) {
+	public static StringBuilder startTimeJoinEndTime(Date startTime, Date endTime) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat(HHMM);
 		StringBuilder result = new StringBuilder();
 		String startTimeStr = dateFormat.format(startTime);
@@ -62,5 +68,58 @@ public class DateUtils {
 		c.add(Calendar.MONTH, -1);
 		Date lastMonth = c.getTime();
 		return lastMonth;
+	}
+
+	public static Date getDayMin(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 00);
+        calendar.set(Calendar.MINUTE, 00);
+        calendar.set(Calendar.SECOND, 00);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return new Date(calendar.getTime().getTime());
+    }
+    
+	public static Date getDayMax(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		return new Date(calendar.getTime().getTime());
+	}
+	public static Date getWeekMin(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int day_of_week = calendar.get(Calendar. DAY_OF_WEEK) - 1;
+        if (day_of_week == 0 ) {
+            day_of_week = 7 ;
+        }
+        calendar.add(Calendar.DATE , -day_of_week + 1 );
+        calendar.set(Calendar.HOUR_OF_DAY, 00);
+        calendar.set(Calendar.MINUTE, 00);
+        calendar.set(Calendar.SECOND, 00);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        return new Date(calendar.getTime().getTime());
+    }
+    
+	public static Date getWeekMax(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		int day_of_week = calendar.get(Calendar. DAY_OF_WEEK) - 1;
+	    if (day_of_week == 0 ) {
+	        day_of_week = 7 ;
+	    }
+	    calendar.add(Calendar.DATE , -day_of_week + 7 );
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		return new Date(calendar.getTime().getTime());
 	}
 }

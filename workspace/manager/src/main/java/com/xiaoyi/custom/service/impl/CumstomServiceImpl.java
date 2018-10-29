@@ -65,7 +65,6 @@ import com.xiaoyi.teacher.domain.LessonTrade;
 import com.xiaoyi.teacher.domain.LessonTradeSum;
 import com.xiaoyi.teacher.domain.Suggestions;
 import com.xiaoyi.teacher.domain.TeachingRecord;
-import com.xiaoyi.teacher.domain.TeachingRelationship;
 import com.xiaoyi.teacher.service.IClassFeesService;
 
 @Service("customService")
@@ -931,7 +930,7 @@ public class CumstomServiceImpl implements ICustomService {
 			result = customDao.getStuTeachingDetailByMonth(reqData);
 			if (!CollectionUtils.isEmpty(result)) {
 				for (JSONObject jsonObject : result) {
-					jsonObject.put("teachingTime", DateUtils.starTimeJoinEndTime(jsonObject.getDate("startTime"),
+					jsonObject.put("teachingTime", DateUtils.startTimeJoinEndTime(jsonObject.getDate("startTime"),
 							jsonObject.getDate("endTime")));
 				}
 			}

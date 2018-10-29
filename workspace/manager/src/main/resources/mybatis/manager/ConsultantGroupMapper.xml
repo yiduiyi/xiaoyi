@@ -5,10 +5,10 @@
     <id column="consultant_group_id" jdbcType="VARCHAR" property="consultantGroupId" />
     <result column="consultant_group_name" jdbcType="VARCHAR" property="consultantGroupName" />
     <result column="consultant_id" jdbcType="VARCHAR" property="consultantId" />
-    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="role_ids" jdbcType="VARCHAR" property="roleIds" />
   </resultMap>
   <sql id="Base_Column_List">
-    consultant_group_id, consultant_group_name, consultant_id, role_id
+    consultant_group_id, consultant_group_name, consultant_id, role_ids
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -22,9 +22,9 @@
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.ConsultantGroup">
     insert into consultant_group (consultant_group_id, consultant_group_name, 
-      consultant_id, role_id)
+      consultant_id, role_ids)
     values (#{consultantGroupId,jdbcType=VARCHAR}, #{consultantGroupName,jdbcType=VARCHAR}, 
-      #{consultantId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR})
+      #{consultantId,jdbcType=VARCHAR}, #{roleIds,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.ConsultantGroup">
     insert into consultant_group
@@ -38,8 +38,8 @@
       <if test="consultantId != null">
         consultant_id,
       </if>
-      <if test="roleId != null">
-        role_id,
+      <if test="roleIds != null">
+        role_ids,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -52,8 +52,8 @@
       <if test="consultantId != null">
         #{consultantId,jdbcType=VARCHAR},
       </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=VARCHAR},
+      <if test="roleIds != null">
+        #{roleIds,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -66,8 +66,8 @@
       <if test="consultantId != null">
         consultant_id = #{consultantId,jdbcType=VARCHAR},
       </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=VARCHAR},
+      <if test="roleIds != null">
+        role_ids = #{roleIds,jdbcType=VARCHAR},
       </if>
     </set>
     where consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR}
@@ -76,10 +76,7 @@
     update consultant_group
     set consultant_group_name = #{consultantGroupName,jdbcType=VARCHAR},
       consultant_id = #{consultantId,jdbcType=VARCHAR},
-      role_id = #{roleId,jdbcType=VARCHAR}
+      role_ids = #{roleIds,jdbcType=VARCHAR}
     where consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR}
   </update>
-  <select id="getConsultantGroupList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT consultant_group_id AS consultantGroupId,consultant_group_name AS consultantGroupName,consultant_id AS consultantId ,role_id AS roleId FROM consultant_group
-  </select>
 </mapper>

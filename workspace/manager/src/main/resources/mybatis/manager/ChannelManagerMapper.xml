@@ -1,142 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaoyi.manager.dao.IChannelManagerDao">
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.ChannelManager">
-    <id column="channel_manager_id" jdbcType="VARCHAR" property="channelManagerId" />
-    <result column="channel_manager_group_id" jdbcType="VARCHAR" property="channelManagerGroupId" />
-    <result column="channel_manager_name" jdbcType="VARCHAR" property="channelManagerName" />
-    <result column="intended_number" jdbcType="INTEGER" property="intendedNumber" />
-    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
-    <result column="open_id" jdbcType="VARCHAR" property="openId" />
-    <result column="status" jdbcType="SMALLINT" property="status" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    channel_manager_id, channel_manager_group_id, channel_manager_name, intended_number, 
-    role_id, create_time, telephone, open_id, status
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from channel_manager
-    where channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from channel_manager
-    where channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.ChannelManager">
-    insert into channel_manager (channel_manager_id, channel_manager_group_id, 
-      channel_manager_name, intended_number, role_id, 
-      create_time, telephone, open_id, 
-      status)
-    values (#{channelManagerId,jdbcType=VARCHAR}, #{channelManagerGroupId,jdbcType=VARCHAR}, 
-      #{channelManagerName,jdbcType=VARCHAR}, #{intendedNumber,jdbcType=INTEGER}, #{roleId,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{telephone,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, 
-      #{status,jdbcType=SMALLINT})
-  </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.ChannelManager">
-    insert into channel_manager
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="channelManagerId != null">
-        channel_manager_id,
-      </if>
-      <if test="channelManagerGroupId != null">
-        channel_manager_group_id,
-      </if>
-      <if test="channelManagerName != null">
-        channel_manager_name,
-      </if>
-      <if test="intendedNumber != null">
-        intended_number,
-      </if>
-      <if test="roleId != null">
-        role_id,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="telephone != null">
-        telephone,
-      </if>
-      <if test="openId != null">
-        open_id,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="channelManagerId != null">
-        #{channelManagerId,jdbcType=VARCHAR},
-      </if>
-      <if test="channelManagerGroupId != null">
-        #{channelManagerGroupId,jdbcType=VARCHAR},
-      </if>
-      <if test="channelManagerName != null">
-        #{channelManagerName,jdbcType=VARCHAR},
-      </if>
-      <if test="intendedNumber != null">
-        #{intendedNumber,jdbcType=INTEGER},
-      </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="telephone != null">
-        #{telephone,jdbcType=VARCHAR},
-      </if>
-      <if test="openId != null">
-        #{openId,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=SMALLINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.ChannelManager">
-    update channel_manager
-    <set>
-      <if test="channelManagerGroupId != null">
-        channel_manager_group_id = #{channelManagerGroupId,jdbcType=VARCHAR},
-      </if>
-      <if test="channelManagerName != null">
-        channel_manager_name = #{channelManagerName,jdbcType=VARCHAR},
-      </if>
-      <if test="intendedNumber != null">
-        intended_number = #{intendedNumber,jdbcType=INTEGER},
-      </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="telephone != null">
-        telephone = #{telephone,jdbcType=VARCHAR},
-      </if>
-      <if test="openId != null">
-        open_id = #{openId,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=SMALLINT},
-      </if>
-    </set>
-    where channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.ChannelManager">
-    update channel_manager
-    set channel_manager_group_id = #{channelManagerGroupId,jdbcType=VARCHAR},
-      channel_manager_name = #{channelManagerName,jdbcType=VARCHAR},
-      intended_number = #{intendedNumber,jdbcType=INTEGER},
-      role_id = #{roleId,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      telephone = #{telephone,jdbcType=VARCHAR},
-      open_id = #{openId,jdbcType=VARCHAR},
-      status = #{status,jdbcType=SMALLINT}
-    where channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-  </update>
+	<resultMap id="BaseResultMap"
+		type="com.xiaoyi.manager.domain.ChannelManager">
+		<id column="channel_manager_id" jdbcType="VARCHAR"
+			property="channelManagerId" />
+		<result column="channel_manager_group_id" jdbcType="VARCHAR"
+			property="channelManagerGroupId" />
+		<result column="channel_manager_name" jdbcType="VARCHAR"
+			property="channelManagerName" />
+		<result column="intended_number" jdbcType="INTEGER"
+			property="intendedNumber" />
+		<result column="role_ids" jdbcType="VARCHAR" property="roleIds" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="telephone" jdbcType="VARCHAR"
+			property="telephone" />
+		<result column="open_id" jdbcType="VARCHAR" property="openId" />
+		<result column="status" jdbcType="SMALLINT" property="status" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		channel_manager_id, channel_manager_group_id, channel_manager_name, intended_number,
+		role_ids, create_time, telephone, open_id, status
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from channel_manager
+		where channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from channel_manager
+		where channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.xiaoyi.manager.domain.ChannelManager">
+		insert into channel_manager (channel_manager_id, channel_manager_group_id,
+		channel_manager_name, intended_number, role_ids,
+		create_time, telephone, open_id,
+		status)
+		values (#{channelManagerId,jdbcType=VARCHAR},
+		#{channelManagerGroupId,jdbcType=VARCHAR},
+		#{channelManagerName,jdbcType=VARCHAR},
+		#{intendedNumber,jdbcType=INTEGER}, #{roleIds,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{telephone,jdbcType=VARCHAR},
+		#{openId,jdbcType=VARCHAR},
+		#{status,jdbcType=SMALLINT})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.xiaoyi.manager.domain.ChannelManager">
+		insert into channel_manager
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="channelManagerId != null">
+				channel_manager_id,
+			</if>
+			<if test="channelManagerGroupId != null">
+				channel_manager_group_id,
+			</if>
+			<if test="channelManagerName != null">
+				channel_manager_name,
+			</if>
+			<if test="intendedNumber != null">
+				intended_number,
+			</if>
+			<if test="roleIds != null">
+				role_ids,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="telephone != null">
+				telephone,
+			</if>
+			<if test="openId != null">
+				open_id,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="channelManagerId != null">
+				#{channelManagerId,jdbcType=VARCHAR},
+			</if>
+			<if test="channelManagerGroupId != null">
+				#{channelManagerGroupId,jdbcType=VARCHAR},
+			</if>
+			<if test="channelManagerName != null">
+				#{channelManagerName,jdbcType=VARCHAR},
+			</if>
+			<if test="intendedNumber != null">
+				#{intendedNumber,jdbcType=INTEGER},
+			</if>
+			<if test="roleIds != null">
+				#{roleIds,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="telephone != null">
+				#{telephone,jdbcType=VARCHAR},
+			</if>
+			<if test="openId != null">
+				#{openId,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=SMALLINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.xiaoyi.manager.domain.ChannelManager">
+		update channel_manager
+		<set>
+			<if test="channelManagerGroupId != null">
+				channel_manager_group_id = #{channelManagerGroupId,jdbcType=VARCHAR},
+			</if>
+			<if test="channelManagerName != null">
+				channel_manager_name = #{channelManagerName,jdbcType=VARCHAR},
+			</if>
+			<if test="intendedNumber != null">
+				intended_number = #{intendedNumber,jdbcType=INTEGER},
+			</if>
+			<if test="roleIds != null">
+				role_ids = #{roleIds,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="telephone != null">
+				telephone = #{telephone,jdbcType=VARCHAR},
+			</if>
+			<if test="openId != null">
+				open_id = #{openId,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=SMALLINT},
+			</if>
+		</set>
+		where channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.xiaoyi.manager.domain.ChannelManager">
+		update channel_manager
+		set channel_manager_group_id = #{channelManagerGroupId,jdbcType=VARCHAR},
+		channel_manager_name = #{channelManagerName,jdbcType=VARCHAR},
+		intended_number = #{intendedNumber,jdbcType=INTEGER},
+		role_ids = #{roleIds,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		telephone = #{telephone,jdbcType=VARCHAR},
+		open_id = #{openId,jdbcType=VARCHAR},
+		status = #{status,jdbcType=SMALLINT}
+		where channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+	</update>
+	<select id="getChannelManagerList"
+		resultType="com.alibaba.fastjson.JSONObject">
+		SELECT CM.channel_manager_id AS userId,CM.channel_manager_name AS
+		userName,CM.telephone AS telePhone,CMG.channel_manager_group_id AS
+		channelManagerGroupId,
+		CMG.channel_manager_group_name AS channelManagerGroupName,CMG.channel_manager_id AS
+		groupChannelManagerId FROM channel_manager CM LEFT JOIN
+		channel_manager_group
+		CMG ON CM.channel_manager_group_id = CMG.channel_manager_group_id WHERE
+		CM.`status` != -1
+	</select>
 </mapper>

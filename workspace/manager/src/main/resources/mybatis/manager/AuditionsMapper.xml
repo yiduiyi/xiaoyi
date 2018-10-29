@@ -196,4 +196,28 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where audition_id = #{auditionId,jdbcType=VARCHAR}
   </update>
+  <select id="getAuditionList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT A.audition_id AS auditionId,A.student_id AS studentId,A.parent_id AS parentId,A.grade_id AS gradeId,A.subject_id AS subjectId,A.come_from AS comeFrom,
+  	A.cooperator_id AS cooperatorId,A.`status` AS status,A.order_id AS orderId,A.notes AS notes,A.consultant_group_id AS consultantGroupId,A.consultant_id AS consultantId,
+  	A.create_time AS createTime,A.update_time AS updateTime,P.parentName AS parentName,P.telNum AS telPhone,S.`name` AS studentName FROM auditions A 
+  	INNER JOIN parents p ON A.parent_id = P.parentId 
+  	INNER JOIN student S ON A.student_id = S.memberId 
+  	<where>
+  		<if test="null != studentName">
+  		 	AND S.`name` LIKE CONTANT('%',#{studentName},'%')
+  		</if>
+  		<if test="null != parentName">
+  			AND P.parentName LIKE CONTANT('%',#{parentName},'%')
+  		</if>
+  		<if test="null != telPhone">
+  			AND P.telNum = #{telPhone}
+  		</if>
+  		<if test="null != queryType">
+  			AND A.`status` = #{queryType}
+  		</if>
+  		<if test="null != consultantId">
+  			AND A.consultant_id = #{consultantId}
+  		</if>
+  	</where>
+  </select>
 </mapper>

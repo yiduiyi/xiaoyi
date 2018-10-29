@@ -1,5 +1,8 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.Auditions;
 
 public interface IAuditionsDao {
@@ -14,4 +17,6 @@ public interface IAuditionsDao {
     int updateByPrimaryKeySelective(Auditions record);
 
     int updateByPrimaryKey(Auditions record);
+
+	List<JSONObject> getAuditionList(JSONObject reqData);
 }

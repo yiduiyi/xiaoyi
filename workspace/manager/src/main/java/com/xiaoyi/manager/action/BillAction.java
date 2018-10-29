@@ -207,6 +207,27 @@ public class BillAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+	/**
+	 * 派单试听排行榜
+	 * @param request
+	 * @param response
+	 * @param reqData
+	 * @return
+	 */
+	@RequestMapping(value = "/getSendBillNumRankList",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getSendBillNumRankList(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			result.put("data", billService.getSendBillNumRankList());
+			rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
 	
 	///
 	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {

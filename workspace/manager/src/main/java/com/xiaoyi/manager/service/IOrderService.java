@@ -39,4 +39,6 @@ public interface IOrderService {
 	List<JSONObject> queryMOrders(JSONObject params);
 	
 	int deleteTeachingTeacher(JSONObject params);
+	//获取认领列表
+	List<JSONObject> getClaimOrderList(JSONObject reqData);
 }

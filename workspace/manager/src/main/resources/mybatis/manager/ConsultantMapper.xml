@@ -5,7 +5,7 @@
     <id column="consultant_id" jdbcType="VARCHAR" property="consultantId" />
     <result column="consultant_name" jdbcType="VARCHAR" property="consultantName" />
     <result column="consultant_group_id" jdbcType="VARCHAR" property="consultantGroupId" />
-    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="role_ids" jdbcType="VARCHAR" property="roleIds" />
     <result column="picId" jdbcType="VARCHAR" property="picid" />
     <result column="telNumber" jdbcType="VARCHAR" property="telnumber" />
     <result column="notes" jdbcType="VARCHAR" property="notes" />
@@ -15,8 +15,8 @@
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Base_Column_List">
-    consultant_id, consultant_name, consultant_group_id, role_id, picId, telNumber, notes, 
-    openId, create_time, update_time, status
+    consultant_id, consultant_name, consultant_group_id, role_ids, picId, telNumber, 
+    notes, openId, create_time, update_time, status
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -30,11 +30,11 @@
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.Consultant">
     insert into consultant (consultant_id, consultant_name, consultant_group_id, 
-      role_id, picId, telNumber, 
+      role_ids, picId, telNumber, 
       notes, openId, create_time, 
       update_time, status)
     values (#{consultantId,jdbcType=VARCHAR}, #{consultantName,jdbcType=VARCHAR}, #{consultantGroupId,jdbcType=VARCHAR}, 
-      #{roleId,jdbcType=VARCHAR}, #{picid,jdbcType=VARCHAR}, #{telnumber,jdbcType=VARCHAR}, 
+      #{roleIds,jdbcType=VARCHAR}, #{picid,jdbcType=VARCHAR}, #{telnumber,jdbcType=VARCHAR}, 
       #{notes,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER})
   </insert>
@@ -50,8 +50,8 @@
       <if test="consultantGroupId != null">
         consultant_group_id,
       </if>
-      <if test="roleId != null">
-        role_id,
+      <if test="roleIds != null">
+        role_ids,
       </if>
       <if test="picid != null">
         picId,
@@ -85,8 +85,8 @@
       <if test="consultantGroupId != null">
         #{consultantGroupId,jdbcType=VARCHAR},
       </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=VARCHAR},
+      <if test="roleIds != null">
+        #{roleIds,jdbcType=VARCHAR},
       </if>
       <if test="picid != null">
         #{picid,jdbcType=VARCHAR},
@@ -120,8 +120,8 @@
       <if test="consultantGroupId != null">
         consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR},
       </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=VARCHAR},
+      <if test="roleIds != null">
+        role_ids = #{roleIds,jdbcType=VARCHAR},
       </if>
       <if test="picid != null">
         picId = #{picid,jdbcType=VARCHAR},
@@ -151,7 +151,7 @@
     update consultant
     set consultant_name = #{consultantName,jdbcType=VARCHAR},
       consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR},
-      role_id = #{roleId,jdbcType=VARCHAR},
+      role_ids = #{roleIds,jdbcType=VARCHAR},
       picId = #{picid,jdbcType=VARCHAR},
       telNumber = #{telnumber,jdbcType=VARCHAR},
       notes = #{notes,jdbcType=VARCHAR},
@@ -166,5 +166,11 @@
     select 
     <include refid="Base_Column_List" />
     from consultant
+  </select>
+  
+  <select id="getConsultantList" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT C.consultant_id AS userId,C.consultant_name AS userName,C.telNumber AS telePhone,CG.consultant_group_id AS consultantGroupId,
+  	CG.consultant_group_name AS consultantGroupName,CG.consultant_id AS groupConsultantId FROM consultant C LEFT JOIN consultant_group CG ON 
+  	C.consultant_group_id = CG.consultant_group_id WHERE C.`status` != -1
   </select>
 </mapper>
