@@ -84,9 +84,9 @@ public class DaulAction {
 			JSONArray videoCourseTypeList = new JSONArray();
 			for(VideoCourseType v : VideoCourseType.values()){
 				JSONObject videoCourseType = new JSONObject();
-				if(v.getValue()>10){
+				/*if(v.getValue()>10){
 					continue;
-				}
+				}*/
 				
 				videoCourseType.put("videoCourseType", v.getValue());
 				videoCourseType.put("videoCourseTypeName", v.toString());

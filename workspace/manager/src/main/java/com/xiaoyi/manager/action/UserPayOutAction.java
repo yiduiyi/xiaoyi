@@ -160,7 +160,7 @@ public class UserPayOutAction {
 		parameters.put("mch_id", WeiXinConfig.mchId);
 		parameters.put("sign_type", WeiXinConfig.signType);
 		parameters.put("nonce_str", nonceStr);
-		parameters.put("body", "\u6613\u5bf9\u6613\u7f51\u7edc\u7f34\u8d39");// 易对易网络缴费
+		parameters.put("body", WeiXinConfig.COMPANY);// 易对易网络缴费
 		parameters.put("out_trade_no", order);// 订单号
 		parameters.put("total_fee", amounts + "");// 总金额单位为分
 		parameters.put("spbill_create_ip", ip);

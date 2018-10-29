@@ -26,6 +26,7 @@ import com.xiaoyi.common.utils.HttpClient;
  */
 public class WeiXinConfig {
 
+	public static String COMPANY;
 	public static String APPID ;//= "wxd9579db73c42cf91";//服务号的应用号
 	public static String mchId ;//= "1493091612";// 商户号
 	public static String tradeType;// = "JSAPI";
@@ -74,6 +75,8 @@ public class WeiXinConfig {
 	public static String XIAO_E_TONG_APPID;
 	public static String XIAO_E_TONG_APPSECRET;
 	
+	public static String TEACHER_DISTRIBUTE_TASK_TEMPLETE_ID;
+	
 	// 证书url
 	public static final String CA_LICENSE = "F:" + File.separator + "xiaoyi" + File.separator + "cert" + File.separator
 			+ "apiclient_cert.p12";
@@ -90,6 +93,7 @@ public class WeiXinConfig {
 			e.printStackTrace();
 		}
 		// 获取key对应的value值
+		COMPANY = properties.getProperty("company");
 		APPID = properties.getProperty("APPID");
 		mchId = properties.getProperty("mchId");
 		tradeType = properties.getProperty("tradeType");
@@ -115,6 +119,9 @@ public class WeiXinConfig {
 	
 		XIAO_E_TONG_APPID=properties.getProperty("xiaoe.appId");
 		XIAO_E_TONG_APPSECRET=properties.getProperty("xiaoe.appSecret");
+		
+		//作业通知模板
+		TEACHER_DISTRIBUTE_TASK_TEMPLETE_ID = properties.getProperty("TEACHER_DISTRIBUTE_TASK_TEMPLETE_ID");
 	}
 
 	public static String getRequestXml(SortedMap<String, String> parameters) {

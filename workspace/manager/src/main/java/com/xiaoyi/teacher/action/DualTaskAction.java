@@ -134,6 +134,8 @@ public class DualTaskAction {
 		int code = 0;
 		String msg = "布置的视频课程作业成功！";
 		
+		String openId = (String) request.getSession().getAttribute("openid");
+		reqData.put("openId", openId);
 		try {
 			daulTaskService.distributeTask(reqData);			
 		} catch (CommonRunException e) {			
