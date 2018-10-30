@@ -4,7 +4,7 @@
   <!-- 查找老师和家长,学生绑定关系 -->
   <select id="selectPSTBondingRelations" parameterType="java.lang.String" 
   	resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT a.teachingId, a.parentId, p.parentName, p.telNum as telephone, 
+  	SELECT a.teachingId, a.parentId, p.parentName, p.telNum as telephone, a.teacherId,
   			a.memberId as studentId, s.`name` as studentName, o.lessonType
 	FROM order_teaching_r a LEFT JOIN parents p ON a.parentId=p.parentId
 		LEFT JOIN student s ON a.memberId=s.memberId

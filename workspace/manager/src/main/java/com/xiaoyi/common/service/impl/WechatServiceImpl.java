@@ -519,10 +519,10 @@ public class WechatServiceImpl implements IWechatService {
 			}
 		}
 		StringBuffer sb = new StringBuffer();
+		sb.append(redirect_url);
 		if(params != null){
 			int n=0;
 			for(String key : params.keySet()){
-				sb.append(redirect_url);
 				if(n==0){
 					sb.append("?"+key);
 				}else{

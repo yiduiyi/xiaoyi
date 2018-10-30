@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoyi.teacher.dao.ITeachingDaulOrderDao" >
+  <resultMap id="BaseResultMap" type="com.xiaoyi.teacher.domain.TeachingDaulOrder" >
+    <id column="inner_order_id" property="innerOrderId" jdbcType="VARCHAR" />
+    <id column="teacher_id" property="teacherId" jdbcType="VARCHAR" />
+    <id column="teaching_id" property="teachingId" jdbcType="VARCHAR" />
+    <result column="xiaoe_order_id" property="xiaoeOrderId" jdbcType="VARCHAR" />
+    <result column="gen_date" property="genDate" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="order_status" property="orderStatus" jdbcType="SMALLINT" />
+    <result column="parent_id" property="parentId" jdbcType="VARCHAR" />
+    <result column="student_id" property="studentId" jdbcType="VARCHAR" />
+    <result column="grade_id" property="gradeId" jdbcType="SMALLINT" />
+    <result column="course_id" property="courseId" jdbcType="SMALLINT" />
+    <result column="semaster" property="semaster" jdbcType="TINYINT" />
+    <result column="video_course_id" property="videoCourseId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    inner_order_id, teacher_id, teaching_id, xiaoe_order_id, gen_date, update_time, order_status, 
+    parent_id, student_id, grade_id, course_id, semaster, video_course_id
+  </sql>
+	<!-- 根据参数查询老师双师订单 -->
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="com.alibaba.fastjson.JSONObject">
+		select
+		<include refid="Base_Column_List" />
+		from teacher_daul_order
+		<where>
+			<if test="innerOrderId != null">
+				inner_order_id = #{innerOrderId}
+			</if>
+			<if test="teacherId != null">
+				AND teacher_id = #{teacherId}
+			</if>
+			<if test="xiaoeOrderId != null">
+				AND xiaoe_order_id = #{xiaoeOrderId}
+			</if>
+			<if test="genDate != null">
+				AND gen_date = #{genDate}
+			</if>
+			<if test="updateTime != null">
+				AND update_time = #{updateTime}
+			</if>
+			<if test="orderStatus != null">
+				AND order_status = #{orderStatus}
+			</if>
+			<if test="parentId != null">
+				AND parent_id = #{parentId}
+			</if>
+			<if test="studentId != null">
+				AND student_id = #{studentId}
+			</if>
+		</where>
+	</select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.xiaoyi.teacher.domain.TeachingDaulOrderKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from teaching_daul_order
+    where inner_order_id = #{innerOrderId,jdbcType=VARCHAR}
+      and teacher_id = #{teacherId,jdbcType=VARCHAR}
+      and teaching_id = #{teachingId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeachingDaulOrderKey" >
+    delete from teaching_daul_order
+    where inner_order_id = #{innerOrderId,jdbcType=VARCHAR}
+      and teacher_id = #{teacherId,jdbcType=VARCHAR}
+      and teaching_id = #{teachingId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.xiaoyi.teacher.domain.TeachingDaulOrder" >
+    insert into teaching_daul_order (inner_order_id, teacher_id, teaching_id, 
+      xiaoe_order_id, gen_date, update_time, 
+      order_status, parent_id, student_id, 
+      grade_id, course_id, semaster, 
+      video_course_id)
+    values (#{innerOrderId,jdbcType=VARCHAR}, #{teacherId,jdbcType=VARCHAR}, #{teachingId,jdbcType=VARCHAR}, 
+      #{xiaoeOrderId,jdbcType=VARCHAR}, #{genDate,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{orderStatus,jdbcType=SMALLINT}, #{parentId,jdbcType=VARCHAR}, #{studentId,jdbcType=VARCHAR}, 
+      #{gradeId,jdbcType=SMALLINT}, #{courseId,jdbcType=SMALLINT}, #{semaster,jdbcType=TINYINT}, 
+      #{videoCourseId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.xiaoyi.teacher.domain.TeachingDaulOrder" >
+    insert into teaching_daul_order
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="innerOrderId != null" >
+        inner_order_id,
+      </if>
+      <if test="teacherId != null" >
+        teacher_id,
+      </if>
+      <if test="teachingId != null" >
+        teaching_id,
+      </if>
+      <if test="xiaoeOrderId != null" >
+        xiaoe_order_id,
+      </if>
+      <if test="genDate != null" >
+        gen_date,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="orderStatus != null" >
+        order_status,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="studentId != null" >
+        student_id,
+      </if>
+      <if test="gradeId != null" >
+        grade_id,
+      </if>
+      <if test="courseId != null" >
+        course_id,
+      </if>
+      <if test="semaster != null" >
+        semaster,
+      </if>
+      <if test="videoCourseId != null" >
+        video_course_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="innerOrderId != null" >
+        #{innerOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherId != null" >
+        #{teacherId,jdbcType=VARCHAR},
+      </if>
+      <if test="teachingId != null" >
+        #{teachingId,jdbcType=VARCHAR},
+      </if>
+      <if test="xiaoeOrderId != null" >
+        #{xiaoeOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="genDate != null" >
+        #{genDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null" >
+        #{orderStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="studentId != null" >
+        #{studentId,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null" >
+        #{gradeId,jdbcType=SMALLINT},
+      </if>
+      <if test="courseId != null" >
+        #{courseId,jdbcType=SMALLINT},
+      </if>
+      <if test="semaster != null" >
+        #{semaster,jdbcType=TINYINT},
+      </if>
+      <if test="videoCourseId != null" >
+        #{videoCourseId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.teacher.domain.TeachingDaulOrder" >
+    update teaching_daul_order
+    <set >
+      <if test="xiaoeOrderId != null" >
+        xiaoe_order_id = #{xiaoeOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="genDate != null" >
+        gen_date = #{genDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null" >
+        order_status = #{orderStatus,jdbcType=SMALLINT},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="studentId != null" >
+        student_id = #{studentId,jdbcType=VARCHAR},
+      </if>
+      <if test="gradeId != null" >
+        grade_id = #{gradeId,jdbcType=SMALLINT},
+      </if>
+      <if test="courseId != null" >
+        course_id = #{courseId,jdbcType=SMALLINT},
+      </if>
+      <if test="semaster != null" >
+        semaster = #{semaster,jdbcType=TINYINT},
+      </if>
+      <if test="videoCourseId != null" >
+        video_course_id = #{videoCourseId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where inner_order_id = #{innerOrderId,jdbcType=VARCHAR}
+      and teacher_id = #{teacherId,jdbcType=VARCHAR}
+      and teaching_id = #{teachingId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeachingDaulOrder" >
+    update teaching_daul_order
+    set xiaoe_order_id = #{xiaoeOrderId,jdbcType=VARCHAR},
+      gen_date = #{genDate,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      order_status = #{orderStatus,jdbcType=SMALLINT},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      student_id = #{studentId,jdbcType=VARCHAR},
+      grade_id = #{gradeId,jdbcType=SMALLINT},
+      course_id = #{courseId,jdbcType=SMALLINT},
+      semaster = #{semaster,jdbcType=TINYINT},
+      video_course_id = #{videoCourseId,jdbcType=VARCHAR}
+    where inner_order_id = #{innerOrderId,jdbcType=VARCHAR}
+      and teacher_id = #{teacherId,jdbcType=VARCHAR}
+      and teaching_id = #{teachingId,jdbcType=VARCHAR}
+  </update>
+</mapper>
