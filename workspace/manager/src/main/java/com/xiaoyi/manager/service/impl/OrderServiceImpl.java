@@ -55,6 +55,9 @@ import com.xiaoyi.manager.domain.UserOuterSyncKey;
 import com.xiaoyi.manager.domain.VideoCourse;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.manager.service.IOrderService;
+import com.xiaoyi.teacher.dao.ITeachingDaulOrderDao;
+import com.xiaoyi.teacher.domain.TeachingDaulOrder;
+import com.xiaoyi.teacher.domain.TeachingDaulOrderKey;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 @Service("orderService")
@@ -88,6 +91,9 @@ public class OrderServiceImpl implements IOrderService {
 	
 	@Resource
 	IDaulVideoOrderDao daulOrderDao;
+	
+	@Resource
+	ITeachingDaulOrderDao teachingDaulOrderDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -1012,6 +1018,7 @@ public class OrderServiceImpl implements IOrderService {
 			reqParams.put("courseId", params.get("courseId"));
 			reqParams.put("teacherId", params.get("teacherId"));
 			
+			Short teachingWay = null;
 			//查询任教Id
 			String deleteTeachingId = null;
 			try {
@@ -1028,6 +1035,11 @@ public class OrderServiceImpl implements IOrderService {
 							logger.info("orderSum is null!");
 							return 0;
 						}
+						
+						//+++++++++++++++  daul teacher version   +++++++++++++++
+						teachingWay = orderSum.getTeachingWay();
+						//++++++++++++++++++++++   end   +++++++++++++++++++++++
+						
 						
 						String teachingIds = orderSum.getTeachingids();
 						if(!StringUtils.isEmpty(teachingIds)){
@@ -1117,6 +1129,41 @@ public class OrderServiceImpl implements IOrderService {
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw e;
+			}
+			
+			//删除双师视频课程授权
+			if(teachingWay == 3){
+				JSONObject daulOrderParams = new JSONObject();
+				daulOrderParams.put("teachingId", deleteTeachingId);
+				List<TeachingDaulOrder> teachingDaulOrderList = 
+						teachingDaulOrderDao.selectByParams(daulOrderParams );
+				
+				final XiaoeSDK sdk  = 
+						new XiaoeSDK(WeiXinConfig.XIAO_E_TONG_APPID, WeiXinConfig.XIAO_E_TONG_APPSECRET); 
+				for(TeachingDaulOrder daulOrder : teachingDaulOrderList){
+					 final String xiaoeOrder = daulOrder.getXiaoeOrderId();
+					
+					 //异步执行
+					 excutors.submit(new Runnable() {
+						
+						@Override
+						public void run() {							
+							//确认订单（修改订单状态为已购买）
+					        logger.info("调用小鹅通SdK修改订单状态...");
+					        org.json.JSONObject comfirmOrder = new org.json.JSONObject();
+					        comfirmOrder.put("order_id", xiaoeOrder);
+					        comfirmOrder.put("order_state", "2");	//支付失败
+					        org.json.JSONObject updateResult = sdk.send("orders.state.update", comfirmOrder, 1, "1.0");
+					        logger.info("修改结果：" + updateResult);
+					        
+					        //更改订单状态成功-》删除对应双师本地授权
+					        if(updateResult.getInt("order_state") == 2){
+					        	teachingDaulOrderDao.deleteByXiaoeOrderId(xiaoeOrder);
+					        }
+						}
+					});
+					
+				}
 			}
 			
 		} catch (Exception e) {

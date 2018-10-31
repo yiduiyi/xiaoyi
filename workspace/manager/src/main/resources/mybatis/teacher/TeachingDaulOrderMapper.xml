@@ -33,6 +33,9 @@
 			<if test="teacherId != null">
 				AND teacher_id = #{teacherId}
 			</if>
+			<if test="teachingId != null">
+				AND teaching_id = #{teachingId}
+			</if>
 			<if test="xiaoeOrderId != null">
 				AND xiaoe_order_id = #{xiaoeOrderId}
 			</if>
@@ -62,6 +65,13 @@
       and teacher_id = #{teacherId,jdbcType=VARCHAR}
       and teaching_id = #{teachingId,jdbcType=VARCHAR}
   </select>
+  
+  <!-- 根据小鹅通订单Id删除本地订单 -->
+  <delete id="deleteByXiaoeOrderId" parameterType="java.util.String">
+  	delete from teaching_daul_order
+    where xiaoe_order_id = #{xiaoEOrderId}
+  </delete>
+  
   <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.teacher.domain.TeachingDaulOrderKey" >
     delete from teaching_daul_order
     where inner_order_id = #{innerOrderId,jdbcType=VARCHAR}
