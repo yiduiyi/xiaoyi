@@ -223,8 +223,8 @@ public class OrderServiceImpl implements IOrderService {
 						orderSum.setPurchasetime(new Date());
 						orderSum.setLessontype(lessonType);
 						orderSum.setLessonleftnum(isNewOrder?purchaseNum:(orderSum.getLessonleftnum()+purchaseNum));
-						orderSum.setTotallessonnum(isNewOrder?purchaseNum:(short)(orderSum.getTotallessonnum()+purchaseNum));
-						orderSum.setTeachingWay(teachingWay);
+						orderSum.setTotallessonnum(isNewOrder?purchaseNum:(orderSum.getTotallessonnum()+purchaseNum));
+						orderSum.setTeachingWay(daulTeachingWay);
 						
 						if(isNewOrder){
 							orderSumDao.insertSelective(orderSum);
@@ -241,7 +241,7 @@ public class OrderServiceImpl implements IOrderService {
 				//双师视频课程 & 双师课堂（增加用户同步课堂观看权限）
 				if(3==teachingWay || teachingWay==5){
 					logger.info("开始购买双师课堂");
-					addDaulOrder(teachingWay, openId, parentId, studentId, phone, lessonType);
+					addDaulOrder(teachingWay, openId,params.getString("nonce_str"), parentId, studentId, phone, lessonType);
 				}
 			}
 		} catch (Exception e) {
@@ -262,7 +262,7 @@ public class OrderServiceImpl implements IOrderService {
 	 * @param lessonType
 	 * @return
 	 */
-	private int addDaulOrder(int teachingWay, String openId, 
+	private int addDaulOrder(int teachingWay, String openId, String daulOrderId,
 			String parentId, String studentId, String phone, Integer lessonType){
 		int result = 0;
 		
@@ -439,7 +439,7 @@ public class OrderServiceImpl implements IOrderService {
 			List<DaulVideoOrder> recordList = new ArrayList<DaulVideoOrder>();
 			for(VideoCourse videoCourse : videoCourseList){
 				DaulVideoOrder videoOrder = new DaulVideoOrder();
-				String daulOrderId = UUID.randomUUID().toString();
+				//String daulOrderId = UUID.randomUUID().toString();
 				
 				videoOrder.setCreateTime(new Date());
 				videoOrder.setDaulOrderId(daulOrderId);

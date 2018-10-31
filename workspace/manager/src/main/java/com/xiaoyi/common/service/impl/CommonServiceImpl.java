@@ -167,7 +167,7 @@ public class CommonServiceImpl implements ICommonDataService {
 					data.put("semaster", lt.getSemaster());
 					for(Semaster s : Semaster.values()){
 						if(s.getValue() == lt.getSemaster()){
-							data.put("semasterName", "同步" + s.toString() + "册");
+							data.put("semasterName", "同步" + s.getSimpleName() + "册");
 							break;
 						}
 					}
