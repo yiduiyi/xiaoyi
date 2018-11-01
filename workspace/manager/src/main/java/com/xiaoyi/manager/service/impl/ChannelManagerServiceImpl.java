@@ -43,4 +43,19 @@ public class ChannelManagerServiceImpl implements IChannelManagerService {
 		return result;
 	}
 
+	@Override
+	public int updateChannelManager(JSONObject reqData) {
+		ChannelManager channelManager = channelManagerDao.selectByPrimaryKey(reqData.getString("channelManagerId"));
+		if(null == channelManager) {
+			return -1;
+		}
+		channelManager.setChannelManagerGroupId(reqData.getString("channelManagerGroupId"));
+		channelManager.setChannelManagerName(reqData.getString("channelManagerName"));
+		channelManager.setOpenId(reqData.getString("openId"));
+		channelManager.setRoleIds(reqData.getString("roleIds"));
+		channelManager.setTelephone(reqData.getString("telePhone"));
+		channelManager.setIntendedNumber(reqData.getInteger("intendedNumber"));
+		return channelManagerDao.updateByPrimaryKeySelective(channelManager);
+	}
+
 }

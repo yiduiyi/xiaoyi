@@ -32,5 +32,4 @@ public class ChannelManagerGroupServiceImpl implements IChannelManagerGroupServi
 	public List<JSONObject> getChannelManagerGroupList(JSONObject reqData) {
 		return channelManagerGroupDao.getChannelManagerGroupList(reqData);
 	}
-
 }

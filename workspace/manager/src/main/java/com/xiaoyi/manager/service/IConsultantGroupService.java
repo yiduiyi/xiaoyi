@@ -14,5 +14,10 @@ public interface IConsultantGroupService {
 	public List<JSONObject> getConsultantGroupList(JSONObject reqData);
 	//新增课程顾问组
 	public Integer addConsultantGroup(ConsultantGroup consultantGroup);
+	//查询课程顾问组信息
+	public List<JSONObject> getAllConsultantGroupList();
+	
+	public List<JSONObject> getConsultantList(JSONObject reqData);
+
 
 }

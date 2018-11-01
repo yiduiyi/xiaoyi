@@ -19,5 +19,5 @@ public interface IConsultantGroupDao {
 
     int updateByPrimaryKey(ConsultantGroup record);
 
-	List<JSONObject> getConsultantGroupList(Map<String, Object> map);
+	List<JSONObject> getAllConsultantGroupList();
 }

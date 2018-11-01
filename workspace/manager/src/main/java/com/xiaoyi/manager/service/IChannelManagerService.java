@@ -10,5 +10,6 @@ public interface IChannelManagerService {
 	public Integer insertChannelManager(ChannelManager channelManager);
 	//获取渠道经理
 	public List<JSONObject> getChannelManagerList();
+	public int updateChannelManager(JSONObject reqData);
 
 }

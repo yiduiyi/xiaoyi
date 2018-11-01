@@ -1,5 +1,6 @@
 package com.xiaoyi.teacher.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,4 +29,6 @@ public interface ILessonTradeDao {
     List<LessonTrade> selectByParams(Map<String,Object> params);
     //获取教师订单数量
 	public Integer getOrderNumByTeacherId(@Param("teacherId")String teacherId);
+
+	Float getMonthLessonNumData(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
 }

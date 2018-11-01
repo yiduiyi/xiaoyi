@@ -33,9 +33,11 @@ import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Semaster;
 import com.xiaoyi.common.utils.HttpClient;
+import com.xiaoyi.common.utils.MathUtils;
 import com.xiaoyi.common.utils.XiaoeSDK;
 import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
 import com.xiaoyi.custom.domain.DaulVideoOrder;
+import com.xiaoyi.manager.dao.IAuditionsDao;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOTRelationDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -93,6 +95,8 @@ public class OrderServiceImpl implements IOrderService {
 	IDaulVideoOrderDao daulOrderDao;
 	@Resource
 	private IConsultantOrderRelationService consultantOrderRelationService;
+	@Resource
+	private IAuditionsDao auditionsDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -1173,6 +1177,97 @@ public class OrderServiceImpl implements IOrderService {
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public Float getTotalTurnoverData(Date startTime, Date endTime) {
+		return orderDao.getTotalTurnoverData(startTime,endTime);
+	}
+
+	@Override
+	public Integer getRenewalNum(Date startTime, Date endTime) {
+		Integer renewalNum = 0;
+		List<String> orderSumIds = orderSumDao.selectAllOrderSumId();
+		List<String> orderIds = orderDao.selectAllOrderIds(startTime,endTime);
+		if(!CollectionUtils.isEmpty(orderIds)) {
+			for (String orderId : orderIds) {
+				if(!orderSumIds.contains(orderId)) {
+					renewalNum ++;
+				}
+			}
+		}
+		return renewalNum;
+	}
+
+	@Override
+	public List<JSONObject> getChannelData(Date startTime, Date endTime) {
+		List<JSONObject> result = new ArrayList<JSONObject>();
+		List<JSONObject> auditionLis = auditionsDao.getMonthAuditionList(startTime,endTime);
+		if(!CollectionUtils.isEmpty(auditionLis)) {
+			//所有课程顾问成单量
+			Integer consultantOrderQuantity = consultantOrderRelationService.getConsultantQuantityByTime(startTime,endTime);
+			// 渠道组所有成交单量
+			Integer channelAllQuantity = auditionLis.size();
+			//统计渠道商家合作单量
+			Integer cooperatorQuantity = 0;
+			//地推单量
+			Integer pushQuantity = 0;
+			//续费单量
+			Integer renewalNum = getRenewalNum(startTime, endTime);
+			for (JSONObject jsonObject : auditionLis) {
+				if(null != jsonObject.getString("cooperatorId")) {
+					cooperatorQuantity++;
+				}else {
+					pushQuantity++;
+				}
+			}
+			//所有单量
+			Integer countQuantity =  consultantOrderQuantity + renewalNum;
+			//课程顾问膜拜+转介单量 
+			Integer consultantQuantity = consultantOrderQuantity - channelAllQuantity;
+			getConsultantQuantityJson(result,countQuantity,consultantQuantity);
+			getRenewalNumJson(result,countQuantity,renewalNum);
+			getCooperatorQuantityJson(result,countQuantity,cooperatorQuantity);
+			getPushQuantityJson(result,countQuantity,pushQuantity);
+			
+		}
+		return result;
+	}
+
+	private List<JSONObject> getPushQuantityJson(List<JSONObject> resultList,Integer countQuantity, Integer pushQuantity) {
+		JSONObject result = new JSONObject();
+		result.put("channelSource", ConstantUtil.PUSH_QUANTITY);
+		result.put("completeNum", pushQuantity);
+		result.put("proportion", MathUtils.percentage(pushQuantity, countQuantity));
+		resultList.add(result);
+		return resultList;
+	}
+
+	private List<JSONObject> getCooperatorQuantityJson(List<JSONObject> resultList,Integer countQuantity, Integer cooperatorQuantity) {
+		JSONObject result = new JSONObject();
+		result.put("channelSource", ConstantUtil.COOPERATOR_QUANTITY);
+		result.put("completeNum", cooperatorQuantity);
+		result.put("proportion", MathUtils.percentage(cooperatorQuantity, countQuantity));
+		resultList.add(result);
+		return resultList;
+	}
+
+	private List<JSONObject> getRenewalNumJson(List<JSONObject> resultList, Integer countQuantity, Integer renewalNum) {
+		JSONObject result = new JSONObject();
+		result.put("channelSource", ConstantUtil.RENEWAL_NUM);
+		result.put("completeNum", renewalNum);
+		result.put("proportion", MathUtils.percentage(renewalNum, countQuantity));
+		resultList.add(result);
+		return resultList;
+	}
+
+	private List<JSONObject> getConsultantQuantityJson(List<JSONObject> resultList, Integer countQuantity, Integer consultantQuantity) {
+		JSONObject result = new JSONObject();
+		result.put("channelSource", ConstantUtil.CONSULTANT_QUANTITY);
+		result.put("completeNum", consultantQuantity);
+		result.put("proportion", MathUtils.percentage(consultantQuantity, countQuantity));
+		resultList.add(result);
+		return resultList;
 	}
 	
 }

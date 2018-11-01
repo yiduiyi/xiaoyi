@@ -23,9 +23,9 @@ public class AuditionAction {
 	@Resource
 	private IAuditionService auditionService;
 	
-	@RequestMapping(value = "/getAuditionList",method = RequestMethod.POST)
+	@RequestMapping(value = "/getMyAuditionList",method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject getAuditionList(HttpServletRequest request, HttpServletResponse response,
+	public JSONObject getMyAuditionList(HttpServletRequest request, HttpServletResponse response,
 			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
@@ -55,6 +55,71 @@ public class AuditionAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+	@RequestMapping(value = "/getAuditionList",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getAuditionList(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data = auditionService.getAuditionList(reqData);
+			result.put("data", data);
+			rtCode =RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	@RequestMapping(value = "/setAuditionConsultant",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject setAuditionConsultant(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			if(auditionService.setAuditionConsultant(reqData) > 0) {
+				rtCode =RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	@RequestMapping(value = "/getAuditionConsultantGroupNum",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getAuditionConsultantGroupNum(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data = auditionService.getAuditionConsultantGroupNum(reqData);
+			result.put("data", data);
+			rtCode =RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	@RequestMapping(value = "/insertAudition",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject insertAudition(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			if(auditionService.insertAudition(reqData) > 0) {
+				rtCode =RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	
 	///
 	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {
 		result.put("code", code);

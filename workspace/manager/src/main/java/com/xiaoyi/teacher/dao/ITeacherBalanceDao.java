@@ -25,4 +25,6 @@ public interface ITeacherBalanceDao {
     int updateByPrimaryKey(TeacherBalance record);
     
     JSONObject selectTeacherBalanceByParams(JSONObject params);
+
+	JSONObject selectTotalTeacherBalanceData();
 }

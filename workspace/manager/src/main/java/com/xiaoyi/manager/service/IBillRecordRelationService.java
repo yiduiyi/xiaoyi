@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
@@ -18,5 +19,7 @@ public interface IBillRecordRelationService {
 	public void updateOtherBillRecord(String billId, String billRecordId);
 	//查询被删除订单下的所有订单投递记录
 	public void getAllBillRecordRelationListByBillId(String billId);
+	
+	public List<JSONObject> getBillRecordDataByTime(Date startTime, Date endTime);
 
 }

@@ -72,4 +72,15 @@
   	SELECT COR.order_id AS orderId,COR.consultant_id AS consultantId,C.consultant_name AS consultantName FROM consultant_order_r COR 
   	INNER JOIN consultant C ON COR.consultant_id = C.consultant_id
   </select>
+  <select id="getConsultantQuantityByTime" parameterType="java.util.Date" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM consultant_order_r 
+		<where>
+			<if test="null != startTime">
+				AND create_time &gt;= #{startTime}
+			</if>
+			<if test="null != endTime">
+				AND create_time &lt;= #{endTime}
+			</if>
+		</where>  
+  </select>
 </mapper>

@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.manager.service.IBillRecordRelationService;
 import com.xiaoyi.manager.service.IBillService;
+import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.wechat.utils.UUIDUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 
@@ -26,6 +27,9 @@ public class TestBill {
 	
 	@Resource
 	private IWechatService wechatService;
+	
+	@Resource
+	private ICommonService commonService;
 	
 	@Test
 	public void testInsert() {
@@ -103,5 +107,15 @@ public class TestBill {
 	@Test
 	public void testSendAllInTheSingleBillQuarzMsgToTeacher() {
 		billService.sendAllInTheSingleBillQuarzMsgToTeacher();
+	}
+	
+	@Test
+	public void testGetUser() {
+		JSONObject schedule = new JSONObject();
+		schedule.put("studentName", "小颜同学");
+		schedule.put("telNum", "15200668249");
+		schedule.put("parentName", "颜振衡");
+		JSONObject jsonObject = commonService.addOrGetPSR(schedule);
+		System.out.println(jsonObject.toJSONString());
 	}
 }

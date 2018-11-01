@@ -1,6 +1,9 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.ConsultantOrderRelation;
@@ -20,4 +23,6 @@ public interface IConsultantOrderRelationDao {
     int updateByPrimaryKey(ConsultantOrderRelation record);
 
 	List<JSONObject> getConsultantOrderList();
+
+	Integer getConsultantQuantityByTime(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
 }

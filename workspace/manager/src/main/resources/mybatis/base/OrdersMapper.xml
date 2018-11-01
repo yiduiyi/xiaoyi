@@ -141,4 +141,29 @@
       and orderId = #{orderid,jdbcType=VARCHAR}
       and parentId = #{parentid,jdbcType=VARCHAR}
   </update>
+  
+  <select id="getTotalTurnoverData" parameterType="java.util.Date" resultType="java.lang.Integer">
+  	SELECT SUM(actualPay) FROM orders 
+		<where>
+			orderType = 2 AND orderStatus = 1
+			<if test="null != startTime">
+				AND createTime &gt;= #{startTime}
+			</if>
+			<if test="null != endTime">
+				AND createTime &lt;= #{endTime}
+			</if>
+		</where>
+  </select>
+  <select id="selectAllOrderIds" parameterType="java.util.Date" resultType="java.lang.String">
+  	SELECT orderId FROM orders
+	  	<where>
+	  		orderType = 2
+	  		<if test="null != startTime">
+				AND createTime &gt;= #{startTime}
+			</if>
+			<if test="null != endTime">
+				AND createTime &lt;= #{endTime}
+			</if>
+  		</where>
+  </select>
 </mapper>

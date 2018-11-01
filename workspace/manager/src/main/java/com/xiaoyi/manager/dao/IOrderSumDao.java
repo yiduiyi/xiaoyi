@@ -23,4 +23,6 @@ public interface IOrderSumDao {
     int updateByPrimaryKey(OrderSum record);
 
 	List<JSONObject> getClaimOrderList(Map<String, Object> map);
+
+	List<String> selectAllOrderSumId();
 }

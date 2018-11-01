@@ -251,4 +251,16 @@
 		SELECT COUNT(1) FROM (
 			SELECT COUNT(1) FROM lessontrade  WHERE teacherId = #{teacherId}  GROUP BY lessonType,memberId,parentId ) t
 	</select>
+	<select id="getMonthLessonNumData" parameterType="java.util.Date" resultType="java.lang.Float">
+		SELECT SUM(applyLessons) AS monthLessonNum FROM lessontrade
+			<where>
+				`status` != -1
+				<if test="null != startTime">
+					AND applyTime &gt; #{startTime}
+				</if>
+				<if test="null != endTime">
+					AND applyTime &lt; #{endTime}
+				</if>
+			</where>
+	</select>
 </mapper>

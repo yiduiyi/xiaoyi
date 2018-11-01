@@ -201,4 +201,7 @@
   			</if>
   		</where>
   </select>
+  <select id="selectAllOrderSumId" resultType="java.lang.String">
+  	SELECT orderId FROM ordersum
+  </select>
 </mapper>

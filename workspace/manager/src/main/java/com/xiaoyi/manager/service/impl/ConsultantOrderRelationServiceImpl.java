@@ -35,5 +35,9 @@ public class ConsultantOrderRelationServiceImpl implements IConsultantOrderRelat
 		}
 		return 0;
 	}
+	@Override
+	public Integer getConsultantQuantityByTime(Date startTime, Date endTime) {
+		return consultantOrderRelationDao.getConsultantQuantityByTime(startTime,endTime);
+	}
 
 }

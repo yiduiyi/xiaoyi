@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,5 +122,9 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 			}
 			billRecordRelationDao.batchUpdateOtherBillRecord(list);
 		}
+	}
+	@Override
+	public List<JSONObject> getBillRecordDataByTime(Date startTime, Date endTime) {
+		return billRecordRelationDao.getBillRecordDataByTime(startTime,endTime);
 	}
 }

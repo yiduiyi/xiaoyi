@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
@@ -9,5 +10,7 @@ public interface IConsultantOrderRelationService {
 	public List<JSONObject> getConsultantOrderList();
 
 	public int setClaimOrder(JSONObject reqData);
+
+	public Integer getConsultantQuantityByTime(Date startTime, Date endTime);
 
 }

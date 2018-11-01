@@ -1,5 +1,8 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.xiaoyi.manager.domain.Orders;
@@ -17,4 +20,8 @@ public interface IOrdersDao {
     int updateByPrimaryKeySelective(Orders record);
 
     int updateByPrimaryKey(Orders record);
+
+    Float getTotalTurnoverData(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
+
+	List<String> selectAllOrderIds(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
 }

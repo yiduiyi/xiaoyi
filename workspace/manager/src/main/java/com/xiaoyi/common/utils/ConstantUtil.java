@@ -871,4 +871,17 @@ public class ConstantUtil {
 	//认领查询查询状态
 	public static final Integer IS_CLAIM_TRUE = 1;//查询已认领
 	public static final Integer IS_CLAIM_FALSE = 0;//查询未认领
+	
+	//试听单状态
+	public static final Short AUDITION_STATUS_REMOVE = -1; //试听失败
+	public static final Short AUDITION_STATUS_NORMAL = 0; //待分配
+	public static final Short AUDITION_STATUS_IS_DISTRIBUTION = 1; //已分配
+	public static final Short AUDITION_STATUS_NOT_SINGLE = 2; //未成单
+	public static final Short AUDITION_STATUS_IS_SINGLE = 3; //已成单
+	
+	//渠道来源
+	public static final String CONSULTANT_QUANTITY = "课程顾问陌拜 + 转介";
+	public static final String RENEWAL_NUM ="二次续费";
+	public static final String COOPERATOR_QUANTITY = "商家合作提供";
+	public static final String PUSH_QUANTITY = "渠道地推提供";
 }
