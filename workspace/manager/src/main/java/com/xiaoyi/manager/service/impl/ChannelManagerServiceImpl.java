@@ -58,4 +58,22 @@ public class ChannelManagerServiceImpl implements IChannelManagerService {
 		return channelManagerDao.updateByPrimaryKeySelective(channelManager);
 	}
 
+	@Override
+	public Integer getTotalIntendedNumber(String channelManagerGroupId) {
+		Integer totalIntendedNumber = 0;
+		List<JSONObject> channelManagerList = channelManagerDao.getAllChannelManagerList();
+		if(CollectionUtils.isNotEmpty(channelManagerList)) {
+			for (JSONObject jsonObject : channelManagerList) {
+				if(null != channelManagerGroupId) {
+					if(channelManagerGroupId.equals(jsonObject.getString("channelManagerGroupId"))) {
+						totalIntendedNumber = totalIntendedNumber + jsonObject.getInteger("intendedNumber");
+					}
+				}else {
+					totalIntendedNumber = totalIntendedNumber + jsonObject.getInteger("intendedNumber");
+				}
+			}
+		}
+		return totalIntendedNumber;
+	}
+
 }

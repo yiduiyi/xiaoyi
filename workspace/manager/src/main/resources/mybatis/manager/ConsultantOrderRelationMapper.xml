@@ -83,4 +83,15 @@
 			</if>
 		</where>  
   </select>
+  <select id="getConsultantOrderRankingList" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT consultant_id AS consultantId,COUNT(order_id) AS orderNum FROM consultant_order_r GROUP BY consultant_id
+  	<where>
+			<if test="null != startTime">
+				AND create_time &gt;= #{startTime}
+			</if>
+			<if test="null != endTime">
+				AND create_time &lt;= #{endTime}
+			</if>
+		</where>  
+  </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,7 +19,10 @@ import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.DateUtils;
+import com.xiaoyi.common.utils.MathUtils;
 import com.xiaoyi.manager.dao.IAuditionsDao;
+import com.xiaoyi.manager.dao.IChannelManagerGroupDao;
+import com.xiaoyi.manager.dao.ICooperatorDao;
 import com.xiaoyi.manager.domain.Auditions;
 import com.xiaoyi.manager.domain.ParentStuRelation;
 import com.xiaoyi.manager.service.IAuditionService;
@@ -33,6 +37,10 @@ public class AuditionServiceImpl implements IAuditionService {
 	private IAuditionsDao auditionsDao;
 	@Resource
 	private ICommonService commonService;
+	@Resource
+	private IChannelManagerGroupDao channelManagerGroupDao;
+	@Resource
+	private ICooperatorDao cooperatorDao;
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
@@ -157,6 +165,112 @@ public class AuditionServiceImpl implements IAuditionService {
 		auditions.setCreateTime(new Date());
 		auditions.setUpdateTime(new Date());
 		return auditionsDao.insertSelective(auditions);
+	}
+	@Override
+	public JSONObject getchannelManagerAuditionData(String channelManagerGroupId, Date startTime, Date endTime) {
+		List<JSONObject> consultantGroupList =channelManagerGroupDao.getAllChannelManagerGroupList();
+		List<String> channelManagerIds = new ArrayList<String>();
+		if(CollectionUtils.isNotEmpty(consultantGroupList)) {
+			for (JSONObject jsonObject : consultantGroupList) {
+				if(null != channelManagerGroupId) {
+					if(channelManagerGroupId.equals(jsonObject.getString("consultantGroupId"))) {
+						channelManagerIds.add(jsonObject.getString("consultantId"));
+					}
+				}else {
+					channelManagerIds.add(jsonObject.getString("consultantId"));
+				}
+			}
+		}
+		List<JSONObject> auditionList = auditionsDao.getAuditionListByTime(startTime,endTime);
+		if(CollectionUtils.isNotEmpty(auditionList)) {
+			
+		}
+		return null;
+	}
+	@Override
+	public List<JSONObject> getAuditionNumList(String channelManagerGroupId, Date startTime, Date endTime) {
+		Map<String, Object> channelManagerNameMap = new HashMap<String, Object>();
+		List<JSONObject> cooperatorList = cooperatorDao.getAllCooperatorList(channelManagerGroupId,null,null);
+		List<JSONObject> channelManagerGroupList =channelManagerGroupDao.getAllChannelManagerGroupList();
+		List<String> channelManagerIds = new ArrayList<String>();
+		if(CollectionUtils.isNotEmpty(channelManagerGroupList)) {
+			for (JSONObject jsonObject : channelManagerGroupList) {
+				if(null != channelManagerGroupId) {
+					if(channelManagerGroupId.equals(jsonObject.getString("consultantGroupId"))) {
+						channelManagerIds.add(jsonObject.getString("consultantId"));
+					}
+				}else {
+					channelManagerIds.add(jsonObject.getString("consultantId"));
+				}
+				channelManagerNameMap.put(jsonObject.getString("channelManagerId"), jsonObject.getString("channelManagerName"));
+			}
+		}
+		List<JSONObject> auditionNum = auditionsDao.getAuditionNumDataByTime(ConstantUtil.AUDITION_NUM_QUERTY_STATUS ,startTime,endTime);
+		List<JSONObject> completeNum = auditionsDao.getAuditionNumDataByTime(null ,startTime,endTime);
+		//判断该渠道经理组下所有课程顾问的添加试听单记录
+		if (CollectionUtils.isNotEmpty(auditionNum)) {
+			if (null != channelManagerGroupId) {
+				Iterator<JSONObject> auditionNumIterator = auditionNum.iterator();
+				while (auditionNumIterator.hasNext()) {
+					JSONObject jsonObject = auditionNumIterator.next();
+					if (!channelManagerIds.contains(jsonObject.getString("channelManagerId"))) {
+						auditionNumIterator.remove();
+					}
+				}
+			}else {
+				Iterator<JSONObject> auditionNumIterator = auditionNum.iterator();
+				while (auditionNumIterator.hasNext()) {
+					JSONObject jsonObject = auditionNumIterator.next();
+					if (!channelManagerIds.contains(jsonObject.getString("channelManagerId"))) {
+						auditionNumIterator.remove();
+					}
+				}
+			}
+		}
+		//判断该渠道经理组下所有课程顾问的成单记录
+		if (CollectionUtils.isNotEmpty(completeNum)) {
+			if (null != channelManagerGroupId) {
+				Iterator<JSONObject> completeNumIterator = completeNum.iterator();
+				while (completeNumIterator.hasNext()) {
+					JSONObject jsonObject = completeNumIterator.next();
+					if (!channelManagerIds.contains(jsonObject.getString("channelManagerId"))) {
+						completeNumIterator.remove();
+					}
+				}
+			}else {
+				Iterator<JSONObject> completeNumIterator = completeNum.iterator();
+				while (completeNumIterator.hasNext()) {
+					JSONObject jsonObject = completeNumIterator.next();
+					if (!channelManagerIds.contains(jsonObject.getString("channelManagerId"))) {
+						completeNumIterator.remove();
+					}
+				}
+			}
+		}
+		//判断每个商家
+		if(CollectionUtils.isNotEmpty(cooperatorList)) {
+			Iterator<JSONObject> iterator = cooperatorList.iterator();
+			while (iterator.hasNext()) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				jsonObject.put("channelManagerName", channelManagerNameMap.get(jsonObject.getString("channelManagerId")) == null ? "" : channelManagerNameMap.get(jsonObject.getString("channelManagerId")));
+				for (JSONObject jsonObject1 : auditionNum) {
+					if(jsonObject.getString("cooperatorId").equals(jsonObject1.getString("cooperatorId"))) {
+						jsonObject.put("auditionNum", jsonObject1.getInteger("auditionNum") == null ? 0 : jsonObject1.getInteger("auditionNum"));
+					}
+				}
+				for (JSONObject jsonObject1 : completeNum) {
+					if(jsonObject.getString("cooperatorId").equals(jsonObject1.getString("cooperatorId"))) {
+						jsonObject.put("completeNum", jsonObject1.getInteger("auditionNum") == null ? 0 : jsonObject1.getInteger("auditionNum"));
+					}
+				}
+				if(null != jsonObject.getInteger("completeNum") && null != jsonObject.getInteger("auditionNum") && 0 != jsonObject.getInteger("auditionNum")) {
+					jsonObject.put("proportion", MathUtils.percentage(jsonObject.getInteger("completeNum"), jsonObject.getInteger("auditionNum")));
+				}else {
+					jsonObject.put("proportion", "0%");
+				}
+			}
+		}
+		return cooperatorList;
 	}
 
 }

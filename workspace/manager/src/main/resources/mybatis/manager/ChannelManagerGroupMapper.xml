@@ -79,4 +79,15 @@
       role_ids = #{roleIds,jdbcType=VARCHAR}
     where channel_manager_group_id = #{channelManagerGroupId,jdbcType=VARCHAR}
   </update>
+	<select id="getAllChannelManagerGroupList"
+		resultType="com.alibaba.fastjson.JSONObject">
+		SELECT CMG.channel_manager_group_id AS
+		channelManagerGroupId,CMG.channel_manager_group_name AS
+		channelManagerGrouName,CMG.channel_manager_id AS
+		groupChannelManagerId,CM.channel_manager_id AS
+		channelManagerId,CM.channel_manager_name AS channelManagerName FROM
+		channel_manager_group CMG LEFT JOIN channel_manager CM ON
+		CMG.channel_manager_group_id = CM.channel_manager_group_id WHERE
+		CM.`status` != -1
+	</select>
 </mapper>

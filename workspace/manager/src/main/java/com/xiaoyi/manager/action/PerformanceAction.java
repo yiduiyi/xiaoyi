@@ -19,10 +19,11 @@ import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 public class PerformanceAction {
 	@Resource
 	private IPerformanceService performanceService;
-	
-	@RequestMapping(value = "/getOperationalData",method = RequestMethod.POST)
+
+	@RequestMapping(value = "/getOperationalData", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject getOperationalData(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+	public JSONObject getOperationalData(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
@@ -35,9 +36,11 @@ public class PerformanceAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	@RequestMapping(value = "/getConsultantGroupData",method = RequestMethod.POST)
+
+	@RequestMapping(value = "/getConsultantGroupData", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject getConsultantGroupData(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
+	public JSONObject getConsultantGroupData(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
 		JSONObject result = new JSONObject();
 		RtConstants rtCode = RtConstants.FAILED;
 		try {
@@ -50,11 +53,28 @@ public class PerformanceAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	
-	///
-		private JSONObject setReturnMsg(JSONObject result, int code, String msg) {
-			result.put("code", code);
-			result.put("msg", msg);
-			return result;
+
+	@RequestMapping(value = "/getChannelGroupData", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getChannelGroupData(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			JSONObject data = performanceService.getChannelGroupData(reqData);
+			result.put("data", data);
+			rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+
+	///
+	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {
+		result.put("code", code);
+		result.put("msg", msg);
+		return result;
+	}
 }

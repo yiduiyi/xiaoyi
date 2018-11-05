@@ -20,4 +20,6 @@ public interface IChannelManagerGroupDao {
     int updateByPrimaryKey(ChannelManagerGroup record);
     
 	List<JSONObject> getChannelManagerGroupList(Map<String,Object> map);
+
+	List<JSONObject> getAllChannelManagerGroupList();
 }

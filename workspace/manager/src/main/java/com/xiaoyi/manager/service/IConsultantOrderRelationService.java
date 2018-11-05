@@ -13,4 +13,6 @@ public interface IConsultantOrderRelationService {
 
 	public Integer getConsultantQuantityByTime(Date startTime, Date endTime);
 
+	public List<JSONObject> getConsultantOrderRankingList(String consultantGroupId, Date startTime, Date endTime);
+
 }

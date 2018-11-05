@@ -884,4 +884,7 @@ public class ConstantUtil {
 	public static final String RENEWAL_NUM ="二次续费";
 	public static final String COOPERATOR_QUANTITY = "商家合作提供";
 	public static final String PUSH_QUANTITY = "渠道地推提供";
+	
+	// 试听单查询类型
+	public static final Integer AUDITION_NUM_QUERTY_STATUS = 3;//查询成单试听单
 }

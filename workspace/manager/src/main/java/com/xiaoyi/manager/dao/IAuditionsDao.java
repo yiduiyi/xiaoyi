@@ -29,4 +29,8 @@ public interface IAuditionsDao {
 	List<JSONObject> getAuditionConsultantGroupNum();
 
 	List<JSONObject> getMonthAuditionList(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
+
+	List<JSONObject> getAuditionListByTime(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
+
+	List<JSONObject> getAuditionNumDataByTime(@Param("auditionNumQuertyStatus")Integer auditionNumQuertyStatus, @Param("startTime")Date startTime, @Param("endTime")Date endTime);
 }

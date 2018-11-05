@@ -25,4 +25,6 @@ public interface IConsultantOrderRelationDao {
 	List<JSONObject> getConsultantOrderList();
 
 	Integer getConsultantQuantityByTime(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
+
+	List<JSONObject> getConsultantOrderRankingList(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
 }

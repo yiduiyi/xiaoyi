@@ -11,5 +11,7 @@ public interface IChannelManagerService {
 	//获取渠道经理
 	public List<JSONObject> getChannelManagerList();
 	public int updateChannelManager(JSONObject reqData);
+	//获取意向好友数
+	public Integer getTotalIntendedNumber(String channelManagerGroupId);
 
 }

@@ -19,4 +19,6 @@ public interface IChannelManagerDao {
     int updateByPrimaryKey(ChannelManager record);
 
 	List<JSONObject> getChannelManagerList();
+
+	List<JSONObject> getAllChannelManagerList();
 }

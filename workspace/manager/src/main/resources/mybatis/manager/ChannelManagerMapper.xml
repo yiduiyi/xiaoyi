@@ -157,7 +157,7 @@
 	<select id="getChannelManagerList"
 		resultType="com.alibaba.fastjson.JSONObject">
 		SELECT CM.channel_manager_id AS userId,CM.channel_manager_name AS
-		userName,CM.telephone AS telePhone,CMG.channel_manager_group_id AS
+		userName,CM.telephone AS telePhone,CM.intended_number AS intendedNumber,CMG.channel_manager_group_id AS
 		channelManagerGroupId,
 		CMG.channel_manager_group_name AS channelManagerGroupName,CMG.channel_manager_id AS
 		groupChannelManagerId FROM channel_manager CM LEFT JOIN
@@ -165,4 +165,12 @@
 		CMG ON CM.channel_manager_group_id = CMG.channel_manager_group_id WHERE
 		CM.`status` != -1
 	</select>
+	<select id="getAllChannelManagerList"
+	resultType="com.alibaba.fastjson.JSONObject">
+	SELECT channel_manager_id AS channelManagerId,channel_manager_group_id AS
+	channelManagerGroupId,channel_manager_name AS
+	channelManagerName,intended_number AS intendedNumber,role_ids AS
+	roleIds,create_time AS createTime,telephone AS telePhone,open_id AS
+	openId,`status` AS status FROM channel_manager WHERE `status` != -1
+</select>
 </mapper>

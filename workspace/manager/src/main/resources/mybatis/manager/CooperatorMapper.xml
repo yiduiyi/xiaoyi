@@ -163,4 +163,22 @@
 			</if>
 		</where>
 	</select>
+	<select id="getAllCooperatorList" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT C.cooperator_id AS cooperatorId,C.cooperator_name AS
+		cooperatorName,C.telephone AS teltPhone,C.contanctor AS contanctor,C.address
+		AS address,C.create_time AS createTime,C.update_time AS
+		updateTime,CM.channel_manager_id AS channelManagerId,CM.channel_manager_group_id AS channelManagerGroupId FROM cooperator C 
+		LEFT JOIN channel_manager CM ON C.channel_manager_id = CM.channel_manager_id 
+			<where>
+				<if test="null != channelManagerGroupId">
+					AND CM.channel_manager_group_id = #{channelManagerGroupId}
+				</if>
+				<if test="null != startTime">
+					AND C.create_time &gt;= #{startTime}
+				</if>
+				<if test="null != endTime">
+					AND create_time &lt;= #{endTime}
+				</if>
+			</where>
+	</select>
 </mapper>
