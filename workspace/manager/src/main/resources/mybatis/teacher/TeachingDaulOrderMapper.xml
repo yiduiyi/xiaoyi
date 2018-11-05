@@ -25,7 +25,7 @@
 		parameterType="com.alibaba.fastjson.JSONObject">
 		select
 		<include refid="Base_Column_List" />
-		from teacher_daul_order
+		from teaching_daul_order
 		<where>
 			<if test="innerOrderId != null">
 				inner_order_id = #{innerOrderId}
@@ -67,7 +67,7 @@
   </select>
   
   <!-- 根据小鹅通订单Id删除本地订单 -->
-  <delete id="deleteByXiaoeOrderId" parameterType="java.util.String">
+  <delete id="deleteByXiaoeOrderId" parameterType="java.lang.String">
   	delete from teaching_daul_order
     where xiaoe_order_id = #{xiaoEOrderId}
   </delete>

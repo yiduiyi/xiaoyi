@@ -1,6 +1,7 @@
 package com.xiaoyi.manager.service.impl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,11 +25,15 @@ import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.common.utils.MathUtils;
 import com.xiaoyi.manager.dao.IMonitorDao;
 import com.xiaoyi.manager.service.IMonitorService;
+import com.xiaoyi.teacher.dao.ITH5PlateDao;
 @Service("MonitorService")
 public class MonitorServiceImpl implements IMonitorService {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Resource
 	private IMonitorDao iMonitorDao;
+	
+	@Resource
+	ITH5PlateDao teacherH5Dao;
 	@Override
 	public List<JSONObject> getTeachingProcess(JSONObject reqData) {
 		List<JSONObject> result = null;
@@ -61,13 +66,29 @@ public class MonitorServiceImpl implements IMonitorService {
 					Map<String,Float> teachingIdTotalTeachingNumMap = new HashMap<String,Float>();
 					Map<String,Float> teachingIdLastWeekTeachingNumMap = new HashMap<String,Float>();
 					Map<String,Float> teachingIdCurWeekTeachingNumMap = new HashMap<String,Float>();
+					List<String> uselessTeachingList = null;
+					
+					try {
+						JSONObject queryDate = new JSONObject();
+						Date date = new Date();//获取当前时间    
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(date);
+						//calendar.add(Calendar.YEAR, -1);//当前时间减去一年，即一年前的时间    
+						calendar.add(Calendar.MONTH, -2);//当前时间前去一个月，即一个月前的时间    
+						System.out.println(calendar.getTime());
+						queryDate.put("applyTime", calendar.getTime());
+						uselessTeachingList = teacherH5Dao.getUselessTeachings(queryDate );
+					} catch (Exception e) {
+						throw new CommonRunException(-1, "查询两个月前记录失败！");
+					}
+					
 					
 					for(JSONObject weekTeachingNum : weekTeachingNumMap){
 						Integer weekFromNow = weekTeachingNum.getInteger("weekFromNow");
 						Float teachingNum = weekTeachingNum.getFloat("teachingNum");
 						String teachingId = weekTeachingNum.getString("teachingId");
 						
-						if(teachingNum==null){
+						if(teachingNum==null && uselessTeachingList.contains(teachingId)){
 							continue;
 						}
 						

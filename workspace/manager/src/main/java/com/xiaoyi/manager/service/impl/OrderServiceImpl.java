@@ -945,13 +945,16 @@ public class OrderServiceImpl implements IOrderService {
 					Integer feedback = mTeaching.getInteger("feedback");
 					
 					//默认为未确认
-					mTeaching.put("feedback", "3");	//未确认
+					mTeaching.put("feedback", 3);	//未确认
 					if(null!=status){
-						if(feedback!=null){	//家长评价
+						if(status==2 || status==3){
+							mTeaching.put("feedback", feedback);	//未确认
+						}
+						/*if(feedback!=null){	//家长评价
 							mTeaching.put("feedback", feedback);	
 						}else{	//默认为满意
-							mTeaching.put("feedback", 1);	
-						}
+							mTeaching.put("feedback", 3);	
+						}*/
 					}
 					
 				}
@@ -1179,5 +1182,14 @@ public class OrderServiceImpl implements IOrderService {
 		return orderDao.selectOrderById(orderId);
 	}
 
+	/**
+	 * 定时清理两个月内没提现的任教关系
+	 * @return
+	 */
+	public int clearTeachings(){
+		
+		
+		return 0;
+	}
 	
 }

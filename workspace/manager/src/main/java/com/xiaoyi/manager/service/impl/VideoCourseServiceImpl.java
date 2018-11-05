@@ -40,6 +40,11 @@ public class VideoCourseServiceImpl implements IVideoCourseService{
 				for (VideoCourse videoCourse : list) {
 					JSONObject data = new JSONObject();
 					
+					//过滤专题
+					if("0".equals(videoCourse.getChapterId())){
+						continue;
+					}
+					
 					data.put("h5VideoLink", videoCourse.getH5VideoLink());
 					data.put("videoName", videoCourse.getVideoCourseName());
 					data.put("uploadTime", sdf.format(videoCourse.getUploadTime()));

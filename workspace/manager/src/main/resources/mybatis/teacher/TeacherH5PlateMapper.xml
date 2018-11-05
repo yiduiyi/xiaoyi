@@ -24,6 +24,18 @@
 		teachingLevel,
 		regDate, notes, openId, signed,good_at,standby_tel_number
 	</sql>
+	
+	<!-- 查找用处不大的任教关系 -->
+	<select id="getUselessTeachings" parameterType="com.alibaba.fastjson.JSONObject" 
+		resultType="java.lang.String">
+		SELECT OTR.teachingId
+		FROM order_teaching_r OTR LEFT JOIN lessontrade LT
+			ON OTR.memberId = LT.memberId AND OTR.teacherId = LT.teacherId AND OTR.parentId=LT.parentId
+		WHERE applyTime 
+		GROUP BY teachingId 
+		HAVING MAX(applyTime) &lt; #{applyTime}
+	</select>
+	
 	<select id="selectTeacherByOpenId" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
 		select
