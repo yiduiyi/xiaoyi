@@ -73,6 +73,23 @@ public class AccountManagerAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+	
+	@RequestMapping(value = "/deleteAccount", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject deleteAccount(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			if (accountManagerService.deleteAccount(reqData) > 0) {
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
 
 	@RequestMapping(value = "/getAccountList", method = RequestMethod.POST)
 	@ResponseBody

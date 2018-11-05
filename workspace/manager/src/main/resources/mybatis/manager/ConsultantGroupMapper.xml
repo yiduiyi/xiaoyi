@@ -98,4 +98,10 @@
 		FROM consultant_group CG LEFT JOIN consultant C ON CG.consultant_group_id
 		= C.consultant_group_id WHERE C.`status` != -1
 	</select>
+	<select id="getConsultantByGroupConsultantId" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from consultant_group
+		where consultant_id = #{groupConsultantId,jdbcType=VARCHAR}
+	</select>
 </mapper>

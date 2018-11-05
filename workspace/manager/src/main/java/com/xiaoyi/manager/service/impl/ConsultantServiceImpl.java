@@ -34,8 +34,10 @@ public class ConsultantServiceImpl implements IConsultantService {
 			for (JSONObject jsonObject : result) {
 				if(jsonObject.getString("userId").equals(jsonObject.getString("groupConsultantId"))) {
 					jsonObject.put("identity ", ConstantUtil.IS_LEAD);
+				}else {
+					jsonObject.put("identity ", ConstantUtil.IS_NOT_LEAD);
 				}
-				jsonObject.put("groupLeadName", consultantMap.get(jsonObject.getString("groupConsultantId") == null ? "" : consultantMap.get(jsonObject.getString("groupConsultantId"))));
+				jsonObject.put("groupLeadName", consultantMap.get(jsonObject.getString("groupConsultantId")) == null ? "" : consultantMap.get(jsonObject.getString("groupConsultantId")));
 				jsonObject.put("departmentType", ConstantUtil.DEPART_MENT_TYPE_CONSULTANT);
 				jsonObject.put("departmentName", ConstantUtil.DEPART_MENT_NAME_MAP.get(ConstantUtil.DEPART_MENT_TYPE_CONSULTANT.toString()));
 			}

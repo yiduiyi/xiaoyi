@@ -182,7 +182,7 @@
       and parentId = #{parentid,jdbcType=VARCHAR}
   </update>
   <select id="getClaimOrderList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT P.openId AS openId,O.purchaseTime AS createTime,O.lessonType AS lessonType,O.teachingWay AS teachingWay,O.totalLessonNum AS totalLessonNum,S.`name` AS studentName,
+  	SELECT O.orderId AS orderId,P.openId AS openId,O.purchaseTime AS createTime,O.lessonType AS lessonType,O.teachingWay AS teachingWay,O.totalLessonNum AS totalLessonNum,S.`name` AS studentName,
   	P.parentName AS parentName,P.telNum AS telPhone FROM ordersum O 
   	INNER JOIN parents P ON O.parentId = P.parentId 
   	INNER JOIN student S ON O.memberId = S.memberId 

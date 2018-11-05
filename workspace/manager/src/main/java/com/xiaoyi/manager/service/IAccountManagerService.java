@@ -13,5 +13,7 @@ public interface IAccountManagerService {
 	public int updateAccount(JSONObject reqData);
 	//查询账号信息
 	public List<JSONObject> getAccountList(JSONObject reqData);
+	//删除账号
+	public int deleteAccount(JSONObject reqData);
 
 }

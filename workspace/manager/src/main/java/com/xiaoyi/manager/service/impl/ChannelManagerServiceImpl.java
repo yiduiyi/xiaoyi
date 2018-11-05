@@ -34,8 +34,10 @@ public class ChannelManagerServiceImpl implements IChannelManagerService {
 			for (JSONObject jsonObject : result) {
 				if(jsonObject.getString("userId").equals(jsonObject.getString("groupChannelManagerId"))) {
 					jsonObject.put("identity ", ConstantUtil.IS_LEAD);
+				}else {
+					jsonObject.put("identity ", ConstantUtil.IS_NOT_LEAD);
 				}
-				jsonObject.put("groupLeadName", channelManagerMap.get(jsonObject.getString("groupChannelManagerId") == null ? "" : channelManagerMap.get(jsonObject.getString("groupChannelManagerId"))));
+				jsonObject.put("groupLeadName", channelManagerMap.get(jsonObject.getString("groupChannelManagerId")) == null ? "" : channelManagerMap.get(jsonObject.getString("groupChannelManagerId")));
 				jsonObject.put("departmentType", ConstantUtil.DEPART_MENT_TYPE_CHANNEL);
 				jsonObject.put("departmentName", ConstantUtil.DEPART_MENT_NAME_MAP.get(ConstantUtil.DEPART_MENT_TYPE_CHANNEL.toString()));
 			}

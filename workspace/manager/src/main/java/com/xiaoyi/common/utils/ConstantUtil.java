@@ -558,7 +558,23 @@ public class ConstantUtil {
 			}
 			return null;
 		}
-
+		/**
+		 * 
+		 */
+		public String getFullGradeName() {
+			StringBuilder gradeName = new StringBuilder();
+			for (Level level : Level.values()) {
+				if(level.getValue() == getLevel(true)) {
+					gradeName = gradeName.append(level.getSimpleName());
+				}
+			}
+			for (Grade g : Grade.values()) {
+				if (g.getValue() == getGradeId(true)) {
+					gradeName = gradeName.append(g.getSimpleName());
+				}
+			}
+			return gradeName.toString();
+		}
 		/**
 		 * 获取科目Id
 		 * 

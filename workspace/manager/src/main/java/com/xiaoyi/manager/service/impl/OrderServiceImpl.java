@@ -26,12 +26,14 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mysql.fabric.xmlrpc.base.Data;
 import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Semaster;
+import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.common.utils.MathUtils;
 import com.xiaoyi.common.utils.XiaoeSDK;
@@ -1147,11 +1149,12 @@ public class OrderServiceImpl implements IOrderService {
 		List<String> orderIdList = new ArrayList<String>();
 		if(!CollectionUtils.isEmpty(result)) {
 			for (JSONObject jsonObject : result) {
+				jsonObject.put("createTime", DateUtils.toYYYYPointMMPointDDString(jsonObject.getDate("createTime")));
 				Integer lessonType = jsonObject.getInteger("lessonType");
 				if(null != lessonType) {
 					for (com.xiaoyi.common.utils.ConstantUtil.LessonType lessonTypes : com.xiaoyi.common.utils.ConstantUtil.LessonType.values()) {
 						if(lessonType == lessonTypes.getValue()) {
-							jsonObject.put("gradeName", lessonTypes.getGradeName(true));
+							jsonObject.put("gradeName", lessonTypes.getFullGradeName());
 						}
 					}
 				}

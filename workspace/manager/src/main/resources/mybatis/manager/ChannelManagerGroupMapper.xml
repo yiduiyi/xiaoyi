@@ -90,4 +90,11 @@
 		CMG.channel_manager_group_id = CM.channel_manager_group_id WHERE
 		CM.`status` != -1
 	</select>
+	<select id="getChannelManagerGroupByGroupChannelManagerId"
+	parameterType="java.lang.String" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from channel_manager_group
+	where channel_manager_id = #{groupChannelManagerId,jdbcType=VARCHAR}
+	</select>
 </mapper>
