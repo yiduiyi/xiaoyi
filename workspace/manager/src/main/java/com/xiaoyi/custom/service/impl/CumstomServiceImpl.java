@@ -32,8 +32,11 @@ import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.custom.dao.ICustomDao;
 import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
 import com.xiaoyi.custom.dao.IStudentTaskDao;
+import com.xiaoyi.custom.dao.IStudentTaskStatisticDao;
 import com.xiaoyi.custom.domain.DaulVideoOrder;
 import com.xiaoyi.custom.domain.StudentTask;
+import com.xiaoyi.custom.domain.StudentTaskStatistic;
+import com.xiaoyi.custom.domain.StudentTaskStatisticKey;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -126,6 +129,9 @@ public class CumstomServiceImpl implements ICustomService {
 	
 	@Resource
 	IStudentTaskDao studentTaskDao;
+	
+	@Resource
+	IStudentTaskStatisticDao studentTaskStatisticDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -1208,10 +1214,10 @@ public class CumstomServiceImpl implements ICustomService {
 					JSONArray videoGroup = videoGroupMap.get(group);
 					if(null==videoGroup){
 						videoGroup = new JSONArray();
-						videoGroupMap.put(group, videoGroup);
-						
-						videoGroup.add(video);						
+						videoGroupMap.put(group, videoGroup);						
 					}					
+					
+					videoGroup.add(video);						
 				}
 				
 				//组合各个组（三大类：同步，专题和假期）
@@ -1292,10 +1298,12 @@ public class CumstomServiceImpl implements ICustomService {
 		return datas;
 	}
 
+	@Transactional
 	@Override
 	public int modifyTaskStatus(JSONObject params) {
 		try {
 			//验证参数
+			logger.info("修改作业【parmas】："+params.toJSONString());
 			if(params.getString("studentTaskId")==null){
 				throw new CommonRunException(-1, "参数错误！");
 			}
@@ -1305,7 +1313,47 @@ public class CumstomServiceImpl implements ICustomService {
 			record.setTaskStatus((byte)2);
 			record.setVideoCourseId(params.getString("videoCourseId"));
 			
-			studentTaskDao.updateByPrimaryKeySelective(record);
+			//更新作业状态
+			try {
+				studentTaskDao.updateByPrimaryKeySelective(record);				
+			} catch (Exception e) {
+				logger.error("更新作业状态失败！");
+				throw new CommonRunException(-1, "更新作业状态失败！");
+			}
+			
+			//查询统计参数（studentId,teacherId）
+			record = studentTaskDao.selectByPrimaryKey(record);
+			if(null == record){
+				
+				logger.warn("没有找到对应的作业！");
+				return 0;
+			}
+			
+			//更新作业完成率
+			try {
+				StudentTaskStatisticKey key = new StudentTaskStatisticKey();
+				key.setStudentId(record.getStudentId());
+				key.setTeacherId(record.getTeacherId());
+				
+				StudentTaskStatistic statistics = studentTaskStatisticDao.selectByPrimaryKey(key );
+				if(null!=statistics){
+					Short finishCount = (short) (statistics.getFinishCount()+1);
+					Short unFinishCount = statistics.getUnfinishCount();
+					Short allTaskCount = statistics.getTotalTasks();
+					Double accomplishRate = finishCount*1.0/allTaskCount;
+					accomplishRate *= 100;
+					
+					statistics.setAccomplishRate(accomplishRate.shortValue());
+					statistics.setUpdateTime(new Date());
+					statistics.setFinishCount((short)finishCount);
+					statistics.setUnfinishCount((short)--unFinishCount);
+					
+					studentTaskStatisticDao.updateByPrimaryKeySelective(statistics );
+				}
+			} catch (Exception e) {
+				throw new CommonRunException(-1, "更新学生作业完成率失败！");
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new CommonRunException(-1, "修改作业状态（已完成）失败！");

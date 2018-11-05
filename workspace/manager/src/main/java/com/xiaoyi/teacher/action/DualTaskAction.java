@@ -76,6 +76,8 @@ public class DualTaskAction {
 		JSONObject result = new JSONObject();
 		int code = 0;
 		String msg = "设置任教关系成功！";
+		String openId = (String) request.getSession().getAttribute("openid");
+		reqData.put("openId", openId);
 		
 		try {
 			daulTaskService.setBondGrade(reqData);			

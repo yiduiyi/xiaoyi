@@ -65,7 +65,7 @@
 		<if test="studentId!=null">
 			AND DVO.student_id = #{studentId}
 		</if>
-		<if test="studentId!=null">
+		<if test="gradeId!=null">
 			AND VC.grade_id = #{gradeId}
 		</if>
 		<if test="courseId!=null">
@@ -74,7 +74,7 @@
 		<if test="semaster!=null">
 			AND VC.semaster = #{semaster}
 		</if>		 
-		GROUP BY DVO.video_course_id
+		GROUP BY VC.video_course_id
 	</select>
 	
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"

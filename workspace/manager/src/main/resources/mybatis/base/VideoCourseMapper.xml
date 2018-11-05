@@ -51,7 +51,8 @@
 						OR video_course_type = #{videoCourseType,jdbcType=TINYINT})
 					</when>
 					<otherwise>AND video_course_type =
-						#{videoCourseType,jdbcType=TINYINT}</otherwise>
+						#{videoCourseType,jdbcType=TINYINT}
+					</otherwise>
 				</choose>
 			</if>
 			<if test="status != null">
