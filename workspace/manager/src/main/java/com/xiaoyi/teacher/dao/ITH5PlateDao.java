@@ -24,6 +24,8 @@ public interface ITH5PlateDao {
 	
 	//获取老师关联的任教关系
 	List<JSONObject> selectTeachingRelationships(String teacherId);
+	//获取超过两个月没有提现的任教关系
+	List<String> getUselessTeachings(JSONObject params);
 	
 	//查询历史课时提交记录
 	List<JSONObject> selectHistoryTeachingRecords(JSONObject params);

@@ -36,7 +36,7 @@
 		lessonPrice, lessonName,
 		gradeName, needBook, discountPrice,
 		isholiday,
-		singleCoursePrice)
+		singleCoursePrice, semaster, daul_course_count)
 		values (#{lessonId,jdbcType=VARCHAR},
 		#{courseCnt,jdbcType=SMALLINT},
 		#{lessonType,jdbcType=INTEGER},
@@ -48,10 +48,13 @@
 		#{needBook,jdbcType=BIT},
 		#{discountPrice,jdbcType=REAL},
 		#{isholiday,jdbcType=TINYINT},
-		#{singleCoursePrice,jdbcType=REAL})
+		#{singleCoursePrice,jdbcType=REAL},
+		#{semaster},
+		#{daulCourseCount})
 		ON DUPLICATE KEY UPDATE
 		courseCnt=VALUES(courseCnt),lessonPrice=VALUES(lessonPrice),gradeId=VALUES(gradeId),gradeName=VALUES(gradeName),
-		discountPrice=VALUES(discountPrice),singleCoursePrice=VALUES(singleCoursePrice)
+		discountPrice=VALUES(discountPrice),singleCoursePrice=VALUES(singleCoursePrice),
+		semaster=VALUES(semaster),daul_course_count=VALUES(daul_course_count)
 	</insert>
 
 	<!-- 查找家长购买订单课时 -->

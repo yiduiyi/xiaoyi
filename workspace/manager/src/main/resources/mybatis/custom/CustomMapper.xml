@@ -59,7 +59,7 @@
   </select>
   
   <select id="getPSRList" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
-  		SELECT P.parentId,S.memberId as studentId,S.`name` AS studentName FROM parents P INNER JOIN parent_stu_r PS ON p.parentId = PS.parentId 
+  		SELECT P.parentId,S.memberId as studentId,S.`name` AS studentName FROM parents P INNER JOIN parent_stu_r PS ON P.parentId = PS.parentId 
   		INNER JOIN student S ON PS.memberId = S.memberId WHERE P.openId = #{openid}
   </select>
   
@@ -70,6 +70,6 @@
 			LEFT JOIN teacher c ON b.teacherId=c.teacherId
 		WHERE a.memberId=#{memberId}
 			AND a.parentId=#{parentId}
-			AND STR_TO_DATE(teachingDate,'%Y-%m') = STR_TO_DATE(#{queryMonth},'%Y-%m')
+			AND DATE_FORMAT(teachingDate,'%Y-%m') = #{queryMonth}
   </select>
 </mapper>

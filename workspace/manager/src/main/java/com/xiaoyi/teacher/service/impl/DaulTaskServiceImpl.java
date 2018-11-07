@@ -534,6 +534,7 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 							}
 						}
 					}
+					
 					values.add(courseName);
 					values.add("同步作业");
 					values.add(params.getString("videoCourseName"));
@@ -542,8 +543,8 @@ public class DaulTaskServiceImpl implements IDaulTaskService {
 					colors.add("#FF0000");colors.add("#FF0000");
 					
 					logger.info("send task params:" + params);
-					wechatService.sendTempletMsg2(WeiXinConfig.TEACHER_PLATE_APPID, 
-							WeiXinConfig.TEACHER_PLATE_SECRET_KEY, 
+					wechatService.sendTempletMsg2(WeiXinConfig.APPID, 
+							WeiXinConfig.SECRET, 
 							WeiXinConfig.TEACHER_DISTRIBUTE_TASK_TEMPLETE_ID, 
 							params.getString("h5VideoLink"), 
 							openId, values, colors, null);

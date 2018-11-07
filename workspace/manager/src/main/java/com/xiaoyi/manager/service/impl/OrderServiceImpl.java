@@ -62,6 +62,8 @@ import com.xiaoyi.manager.domain.VideoCourse;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.manager.service.IConsultantOrderRelationService;
 import com.xiaoyi.manager.service.IOrderService;
+import com.xiaoyi.teacher.dao.ITeachingDaulOrderDao;
+import com.xiaoyi.teacher.domain.TeachingDaulOrder;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 @Service("orderService")
@@ -99,6 +101,9 @@ public class OrderServiceImpl implements IOrderService {
 	private IConsultantOrderRelationService consultantOrderRelationService;
 	@Resource
 	private IAuditionsDao auditionsDao;
+	
+	@Resource
+	ITeachingDaulOrderDao teachingDaulOrderDao;
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -234,8 +239,8 @@ public class OrderServiceImpl implements IOrderService {
 						orderSum.setPurchasetime(new Date());
 						orderSum.setLessontype(lessonType);
 						orderSum.setLessonleftnum(isNewOrder?purchaseNum:(orderSum.getLessonleftnum()+purchaseNum));
-						orderSum.setTotallessonnum(isNewOrder?purchaseNum:(short)(orderSum.getTotallessonnum()+purchaseNum));
-						orderSum.setTeachingWay(teachingWay);
+						orderSum.setTotallessonnum(isNewOrder?purchaseNum:(orderSum.getTotallessonnum()+purchaseNum));
+						orderSum.setTeachingWay(daulTeachingWay);
 						
 						if(isNewOrder){
 							orderSumDao.insertSelective(orderSum);
@@ -252,7 +257,7 @@ public class OrderServiceImpl implements IOrderService {
 				//双师视频课程 & 双师课堂（增加用户同步课堂观看权限）
 				if(3==teachingWay || teachingWay==5){
 					logger.info("开始购买双师课堂");
-					addDaulOrder(teachingWay, openId, parentId, studentId, phone, lessonType);
+					addDaulOrder(teachingWay, openId,params.getString("nonce_str"), parentId, studentId, phone, lessonType);
 				}
 			}
 		} catch (Exception e) {
@@ -273,7 +278,7 @@ public class OrderServiceImpl implements IOrderService {
 	 * @param lessonType
 	 * @return
 	 */
-	private int addDaulOrder(int teachingWay, String openId, 
+	private int addDaulOrder(int teachingWay, String openId, String daulOrderId,
 			String parentId, String studentId, String phone, Integer lessonType){
 		int result = 0;
 		
@@ -450,7 +455,7 @@ public class OrderServiceImpl implements IOrderService {
 			List<DaulVideoOrder> recordList = new ArrayList<DaulVideoOrder>();
 			for(VideoCourse videoCourse : videoCourseList){
 				DaulVideoOrder videoOrder = new DaulVideoOrder();
-				String daulOrderId = UUID.randomUUID().toString();
+				//String daulOrderId = UUID.randomUUID().toString();
 				
 				videoOrder.setCreateTime(new Date());
 				videoOrder.setDaulOrderId(daulOrderId);
@@ -950,13 +955,16 @@ public class OrderServiceImpl implements IOrderService {
 					Integer feedback = mTeaching.getInteger("feedback");
 					
 					//默认为未确认
-					mTeaching.put("feedback", "3");	//未确认
+					mTeaching.put("feedback", 3);	//未确认
 					if(null!=status){
-						if(feedback!=null){	//家长评价
+						if(status==2 || status==3){
+							mTeaching.put("feedback", feedback);	//未确认
+						}
+						/*if(feedback!=null){	//家长评价
 							mTeaching.put("feedback", feedback);	
 						}else{	//默认为满意
-							mTeaching.put("feedback", 1);	
-						}
+							mTeaching.put("feedback", 3);	
+						}*/
 					}
 					
 				}
@@ -1023,6 +1031,7 @@ public class OrderServiceImpl implements IOrderService {
 			reqParams.put("courseId", params.get("courseId"));
 			reqParams.put("teacherId", params.get("teacherId"));
 			
+			Short teachingWay = null;
 			//查询任教Id
 			String deleteTeachingId = null;
 			try {
@@ -1039,6 +1048,12 @@ public class OrderServiceImpl implements IOrderService {
 							logger.info("orderSum is null!");
 							return 0;
 						}
+						
+						//+++++++++++++++  daul teacher version   +++++++++++++++
+						teachingWay = orderSum.getTeachingWay();
+						logger.info("selected teachingWay: "+ teachingWay);
+						//++++++++++++++++++++++   end   +++++++++++++++++++++++
+						
 						
 						String teachingIds = orderSum.getTeachingids();
 						if(!StringUtils.isEmpty(teachingIds)){
@@ -1130,6 +1145,41 @@ public class OrderServiceImpl implements IOrderService {
 				throw e;
 			}
 			
+			//删除双师视频课程授权
+			if(null!=teachingWay && teachingWay == 3){
+				JSONObject daulOrderParams = new JSONObject();
+				daulOrderParams.put("teachingId", deleteTeachingId);
+				List<TeachingDaulOrder> teachingDaulOrderList = 
+						teachingDaulOrderDao.selectByParams(daulOrderParams );
+				
+				final XiaoeSDK sdk  = 
+						new XiaoeSDK(WeiXinConfig.XIAO_E_TONG_APPID, WeiXinConfig.XIAO_E_TONG_APPSECRET); 
+				for(TeachingDaulOrder daulOrder : teachingDaulOrderList){
+					 final String xiaoeOrder = daulOrder.getXiaoeOrderId();
+					
+					 //异步执行
+					 excutors.submit(new Runnable() {
+						
+						@Override
+						public void run() {							
+							//确认订单（修改订单状态为已购买）
+					        logger.info("调用小鹅通SdK修改订单状态...");
+					        org.json.JSONObject comfirmOrder = new org.json.JSONObject();
+					        comfirmOrder.put("order_id", xiaoeOrder);
+					        comfirmOrder.put("order_state", "2");	//支付失败
+					        org.json.JSONObject updateResult = sdk.send("orders.state.update", comfirmOrder, 1, "1.0");
+					        logger.info("修改结果：" + updateResult);
+					        
+					        //更改订单状态成功-》删除对应双师本地授权
+					        if(updateResult.getInt("order_state") == 2){
+					        	teachingDaulOrderDao.deleteByXiaoeOrderId(xiaoeOrder);
+					        }
+						}
+					});
+					
+				}
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			return -1;
@@ -1142,6 +1192,7 @@ public class OrderServiceImpl implements IOrderService {
 		return orderDao.selectOrderById(orderId);
 	}
 
+<<<<<<< HEAD
 	@Override
 	public List<JSONObject> getClaimOrderList(JSONObject reqData) {
 		List<JSONObject> result = orderSumDao.getClaimOrderList(reqData);
@@ -1278,6 +1329,16 @@ public class OrderServiceImpl implements IOrderService {
 		result.put("proportion", MathUtils.percentage(consultantQuantity, countQuantity));
 		resultList.add(result);
 		return resultList;
+=======
+	/**
+	 * 定时清理两个月内没提现的任教关系
+	 * @return
+	 */
+	public int clearTeachings(){
+		
+		
+		return 0;
+>>>>>>> dev
 	}
 	
 }

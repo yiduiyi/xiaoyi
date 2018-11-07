@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.HttpClient;
+import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
+import com.xiaoyi.custom.domain.DaulVideoOrder;
 import com.xiaoyi.custom.service.ICustomService;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -66,6 +68,9 @@ public class UserPayOutAction {
 	@Autowired
 	private ICustomService customService;
 	
+	@Autowired
+	IDaulVideoOrderDao daulVideoOrderDao;
+	
 	private static final Logger logger = LoggerFactory.getLogger(UserPayOutAction.class);	
 	
 	@RequestMapping("/payout")
@@ -88,9 +93,9 @@ public class UserPayOutAction {
 		Integer teachingWay = request.getInteger("teachingWay");
 		
 		//测试用
-		if(null == teachingWay){
+		/*if(null == teachingWay){
 			teachingWay = 2;
-		}
+		}*/
 		
 		JSONObject attach = new JSONObject();
 		//JSONObject body = new JSONObject();
@@ -207,83 +212,119 @@ public class UserPayOutAction {
 	@ResponseBody
 	public void notice(HttpServletRequest req,@RequestBody String returl,
 			 HttpServletResponse res) {
-		//JSONObject response = new JSONObject();
-		 logger.error("returl==>" + returl);
-		 XMLSerializer xmlSerializer=new XMLSerializer();
-		 net.sf.json.JSONObject jsonObject =(net.sf.json.JSONObject) xmlSerializer.read(returl);
-		 SortedMap<String, String> parameters = new TreeMap<String, String>();
-		 Iterator<String> it = jsonObject.keys();
-		 String key = null;
-		 while(it.hasNext()){ 
-			  key =   it.next();
-			  if ("sign".equals(key)) {
-				 continue;
-			  }
-			  parameters.put(key,  jsonObject.getString(key));
-	     }
-		 
-		//去重重复回调++++++++++++++++   added 2018-10-11 +++++++++++++
-		 String nonce_str = jsonObject.getString("nonce_str");
-		 Orders order = null;
-		 try {
-			 order = orderService.queryOrderById(nonce_str);	
-			 if(order!=null){	//重复回调-直接返回
-				parameters.put("return_code", "SUCCESS");
-				parameters.put("return_msg", "OK");
-			 }
-		 } catch (Exception e) {
-			logger.warn("查询是否已存在订单出错！");
-			throw new CommonRunException(-1,"查询是否已存在订单出错！");
-		 }		 		 
-		 
-		 String sign = createSign(parameters);
-		 if (sign.equals(jsonObject.getString("sign")) && order==null) {
-			 logger.error("验证==>" + sign);
-			 JSONObject parm = new JSONObject(); 						 			 			 			 
-			 
-			 parm.put("nonce_str", nonce_str);
-			 
-			 parm.put("openId", jsonObject.getString("openid"));
-			 parm.put("orderNum", jsonObject.getString("out_trade_no"));
-			 parm.put("status", 1l);
-			 net.sf.json.JSONObject attach = jsonObject.getJSONObject("attach");
-			// net.sf.json.JSONObject body = jsonObject.getJSONObject("body");
-			 
-			 parm.put("studentName", attach.get("stu"));
-			 parm.put("parentName", attach.get("parent"));
-			 parm.put("lessonType", attach.get("type"));
-			 parm.put("purchaseNum", attach.get("courseCnt"));
-			 parm.put("hasBook", attach.get("book"));
-			 parm.put("orderType", 2);	//家长支付
-			 parm.put("telNum", attach.get("tel"));
-			 
-			 //加入teachingWay作为一个订单的区分字段
-			 Integer teachingWay = attach.getInt("tw");
-			 parm.put("teachingWay", teachingWay);
-			 
-			 try {
-				orderService.addOrder(parm);
-				parameters.put("return_code", "SUCCESS");
-				parameters.put("return_msg", "OK");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				parameters.put("return_code", "FAILED");
-				parameters.put("return_msg", "充值失败,请联系管理员！");
-
-			}
-  		     //busiService.updateNoticeArrival(parm); 
-		 }
-		
-		PrintWriter writer;
+		 //JSONObject response = new JSONObject();
+		SortedMap<String, String> parameters = new TreeMap<String, String>();
 		try {
-			 writer = res.getWriter();
-			 writer.write(getRequestXml(parameters));
-			 writer.flush();
-			 writer.close();
-		} catch (IOException e) {
+			logger.error("returl==>" + returl);
+			 XMLSerializer xmlSerializer=new XMLSerializer();
+			 net.sf.json.JSONObject jsonObject =(net.sf.json.JSONObject) xmlSerializer.read(returl);
+			 Iterator<String> it = jsonObject.keys();
+			 String key = null;
+			 while(it.hasNext()){ 
+				  key =   it.next();
+				  if ("sign".equals(key)) {
+					 continue;
+				  }
+				  parameters.put(key,  jsonObject.getString(key));
+		     }
+			 
+			 //去重重复回调++++++++++++++++   added 2018-10-11 +++++++++++++
+			 String nonce_str = jsonObject.getString("nonce_str");
+			 Orders order = null;
+			 try {
+				// if()
+				 order = orderService.queryOrderById(nonce_str);	
+				 
+				 if(order!=null){	//重复回调-直接返回
+					parameters.put("return_code", "SUCCESS");
+					parameters.put("return_msg", "OK");
+					throw new CommonRunException(1, "重复订单！");
+				 }
+			 } catch (CommonRunException e) {
+				 throw e;
+			 } catch (Exception e) {
+				logger.warn("查询是否已存在订单出错！");
+				throw new CommonRunException(1,"查询是否已存在订单出错！");
+			 }		 		 
+			 
+			 String sign = createSign(parameters);
+			 if (sign.equals(jsonObject.getString("sign")) && order==null) {
+				 logger.error("验证==>" + sign);
+				 JSONObject parm = new JSONObject(); 						 			 			 			 
+				 
+				 parm.put("nonce_str", nonce_str);
+				 
+				 parm.put("openId", jsonObject.getString("openid"));
+				 parm.put("orderNum", jsonObject.getString("out_trade_no"));
+				 parm.put("status", 1l);
+				 net.sf.json.JSONObject attach = jsonObject.getJSONObject("attach");
+				// net.sf.json.JSONObject body = jsonObject.getJSONObject("body");
+				 
+				 parm.put("studentName", attach.get("stu"));
+				 parm.put("parentName", attach.get("parent"));
+				 parm.put("lessonType", attach.get("type"));
+				 parm.put("purchaseNum", attach.get("courseCnt"));
+				 parm.put("hasBook", attach.get("book"));
+				 parm.put("orderType", 2);	//家长支付
+				 parm.put("telNum", attach.get("tel"));
+				 
+				 //加入teachingWay作为一个订单的区分字段
+				 Integer teachingWay = attach.getInt("tw");
+				 if(teachingWay == 5){	//判断是否为重复双师视频课程续费订单
+					 DaulVideoOrder daulOrder = daulVideoOrderDao.selectByPrimaryKey(nonce_str);
+					 if(null!=daulOrder){
+						 parameters.put("return_code", "SUCCESS");
+						 parameters.put("return_msg", "OK");
+						 throw new CommonRunException(1, "重复双师课程订单！");
+					 }
+				 }
+				 
+				 
+				 parm.put("teachingWay", teachingWay);
+				 
+				 try {
+					orderService.addOrder(parm);
+					parameters.put("return_code", "SUCCESS");
+					parameters.put("return_msg", "OK");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					parameters.put("return_code", "FAILED");
+					parameters.put("return_msg", "充值失败,请联系管理员！");
+
+				}
+	  		     //busiService.updateNoticeArrival(parm); 
+			 }
+			
+			PrintWriter writer;
+			try {
+				 writer = res.getWriter();
+				 writer.write(getRequestXml(parameters));
+				 writer.flush();
+				 writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (CommonRunException e) {
+			int code = e.getCode();
+			if(code == 0){
+				PrintWriter writer;
+				try {
+					writer = res.getWriter();
+					writer.write(getRequestXml(parameters));
+					writer.flush();
+					writer.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			logger.error(e.getMessage());
 			e.printStackTrace();
-		}
+		} catch (Exception e) {
+			logger.error("内部错误！");
+			e.printStackTrace();
+		} 		
 	}
 	
 	@RequestMapping("/payArrearages")

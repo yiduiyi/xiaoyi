@@ -228,7 +228,7 @@
   <select id="getMyBillRecord" parameterType="java.lang.String" resultType="com.alibaba.fastjson.JSONObject">
   	SELECT B.bill_id AS billId,B.serial_number AS serialNumber,B.grade_id AS gradeId,B.course_id AS courseId,B.consultant_id AS consultantId,B.class_time AS classTime,
   	B.class_address AS classAddress,B.demand AS demand,BRR.`status` AS recordStatus,BRR.update_time AS updateTime FROM bill B 
-  	INNER JOIN bill_record_r BRR ON b.bill_id = BRR.bill_id WHERE BRR.teacherId = #{teacherid}
+  	INNER JOIN bill_record_r BRR ON B.bill_id = BRR.bill_id WHERE BRR.teacherId = #{teacherid}
   </select>
   
   <select id="getAllSendBillList" resultType = "com.alibaba.fastjson.JSONObject">

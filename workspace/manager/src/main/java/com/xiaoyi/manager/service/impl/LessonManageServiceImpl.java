@@ -68,6 +68,8 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 		String lessonId = params.getString("lessonId");
 		Integer operateType = params.getInteger("operateType");
 		Integer isholiday = params.getInteger("isholiday");
+		Integer teachingWay = params.getInteger("teachingWay");
+		
 		if(null == isholiday){	//默认非假期
 			params.put("isholiday", 0);
 		}
@@ -81,6 +83,11 @@ public class LessonManageServiceImpl implements ILessonManageServer{
 				LessonTypeKey key = new LessonTypeKey();
 				key.setLessonId(lessonId);
 				lessonTypeDao.deleteByPrimaryKey(key);
+			}
+			
+			//双师同步课程
+			if(teachingWay == 3){
+				params.put("daulCourseCount", 30);
 			}
 			
 			return lessonManageDao.updateLessonType(params);

@@ -531,46 +531,45 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				
 				
 				//synchronized (this) {
-					for (LessonTrade record : lessonTradeList) {
-						if (record.getActualPay() == null) {
-							record.setActualPay(0f);
-						}
-						if (record.getWithdrawed() == null) {
-							record.setWithdrawed(0f);
-						}
-						// 计算剩余
-						float remain = record.getActualPay() - record.getWithdrawed();
+				for (LessonTrade record : lessonTradeList) {
+					
+					// 计算当前提现记录剩余课时费
+					float remain = record.getActualPay() - record.getWithdrawed();
 
-						logger.info("lessonTradeId:" + record.getLessontradeid());
-						logger.info("提现金额剩余：" + remain);
-						logger.info("总课时费：{}, 其中已提现课时费：{}",record.getActualPay(), record.getWithdrawed());
-						logger.info("从课时费中扣除:" + tobeWithdrawed);
-						
-						if (remain > /* withdrawing */tobeWithdrawed) {
-							record.setWithdrawed(record.getWithdrawed() + withdrawing);
-							tobeWithdrawed = 0;
-						} else {
-							record.setStatus((byte) 0); // 全部提现完毕
-							record.setWithdrawed(record.getActualPay());
-							tobeWithdrawed -= remain;
-
-							// 更新课时余额来源
-							lessonTradeIdList.remove(record.getLessontradeid());
-						}
-
-						// 更新课时提现状态
-						logger.info("更新课时提现金额及状态...");
-						try {
-							lessonTradeDao.updateByPrimaryKeySelective(record);
-						} catch (Exception e) {
-							logger.error("更新课时提现金额及状态失败！");
-							throw new CommonRunException(-1, "更新课时提现金额及状态失败！");
-						}
-
-						if (tobeWithdrawed <= 0) {
-							break;
-						}
+					logger.info("lessonTradeId:" + record.getLessontradeid());
+					logger.info("总课时费：{}, 其中已提现课时费：{}",record.getActualPay(), record.getWithdrawed());
+					logger.info("提现金额剩余：{}", remain);
+					logger.info("发起提现数额：{}, 从当前课时费中扣除:{}", withdrawing ,tobeWithdrawed);
+					
+					if(remain <=0){
+						continue;
 					}
+					
+					if (remain > tobeWithdrawed) {
+						record.setWithdrawed(record.getWithdrawed() + tobeWithdrawed);
+						tobeWithdrawed = 0;
+					} else {
+						record.setStatus((byte) 0); // 全部提现完毕
+						record.setWithdrawed(record.getActualPay());
+						tobeWithdrawed -= remain;
+
+						// 更新课时余额来源
+						lessonTradeIdList.remove(record.getLessontradeid());
+					}
+
+					// 更新课时提现状态
+					logger.info("更新课时提现金额及状态...");
+					try {
+						lessonTradeDao.updateByPrimaryKeySelective(record);
+					} catch (Exception e) {
+						logger.error("更新课时提现金额及状态失败！");
+						throw new CommonRunException(-1, "更新课时提现金额及状态失败！");
+					}
+
+					if (tobeWithdrawed <= 0) {
+						break;
+					}
+				}
 				//}
 
 				// 更新课时余额来源
