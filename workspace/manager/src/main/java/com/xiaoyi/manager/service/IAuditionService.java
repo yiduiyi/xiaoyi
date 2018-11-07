@@ -2,7 +2,6 @@ package com.xiaoyi.manager.service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -20,5 +19,7 @@ public interface IAuditionService {
 	//获取渠道经理试听单数据
 	public JSONObject getchannelManagerAuditionData(String channelManagerGroupId, Date startTime, Date endTime);
 	public List<JSONObject> getAuditionNumList(String channelManagerGroupId, Date startTime, Date endTime);
+	public int updateAudition(JSONObject reqData);
+	public int deleteAudition(JSONObject reqData);
 
 }

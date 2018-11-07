@@ -1145,34 +1145,41 @@ public class OrderServiceImpl implements IOrderService {
 	@Override
 	public List<JSONObject> getClaimOrderList(JSONObject reqData) {
 		List<JSONObject> result = orderSumDao.getClaimOrderList(reqData);
-		Map<String, Object>  consultantOrderMap = new HashMap<String, Object>();
+		Map<String, Object> consultantOrderMap = new HashMap<String, Object>();
 		List<String> orderIdList = new ArrayList<String>();
-		if(!CollectionUtils.isEmpty(result)) {
+		if (!CollectionUtils.isEmpty(result)) {
 			for (JSONObject jsonObject : result) {
 				jsonObject.put("createTime", DateUtils.toYYYYPointMMPointDDString(jsonObject.getDate("createTime")));
 				Integer lessonType = jsonObject.getInteger("lessonType");
-				if(null != lessonType) {
-					for (com.xiaoyi.common.utils.ConstantUtil.LessonType lessonTypes : com.xiaoyi.common.utils.ConstantUtil.LessonType.values()) {
-						if(lessonType == lessonTypes.getValue()) {
+				if (null != lessonType) {
+					for (com.xiaoyi.common.utils.ConstantUtil.LessonType lessonTypes : com.xiaoyi.common.utils.ConstantUtil.LessonType
+							.values()) {
+						if (lessonType == lessonTypes.getValue()) {
 							jsonObject.put("gradeName", lessonTypes.getFullGradeName());
 						}
 					}
 				}
 			}
-			//当查询所有已认领的订单时，匹配课程顾问名称，删除未认领订单
-			if(reqData.getInteger("isClaim").equals(ConstantUtil.IS_CLAIM_TRUE)) {
-				List<JSONObject> consultantOrderList= consultantOrderRelationService.getConsultantOrderList();
-				if(!CollectionUtils.isEmpty(consultantOrderList)) {
-					for (JSONObject jsonObject : consultantOrderList) {
-						consultantOrderMap.put(jsonObject.getString("orderId"), jsonObject.getString("consultantName"));
-						orderIdList.add(jsonObject.getString("orderId"));
-					}
-					Iterator<JSONObject> iterator = result.iterator();
-					while (iterator.hasNext()) {
-						JSONObject jsonObject = iterator.next();
-						if(orderIdList.contains(jsonObject.getString("orderId"))) {
-							jsonObject.put("consultantName", consultantOrderMap.get(jsonObject.getString("orderId")) == null ? "" : consultantOrderMap.get(jsonObject.getString("orderId")));
-						}else {
+			List<JSONObject> consultantOrderList = consultantOrderRelationService.getConsultantOrderList();
+			if (!CollectionUtils.isEmpty(consultantOrderList)) {
+				for (JSONObject jsonObject : consultantOrderList) {
+					consultantOrderMap.put(jsonObject.getString("orderId"), jsonObject.getString("consultantName"));
+					orderIdList.add(jsonObject.getString("orderId"));
+				}
+				Iterator<JSONObject> iterator = result.iterator();
+				while (iterator.hasNext()) {
+					JSONObject jsonObject = iterator.next();
+					// 当查询所有已认领的订单时，匹配课程顾问名称，删除未认领订单
+					if (reqData.getInteger("isClaim").equals(ConstantUtil.IS_CLAIM_TRUE)) {
+						if (orderIdList.contains(jsonObject.getString("orderId"))) {
+							jsonObject.put("consultantName",
+									consultantOrderMap.get(jsonObject.getString("orderId")) == null ? ""
+											: consultantOrderMap.get(jsonObject.getString("orderId")));
+						} else {
+							iterator.remove();
+						}
+					} else if (reqData.getInteger("isClaim").equals(ConstantUtil.IS_CLAIM_FALSE)) {
+						if (orderIdList.contains(jsonObject.getString("orderId"))) {
 							iterator.remove();
 						}
 					}

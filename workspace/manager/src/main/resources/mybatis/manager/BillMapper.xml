@@ -200,6 +200,9 @@
   		<if test="consultantId != null">
   			AND B.consultant_id = #{consultantId}
   		</if>
+  		<if test="status != null">
+  			AND B.status = #{status}
+  		</if>
   			AND B.status != -1
   	</where>
   </select>
@@ -253,14 +256,15 @@
   </select>
   <select id="selectSendBillNumRankListByTime" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
   	SELECT B.consultant_id AS consultantId,C.consultant_name AS consultantName,COUNT(1) AS billNum FROM bill B 
-  	INNER JOIN consultant C ON B.consultant_id =C.consultant_id GROUP BY B.consultant_id
+  	INNER JOIN consultant C ON B.consultant_id =C.consultant_id 
   	<where>
   		<if test="null != startTime">
-  			 AND create_time &gt;= #{startTime}
+  			 AND B.create_time &gt;= #{startTime}
   		</if>
   		<if test="null != endTime">
-  			 AND create_time &lt;= #{endTime}
+  			 AND B.create_time &lt;= #{endTime}
   		</if>
   	</where>
+  	GROUP BY B.consultant_id
   </select>
 </mapper>

@@ -31,6 +31,8 @@ public class Auditions {
 
     private Date updateTime;
 
+    private Short teachingway;
+
     public String getAuditionId() {
         return auditionId;
     }
@@ -141,5 +143,13 @@ public class Auditions {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Short getTeachingway() {
+        return teachingway;
+    }
+
+    public void setTeachingway(Short teachingway) {
+        this.teachingway = teachingway;
     }
 }

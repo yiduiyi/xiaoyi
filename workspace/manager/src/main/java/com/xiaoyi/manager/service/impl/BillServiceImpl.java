@@ -94,6 +94,7 @@ public class BillServiceImpl implements IBillService {
 				}
 			}
 			for (JSONObject jsonObject : result) {
+				jsonObject.put("createTime", DateUtils.toYYYYPointMMPointDDString(jsonObject.getDate("classTime")));
 				Object billQuantityNum = billQuantityNumMap.get(jsonObject.getString("billId"));
 				if(null == billQuantityNum){
 					jsonObject.put("billQuantityNum",0);

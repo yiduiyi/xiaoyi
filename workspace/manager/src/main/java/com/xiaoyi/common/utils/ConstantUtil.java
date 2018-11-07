@@ -333,6 +333,7 @@ public class ConstantUtil {
 		}
 
 		public String getFullGradeName() {
+			StringBuffer levelName = new StringBuffer();
 			switch (grade) {
 			case 11:
 			case 12:
@@ -346,7 +347,6 @@ public class ConstantUtil {
 			case 31:
 			case 32:
 			case 33:
-				StringBuffer levelName = new StringBuffer();
 				for (Level l : Level.values()) {
 					if (grade == l.getValue()) {
 						levelName.append(l.getSimpleName());
@@ -356,12 +356,20 @@ public class ConstantUtil {
 				for (Grade g : Grade.values()) {
 					if (grade == g.getValue()) {
 						levelName.append(g.getSimpleName());
+						break;
 					}
 				}
 				return levelName.toString();
 			}
-
-			return null;
+			if (levelName.length() == 0) {
+				for (Grade g : Grade.values()) {
+					if (grade == g.getValue()) {
+						levelName = levelName.append(g.toString());
+						break;
+					}
+				}
+			}
+			return levelName.toString();
 		}
 
 		@Override

@@ -119,7 +119,38 @@ public class AuditionAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-	
+	@RequestMapping(value = "/updateAudition",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject updateAudition(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			if(auditionService.updateAudition(reqData) > 0) {
+				rtCode =RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	@RequestMapping(value = "/deleteAudition",method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject deleteAudition(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			if(auditionService.deleteAudition(reqData) > 0) {
+				rtCode =RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
 	///
 	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {
 		result.put("code", code);

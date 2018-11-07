@@ -13,7 +13,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.service.IPerformanceService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
-
+/**
+ * 业绩管理
+ * @author 颜振衡
+ * @QQ 1376005213
+ * @Date 2018年11月7日
+ */
 @Controller
 @RequestMapping("/performance")
 public class PerformanceAction {
