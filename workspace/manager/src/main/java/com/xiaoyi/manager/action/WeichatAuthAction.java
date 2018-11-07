@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.xiaoyi.wechat.utils.AdvancedUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 import com.xiaoyi.wechat.utils.WeixinOauth2Token;
- 
 
 @Controller
 @RequestMapping("/interface")

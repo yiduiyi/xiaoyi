@@ -57,7 +57,6 @@ import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.manager.service.IOrderService;
 import com.xiaoyi.teacher.dao.ITeachingDaulOrderDao;
 import com.xiaoyi.teacher.domain.TeachingDaulOrder;
-import com.xiaoyi.teacher.domain.TeachingDaulOrderKey;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 @Service("orderService")
@@ -1041,6 +1040,7 @@ public class OrderServiceImpl implements IOrderService {
 						
 						//+++++++++++++++  daul teacher version   +++++++++++++++
 						teachingWay = orderSum.getTeachingWay();
+						logger.info("selected teachingWay: "+ teachingWay);
 						//++++++++++++++++++++++   end   +++++++++++++++++++++++
 						
 						
@@ -1135,7 +1135,7 @@ public class OrderServiceImpl implements IOrderService {
 			}
 			
 			//删除双师视频课程授权
-			if(teachingWay == 3){
+			if(null!=teachingWay && teachingWay == 3){
 				JSONObject daulOrderParams = new JSONObject();
 				daulOrderParams.put("teachingId", deleteTeachingId);
 				List<TeachingDaulOrder> teachingDaulOrderList = 

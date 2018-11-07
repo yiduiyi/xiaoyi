@@ -70,6 +70,6 @@
 			LEFT JOIN teacher c ON b.teacherId=c.teacherId
 		WHERE a.memberId=#{memberId}
 			AND a.parentId=#{parentId}
-			AND STR_TO_DATE(teachingDate,'%Y-%m') = STR_TO_DATE(#{queryMonth},'%Y-%m')
+			AND DATE_FORMAT(teachingDate,'%Y-%m') = #{queryMonth}
   </select>
 </mapper>
