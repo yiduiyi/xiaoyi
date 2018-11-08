@@ -289,4 +289,41 @@ public class WeichatAuthAction{
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * 授权其他机构开通双师课程(家长端)
+	 * @param req
+	 * @param res
+	 */
+	@RequestMapping("/authorizeThirdConstitution")
+	public void authorizeThirdConstitution(HttpServletRequest req,
+			 HttpServletResponse res )  {
+		log.info(req.getContextPath());
+		log.info("params:" + req.getParameter("type"));
+		
+		log.info("In authToCourseRecord...");
+		//String redirectUrl = "/wechat/index.html#/studentList";
+		//log.info("redirect Url:"+redirectUrl);
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+		    log.info("code: " + code);
+		    if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID, 
+	        			  WeiXinConfig.SECRET , code);
+	              String openid = weixinOauth2Token.getOpenId();
+	              String access_token = weixinOauth2Token.getAccessToken();
+	              
+	              log.error("access_token======>" + access_token);
+	              log.error("openid====>" + openid);
+	             
+	              //购买双师课程
+	              log.info("开始授权双师...");
+	        } 
+	      
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
