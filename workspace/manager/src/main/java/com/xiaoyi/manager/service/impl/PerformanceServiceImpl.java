@@ -97,35 +97,22 @@ public class PerformanceServiceImpl implements IPerformanceService {
 		List<JSONObject> consultantGroup = consultantGroupDao.getAllConsultantGroupList();
 		List<JSONObject> billList = billRecordRelationService.getBillRecordDataByTime(startTime, endTime);
 		if (CollectionUtils.isNotEmpty(consultantGroup)) {
-			if (null != reqData.getString("consultantGroupId")) {
-				for (JSONObject jsonObject : consultantGroup) {
+			for (JSONObject jsonObject : consultantGroup) {
+				//判断是查询单个课程顾问组还是查整体课程顾问组，获取相应的课程顾问主键
+				if (null != reqData.getString("consultantGroupId")) {
 					if (reqData.getString("consultantGroupId").equals(jsonObject.getString("consultantGroupId"))) {
 						consultantIdList.add(jsonObject.getString("consultantId"));
 					}
+				}else {
+					consultantIdList.add(jsonObject.getString("consultantId"));
 				}
 			}
 		}
 		if (CollectionUtils.isNotEmpty(billList)) {
 			// 当查询单个课程顾问组统计的时候
-			if (null != reqData.getString("consultantGroupId")) {
-				for (JSONObject jsonObject : billList) {
-					// 判断该课程顾问组总发布订单量
-					if (consultantIdList.contains(jsonObject.getString("consultantId"))) {
-						totalBillNum++;
-						if (jsonObject.getInteger("claimNum") > 0) {
-							if (jsonObject.getInteger("billStatus") == 1) {
-								noMateBillNum++;
-							} else if (jsonObject.getInteger("billStatus") == 2) {
-								mateBillNum++;
-							}
-						} else {
-							noClaimBillNum++;
-						}
-					}
-				}
-			} else {
-				// 查询所有课程顾问组信息
-				for (JSONObject jsonObject : billList) {
+			for (JSONObject jsonObject : billList) {
+				// 判断该课程顾问组总发布订单量
+				if (consultantIdList.contains(jsonObject.getString("consultantId"))) {
 					totalBillNum++;
 					if (jsonObject.getInteger("claimNum") > 0) {
 						if (jsonObject.getInteger("billStatus") == 1) {
@@ -145,8 +132,10 @@ public class PerformanceServiceImpl implements IPerformanceService {
 		}
 		//获取成单排行榜
 		List<JSONObject> consultantOrderRankingList = consultantOrderRelationService.getConsultantOrderRankingList(consultantGroupId,startTime,endTime);
-		//List<JSONObject> consultantOrderRankingList = consultantOrderRelationService.getConsultantOrderRankingList(consultantGroupId,startTime,endTime);
+		//获取续费单排行榜
+		List<JSONObject> consultantRenewalOrderRankingList = consultantOrderRelationService.getConsultantRenewalOrderRankingList(consultantGroupId,startTime,endTime);
 		result.put("consultantOrderRankingList", consultantOrderRankingList);
+		result.put("consultantRenewalOrderRankingList", consultantRenewalOrderRankingList);
 		return result;
 	}
 
@@ -155,10 +144,7 @@ public class PerformanceServiceImpl implements IPerformanceService {
 		JSONObject result = new JSONObject();
 		Integer totalIntendedNumber = 0;
 		Integer totalCooperatorNum = 0;
-		Integer totalAuditionNum = 0;
-		Integer totalCompleteNum = 0;
 		String channelManagerGroupId = reqData.getString("channelGroupId");
-		
 		Date startTime = null;
 		Date endTime = null;
 		if (reqData.getString("queryType").equals("0")) {
@@ -173,11 +159,14 @@ public class PerformanceServiceImpl implements IPerformanceService {
 		}
 		totalIntendedNumber = channelManagerService.getTotalIntendedNumber(channelManagerGroupId);
 		totalCooperatorNum = cooperatorService.getTotalCooperatorNum(channelManagerGroupId,startTime,endTime);
-		//TODO暂未完成
-		JSONObject jsonObject = auditionService.getchannelManagerAuditionData(channelManagerGroupId,startTime,endTime);
+		JSONObject channelManagerAuditionData = auditionService.getChannelManagerAuditionData(channelManagerGroupId,startTime,endTime);
 		List<JSONObject> cooperatorRankList = cooperatorService.getCooperatorRankList(channelManagerGroupId,startTime,endTime);
 		result.put("totalIntendedNumber", totalIntendedNumber);
 		result.put("totalCooperatorNum", totalCooperatorNum);
+		if(null != channelManagerAuditionData) {
+			result.put("totalAuditionNum", channelManagerAuditionData.getInteger("totalAuditionNum"));
+			result.put("totalCompleteNum", channelManagerAuditionData.getInteger("totalCompleteNum"));
+		}
 		result.put("cooperatorRankList", cooperatorRankList);
 		return result;
 	}

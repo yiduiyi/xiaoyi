@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +20,15 @@ import com.xiaoyi.manager.dao.IConsultantOrderRelationDao;
 import com.xiaoyi.manager.domain.ConsultantOrderRelation;
 import com.xiaoyi.manager.domain.ConsultantOrderRelationKey;
 import com.xiaoyi.manager.service.IConsultantOrderRelationService;
+import com.xiaoyi.manager.service.IOrderService;
 @Service("consultantOrderRelationService")
 public class ConsultantOrderRelationServiceImpl implements IConsultantOrderRelationService {
 	@Resource
 	private IConsultantOrderRelationDao consultantOrderRelationDao;
 	@Resource
 	private IConsultantGroupDao consultantGroupDao;
+	@Resource
+	private IOrderService orderService;
 	@Override
 	public List<JSONObject> getConsultantOrderList() {
 		return consultantOrderRelationDao.getConsultantOrderList();
@@ -50,14 +54,17 @@ public class ConsultantOrderRelationServiceImpl implements IConsultantOrderRelat
 	}
 	@Override
 	public List<JSONObject> getConsultantOrderRankingList(String consultantGroupId, Date startTime, Date endTime) {
-		 List<JSONObject> result = new ArrayList<JSONObject>();
 		 List<JSONObject> consultantGroup = consultantGroupDao.getAllConsultantGroupList();
 		 List<String> consultantIdList = new ArrayList<String>();
 		 Map<String, Object> consultantNameMap = new HashMap<String,Object>();
 			if (CollectionUtils.isNotEmpty(consultantGroup)) {
 				if (null != consultantGroupId) {
 					for (JSONObject jsonObject : consultantGroup) {
-						if (consultantGroupId.equals(jsonObject.getString("consultantGroupId"))) {
+						if(null != consultantGroupId) {
+							if (consultantGroupId.equals(jsonObject.getString("consultantGroupId"))) {
+								consultantIdList.add(jsonObject.getString("consultantId"));
+							}
+						}else {
 							consultantIdList.add(jsonObject.getString("consultantId"));
 						}
 						consultantNameMap.put(jsonObject.getString("consultantId") , jsonObject.getString("consultantName"));
@@ -66,15 +73,18 @@ public class ConsultantOrderRelationServiceImpl implements IConsultantOrderRelat
 			}
 		List<JSONObject> consultantOrderRankingList = consultantOrderRelationDao.getConsultantOrderRankingList(startTime,endTime);
 		if(CollectionUtils.isNotEmpty(consultantOrderRankingList)) {
-			for (JSONObject jsonObject : consultantOrderRankingList) {
+			Iterator<JSONObject> iterator = consultantOrderRankingList.iterator();
+			while (iterator.hasNext()) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
 				if(consultantIdList.contains(jsonObject.getString("consultantId"))) {
 					jsonObject.put("consultantName", consultantNameMap.get(jsonObject.getString("consultantId")) == null ? "" : consultantNameMap.get(jsonObject.getString("consultantId")));
-					result.add(jsonObject);
+				}else {
+					iterator.remove();
 				}
 			}
 		}
 		//按照orderNum最大排序
-		Collections.sort(result, new Comparator<JSONObject>() {
+		Collections.sort(consultantOrderRankingList, new Comparator<JSONObject>() {
 
 			@Override
 			public int compare(JSONObject o1, JSONObject o2) {
@@ -87,7 +97,53 @@ public class ConsultantOrderRelationServiceImpl implements IConsultantOrderRelat
 				return 0;
 			}
 		});
-		return result;
+		return consultantOrderRankingList;
+	}
+	@Override
+	public List<JSONObject> getConsultantRenewalOrderRankingList(String consultantGroupId, Date startTime,
+			Date endTime) {
+		 List<JSONObject> consultantGroup = consultantGroupDao.getAllConsultantGroupList();
+		 List<String> consultantIdList = new ArrayList<String>();
+		 Map<String, Object> consultantNameMap = new HashMap<String,Object>();
+			if (CollectionUtils.isNotEmpty(consultantGroup)) {
+				if (null != consultantGroupId) {
+					for (JSONObject jsonObject : consultantGroup) {
+						if(null != consultantGroupId) {
+							if (consultantGroupId.equals(jsonObject.getString("consultantGroupId"))) {
+								consultantIdList.add(jsonObject.getString("consultantId"));
+							}
+						}else {
+							consultantIdList.add(jsonObject.getString("consultantId"));
+						}
+						consultantNameMap.put(jsonObject.getString("consultantId") , jsonObject.getString("consultantName"));
+					}
+				}
+			}
+		List<JSONObject> renewalOrderData = orderService.getRenewalOrderData(startTime,endTime);
+		if(CollectionUtils.isNotEmpty(renewalOrderData)) {
+			Iterator<JSONObject> iterator = renewalOrderData.iterator();
+			while (iterator.hasNext()) {
+				JSONObject jsonObject = (JSONObject) iterator.next();
+				if(consultantIdList.contains(jsonObject.getString("consultantId"))) {
+					jsonObject.put("consultantName", consultantNameMap.get(jsonObject.getString("consultantId")) == null ? "" : consultantNameMap.get(jsonObject.getString("consultantId")));
+				}else {
+					iterator.remove();
+				}
+			}
+		}
+		// 按照orderNum最大排序
+		Collections.sort(renewalOrderData, new Comparator<JSONObject>() {
+
+			@Override
+			public int compare(JSONObject o1, JSONObject o2) {
+				if (null != o1 && null != o2 && o1.getString("renewalNum") != null && o2.getString("renewalNum") != null) {
+
+					return o2.getString("renewalNum").compareTo(o1.getString("renewalNum"));
+				}
+				return 0;
+			}
+		});
+		return renewalOrderData;
 	}
 
 }

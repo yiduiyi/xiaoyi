@@ -17,7 +17,7 @@ public interface IAuditionService {
 	//添加新的试听单
 	public int insertAudition(JSONObject reqData);
 	//获取渠道经理试听单数据
-	public JSONObject getchannelManagerAuditionData(String channelManagerGroupId, Date startTime, Date endTime);
+	public JSONObject getChannelManagerAuditionData(String channelManagerGroupId, Date startTime, Date endTime);
 	public List<JSONObject> getAuditionNumList(String channelManagerGroupId, Date startTime, Date endTime);
 	public int updateAudition(JSONObject reqData);
 	public int deleteAudition(JSONObject reqData);

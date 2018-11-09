@@ -271,27 +271,13 @@
   <select id="getAuditionListByTime"
 	parameterType="java.util.Date"
 	resultType="com.alibaba.fastjson.JSONObject">
-		SELECT A.audition_id AS auditionId,A.student_id AS
-		studentId,A.parent_id AS
-		parentId,A.grade_id AS gradeId,A.subject_id AS
-		subjectId,A.teachingWay AS teachingWay,A.come_from AS
-		comeFrom,
-		A.cooperator_id AS
-		cooperatorId,A.`status` AS status,A.order_id AS orderId,A.notes AS
-		notes,A.consultant_group_id AS consultantGroupId,A.consultant_id AS
-		consultantId,
-		A.create_time AS createTime,A.update_time AS
-		updateTime,C.cooperator_id AS
-		cooperatorId,C.channel_manager_id AS
-		channelManagerId FROM auditions A
-		LEFT JOIN cooperator C ON
-		A.cooperator_id = C.cooperator_id
+		select a.audition_id as auditionId,a.`status` as status,acmr.channel_manager_id as channelManagerId from auditions a inner join auditions_channel_manager_r acmr on a.audition_id = acmr.audition_id
 			<where>
 				<if test="null != startTime">
-					AND A.create_time &gt; #{startTime}
+					and a.create_time &gt;= #{startTime}
 				</if>
 				<if test="null != endTime">
-					AND A.create_time &lt; #{endTime}
+					and a.create_time &lt;= #{endTime}
 				</if>
 			</where>
 	</select>

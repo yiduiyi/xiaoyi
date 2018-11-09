@@ -48,4 +48,6 @@ public interface IOrderService {
 	Integer getRenewalNum(Date startTime, Date endTime);
 
 	List<JSONObject> getChannelData(Date startTime, Date endTime);
+
+	List<JSONObject> getRenewalOrderData(Date startTime, Date endTime);
 }

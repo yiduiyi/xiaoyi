@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.OrdersKey;
 
@@ -24,4 +25,8 @@ public interface IOrdersDao {
     Float getTotalTurnoverData(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
 
 	List<String> selectAllOrderIds(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
+
+	List<JSONObject> getOrdersAndConsultantId();
+
+	List<JSONObject> selectAllOrders(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
 }

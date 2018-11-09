@@ -157,12 +157,34 @@
   <select id="selectAllOrderIds" parameterType="java.util.Date" resultType="java.lang.String">
   	SELECT orderId FROM orders
 	  	<where>
-	  		orderType = 2
+	  		orderType = 2 AND actualPay IS NOT NULL
 	  		<if test="null != startTime">
 				AND createTime &gt;= #{startTime}
 			</if>
 			<if test="null != endTime">
 				AND createTime &lt;= #{endTime}
+			</if>
+  		</where>
+  </select>
+
+	<select id="getOrdersAndConsultantId"
+		resultType="com.alibaba.fastjson.JSONObject">
+		select o.orderId as orderId,o.lessonType as lessonType,o.parentId as
+		parentId,o.memberId as memberId,o.teachingWay as
+		teachingWay,cor.consultant_id as consultantId from orders o
+		inner join consultant_order_r cor on o.orderId = cor.order_id
+		where o.orderType = 2 and o.actualPay is not null
+	</select>
+
+  <select id="selectAllOrders" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
+  	select orderId as orderId,lessonType as lessonType,parentId as parentId,memberId as memberId,teachingWay as teachingWay from orders 
+	  	<where>
+	  		orderType = 2 and actualPay IS NOT NULL
+	  		<if test="null != startTime">
+				and createTime &gt;= #{startTime}
+			</if>
+			<if test="null != endTime">
+				and createTime &lt;= #{endTime}
 			</if>
   		</where>
   </select>

@@ -15,4 +15,7 @@ public interface IConsultantOrderRelationService {
 
 	public List<JSONObject> getConsultantOrderRankingList(String consultantGroupId, Date startTime, Date endTime);
 
+	public List<JSONObject> getConsultantRenewalOrderRankingList(String consultantGroupId, Date startTime,
+			Date endTime);
+
 }

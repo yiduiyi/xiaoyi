@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,7 +27,6 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.mysql.fabric.xmlrpc.base.Data;
 import com.xiaoyi.common.exception.CommonRunException;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
@@ -1192,7 +1192,6 @@ public class OrderServiceImpl implements IOrderService {
 		return orderDao.selectOrderById(orderId);
 	}
 
-<<<<<<< HEAD
 	@Override
 	public List<JSONObject> getClaimOrderList(JSONObject reqData) {
 		List<JSONObject> result = orderSumDao.getClaimOrderList(reqData);
@@ -1329,7 +1328,7 @@ public class OrderServiceImpl implements IOrderService {
 		result.put("proportion", MathUtils.percentage(consultantQuantity, countQuantity));
 		resultList.add(result);
 		return resultList;
-=======
+	}
 	/**
 	 * 定时清理两个月内没提现的任教关系
 	 * @return
@@ -1338,7 +1337,53 @@ public class OrderServiceImpl implements IOrderService {
 		
 		
 		return 0;
->>>>>>> dev
+	}
+
+	@Override
+	public List<JSONObject> getRenewalOrderData(Date startTime, Date endTime) {
+		List<JSONObject> resultList = new ArrayList<JSONObject>();
+		Map<String, Integer> renewalOrderMap = new HashMap<String, Integer>();
+		List<JSONObject> ordersAndConsultantIdData = orderDao.getOrdersAndConsultantId();
+		List<JSONObject> allOrders = orderDao.selectAllOrders(startTime,endTime);
+		if (!CollectionUtils.isEmpty(ordersAndConsultantIdData)) {
+			if(!CollectionUtils.isEmpty(allOrders)){
+				Iterator<JSONObject> iterator = allOrders.iterator();
+				while (iterator.hasNext()) {
+					JSONObject orders = (JSONObject) iterator.next();
+					//判断该订单是否是续费单,并给该订单匹配课程顾问主键
+					for (JSONObject oldOrders : ordersAndConsultantIdData) {
+						if (orders.getString("lessonType").equals(oldOrders.getString("lessonType"))
+								&& orders.getString("parentId").equals(oldOrders.getString("parentId"))
+								&& orders.getString("memberId").equals(oldOrders.getString("memberId"))
+								&& orders.getString("teachingWay").equals(oldOrders.getString("teachingWay"))
+								&& !orders.getString("orderId").equals(oldOrders.getString("orderId"))) {
+							orders.put("consultantId", oldOrders.getString("consultantId"));
+						}
+					}
+				}
+				//统计各课程顾问续单量
+				for (JSONObject jsonObject : allOrders) {
+					if(null == renewalOrderMap.get(jsonObject.getString("consultantId"))) {
+						renewalOrderMap.put(jsonObject.getString("consultantId"), 0);
+					}else {
+						Integer renewalNum = renewalOrderMap.get(jsonObject.getString("consultantId"));
+						renewalNum++;
+						renewalOrderMap.put(jsonObject.getString("consultantId"), renewalNum);
+					}
+				}
+				if(!CollectionUtils.isEmpty(renewalOrderMap)) {
+					Iterator<Entry<String, Integer>> iterator2 = renewalOrderMap.entrySet().iterator();
+					while (iterator2.hasNext()) {
+						Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) iterator2.next();
+						JSONObject jsonObject = new JSONObject();
+						jsonObject.put("consultantId", entry.getKey());
+						jsonObject.put("renewalNum", entry.getValue());
+						resultList.add(jsonObject);
+					}
+				}
+			}
+		}
+		return resultList;
 	}
 	
 }

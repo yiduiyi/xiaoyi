@@ -201,7 +201,10 @@ public class AuditionServiceImpl implements IAuditionService {
 		return resultType;
 	}
 	@Override
-	public JSONObject getchannelManagerAuditionData(String channelManagerGroupId, Date startTime, Date endTime) {
+	public JSONObject getChannelManagerAuditionData(String channelManagerGroupId, Date startTime, Date endTime) {
+		JSONObject result = new JSONObject();
+		Integer totalAuditionNum = 0;
+		Integer totalCompleteNum = 0;
 		List<JSONObject> consultantGroupList =channelManagerGroupDao.getAllChannelManagerGroupList();
 		List<String> channelManagerIds = new ArrayList<String>();
 		if(CollectionUtils.isNotEmpty(consultantGroupList)) {
@@ -217,9 +220,18 @@ public class AuditionServiceImpl implements IAuditionService {
 		}
 		List<JSONObject> auditionList = auditionsDao.getAuditionListByTime(startTime,endTime);
 		if(CollectionUtils.isNotEmpty(auditionList)) {
-			
+			for (JSONObject jsonObject : auditionList) {
+				if(channelManagerIds.contains(jsonObject.getString("channelManagerId"))) {
+					totalAuditionNum++;
+					if(jsonObject.getShort("status").equals((short)3)) {
+						totalCompleteNum++;
+					}
+				}
+			}
 		}
-		return null;
+		result.put("totalAuditionNum", totalAuditionNum);
+		result.put("totalCompleteNum", totalCompleteNum);
+		return result;
 	}
 	@Override
 	public List<JSONObject> getAuditionNumList(String channelManagerGroupId, Date startTime, Date endTime) {
