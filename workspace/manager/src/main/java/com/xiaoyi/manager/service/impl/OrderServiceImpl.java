@@ -97,7 +97,7 @@ public class OrderServiceImpl implements IOrderService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	//下单进程
-	ExecutorService excutors = Executors.newFixedThreadPool(2);
+	ExecutorService excutors = Executors.newFixedThreadPool(3);
 	
 	@Transactional
 	@Override
