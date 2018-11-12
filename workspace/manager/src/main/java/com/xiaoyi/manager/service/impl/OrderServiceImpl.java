@@ -1379,102 +1379,110 @@ public class OrderServiceImpl implements IOrderService {
 		 Calendar calendar = Calendar.getInstance();
 		 Date date = new Date();		//获取当前时间    
 		 calendar.setTime(date);
-		 /*calendar.set(Calendar.HOUR_OF_DAY, 0);
+		 calendar.set(Calendar.HOUR_OF_DAY, 0);
 		 calendar.set(Calendar.MINUTE, 0);
 		 calendar.set(Calendar.MILLISECOND, 0);
-		 calendar.set(Calendar.SECOND, 0);*/
+		 calendar.set(Calendar.SECOND, 0);
 	
 		 getOrdersParams.put("end_time", calendar.getTimeInMillis()/1000);
 		 calendar.add(Calendar.DAY_OF_MONTH, -1);//当前时间减去一年，即一年前的时间    
 		 getOrdersParams.put("begin_time", calendar.getTimeInMillis()/1000);		
+		 getOrdersParams.put("page_size", 50);		 
 		 
-		 logger.info("查询活动订单...");
-		 org.json.JSONObject rs = 
-				 sdk.send("order.list.get", getOrdersParams, 1, "2.0");
-		 if(null==rs || rs.get("data")==null){
-			 logger.warn("没有查询到活动促销订单！");
-			 logger.info("查询活动订单结果：" + rs);
-			 return;
-		 }
+		 for(int page=0; ;page++){
+			 logger.info("查询活动订单...");
+			 getOrdersParams.put("page_index", page);
 			 
-		 org.json.JSONArray originOrders = rs.getJSONArray("data");
-		 int orderCount = originOrders.length();
-		 for(int n=0; n<orderCount; n++){			 
-			 final org.json.JSONObject order = originOrders.getJSONObject(n);
+			 org.json.JSONObject rs = 
+					 sdk.send("order.list.get", getOrdersParams, 1, "2.0");
 			 
-			 excutors.submit(new Runnable() {
+			 //没有订单跳出条件
+			 if(null==rs 
+					 || rs.get("data")==null
+					 || rs.getJSONArray("data").length()==0){
+				 logger.warn("没有查询到活动促销订单！");
+				 logger.info("查询活动订单结果：" + rs);
+				 return;
+			 }
 				 
-				 @Override
-				 public void run() {
-					 // TODO Auto-generated method stub
-					 String xiaoeUserId = order.getString("user_id");
-					 if(StringUtils.isEmpty(xiaoeUserId)){
-						 logger.warn("没有查询到下单的用户Id！");
-						 return;
-					 }
-
-					 //获取用户信息
-					 org.json.JSONObject data = new org.json.JSONObject();
-					 data.put("user_id", xiaoeUserId);						
-					 org.json.JSONObject userInfo =
-							 sdk.send("users.getinfo", data, 1, "2.0");
-					 logger.info("小鹅通用户SDK获取用户信息结果：" + userInfo);
-					 if(null == userInfo 
-							 || userInfo.get("data")==null
-							 || userInfo.getJSONArray("data").length()!=1){
-						 logger.info("小鹅通用户信息为空！");
-						 logger.warn("小鹅通订单没有同步，订单Id：" + order.getString("order_id"));
-						 return;
-					 }
+			 org.json.JSONArray originOrders = rs.getJSONArray("data");
+			 int orderCount = originOrders.length();
+			 for(int n=0; n<orderCount; n++){			 
+				 final org.json.JSONObject order = originOrders.getJSONObject(n);
+				 
+				 excutors.submit(new Runnable() {
 					 
-					 String lessonId = order.getString("id");	//小鹅通资源Id
-					 LessonTypeKey key = new LessonTypeKey();
-					 key.setLessonId(lessonId);
-					 logger.info("根据小鹅通资源Id({})查询本地课程包",lessonId);
-					 LessonType lessonType = null;
-					 try {
-						 lessonType = lessonTypeDao.selectByPrimaryKey(key );
-						 if(null == lessonType){
-							 logger.info("在本地没有查询到对应的资源Id！");
-							 logger.warn("小鹅通订单没有同步，订单Id：{},原因：没有设置对应的课程包！", order.getString("order_id"));
+					 @Override
+					 public void run() {
+						 // TODO Auto-generated method stub
+						 String xiaoeUserId = order.getString("user_id");
+						 if(StringUtils.isEmpty(xiaoeUserId)){
+							 logger.warn("没有查询到下单的用户Id！");
 							 return;
-						 }						
-					 } catch (Exception e) {
-						throw new CommonRunException(-1, "查询课时包出错！");
-					 }					 
-					 
-					 //本地同步下单
-					 JSONObject orderParams = new JSONObject();
-					 org.json.JSONArray userDatas = userInfo.getJSONArray("data");
-					 org.json.JSONObject currentUser = userDatas.getJSONObject(0);
-					 
-					 orderParams.put("openId", currentUser.get("wx_open_id"));
-					 orderParams.put("telNum", currentUser.get("phone"));
-					 orderParams.put("parentName", currentUser.get("nickname"));
-					 orderParams.put("studentName", currentUser.get("nickname")+"的孩子");
-					 orderParams.put("lessonType", lessonType.getLessontype());
-					 orderParams.put("purchaseNum", lessonType.getCoursecnt());
-					 orderParams.put("orderType", 2);	//家长下单
-					 orderParams.put("teachingWay", lessonType.getTeachingWay());
-					 orderParams.put("nonce_str", order.getString("order_id"));
-					 orderParams.put("hasBook", "0");	//默认没书
-					 orderParams.put("wechatNum", currentUser.get("wx_union_id"));
-					 orderParams.put("payFrom", 0);	//从小鹅通下单 -》本地订单
-					 
-					 orderParams.put("avatar", currentUser.get("avatar"));
-					 orderParams.put("wx_union_id", currentUser.get("wx_union_id"));
-					 orderParams.put("user_id", currentUser.get("user_id"));
-					 try {
-						addOrder(orderParams);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						throw new CommonRunException(-1, "同步下单失败（小鹅通-》本地）！");						
-					}
-				 }
-			 });
-		 }	 
-		 
+						 }
+	
+						 //获取用户信息
+						 org.json.JSONObject data = new org.json.JSONObject();
+						 data.put("user_id", xiaoeUserId);						
+						 org.json.JSONObject userInfo =
+								 sdk.send("users.getinfo", data, 1, "2.0");
+						 logger.info("小鹅通用户SDK获取用户信息结果：" + userInfo);
+						 if(null == userInfo 
+								 || userInfo.get("data")==null
+								 || userInfo.getJSONArray("data").length()!=1){
+							 logger.info("小鹅通用户信息为空！");
+							 logger.warn("小鹅通订单没有同步，订单Id：" + order.getString("order_id"));
+							 return;
+						 }
+						 
+						 String lessonId = order.getString("id");	//小鹅通资源Id
+						 LessonTypeKey key = new LessonTypeKey();
+						 key.setLessonId(lessonId);
+						 logger.info("根据小鹅通资源Id({})查询本地课程包",lessonId);
+						 LessonType lessonType = null;
+						 try {
+							 lessonType = lessonTypeDao.selectByPrimaryKey(key );
+							 if(null == lessonType){
+								 logger.info("在本地没有查询到对应的资源Id！");
+								 logger.warn("小鹅通订单没有同步，订单Id：{},原因：没有设置对应的课程包！", order.getString("order_id"));
+								 return;
+							 }						
+						 } catch (Exception e) {
+							throw new CommonRunException(-1, "查询课时包出错！");
+						 }					 
+						 
+						 //本地同步下单
+						 JSONObject orderParams = new JSONObject();
+						 org.json.JSONArray userDatas = userInfo.getJSONArray("data");
+						 org.json.JSONObject currentUser = userDatas.getJSONObject(0);
+						 
+						 orderParams.put("openId", currentUser.get("wx_open_id"));
+						 orderParams.put("telNum", currentUser.get("phone"));
+						 orderParams.put("parentName", currentUser.get("nickname"));
+						 orderParams.put("studentName", currentUser.get("nickname")+"的孩子");
+						 orderParams.put("lessonType", lessonType.getLessontype());
+						 orderParams.put("purchaseNum", lessonType.getCoursecnt());
+						 orderParams.put("orderType", 2);	//家长下单
+						 orderParams.put("teachingWay", lessonType.getTeachingWay());
+						 orderParams.put("nonce_str", order.getString("order_id"));
+						 orderParams.put("hasBook", "0");	//默认没书
+						 orderParams.put("wechatNum", currentUser.get("wx_union_id"));
+						 orderParams.put("payFrom", 0);	//从小鹅通下单 -》本地订单
+						 
+						 orderParams.put("avatar", currentUser.get("avatar"));
+						 orderParams.put("wx_union_id", currentUser.get("wx_union_id"));
+						 orderParams.put("user_id", currentUser.get("user_id"));
+						 try {
+							addOrder(orderParams);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							throw new CommonRunException(-1, "同步下单失败（小鹅通-》本地）！");						
+						}
+					 }
+				 });
+			 }	 
+		 } 
 	}
 	
 	
