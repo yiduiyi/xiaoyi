@@ -1388,6 +1388,7 @@ public class OrderServiceImpl implements IOrderService {
 		 calendar.add(Calendar.DAY_OF_MONTH, -1);//当前时间减去一年，即一年前的时间    
 		 getOrdersParams.put("begin_time", calendar.getTimeInMillis()/1000);		
 		 getOrdersParams.put("page_size", 50);		 
+		 getOrdersParams.put("order_state", 1);
 		 
 		 for(int page=0; ;page++){
 			 logger.info("查询活动订单...");
