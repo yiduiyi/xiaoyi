@@ -11,4 +11,7 @@ public interface IVideoCourseService {
     public int insertDaulLesson(JSONObject reqData);
     //修改双师课程
     public int updateDaulLesson(JSONObject reqData);
+    
+    //授权第三方双师课程权限
+    public int setDaulPrivilege(JSONObject reqData);
 }
