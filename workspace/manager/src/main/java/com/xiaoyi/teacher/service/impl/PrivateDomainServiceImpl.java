@@ -1,18 +1,13 @@
 package com.xiaoyi.teacher.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Education;
 import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.manager.dao.ISchoolDao;
