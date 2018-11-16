@@ -14,14 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.xiaoyi.common.utils.XiaoeSDK;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Semaster;
 import com.xiaoyi.common.utils.ConstantUtil.VideoCourseType;
 import com.xiaoyi.manager.service.IVideoCourseService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
-import com.xiaoyi.wechat.utils.WeiXinConfig;
 
 @Controller
 @RequestMapping("/daul")
@@ -169,32 +167,6 @@ public class DaulAction {
 			videoCourseService.setDaulPrivilege(reqData);
 			
 			//查询是否存在
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		setReturnMsg(result, rtCode.getCode(), rtCode.name());
-		return result;
-	}
-	
-	/**
-	 * 获取已购买但未开通双师权限的课程（衡阳版）
-	 * @param request
-	 * @param response
-	 * @param reqData
-	 * @return
-	 */
-	@RequestMapping(value="/getAvailableDaulCourses",method = RequestMethod.POST)
-	@ResponseBody
-	public JSONObject getAvailableDaulCourses(HttpServletRequest request,HttpServletResponse response,@RequestBody JSONObject reqData) {
-		JSONObject result = new JSONObject();
-		RtConstants rtCode = RtConstants.FAILED;
-		//需和前端沟通,将union_id参数回传
-		String unionId = request.getParameter("unionId");
-		System.out.println("unionId:"+unionId);
-		
-		try {
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

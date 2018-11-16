@@ -153,7 +153,8 @@ public class VideoCourseServiceImpl implements IVideoCourseService {
 		// TODO Auto-generated method stub
 		String unionId = reqData.getString("unionId");
 		Integer gradeId = reqData.getInteger("gradeId");
-
+		String daulOrderId = reqData.getString("daulOrderId");
+		
 		XiaoeSDK sdk = new XiaoeSDK(WeiXinConfig.XIAO_E_TONG_APPID, WeiXinConfig.XIAO_E_TONG_APPSECRET);
 
 		String userId = null;
@@ -234,8 +235,7 @@ public class VideoCourseServiceImpl implements IVideoCourseService {
 				}
 
 				// 查询				
-				for (VideoCourse videoCourse : videoCourseList) {
-					String daulOrderId = UUID.randomUUID().toString();
+				for (VideoCourse videoCourse : videoCourseList) {					
 
 					// 调用小鹅通SDK同步下单
 					logger.info("generated userId: " + userId);
@@ -270,5 +270,15 @@ public class VideoCourseServiceImpl implements IVideoCourseService {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public List<JSONObject> getAvailableDaulCourses(JSONObject reqData) {
+		// TODO Auto-generated method stub
+		List<JSONObject> datas = new ArrayList<JSONObject>();
+		
+		
+		
+		return datas;
 	}
 }

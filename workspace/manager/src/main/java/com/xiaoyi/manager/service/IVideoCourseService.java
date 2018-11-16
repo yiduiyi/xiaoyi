@@ -14,4 +14,7 @@ public interface IVideoCourseService {
     
     //授权第三方双师课程权限
     public int setDaulPrivilege(JSONObject reqData);
+    
+    //获取已购买但未确认开通双师权限的课程
+    public List<JSONObject> getAvailableDaulCourses(JSONObject reqData);
 }

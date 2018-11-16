@@ -30,7 +30,6 @@ import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Semaster;
-import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.common.utils.XiaoeSDK;
 import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
 import com.xiaoyi.custom.domain.DaulVideoOrder;
@@ -50,8 +49,6 @@ import com.xiaoyi.manager.domain.OrderTeachingRelation;
 import com.xiaoyi.manager.domain.Orders;
 import com.xiaoyi.manager.domain.ParentStuRelation;
 import com.xiaoyi.manager.domain.TeacherLesRelationKey;
-import com.xiaoyi.manager.domain.UserOuterSync;
-import com.xiaoyi.manager.domain.UserOuterSyncKey;
 import com.xiaoyi.manager.domain.VideoCourse;
 import com.xiaoyi.manager.service.ICommonService;
 import com.xiaoyi.manager.service.IOrderService;
@@ -244,8 +241,9 @@ public class OrderServiceImpl implements IOrderService {
 				if(3==teachingWay || teachingWay==5){
 					Integer payFrom = params.getInteger("payFrom");	//payFrom:{0:小鹅通-》本地，1：本地-》小鹅通}
 					if(null!=payFrom && payFrom==0){
-						addLocalDaulOrder(params, teachingWay, openId, params.getString("nonce_str"), 
-								parentId, studentId, phone, lessonType);
+						logger.info("衡阳促销活动不支持...");
+						/*addLocalDaulOrder(params, teachingWay, openId, params.getString("nonce_str"), 
+								parentId, studentId, phone, lessonType);*/
 					}else{					
 						logger.info("开始购买双师课堂");
 						addDaulOrder(teachingWay, openId, params.getString("nonce_str"), parentId, studentId, phone, lessonType);
@@ -271,7 +269,7 @@ public class OrderServiceImpl implements IOrderService {
 	 * @param lessonType
 	 * @return
 	 */
-	private int addLocalDaulOrder(JSONObject params, int teachingWay, String openId, String daulOrderId,
+	/*private int addLocalDaulOrder(JSONObject params, int teachingWay, String openId, String daulOrderId,
 			String parentId, String studentId, String phone, Integer lessonType){
 		int result = 0;
 		
@@ -440,7 +438,7 @@ public class OrderServiceImpl implements IOrderService {
 		}		
 		
 		return result;
-	}
+	}*/
 	
 	
 	/**
@@ -463,7 +461,7 @@ public class OrderServiceImpl implements IOrderService {
 		try {
 			//同步用户
 			//获取access_token
-			logger.info("调用微信接口获取access_token...");
+			/*logger.info("调用微信接口获取access_token...");
 			StringBuffer getTockenBuffer = new StringBuffer();
 			getTockenBuffer
 				.append("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential")
@@ -562,7 +560,7 @@ public class OrderServiceImpl implements IOrderService {
 						logger.warn("同步用户信息表出错（写入小鹅通user_id）！");
 					}
 				}														
-			}
+			}*/
 			
 			//同步系统和小鹅通订单
 			int gradeId = lessonType/10;
@@ -645,7 +643,8 @@ public class OrderServiceImpl implements IOrderService {
 				resourceIdList.add(videoCourse.getVideoCourseId());
 				
 				//调用小鹅通SDK同步下单
-				logger.info("generated userId: " + userOuterSync.getUserId());
+				logger.info("本地小鹅通订单已生成,需要点击开通才能真正授权");
+				/*logger.info("generated userId: " + userOuterSync.getUserId());
 				if(!StringUtils.isEmpty(userOuterSync.getUserId())){
 					//生成订单
 					logger.info("调用小鹅通SdK生成订单...");
@@ -669,7 +668,7 @@ public class OrderServiceImpl implements IOrderService {
 			        comfirmOrder.put("order_state", "1");
 			        org.json.JSONObject updateResult = sdk.send("orders.state.update", comfirmOrder, 1, "1.0");
 			        logger.info("修改结果：" + updateResult);								
-				}
+				}*/
 			}
 			
 			//本地下单（同步视频课程订单入库）

@@ -51,7 +51,8 @@
 	<select id="selectAvailableVideoCourses" parameterType="com.alibaba.fastjson.JSONObject"
 		resultType="com.alibaba.fastjson.JSONObject">
 		SELECT DVO.grade_id AS gradeId,VC.course_id AS courseId, VC.h5_video_link AS h5VideoLink,
-			VC.video_course_name AS videoCourseName,VC.video_course_type AS videoCourseType
+			VC.video_course_name AS videoCourseName,VC.video_course_type AS videoCourseType,
+			DVO.order_comes_from AS orderComesFrom, DVO.daul_order_id AS daulOrderId
 		FROM daul_video_order DVO LEFT JOIN video_course VC 
 				ON DVO.grade_id = VC.grade_id
 		WHERE
