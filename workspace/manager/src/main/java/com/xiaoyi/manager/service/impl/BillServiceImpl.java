@@ -263,13 +263,15 @@ public class BillServiceImpl implements IBillService {
 		values.add("点击查看详情");
 		colors.add("#173177");
 		//查询所有接收推送的教师openId
-		List<String> teachers;
+		//List<String> teachers;
+		List<JSONObject> teachers = h5PlateService.getAllTeacherList();
 		try {
-			teachers = WeiXinConfig.getWechatOpenIds(WeiXinConfig.TEACHER_PLATE_APPID, WeiXinConfig.TEACHER_PLATE_SECRET_KEY);
+			//teachers = WeiXinConfig.getWechatOpenIds(WeiXinConfig.TEACHER_PLATE_APPID, WeiXinConfig.TEACHER_PLATE_SECRET_KEY);
 			if (CollectionUtils.isNotEmpty(teachers)) {
-				Iterator<String> iterator = teachers.iterator();
+				Iterator<JSONObject> iterator = teachers.iterator();
+				//Iterator<String> iterator = teachers.iterator();
 				while (iterator.hasNext()) {
-					final String teacherOpenId = iterator.next();
+					final String teacherOpenId = iterator.next().getString("openId");
 					final JSONObject jsonObject = new JSONObject();
 					jsonObject.put("openId", teacherOpenId);
 					logger.info("推送的教师主键："+teacherOpenId+"————推送的内容："+values.toString());
@@ -284,7 +286,7 @@ public class BillServiceImpl implements IBillService {
 					});
 				}
 			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
