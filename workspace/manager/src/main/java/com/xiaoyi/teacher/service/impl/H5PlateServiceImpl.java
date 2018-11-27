@@ -821,7 +821,6 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			if (!teacherIdList.contains(teacherId)) {
 				teacherIdList.add(teacherId);
 			}
-
 		}
 
 		List<TeacherBalance> teacherBalanceList = null;

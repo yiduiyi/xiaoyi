@@ -10,9 +10,6 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-
 public class test {
 
     public static void main(String[] args) throws Exception {
@@ -89,17 +86,20 @@ public class test {
 
 		
         System.out.println(resp);*/
-    	
-    	String nonceStr = RandomStringUtils.random(32, "5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
-    	
-    	Calendar   cal1   =   Calendar.getInstance();
+    	for(int n=0; n<682;n++){
+    		String nonceStr = RandomStringUtils.random(30, "5K8264ILTKCH16CQ2502SI8ZNMTM67VS-");
+    		
+    		String rs = RandomStringUtils.random(2, "5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
+    		System.out.println(rs + nonceStr);
+    	}
+    	/*Calendar   cal1   =   Calendar.getInstance();
         cal1.add(Calendar.DATE,   -7);
         String yesterdays = new SimpleDateFormat("yyyy-MM-dd").format(cal1.getTime());
         System.out.println(yesterdays);	
     	Date d2 = new SimpleDateFormat("yyyy-MM").parse("2016-5-3");
     	
     	
-    	Calendar c = Calendar.getInstance(/*TimeZone.getTimeZone("GMT+08:00")*/);    //获取东八区时间
+    	Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT+08:00"));    //获取东八区时间
 
     	c.setTime(d2);
     	c.set(Calendar.DAY_OF_MONTH, -1);
@@ -119,11 +119,11 @@ public class test {
     	System.out.println(c.getTime());
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
     	String t = sdf.format(new Date(1519833600000l));
-    	System.out.println(t);
+    	System.out.println(t);*/
     	//Calendar cal = Calendar.getInstance();
     	//System.out.println("year:"+cal.get(Calendar.YEAR));
     	//System.out.println("month:"+cal.get(Calendar.MONTH));
-    	StringBuffer tt = new StringBuffer();
+    	/*StringBuffer tt = new StringBuffer();
     	tt.append("[wefa, , , , , ]");
     	String ttString = tt.subSequence(1, tt.length()-1).toString();
     	System.out.println(ttString);
@@ -140,7 +140,7 @@ public class test {
 		}
 		System.out.println(cal.get(Calendar.DAY_OF_MONTH));
 		dateTime.append(cal.get(Calendar.MONTH));	//提现上个月的课时	
-		System.out.println(dateTime.toString());
+		System.out.println(dateTime.toString());*/
     }
 
 }
