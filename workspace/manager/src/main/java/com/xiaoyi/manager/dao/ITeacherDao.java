@@ -1,5 +1,8 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.domain.Teacher;
 
 public interface ITeacherDao {
@@ -15,4 +18,6 @@ public interface ITeacherDao {
     int updateByPrimaryKeySelective(Teacher record);
 
     int updateByPrimaryKey(Teacher record);
+
+	List<JSONObject> getTeacherOrderNum();
 }
