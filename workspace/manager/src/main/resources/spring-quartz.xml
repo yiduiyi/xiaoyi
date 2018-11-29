@@ -69,6 +69,18 @@
 		</property>
 	</bean>
 
+	<!-- 促销活动订单同步 -->
+	<bean id="MyTask6" class="com.xiaoyi.manager.service.impl.OrderServiceImpl" />
+	<bean id="MyTaskMethod6"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="MyTask6" />
+		</property>
+		<property name="targetMethod">  <!-- 要执行的方法名称 -->
+			<value>syncAllDiscountOrders</value>
+		</property>
+	</bean>
+
 	<!-- ======================== 调度触发器 ======================== -->
 	<!-- 更新提现状态(自动确认) -->
 	<bean id="DailyTaskCronTriggerBean"
@@ -88,13 +100,6 @@
 		<property name="cronExpression" value="0 0 1 15 * ?" />
 	</bean>
 
-	<!-- 每月7-17号凌晨12:20点提现课时费到余额 -->
-	<bean id="DailyTaskCronTriggerBean4"
-		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-		<property name="jobDetail" ref="MyTaskMethod4" />
-		<property name="cronExpression" value="1 20 0 7-17 * ?" />
-	</bean>
-
 	<!-- 每天凌晨1点更新余额收益 -->
 	<bean id="DailyTaskCronTriggerBean3"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
@@ -103,14 +108,28 @@
 		<property name="cronExpression" value="0 40 23 * * ?" />
 	</bean>
 
+	<!-- 每月7-17号凌晨12:20点提现课时费到余额 -->
+	<bean id="DailyTaskCronTriggerBean4"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="MyTaskMethod4" />
+		<property name="cronExpression" value="1 20 0 7-17 * ?" />
+	</bean>
+
 	<!-- 每天下午九点推送未派出订单 -->
 	<bean id="DailyTaskCronTriggerBean5"
 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="MyTaskMethod5" />
 		<!-- <property name="cronExpression" value="0 2 0 * * ?"></property> -->
 		<property name="cronExpression" value="0 30 10 * * ?" />
-
 	</bean>
+	
+	<!-- 每天凌晨三点同步活动订单 -->
+	<bean id="DailyTaskCronTriggerBean6"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="MyTaskMethod6" />
+		<property name="cronExpression" value="0 28 19 * * ?" />
+	</bean>
+	
 	<!-- ======================== 调度工厂 ======================== -->
 	<bean id="SpringJobSchedulerFactoryBean"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -121,6 +140,7 @@
 				<ref bean="DailyTaskCronTriggerBean3" />
 				<ref bean="DailyTaskCronTriggerBean4" />
 				<ref bean="DailyTaskCronTriggerBean5" />
+				<ref bean="DailyTaskCronTriggerBean6" />
 			</list>
 		</property>
 		<property name="quartzProperties">

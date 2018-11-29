@@ -576,7 +576,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				StringBuffer sb = new StringBuffer();
 				if (!CollectionUtils.isEmpty(lessonTradeIdList)) {
 					for (String lessonTradeId : lessonTradeIdList) {
-						if(StringUtils.isNotEmpty(lessonTradeId)){
+						if(null!=lessonTradeId && StringUtils.isNotEmpty(lessonTradeId)){
 							sb.append(lessonTradeId);
 							sb.append(",");
 						}
