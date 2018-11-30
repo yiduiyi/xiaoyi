@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.DateUtils;
+import com.xiaoyi.manager.domain.Teacher;
+import com.xiaoyi.teacher.dao.ITH5PlateDao;
 import com.xiaoyi.teacher.dao.ITeacherIntegralDao;
 import com.xiaoyi.teacher.domain.IntegralConduct;
 import com.xiaoyi.teacher.domain.TeacherIntegral;
@@ -22,6 +24,8 @@ import com.xiaoyi.teacher.vo.UpdateTeacherIntegralSumVo;
 import com.xiaoyi.wechat.utils.UUIDUtil;
 @Service("teacherIntegralService")
 public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
+	@Resource
+	private ITH5PlateDao teacherH5Dao;
 	@Resource
 	private ITeacherIntegralDao teacherIntegralDao;
 	@Resource
@@ -89,6 +93,7 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 				}
 			}
 		}
+		resultType = updateTeacherLevel(reqData.getString("teacherId"));
 		return resultType;
 	}	
 	@Override
@@ -142,6 +147,8 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 				}
 			}
 		}
+		//添加积分，更新教师等级
+		resultType = updateTeacherLevel(jsonObject.getString("teacherId"));
 		return resultType;
 	
 	}
@@ -154,5 +161,34 @@ public class TeacherIntegralServiceImpl implements ITeacherIntegralService {
 		}
 		return integralNumber;
 	}
-
+	public Integer updateTeacherLevel(String teacherId) {
+		Teacher teacher = teacherH5Dao.selectTeacherByTeacherId(teacherId);
+		TeacherIntegralSum teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacherId);
+		Integer teachingLevel = 0;
+		if(null != teacherIntegralSum) {
+			teachingLevel = getTeachingLevelByIntegralCount(teacherIntegralSum.getIntegralCount());
+		}else {
+			teachingLevel = 0;
+		}
+		teacher.setTeachinglevel(teachingLevel.byteValue());
+		return teacherH5Dao.updateByPrimaryKeySelective(teacher);
+	}
+	// 根据积分匹配教师等级
+		private Integer getTeachingLevelByIntegralCount(Float integralCount) {
+			Integer teachingLevel = 0;
+			if (integralCount < 0) {
+				teachingLevel = -1;
+			} else if (integralCount == 0) {
+				teachingLevel = 0;
+			} else if (integralCount >= 0 && integralCount < 200) {
+				teachingLevel = 1;
+			} else if (integralCount >= 200 && integralCount < 500) {
+				teachingLevel = 2;
+			} else if (integralCount >= 500 && integralCount < 1000) {
+				teachingLevel = 3;
+			} else if (integralCount == 1000) {
+				teachingLevel = 4;
+			}
+			return teachingLevel;
+		}
 }

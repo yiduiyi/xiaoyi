@@ -137,4 +137,7 @@
       balance_profit_left = #{balanceProfitLeft,jdbcType=REAL}
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
+  <select id="selectTotalTeacherBalanceData" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT SUM(balance_account) AS totalTeacherRetainedEarnings,SUM(total_balance_profit) AS totalTeacherCurrentEarnings FROM teacher_balance WHERE balance_account &gt; 0 AND total_balance_profit &gt; 0
+  </select>
 </mapper>

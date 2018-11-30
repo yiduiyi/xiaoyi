@@ -1,6 +1,7 @@
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -15,7 +16,7 @@ public class test {
     public static void main(String[] args) throws Exception {
 
     	
-    	System.out.println(Math.floor(3.71));
+    	//System.out.println(Math.floor(3.71));
         // HostnameVerifier hnv = new HostnameVerifier() {
         //     public boolean verify(String hostname, SSLSession session) {
         //         // Always return true，接受任意域名服务器
@@ -24,7 +25,8 @@ public class test {
         // };
         // HttpsURLConnection.setDefaultHostnameVerifier(hnv);
 
-        /*String UTF8 = "UTF-8";
+     
+		/*String UTF8 = "UTF-8";
         String reqBody = 
         		"<xml>"
         		+ "<body>测试商家-商品类目</body>"
@@ -86,12 +88,37 @@ public class test {
 
 		
         System.out.println(resp);*/
+
     	for(int n=0; n<682;n++){
     		String nonceStr = RandomStringUtils.random(30, "5K8264ILTKCH16CQ2502SI8ZNMTM67VS-");
     		
     		String rs = RandomStringUtils.random(2, "5K8264ILTKCH16CQ2502SI8ZNMTM67VS");
     		System.out.println(rs + nonceStr);
     	}
+
+    	String ipAddress  = "183.232.231.173";
+    	String[] ipArray = ipAddress.split("\\.");
+    	byte[] addr = new byte[4];
+    	for(int n=0; n<4; n++){
+    		String m = ipArray[n];
+    		Integer number = Integer.parseInt(m);           
+    		byte b = (byte)(number&0xff);
+    		addr[n] = b;
+    	}
+    	
+    	InetAddress ia2 = InetAddress.getByAddress(addr);
+    	InetAddress inet2 = InetAddress.getByName("182.140.142.87");
+
+        System.out.println(inet2);
+    	
+    	System.out.println(ia2.getCanonicalHostName());
+    	System.out.println(ia2.toString());
+        System.out.println(ia2.getHostName());//域名               127 
+        System.out.println(ia2.getHostAddress());//ip地址   
+    	/*for(int n=0;n<260; n++){
+    		String nonceStr = RandomStringUtils.random(36, "5-K8264ILTKCH16CQ2502SI8ZNMTM67VS");
+    		System.out.println(nonceStr);
+    	}*/
     	/*Calendar   cal1   =   Calendar.getInstance();
         cal1.add(Calendar.DATE,   -7);
         String yesterdays = new SimpleDateFormat("yyyy-MM-dd").format(cal1.getTime());

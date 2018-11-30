@@ -68,4 +68,30 @@
     where order_id = #{orderId,jdbcType=VARCHAR}
       and consultant_id = #{consultantId,jdbcType=VARCHAR}
   </update>
+  <select id="getConsultantOrderList" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT COR.order_id AS orderId,COR.consultant_id AS consultantId,C.consultant_name AS consultantName FROM consultant_order_r COR 
+  	INNER JOIN consultant C ON COR.consultant_id = C.consultant_id
+  </select>
+  <select id="getConsultantQuantityByTime" parameterType="java.util.Date" resultType="java.lang.Integer">
+	SELECT COUNT(1) FROM consultant_order_r 
+		<where>
+			<if test="null != startTime">
+				AND create_time &gt;= #{startTime}
+			</if>
+			<if test="null != endTime">
+				AND create_time &lt;= #{endTime}
+			</if>
+		</where>  
+  </select>
+  <select id="getConsultantOrderRankingList" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT consultant_id AS consultantId,COUNT(order_id) AS orderNum FROM consultant_order_r GROUP BY consultant_id
+  	<where>
+			<if test="null != startTime">
+				AND create_time &gt;= #{startTime}
+			</if>
+			<if test="null != endTime">
+				AND create_time &lt;= #{endTime}
+			</if>
+		</where>  
+  </select>
 </mapper>

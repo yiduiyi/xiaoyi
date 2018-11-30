@@ -208,4 +208,7 @@
       goodAt = #{goodAt}
     where teacherId = #{teacherid,jdbcType=VARCHAR}
   </update>
+  <select id="getTeacherOrderNum" resultType="com.alibaba.fastjson.JSONObject">
+  	select teacherId,count(distinct(orderId)) as teacherOrderNum from order_teaching_r group by teacherId
+  </select>
 </mapper>

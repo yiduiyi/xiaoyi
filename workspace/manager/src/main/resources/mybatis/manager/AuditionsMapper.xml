@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xiaoyi.manager.dao.IAuditionsDao">
+<mapper namespace="com.xiaoyi.teacher.dao.AuditionsMapper">
   <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Auditions">
     <id column="audition_id" jdbcType="VARCHAR" property="auditionId" />
     <result column="student_id" jdbcType="VARCHAR" property="studentId" />
@@ -16,10 +16,12 @@
     <result column="consultant_id" jdbcType="VARCHAR" property="consultantId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="teachingWay" jdbcType="SMALLINT" property="teachingway" />
   </resultMap>
   <sql id="Base_Column_List">
     audition_id, student_id, parent_id, grade_id, subject_id, come_from, cooperator_id, 
-    status, order_id, notes, consultant_group_id, consultant_id, create_time, update_time
+    status, order_id, notes, consultant_group_id, consultant_id, create_time, update_time, 
+    teachingWay
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -36,12 +38,14 @@
       grade_id, subject_id, come_from, 
       cooperator_id, status, order_id, 
       notes, consultant_group_id, consultant_id, 
-      create_time, update_time)
+      create_time, update_time, teachingWay
+      )
     values (#{auditionId,jdbcType=VARCHAR}, #{studentId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
       #{gradeId,jdbcType=SMALLINT}, #{subjectId,jdbcType=SMALLINT}, #{comeFrom,jdbcType=SMALLINT}, 
       #{cooperatorId,jdbcType=VARCHAR}, #{status,jdbcType=SMALLINT}, #{orderId,jdbcType=VARCHAR}, 
       #{notes,jdbcType=VARCHAR}, #{consultantGroupId,jdbcType=VARCHAR}, #{consultantId,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{teachingway,jdbcType=SMALLINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Auditions">
     insert into auditions
@@ -88,6 +92,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="teachingway != null">
+        teachingWay,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="auditionId != null">
@@ -131,6 +138,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="teachingway != null">
+        #{teachingway,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
@@ -176,6 +186,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="teachingway != null">
+        teachingWay = #{teachingway,jdbcType=SMALLINT},
+      </if>
     </set>
     where audition_id = #{auditionId,jdbcType=VARCHAR}
   </update>
@@ -193,7 +206,97 @@
       consultant_group_id = #{consultantGroupId,jdbcType=VARCHAR},
       consultant_id = #{consultantId,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      teachingWay = #{teachingway,jdbcType=SMALLINT}
     where audition_id = #{auditionId,jdbcType=VARCHAR}
   </update>
+  <select id="getAuditionList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT A.audition_id AS auditionId,A.student_id AS studentId,A.parent_id AS parentId,A.grade_id AS gradeId,A.subject_id AS subjectId,A.teachingWay AS teachingWay,A.come_from AS comeFrom,
+  	A.cooperator_id AS cooperatorId,A.`status` AS status,A.order_id AS orderId,A.notes AS notes,A.consultant_group_id AS consultantGroupId,A.consultant_id AS consultantId,
+  	A.create_time AS createTime,A.update_time AS updateTime,P.parentName AS parentName,P.telNum AS telPhone,S.`name` AS studentName FROM auditions A 
+  	INNER JOIN parents p ON A.parent_id = P.parentId 
+  	INNER JOIN student S ON A.student_id = S.memberId 
+  	<where>
+  		<if test="null != studentName">
+  		 	AND S.`name` LIKE CONCAT('%',#{studentName},'%')
+  		</if>
+  		<if test="null != parentName">
+  			AND P.parentName LIKE CONCAT('%',#{parentName},'%')
+  		</if>
+  		<if test="null != telPhone">
+  			AND P.telNum = #{telPhone}
+  		</if>
+  		<if test="null != queryType">
+  			<if test="0 == queryType">
+  				AND A.`status` = #{queryType}
+  			</if>
+  			<if test="1 == queryType">
+  				AND A.consultant_id IS NOT NULL
+  			</if>
+  			<if test="2 == queryType">
+  				AND A.`status` = #{queryType}
+  			</if>
+  			<if test="3 == queryType">
+  				AND A.`status` = #{queryType}
+  			</if>
+  		</if>
+  		<if test="null != consultantId">
+  			AND A.consultant_id = #{consultantId}
+  		</if>
+  	</where>
+  </select>
+  <select id="getAuditionNumDataList" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT consultant_id AS consultantId,COUNT(1) AS distributionNum,(SELECT COUNT(1) FROM auditions WHERE A.consultant_id = consultant_id AND `status` = 3) AS completeNum 
+  	FROM auditions A GROUP BY consultant_id
+  </select>
+  <select id="getAuditionConsultantGroupNum" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT CG.consultant_group_name AS consultantGroupName ,COUNT(1) AS totalDistributionNum  FROM consultant_group CG 
+  	INNER JOIN auditions A ON CG.consultant_group_id = A.consultant_group_id 
+  	GROUP BY CG.consultant_group_id
+  </select>
+  <select id="getMonthAuditionList" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
+  	SELECT A.audition_id AS auditionId,A.student_id AS studentId,A.parent_id AS parentId,A.grade_id AS gradeId,A.subject_id AS subjectId,A.teachingWay AS teachingWay,A.come_from AS comeFrom,
+  	A.cooperator_id AS cooperatorId,A.`status` AS status,A.order_id AS orderId,A.notes AS notes,A.consultant_group_id AS consultantGroupId,A.consultant_id AS consultantId,
+  	A.create_time AS createTime,A.update_time AS updateTime FROM auditions A 
+		<where>
+			 A.`status` = 3 
+			 <if test="null != startTime">
+			 	AND A.create_time &gt; #{startTime}
+			 </if>
+			 <if test="null != endTime">
+			 	AND A.create_time &lt; #{endTime}
+			 </if>
+		</where>
+  </select>
+  <select id="getAuditionListByTime"
+	parameterType="java.util.Date"
+	resultType="com.alibaba.fastjson.JSONObject">
+		select a.audition_id as auditionId,a.`status` as status,acmr.channel_manager_id as channelManagerId from auditions a inner join auditions_channel_manager_r acmr on a.audition_id = acmr.audition_id
+			<where>
+				<if test="null != startTime">
+					and a.create_time &gt;= #{startTime}
+				</if>
+				<if test="null != endTime">
+					and a.create_time &lt;= #{endTime}
+				</if>
+			</where>
+	</select>
+	<select id="getAuditionNumDataByTime" parameterType="java.util.Date"
+	resultType="com.alibaba.fastjson.JSONObject">
+		SELECT A.audition_id AS auditionId,C.cooperator_id AS cooperatorId,C.channel_manager_id AS channelManagerId,COUNT(A.audition_id) AS auditionNum 
+		FROM auditions A 
+		INNER JOIN cooperator C ON A.cooperator_id = C.cooperator_id 
+			<where>
+				<if test="null != auditionNumQuertyStatus">
+					AND	A.`status` = #{auditionNumQuertyStatus}
+				</if>
+				<if test="null != startTime">
+					AND A.create_time &gt;= #{startTime}
+				</if>
+				<if test="null != endTime">
+					AND A.create_time &lt;= #{endTime}
+				</if>
+			</where>
+		GROUP BY A.cooperator_id
+	</select>
 </mapper>

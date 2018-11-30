@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.manager.service.IChannelManagerGroupService;
+import com.xiaoyi.manager.service.IChannelManagerService;
 import com.xiaoyi.manager.utils.constant.ResponseConstants.RtConstants;
 
 @Controller
 @RequestMapping("/channel")
 public class ChannelAction {
+	@Resource
+	private IChannelManagerService channelManagerService;
 	@Resource
 	private IChannelManagerGroupService channelGroupService;
 
@@ -72,7 +75,23 @@ public class ChannelAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
-
+	@RequestMapping(value = "/updateChannelManagerIntendedNumber", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject updateChannelManagerIntendedNumber(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			if(channelManagerService.updateChannelManager(reqData) > 0) {
+				rtCode = RtConstants.SUCCESS;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
+	
 	///
 	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {
 		result.put("code", code);

@@ -1255,8 +1255,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 					int currentTeachingBill = 0;
 					int currentApplingBill = 0;
 					for(JSONObject recordBill : teacherRecordBills){
-						Integer billStatus = recordBill.getInteger("");
-						Integer recordStatus = recordBill.getInteger("");
+						Integer billStatus = recordBill.getInteger("bill_status");
+						Integer recordStatus = recordBill.getInteger("record_status");
 						
 						if(recordStatus==ConstantUtil.BILL_RECORD_STATUS_IS_OK
 								&& ++currentTeachingBill>=2){	//成功接单的订单
@@ -1693,7 +1693,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				teacherIntegralSum = teacherIntegralSumService.getTeacherIntegralSum(teacher.getTeacherid());
 				teachingLevel = getTeachingLevelByIntegralCount(teacherIntegralSum.getIntegralCount());
 				teacher.setTeachinglevel(teachingLevel.byteValue());
-				teacherH5Dao.updateTeacherByOpenId(teacher);
+				teacherH5Dao.updateByPrimaryKeySelective(teacher);
 				String jsonString = JSONObject.toJSONString(teacherIntegralSum);
 				jsonObject = JSONObject.parseObject(jsonString);
 				if (null != jsonObject) {

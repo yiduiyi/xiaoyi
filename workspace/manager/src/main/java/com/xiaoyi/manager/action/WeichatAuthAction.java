@@ -1,12 +1,21 @@
 package com.xiaoyi.manager.action;
 
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.alibaba.fastjson.JSONObject;
+import com.xiaoyi.common.service.IWechatService;
+import com.xiaoyi.common.utils.HttpClient;
 import com.xiaoyi.wechat.utils.AdvancedUtil;
 import com.xiaoyi.wechat.utils.WeiXinConfig;
 import com.xiaoyi.wechat.utils.WeixinOauth2Token;
@@ -15,6 +24,9 @@ import com.xiaoyi.wechat.utils.WeixinOauth2Token;
 @RequestMapping("/interface")
 public class WeichatAuthAction{
  
+	@Autowired
+	private IWechatService wechatService;
+	
 	private Logger log =Logger.getLogger(this.getClass().getName());
 	
 	//授权&重定向1（老师提现推送给家长确认）
@@ -269,7 +281,7 @@ public class WeichatAuthAction{
 	@RequestMapping("/authToTaskCenter")
 	public void authToTaskCenter(HttpServletRequest req,
 			 HttpServletResponse res )  {
-		log.info("In authToCourseRecord...");
+		log.info("In authToTaskCenter...");
 		String redirectUrl = "/wechat/index.html#/studentList";
 		log.info("redirect Url:"+redirectUrl);
 		try {
@@ -295,13 +307,13 @@ public class WeichatAuthAction{
 	 * @param req
 	 * @param res
 	 */
-	@RequestMapping("/authorizeThirdConstitution")
-	public void authorizeThirdConstitution(HttpServletRequest req,
+	@RequestMapping("/authToPurchaseDaul")
+	public void authToPurchaseDaul(HttpServletRequest req,
 			 HttpServletResponse res )  {
 		log.info(req.getContextPath());
 		log.info("params:" + req.getParameter("type"));
 		
-		log.info("In authToCourseRecord...");
+		log.info("In authToPurchaseDaul...");
 		//String redirectUrl = "/wechat/index.html#/studentList";
 		//log.info("redirect Url:"+redirectUrl);
 		try {
@@ -320,10 +332,74 @@ public class WeichatAuthAction{
 	             
 	              //购买双师课程
 	              log.info("开始授权双师...");
+	              
+	              //发送消息
+	              List<String> values = new ArrayList<String>();
+	              values.add("23");
+	              values.add("23");
+	              values.add("32");
+	              //values.add("23");
+	              List<String> colors = new ArrayList<String>();;
+	              colors.add("#696969");
+	              colors.add("#696969");
+	              colors.add("#696969");
+	              //colors.add("#696969");
+	              
+	              wechatService.sendTempletMsg2(WeiXinConfig.APPID, 
+	            		  WeiXinConfig.SECRET,
+	            		  WeiXinConfig.CUSTOM_LESSON_SHORTAGE_REMAINDER_TEMPLETE_ID, 
+	            		  "https%3A%2F%2Fwww.yidyi.cn%2Finterface%2FauthorizeThirdConstitution.do",
+	            		  openid, 
+	            		  values, 
+	            		  colors, 
+	            		  null);
 	        } 
 	      
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	/**
+	 * 授权其他机构开通双师课程(家长端)
+	 * @param req
+	 * @param res
+	 */
+	@RequestMapping("/authorizeThirdConstitution")
+	public void authorizeThirdConstitution(HttpServletRequest req,
+			 HttpServletResponse res )  {
+		log.info(req.getContextPath());		
+		
+		log.info("In authorizeThirdConstitution...");
+		//String redirectUrl = "/wechat/index.html#/studentList";
+		//log.info("redirect Url:"+redirectUrl);
+		try {
+			req.setCharacterEncoding("utf-8");
+			req.setCharacterEncoding("utf-8");
+		    String code = req.getParameter("code");
+		    log.info("code: " + code);
+		    if (code!=null && !"authdeny".equals(code)){
+	        	  WeixinOauth2Token weixinOauth2Token = AdvancedUtil.getOauth2AccessToken(WeiXinConfig.APPID, 
+	        			  WeiXinConfig.SECRET , code);
+	              String openid = weixinOauth2Token.getOpenId();
+	              String access_token = weixinOauth2Token.getAccessToken();
+	              
+	              log.error("authorizeThirdConstitution access_token======>" + access_token);
+	              log.error("authorizeThirdConstitution openid====>" + openid);
+	              
+	              log.info("get unionId:"+WeiXinConfig.getUnionId(WeiXinConfig.APPID, 
+	        			  WeiXinConfig.SECRET,
+	        			  openid));
+	              	 
+	              log.info("ip地址："+WeiXinConfig.getIp(req));
+	              //回跳到衡阳页面
+	              res.sendRedirect("http://pre.yduiy.com.cn/index.html");
+		    }
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	
 }

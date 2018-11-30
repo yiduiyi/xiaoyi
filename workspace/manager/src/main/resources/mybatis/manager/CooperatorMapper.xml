@@ -1,129 +1,184 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaoyi.manager.dao.ICooperatorDao">
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Cooperator">
-    <id column="cooperator_id" jdbcType="VARCHAR" property="cooperatorId" />
-    <result column="cooperator_name" jdbcType="VARCHAR" property="cooperatorName" />
-    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
-    <result column="contanctor" jdbcType="VARCHAR" property="contanctor" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="channel_manager_id" jdbcType="VARCHAR" property="channelManagerId" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    cooperator_id, cooperator_name, telephone, contanctor, address, create_time, update_time, 
-    channel_manager_id
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from cooperator
-    where cooperator_id = #{cooperatorId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from cooperator
-    where cooperator_id = #{cooperatorId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.Cooperator">
-    insert into cooperator (cooperator_id, cooperator_name, telephone, 
-      contanctor, address, create_time, 
-      update_time, channel_manager_id)
-    values (#{cooperatorId,jdbcType=VARCHAR}, #{cooperatorName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
-      #{contanctor,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{channelManagerId,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Cooperator">
-    insert into cooperator
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="cooperatorId != null">
-        cooperator_id,
-      </if>
-      <if test="cooperatorName != null">
-        cooperator_name,
-      </if>
-      <if test="telephone != null">
-        telephone,
-      </if>
-      <if test="contanctor != null">
-        contanctor,
-      </if>
-      <if test="address != null">
-        address,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="channelManagerId != null">
-        channel_manager_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="cooperatorId != null">
-        #{cooperatorId,jdbcType=VARCHAR},
-      </if>
-      <if test="cooperatorName != null">
-        #{cooperatorName,jdbcType=VARCHAR},
-      </if>
-      <if test="telephone != null">
-        #{telephone,jdbcType=VARCHAR},
-      </if>
-      <if test="contanctor != null">
-        #{contanctor,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null">
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="channelManagerId != null">
-        #{channelManagerId,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.Cooperator">
-    update cooperator
-    <set>
-      <if test="cooperatorName != null">
-        cooperator_name = #{cooperatorName,jdbcType=VARCHAR},
-      </if>
-      <if test="telephone != null">
-        telephone = #{telephone,jdbcType=VARCHAR},
-      </if>
-      <if test="contanctor != null">
-        contanctor = #{contanctor,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null">
-        address = #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="channelManagerId != null">
-        channel_manager_id = #{channelManagerId,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where cooperator_id = #{cooperatorId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.Cooperator">
-    update cooperator
-    set cooperator_name = #{cooperatorName,jdbcType=VARCHAR},
-      telephone = #{telephone,jdbcType=VARCHAR},
-      contanctor = #{contanctor,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-    where cooperator_id = #{cooperatorId,jdbcType=VARCHAR}
-  </update>
+	<resultMap id="BaseResultMap"
+		type="com.xiaoyi.manager.domain.Cooperator">
+		<id column="cooperator_id" jdbcType="VARCHAR"
+			property="cooperatorId" />
+		<result column="cooperator_name" jdbcType="VARCHAR"
+			property="cooperatorName" />
+		<result column="telephone" jdbcType="VARCHAR"
+			property="telephone" />
+		<result column="contanctor" jdbcType="VARCHAR"
+			property="contanctor" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="create_time" jdbcType="TIMESTAMP"
+			property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP"
+			property="updateTime" />
+		<result column="channel_manager_id" jdbcType="VARCHAR"
+			property="channelManagerId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		cooperator_id, cooperator_name, telephone, contanctor, address, create_time,
+		update_time,
+		channel_manager_id
+	</sql>
+	<select id="selectByPrimaryKey" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from cooperator
+		where cooperator_id = #{cooperatorId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from cooperator
+		where cooperator_id = #{cooperatorId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.xiaoyi.manager.domain.Cooperator">
+		insert into cooperator (cooperator_id, cooperator_name, telephone,
+		contanctor, address, create_time,
+		update_time, channel_manager_id)
+		values (#{cooperatorId,jdbcType=VARCHAR},
+		#{cooperatorName,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR},
+		#{contanctor,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP},
+		#{updateTime,jdbcType=TIMESTAMP}, #{channelManagerId,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.xiaoyi.manager.domain.Cooperator">
+		insert into cooperator
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="cooperatorId != null">
+				cooperator_id,
+			</if>
+			<if test="cooperatorName != null">
+				cooperator_name,
+			</if>
+			<if test="telephone != null">
+				telephone,
+			</if>
+			<if test="contanctor != null">
+				contanctor,
+			</if>
+			<if test="address != null">
+				address,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="updateTime != null">
+				update_time,
+			</if>
+			<if test="channelManagerId != null">
+				channel_manager_id,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="cooperatorId != null">
+				#{cooperatorId,jdbcType=VARCHAR},
+			</if>
+			<if test="cooperatorName != null">
+				#{cooperatorName,jdbcType=VARCHAR},
+			</if>
+			<if test="telephone != null">
+				#{telephone,jdbcType=VARCHAR},
+			</if>
+			<if test="contanctor != null">
+				#{contanctor,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="channelManagerId != null">
+				#{channelManagerId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.xiaoyi.manager.domain.Cooperator">
+		update cooperator
+		<set>
+			<if test="cooperatorName != null">
+				cooperator_name = #{cooperatorName,jdbcType=VARCHAR},
+			</if>
+			<if test="telephone != null">
+				telephone = #{telephone,jdbcType=VARCHAR},
+			</if>
+			<if test="contanctor != null">
+				contanctor = #{contanctor,jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				address = #{address,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="channelManagerId != null">
+				channel_manager_id = #{channelManagerId,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where cooperator_id = #{cooperatorId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.xiaoyi.manager.domain.Cooperator">
+		update cooperator
+		set cooperator_name = #{cooperatorName,jdbcType=VARCHAR},
+		telephone = #{telephone,jdbcType=VARCHAR},
+		contanctor = #{contanctor,jdbcType=VARCHAR},
+		address = #{address,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		update_time = #{updateTime,jdbcType=TIMESTAMP},
+		channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+		where cooperator_id = #{cooperatorId,jdbcType=VARCHAR}
+	</update>
+	<select id="getCooperatorList" parameterType="map"
+		resultType="com.alibaba.fastjson.JSONObject">
+		SELECT cooperator_id AS cooperatorId,cooperator_name AS
+		cooperatorName,telephone AS teltPhone,contanctor AS contanctor,address
+		AS address,create_time AS createTime,update_time AS
+		updateTime,channel_manager_id AS channelManagerId FROM cooperator
+		<where>
+			<if test="null != cooperatorName">
+				AND cooperator_name LIKE CONCAT('%',#{cooperatorName},'%') 
+			</if>
+			<if test="null != telePhone">
+				AND telephone = #{telePhone}
+			</if>
+			<if test="null != contanctor">
+				AND contanctor LIKE CONCAT('%',#{contanctor},'%')
+			</if>
+			<if test="null != channelManagerId">
+				AND channel_manager_id = #{channelManagerId}
+			</if>
+		</where>
+	</select>
+	<select id="getAllCooperatorList" resultType="com.alibaba.fastjson.JSONObject">
+		SELECT C.cooperator_id AS cooperatorId,C.cooperator_name AS
+		cooperatorName,C.telephone AS teltPhone,C.contanctor AS contanctor,C.address
+		AS address,C.create_time AS createTime,C.update_time AS
+		updateTime,CM.channel_manager_id AS channelManagerId,CM.channel_manager_group_id AS channelManagerGroupId FROM cooperator C 
+		LEFT JOIN channel_manager CM ON C.channel_manager_id = CM.channel_manager_id 
+			<where>
+				<if test="null != channelManagerGroupId">
+					AND CM.channel_manager_group_id = #{channelManagerGroupId}
+				</if>
+				<if test="null != startTime">
+					AND C.create_time &gt;= #{startTime}
+				</if>
+				<if test="null != endTime">
+					AND create_time &lt;= #{endTime}
+				</if>
+			</where>
+	</select>
 </mapper>

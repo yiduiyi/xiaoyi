@@ -5,10 +5,10 @@
     <id column="channel_manager_group_id" jdbcType="VARCHAR" property="channelManagerGroupId" />
     <result column="channel_manager_group_name" jdbcType="VARCHAR" property="channelManagerGroupName" />
     <result column="channel_manager_id" jdbcType="VARCHAR" property="channelManagerId" />
-    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="role_ids" jdbcType="VARCHAR" property="roleIds" />
   </resultMap>
   <sql id="Base_Column_List">
-    channel_manager_group_id, channel_manager_group_name, channel_manager_id, role_id
+    channel_manager_group_id, channel_manager_group_name, channel_manager_id, role_ids
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -22,9 +22,9 @@
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.ChannelManagerGroup">
     insert into channel_manager_group (channel_manager_group_id, channel_manager_group_name, 
-      channel_manager_id, role_id)
+      channel_manager_id, role_ids)
     values (#{channelManagerGroupId,jdbcType=VARCHAR}, #{channelManagerGroupName,jdbcType=VARCHAR}, 
-      #{channelManagerId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR})
+      #{channelManagerId,jdbcType=VARCHAR}, #{roleIds,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.ChannelManagerGroup">
     insert into channel_manager_group
@@ -38,8 +38,8 @@
       <if test="channelManagerId != null">
         channel_manager_id,
       </if>
-      <if test="roleId != null">
-        role_id,
+      <if test="roleIds != null">
+        role_ids,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -52,8 +52,8 @@
       <if test="channelManagerId != null">
         #{channelManagerId,jdbcType=VARCHAR},
       </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=VARCHAR},
+      <if test="roleIds != null">
+        #{roleIds,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -66,8 +66,8 @@
       <if test="channelManagerId != null">
         channel_manager_id = #{channelManagerId,jdbcType=VARCHAR},
       </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=VARCHAR},
+      <if test="roleIds != null">
+        role_ids = #{roleIds,jdbcType=VARCHAR},
       </if>
     </set>
     where channel_manager_group_id = #{channelManagerGroupId,jdbcType=VARCHAR}
@@ -76,10 +76,25 @@
     update channel_manager_group
     set channel_manager_group_name = #{channelManagerGroupName,jdbcType=VARCHAR},
       channel_manager_id = #{channelManagerId,jdbcType=VARCHAR},
-      role_id = #{roleId,jdbcType=VARCHAR}
+      role_ids = #{roleIds,jdbcType=VARCHAR}
     where channel_manager_group_id = #{channelManagerGroupId,jdbcType=VARCHAR}
   </update>
-  <select id="getChannelManagerGroupList" parameterType="map" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT channel_manager_group_id AS channelManagerGroupId,channel_manager_group_name AS channelManagerGroupName,channel_manager_id AS channelManagerId,role_id AS roleId FROM channel_manager_group
-  </select>
+	<select id="getAllChannelManagerGroupList"
+		resultType="com.alibaba.fastjson.JSONObject">
+		SELECT CMG.channel_manager_group_id AS
+		channelManagerGroupId,CMG.channel_manager_group_name AS
+		channelManagerGrouName,CMG.channel_manager_id AS
+		groupChannelManagerId,CM.channel_manager_id AS
+		channelManagerId,CM.channel_manager_name AS channelManagerName FROM
+		channel_manager_group CMG LEFT JOIN channel_manager CM ON
+		CMG.channel_manager_group_id = CM.channel_manager_group_id WHERE
+		CM.`status` != -1
+	</select>
+	<select id="getChannelManagerGroupByGroupChannelManagerId"
+	parameterType="java.lang.String" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from channel_manager_group
+	where channel_manager_id = #{groupChannelManagerId,jdbcType=VARCHAR}
+	</select>
 </mapper>

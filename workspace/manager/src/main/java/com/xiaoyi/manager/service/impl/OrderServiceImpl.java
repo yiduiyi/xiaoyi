@@ -8,8 +8,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,14 +28,18 @@ import org.springframework.util.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.exception.CommonRunException;
+import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Level;
 import com.xiaoyi.common.utils.ConstantUtil.Semaster;
+import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.common.utils.HttpClient;
+import com.xiaoyi.common.utils.MathUtils;
 import com.xiaoyi.common.utils.XiaoeSDK;
 import com.xiaoyi.custom.dao.IDaulVideoOrderDao;
 import com.xiaoyi.custom.domain.DaulVideoOrder;
+import com.xiaoyi.manager.dao.IAuditionsDao;
 import com.xiaoyi.manager.dao.ILessonTypeDao;
 import com.xiaoyi.manager.dao.IOTRelationDao;
 import com.xiaoyi.manager.dao.IOrderSumDao;
@@ -54,6 +60,7 @@ import com.xiaoyi.manager.domain.UserOuterSync;
 import com.xiaoyi.manager.domain.UserOuterSyncKey;
 import com.xiaoyi.manager.domain.VideoCourse;
 import com.xiaoyi.manager.service.ICommonService;
+import com.xiaoyi.manager.service.IConsultantOrderRelationService;
 import com.xiaoyi.manager.service.IOrderService;
 import com.xiaoyi.teacher.dao.ITeachingDaulOrderDao;
 import com.xiaoyi.teacher.domain.TeachingDaulOrder;
@@ -90,6 +97,10 @@ public class OrderServiceImpl implements IOrderService {
 	
 	@Resource
 	IDaulVideoOrderDao daulOrderDao;
+	@Resource
+	private IConsultantOrderRelationService consultantOrderRelationService;
+	@Resource
+	private IAuditionsDao auditionsDao;
 	
 	@Resource
 	ITeachingDaulOrderDao teachingDaulOrderDao;
@@ -1031,7 +1042,7 @@ public class OrderServiceImpl implements IOrderService {
 			
 			return result;
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -1364,10 +1375,146 @@ public class OrderServiceImpl implements IOrderService {
 
 	@Override
 	public Orders queryOrderById(String orderId) {
-		// TODO Auto-generated method stub
 		return orderDao.selectOrderById(orderId);
 	}
 
+	@Override
+	public List<JSONObject> getClaimOrderList(JSONObject reqData) {
+		List<JSONObject> result = orderSumDao.getClaimOrderList(reqData);
+		Map<String, Object> consultantOrderMap = new HashMap<String, Object>();
+		List<String> orderIdList = new ArrayList<String>();
+		if (!CollectionUtils.isEmpty(result)) {
+			for (JSONObject jsonObject : result) {
+				jsonObject.put("createTime", DateUtils.toYYYYPointMMPointDDString(jsonObject.getDate("createTime")));
+				Integer lessonType = jsonObject.getInteger("lessonType");
+				if (null != lessonType) {
+					for (com.xiaoyi.common.utils.ConstantUtil.LessonType lessonTypes : com.xiaoyi.common.utils.ConstantUtil.LessonType
+							.values()) {
+						if (lessonType == lessonTypes.getValue()) {
+							jsonObject.put("gradeName", lessonTypes.getFullGradeName());
+						}
+					}
+				}
+			}
+			List<JSONObject> consultantOrderList = consultantOrderRelationService.getConsultantOrderList();
+			if (!CollectionUtils.isEmpty(consultantOrderList)) {
+				for (JSONObject jsonObject : consultantOrderList) {
+					consultantOrderMap.put(jsonObject.getString("orderId"), jsonObject.getString("consultantName"));
+					orderIdList.add(jsonObject.getString("orderId"));
+				}
+				Iterator<JSONObject> iterator = result.iterator();
+				while (iterator.hasNext()) {
+					JSONObject jsonObject = iterator.next();
+					// 当查询所有已认领的订单时，匹配课程顾问名称，删除未认领订单
+					if (reqData.getInteger("isClaim").equals(ConstantUtil.IS_CLAIM_TRUE)) {
+						if (orderIdList.contains(jsonObject.getString("orderId"))) {
+							jsonObject.put("consultantName",
+									consultantOrderMap.get(jsonObject.getString("orderId")) == null ? ""
+											: consultantOrderMap.get(jsonObject.getString("orderId")));
+						} else {
+							iterator.remove();
+						}
+					} else if (reqData.getInteger("isClaim").equals(ConstantUtil.IS_CLAIM_FALSE)) {
+						if (orderIdList.contains(jsonObject.getString("orderId"))) {
+							iterator.remove();
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public Float getTotalTurnoverData(Date startTime, Date endTime) {
+		return orderDao.getTotalTurnoverData(startTime,endTime);
+	}
+
+	@Override
+	public Integer getRenewalNum(Date startTime, Date endTime) {
+		Integer renewalNum = 0;
+		List<String> orderSumIds = orderSumDao.selectAllOrderSumId();
+		List<String> orderIds = orderDao.selectAllOrderIds(startTime,endTime);
+		if(!CollectionUtils.isEmpty(orderIds)) {
+			for (String orderId : orderIds) {
+				if(!orderSumIds.contains(orderId)) {
+					renewalNum ++;
+				}
+			}
+		}
+		return renewalNum;
+	}
+
+	@Override
+	public List<JSONObject> getChannelData(Date startTime, Date endTime) {
+		List<JSONObject> result = new ArrayList<JSONObject>();
+		List<JSONObject> auditionLis = auditionsDao.getMonthAuditionList(startTime,endTime);
+		if(!CollectionUtils.isEmpty(auditionLis)) {
+			//所有课程顾问成单量
+			Integer consultantOrderQuantity = consultantOrderRelationService.getConsultantQuantityByTime(startTime,endTime);
+			// 渠道组所有成交单量
+			Integer channelAllQuantity = auditionLis.size();
+			//统计渠道商家合作单量
+			Integer cooperatorQuantity = 0;
+			//地推单量
+			Integer pushQuantity = 0;
+			//续费单量
+			Integer renewalNum = getRenewalNum(startTime, endTime);
+			for (JSONObject jsonObject : auditionLis) {
+				if(null != jsonObject.getString("cooperatorId")) {
+					cooperatorQuantity++;
+				}else {
+					pushQuantity++;
+				}
+			}
+			//所有单量
+			Integer countQuantity =  consultantOrderQuantity + renewalNum;
+			//课程顾问膜拜+转介单量 
+			Integer consultantQuantity = consultantOrderQuantity - channelAllQuantity;
+			getConsultantQuantityJson(result,countQuantity,consultantQuantity);
+			getRenewalNumJson(result,countQuantity,renewalNum);
+			getCooperatorQuantityJson(result,countQuantity,cooperatorQuantity);
+			getPushQuantityJson(result,countQuantity,pushQuantity);
+			
+		}
+		return result;
+	}
+
+	private List<JSONObject> getPushQuantityJson(List<JSONObject> resultList,Integer countQuantity, Integer pushQuantity) {
+		JSONObject result = new JSONObject();
+		result.put("channelSource", ConstantUtil.PUSH_QUANTITY);
+		result.put("completeNum", pushQuantity);
+		result.put("proportion", MathUtils.percentage(pushQuantity, countQuantity));
+		resultList.add(result);
+		return resultList;
+	}
+
+	private List<JSONObject> getCooperatorQuantityJson(List<JSONObject> resultList,Integer countQuantity, Integer cooperatorQuantity) {
+		JSONObject result = new JSONObject();
+		result.put("channelSource", ConstantUtil.COOPERATOR_QUANTITY);
+		result.put("completeNum", cooperatorQuantity);
+		result.put("proportion", MathUtils.percentage(cooperatorQuantity, countQuantity));
+		resultList.add(result);
+		return resultList;
+	}
+
+	private List<JSONObject> getRenewalNumJson(List<JSONObject> resultList, Integer countQuantity, Integer renewalNum) {
+		JSONObject result = new JSONObject();
+		result.put("channelSource", ConstantUtil.RENEWAL_NUM);
+		result.put("completeNum", renewalNum);
+		result.put("proportion", MathUtils.percentage(renewalNum, countQuantity));
+		resultList.add(result);
+		return resultList;
+	}
+
+	private List<JSONObject> getConsultantQuantityJson(List<JSONObject> resultList, Integer countQuantity, Integer consultantQuantity) {
+		JSONObject result = new JSONObject();
+		result.put("channelSource", ConstantUtil.CONSULTANT_QUANTITY);
+		result.put("completeNum", consultantQuantity);
+		result.put("proportion", MathUtils.percentage(consultantQuantity, countQuantity));
+		resultList.add(result);
+		return resultList;
+	}
 	/**
 	 * 同步活动订单
 	 */
@@ -1495,6 +1642,53 @@ public class OrderServiceImpl implements IOrderService {
 		
 		
 		return 0;
+	}
+
+	@Override
+	public List<JSONObject> getRenewalOrderData(Date startTime, Date endTime) {
+		List<JSONObject> resultList = new ArrayList<JSONObject>();
+		Map<String, Integer> renewalOrderMap = new HashMap<String, Integer>();
+		List<JSONObject> ordersAndConsultantIdData = orderDao.getOrdersAndConsultantId();
+		List<JSONObject> allOrders = orderDao.selectAllOrders(startTime,endTime);
+		if (!CollectionUtils.isEmpty(ordersAndConsultantIdData)) {
+			if(!CollectionUtils.isEmpty(allOrders)){
+				Iterator<JSONObject> iterator = allOrders.iterator();
+				while (iterator.hasNext()) {
+					JSONObject orders = (JSONObject) iterator.next();
+					//判断该订单是否是续费单,并给该订单匹配课程顾问主键
+					for (JSONObject oldOrders : ordersAndConsultantIdData) {
+						if (orders.getString("lessonType").equals(oldOrders.getString("lessonType"))
+								&& orders.getString("parentId").equals(oldOrders.getString("parentId"))
+								&& orders.getString("memberId").equals(oldOrders.getString("memberId"))
+								&& orders.getString("teachingWay").equals(oldOrders.getString("teachingWay"))
+								&& !orders.getString("orderId").equals(oldOrders.getString("orderId"))) {
+							orders.put("consultantId", oldOrders.getString("consultantId"));
+						}
+					}
+				}
+				//统计各课程顾问续单量
+				for (JSONObject jsonObject : allOrders) {
+					if(null == renewalOrderMap.get(jsonObject.getString("consultantId"))) {
+						renewalOrderMap.put(jsonObject.getString("consultantId"), 0);
+					}else {
+						Integer renewalNum = renewalOrderMap.get(jsonObject.getString("consultantId"));
+						renewalNum++;
+						renewalOrderMap.put(jsonObject.getString("consultantId"), renewalNum);
+					}
+				}
+				if(!CollectionUtils.isEmpty(renewalOrderMap)) {
+					Iterator<Entry<String, Integer>> iterator2 = renewalOrderMap.entrySet().iterator();
+					while (iterator2.hasNext()) {
+						Map.Entry<String, Integer> entry = (Map.Entry<String, Integer>) iterator2.next();
+						JSONObject jsonObject = new JSONObject();
+						jsonObject.put("consultantId", entry.getKey());
+						jsonObject.put("renewalNum", entry.getValue());
+						resultList.add(jsonObject);
+					}
+				}
+			}
+		}
+		return resultList;
 	}
 	
 }

@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -29,4 +30,6 @@ public interface IBillRecordRelationDao {
 	public void batchUpdateOtherBillRecord(List<BillRecordRelation> list);
 
 	public List<BillRecordRelation> getAllBillRecordRelationListByBillId(@Param("billId")String billId);
+
+	List<JSONObject> getBillRecordDataByTime(Date startTime, Date endTime);
 }

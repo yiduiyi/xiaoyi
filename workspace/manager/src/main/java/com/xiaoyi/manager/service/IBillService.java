@@ -1,6 +1,7 @@
 package com.xiaoyi.manager.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -35,5 +36,7 @@ public interface IBillService {
 	public List<JSONObject> getAllInTheSingleBill();
 	//查询课程顾问列表
 	public List<JSONObject> getAllConsultants();
+	
+	public Map<String, Object> getSendBillNumRankList();
 	
 }

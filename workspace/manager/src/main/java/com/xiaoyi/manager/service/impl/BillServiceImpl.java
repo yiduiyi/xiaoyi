@@ -26,6 +26,7 @@ import com.xiaoyi.common.service.IWechatService;
 import com.xiaoyi.common.utils.ConstantUtil;
 import com.xiaoyi.common.utils.ConstantUtil.Course;
 import com.xiaoyi.common.utils.ConstantUtil.Grade;
+import com.xiaoyi.common.utils.DateUtils;
 import com.xiaoyi.manager.dao.IBillDao;
 import com.xiaoyi.manager.dao.IConsultantDao;
 import com.xiaoyi.manager.domain.Bill;
@@ -93,6 +94,7 @@ public class BillServiceImpl implements IBillService {
 				}
 			}
 			for (JSONObject jsonObject : result) {
+				jsonObject.put("createTime", DateUtils.toYYYYPointMMPointDDString(jsonObject.getDate("classTime")));
 				Object billQuantityNum = billQuantityNumMap.get(jsonObject.getString("billId"));
 				if(null == billQuantityNum){
 					jsonObject.put("billQuantityNum",0);
@@ -310,9 +312,22 @@ public class BillServiceImpl implements IBillService {
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 				
 		return datas;
+	}
+	@Override
+	public Map<String, Object> getSendBillNumRankList() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		List<JSONObject> daySendBillNumRankList=billDao.selectSendBillNumRankListByTime(DateUtils.getDayMin(new Date()),DateUtils.getDayMax(new Date()));
+		List<JSONObject> weekSendBillNumRankList=billDao.selectSendBillNumRankListByTime(DateUtils.getWeekMin(new Date()),DateUtils.getWeekMax(new Date()));
+		if(CollectionUtils.isNotEmpty(daySendBillNumRankList)) {
+			map.put("daySendBillNumRankList", daySendBillNumRankList);
+		}
+		if(CollectionUtils.isNotEmpty(weekSendBillNumRankList)) {
+			map.put("weekSendBillNumRankList", weekSendBillNumRankList);
+		}
+		return map;
 	}
 }

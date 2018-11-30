@@ -237,4 +237,37 @@ public class WeiXinConfig {
 		
 		return openIdList;
 	}
+	
+	public static String getUnionId(String appId, String appSecret, String openId) throws Exception{
+		//获取access_token
+		System.out.println("调用微信接口获取access_token...");
+		StringBuffer getTockenBuffer = new StringBuffer();
+		getTockenBuffer
+			.append("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential")
+			.append("&appid=").append(appId)
+			.append("&secret=").append(appSecret);
+		String getTockenUrl = getTockenBuffer.toString();
+		String tokenResult = HttpClient.httpGetRequest(getTockenUrl);
+		System.out.println("获取access_token结果：" + tokenResult);
+		
+		JSONObject jsonResult = JSONObject.parseObject(tokenResult);
+		String token = jsonResult.getString("access_token");
+		
+		//获取union_id
+		System.out.println("调用微信接口获取union_id...");
+		StringBuffer getUnionIdBuffer = new StringBuffer();
+		getUnionIdBuffer.append("https://api.weixin.qq.com/cgi-bin/user/info")
+			.append("?access_token=").append(token)
+			.append("&openid=").append(openId)
+			.append("&lang=zh_CN");
+		String getUnionIdUrl = getUnionIdBuffer.toString();
+		String rs = HttpClient.httpGetRequest(getUnionIdUrl);
+		rs = new String(rs.getBytes("ISO-8859-1"),"UTF-8");
+		System.out.println("返回union_id结果：" + rs);
+		
+		JSONObject unionIdResult = JSONObject.parseObject(rs);
+		String wxUnionId = unionIdResult.getString("unionid");
+		
+		return wxUnionId;
+	}
 }

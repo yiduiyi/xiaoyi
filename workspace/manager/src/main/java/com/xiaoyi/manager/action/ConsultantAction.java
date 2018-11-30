@@ -75,6 +75,22 @@ public class ConsultantAction {
 		setReturnMsg(result, rtCode.getCode(), rtCode.name());
 		return result;
 	}
+	@RequestMapping(value = "/getConsultantList", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject getConsultantList(HttpServletRequest request, HttpServletResponse response,
+			@RequestBody JSONObject reqData) {
+		JSONObject result = new JSONObject();
+		RtConstants rtCode = RtConstants.FAILED;
+		try {
+			List<JSONObject> data = consultantGroupService.getConsultantList(reqData);
+			result.put("data", data);
+			rtCode = RtConstants.SUCCESS;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		setReturnMsg(result, rtCode.getCode(), rtCode.name());
+		return result;
+	}
 
 	///
 	private JSONObject setReturnMsg(JSONObject result, int code, String msg) {

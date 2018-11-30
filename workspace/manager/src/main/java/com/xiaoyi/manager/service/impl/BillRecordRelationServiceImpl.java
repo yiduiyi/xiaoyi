@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import com.xiaoyi.common.utils.ConstantUtil.Grade;
 import com.xiaoyi.common.utils.ConstantUtil.Sex;
 import com.xiaoyi.common.utils.ConstantUtil.TeachingLevel;
 import com.xiaoyi.manager.dao.IBillRecordRelationDao;
+import com.xiaoyi.manager.dao.ITeacherDao;
 import com.xiaoyi.manager.domain.BillRecordRelation;
 import com.xiaoyi.manager.service.IBillRecordRelationService;
 import com.xiaoyi.teacher.service.ITeacherResumeRelationService;
@@ -25,12 +27,16 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 	private IBillRecordRelationDao billRecordRelationDao;
 	@Resource
 	private ITeacherResumeRelationService teacherResumeRelationDao;
+	@Resource
+	private ITeacherDao teacherDao;
 	@Override
 	public List<JSONObject> getBillRecordList(JSONObject reqData) {
 		String billId = reqData.getString("billId");
 		Map<String, Object> teacherResumeMap = new HashMap<String, Object>();
+		Map<String, Object> teacherOrderNumMap = new HashMap<String, Object>();
 		//根据订单主键查询订单投递列表
 		List<JSONObject> list = billRecordRelationDao.getBillRecordList(billId);
+		List<JSONObject> teacherOrderNum = teacherDao.getTeacherOrderNum();
 		if(CollectionUtils.isNotEmpty(list)) {
 			//查询所有的教师简历
 			List<JSONObject> teacherResumeList = teacherResumeRelationDao.getTeacherResumeList();
@@ -39,9 +45,17 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 					teacherResumeMap.put(jsonObject.getString("teacherResumeRId"), jsonObject.getString("introduce"));
 				}
 			}
+			if(CollectionUtils.isNotEmpty(teacherOrderNum)) {
+				for (JSONObject jsonObject : teacherOrderNum) {
+					teacherOrderNumMap.put(jsonObject.getString("teacherId"), jsonObject.getString("teacherOrderNum"));
+				}
+			}
+				
 			for (JSONObject jsonObject : list) {
 				//匹配教师简历
 				jsonObject.put("introduce", teacherResumeMap.get(jsonObject.getString("teacherResumeRId")));
+				//匹配教师绑定订单数量
+				jsonObject.put("teacherOrderNum", teacherOrderNumMap.get(jsonObject.getString("teacherId")) == null ? 0 : teacherOrderNumMap.get(jsonObject.getString("teacherId")));
 				//匹配订单年级名称和课程名称
 				Integer gradeId = jsonObject.getInteger("gradeId");
 				if(null!=gradeId) {
@@ -87,7 +101,6 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 				}
 			}
 		}
-		
 		return list;
 	}
 	@Override
@@ -121,5 +134,9 @@ public class BillRecordRelationServiceImpl implements IBillRecordRelationService
 			}
 			billRecordRelationDao.batchUpdateOtherBillRecord(list);
 		}
+	}
+	@Override
+	public List<JSONObject> getBillRecordDataByTime(Date startTime, Date endTime) {
+		return billRecordRelationDao.getBillRecordDataByTime(startTime,endTime);
 	}
 }

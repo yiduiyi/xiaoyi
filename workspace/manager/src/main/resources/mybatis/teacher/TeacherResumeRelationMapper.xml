@@ -116,10 +116,12 @@
     where teacher_resume_r_id = #{teacherResumeRId,jdbcType=VARCHAR}
   </update>
   <select id="getTeacherResumeList" resultType="com.alibaba.fastjson.JSONObject">
-  		SELECT TRR.teacher_resume_r_id AS teacherResumeRId,T.teacherId,TR.taught_subject AS taughtSubject,TR.introduce AS introduce FROM teacher_resume_r TRR 
-  		LEFT JOIN teacher T ON TRR.teacherId = T.teacherId 
-  		LEFT JOIN teacher_resume TR ON TRR.teacher_resume_id = TR.teacher_resume_id WHERE
-  		 TRR.`status` = 0 AND TR.`status` = 0
+	select trr.teacher_resume_r_id as
+	teacherResumeRId,t.teacherId,tr.taught_subject as
+	taughtSubject,tr.introduce as introduce from teacher_resume_r trr 
+	left join teacher t on trr.teacherId = t.teacherId 
+	left join teacher_resume tr on trr.teacher_resume_id = tr.teacher_resume_id 
+	where trr.is_default = 1 and trr.`status` = 0 and tr.`status` = 0
   </select>
   <select id="getDefaultResumeByTeacherId" parameterType="java.lang.String" resultMap="BaseResultMap">
   	select 

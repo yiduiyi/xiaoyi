@@ -21,7 +21,7 @@ public class ChannelManagerGroupServiceImpl implements IChannelManagerGroupServi
 		channelManagerGroup.setChannelManagerGroupId(UUIDUtil.getUUIDPrimary());
 		channelManagerGroup.setChannelManagerGroupName(reqData.getString("channelManagerGroupName"));
 		channelManagerGroup.setChannelManagerId(reqData.getString("channelManagerId"));
-		channelManagerGroup.setRoleId(reqData.getString("roleId"));
+		channelManagerGroup.setRoleIds(reqData.getString("roleIds"));
 		return channelManagerGroupDao.insertSelective(channelManagerGroup);
 	}
 	@Override
@@ -32,5 +32,4 @@ public class ChannelManagerGroupServiceImpl implements IChannelManagerGroupServi
 	public List<JSONObject> getChannelManagerGroupList(JSONObject reqData) {
 		return channelManagerGroupDao.getChannelManagerGroupList(reqData);
 	}
-
 }

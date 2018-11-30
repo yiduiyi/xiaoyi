@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.alibaba.fastjson.JSONObject;
@@ -44,4 +45,14 @@ public interface IOrderService {
 	List<JSONObject> queryMOrders(JSONObject params);
 	
 	int deleteTeachingTeacher(JSONObject params);
+	//获取认领列表
+	List<JSONObject> getClaimOrderList(JSONObject reqData);
+
+	Float getTotalTurnoverData(Date startTime, Date endTime);
+
+	Integer getRenewalNum(Date startTime, Date endTime);
+
+	List<JSONObject> getChannelData(Date startTime, Date endTime);
+
+	List<JSONObject> getRenewalOrderData(Date startTime, Date endTime);
 }

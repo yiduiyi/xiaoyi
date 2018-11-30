@@ -150,4 +150,17 @@
     from bill_record_r
     where bill_id = #{billId}
 </select>
+<select id="getBillRecordDataByTime" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
+	SELECT B.bill_id AS billId,B.consultant_id AS consultantId,B.`status` AS billStatus,COUNT(BRR.bill_record_id) AS claimNum FROM bill B 
+	LEFT JOIN bill_record_r BRR ON B.bill_id = BRR.bill_id 
+		<where>
+			<if test="null != startTime">
+				AND B.create_time &gt;= #{startTime}
+			</if>
+			<if test="null != endTime">
+				AND B.create_time &lt; #{endTime}
+			</if>
+		</where>
+  	GROUP BY B.bill_id
+</select>
 </mapper>

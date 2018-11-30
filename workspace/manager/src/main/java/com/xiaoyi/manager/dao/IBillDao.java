@@ -1,5 +1,6 @@
 package com.xiaoyi.manager.dao;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,4 +46,6 @@ public interface IBillDao {
 	public List<JSONObject> getAllInTheSingleBill();
 	//查询老师当前接单列表
 	public List<JSONObject> selectTeacherBills(@Param("teacherId")String teacherId);
+	//根据时间查询派单排行榜
+	public List<JSONObject> selectSendBillNumRankListByTime(@Param("startTime")Date startTime, @Param("endTime")Date endTime);
 }

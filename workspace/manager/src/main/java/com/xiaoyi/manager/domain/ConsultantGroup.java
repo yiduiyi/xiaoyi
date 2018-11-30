@@ -7,7 +7,7 @@ public class ConsultantGroup {
 
     private String consultantId;
 
-    private String roleId;
+    private String roleIds;
 
     public String getConsultantGroupId() {
         return consultantGroupId;
@@ -33,11 +33,11 @@ public class ConsultantGroup {
         this.consultantId = consultantId == null ? null : consultantId.trim();
     }
 
-    public String getRoleId() {
-        return roleId;
+    public String getRoleIds() {
+        return roleIds;
     }
 
-    public void setRoleId(String roleId) {
-        this.roleId = roleId == null ? null : roleId.trim();
+    public void setRoleIds(String roleIds) {
+        this.roleIds = roleIds == null ? null : roleIds.trim();
     }
 }

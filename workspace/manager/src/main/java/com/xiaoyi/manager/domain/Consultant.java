@@ -9,7 +9,7 @@ public class Consultant {
 
     private String consultantGroupId;
 
-    private String roleId;
+    private String roleIds;
 
     private String picid;
 
@@ -49,12 +49,12 @@ public class Consultant {
         this.consultantGroupId = consultantGroupId == null ? null : consultantGroupId.trim();
     }
 
-    public String getRoleId() {
-        return roleId;
+    public String getRoleIds() {
+        return roleIds;
     }
 
-    public void setRoleId(String roleId) {
-        this.roleId = roleId == null ? null : roleId.trim();
+    public void setRoleIds(String roleIds) {
+        this.roleIds = roleIds == null ? null : roleIds.trim();
     }
 
     public String getPicid() {
