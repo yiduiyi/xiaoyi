@@ -974,6 +974,7 @@ public class H5PlateServiceImpl implements IH5PlateService {
 
 		// 新增微信端teachingRecord
 		float totalLessons = 0f;
+		StringBuffer orderComesFrom = new StringBuffer();
 		try {
 			List<TeachingRecord> teachingRecords = new ArrayList<TeachingRecord>();
 			JSONArray teachingDetails = params.getJSONArray("teachingDetails");
@@ -985,7 +986,12 @@ public class H5PlateServiceImpl implements IH5PlateService {
 				record.setOrderid(orderId);
 				record.setTeacherid(teacherId);
 				record.setTeachingid(teachingId);
-				record.setRecordid(UUID.randomUUID().toString());
+				
+				// ++++++++++++++  modified by DZH 2018-12-04   +++++++++++++
+				String recordId = UUID.randomUUID().toString();
+				orderComesFrom.append(recordId);
+				record.setRecordid(recordId);
+				//++++++++++++++++     end    +++++++++++++++++++++
 				record.setEndtime(teachingDetail.getString("endTime"));
 				record.setStarttime(teachingDetail.getString("startTime"));
 
@@ -1045,7 +1051,8 @@ public class H5PlateServiceImpl implements IH5PlateService {
 			order.setParentid(orderSum.getParentid());
 			order.setPurchasenum(-totalLessons);
 			order.setHasBook((short) 0);
-
+			order.setOrderComesFrom(orderComesFrom.toString());
+			
 			//+++++++++++++++   added 2018-10-10  (daul teacher version)
 			order.setTeachingWay(orderSum.getTeachingWay());
 			
