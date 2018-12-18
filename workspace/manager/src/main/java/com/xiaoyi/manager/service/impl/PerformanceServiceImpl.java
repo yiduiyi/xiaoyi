@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaoyi.common.utils.DateUtils;
@@ -57,7 +58,8 @@ public class PerformanceServiceImpl implements IPerformanceService {
 			result.put("totalTeacherRetainedEarnings", data.getString("totalTeacherRetainedEarnings"));
 			result.put("totalTeacherCurrentEarnings", data.getString("totalTeacherCurrentEarnings"));
 		}
-		if (null != reqData.getString("queryMonth")) {
+		String a = reqData.getString("queryMonth");
+		if (!StringUtils.isEmpty(reqData.getString("queryMonth"))) {
 			Date queryTime = DateUtils.toYYYYMMDate(reqData.getString("queryMonth"));
 			Date startTime = DateUtils.getMonthMin(queryTime);
 			Date endTime = DateUtils.getMonthMax(queryTime);
@@ -125,11 +127,11 @@ public class PerformanceServiceImpl implements IPerformanceService {
 					}
 				}
 			}
-			result.put("totalBillNum", totalBillNum);
-			result.put("noClaimBillNum", noClaimBillNum);
-			result.put("noMateBillNum", noMateBillNum);
-			result.put("mateBillNum", mateBillNum);
 		}
+		result.put("totalBillNum", totalBillNum);
+		result.put("noClaimBillNum", noClaimBillNum);
+		result.put("noMateBillNum", noMateBillNum);
+		result.put("mateBillNum", mateBillNum);
 		//获取成单排行榜
 		List<JSONObject> consultantOrderRankingList = consultantOrderRelationService.getConsultantOrderRankingList(consultantGroupId,startTime,endTime);
 		//获取续费单排行榜

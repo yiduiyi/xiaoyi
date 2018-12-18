@@ -84,7 +84,7 @@
 		</where>  
   </select>
   <select id="getConsultantOrderRankingList" parameterType="java.util.Date" resultType="com.alibaba.fastjson.JSONObject">
-  	SELECT consultant_id AS consultantId,COUNT(order_id) AS orderNum FROM consultant_order_r GROUP BY consultant_id
+  	SELECT consultant_id AS consultantId,COUNT(order_id) AS orderNum FROM consultant_order_r
   	<where>
 			<if test="null != startTime">
 				AND create_time &gt;= #{startTime}
@@ -93,5 +93,6 @@
 				AND create_time &lt;= #{endTime}
 			</if>
 		</where>  
+		GROUP BY consultant_id
   </select>
 </mapper>

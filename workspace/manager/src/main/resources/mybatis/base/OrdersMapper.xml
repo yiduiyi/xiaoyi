@@ -142,10 +142,10 @@
       and parentId = #{parentid,jdbcType=VARCHAR}
   </update>
   
-  <select id="getTotalTurnoverData" parameterType="java.util.Date" resultType="java.lang.Integer">
+  <select id="getTotalTurnoverData" parameterType="java.util.Date" resultType="java.lang.Float">
   	SELECT SUM(actualPay) FROM orders 
 		<where>
-			orderType = 2 AND orderStatus = 1
+			orderType = 2 AND orderStatus = 0
 			<if test="null != startTime">
 				AND createTime &gt;= #{startTime}
 			</if>
