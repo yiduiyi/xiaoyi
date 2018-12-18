@@ -177,7 +177,7 @@
 					AND C.create_time &gt;= #{startTime}
 				</if>
 				<if test="null != endTime">
-					AND create_time &lt;= #{endTime}
+					AND C.create_time &lt;= #{endTime}
 				</if>
 			</where>
 	</select>

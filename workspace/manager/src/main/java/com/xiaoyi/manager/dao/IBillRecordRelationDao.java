@@ -31,5 +31,5 @@ public interface IBillRecordRelationDao {
 
 	public List<BillRecordRelation> getAllBillRecordRelationListByBillId(@Param("billId")String billId);
 
-	List<JSONObject> getBillRecordDataByTime(Date startTime, Date endTime);
+	List<JSONObject> getBillRecordDataByTime(@Param("startTime")Date startTime,@Param("endTime") Date endTime);
 }

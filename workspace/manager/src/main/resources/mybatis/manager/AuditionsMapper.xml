@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xiaoyi.teacher.dao.AuditionsMapper">
+<mapper namespace="com.xiaoyi.manager.dao.IAuditionsDao">
   <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.Auditions">
     <id column="audition_id" jdbcType="VARCHAR" property="auditionId" />
     <result column="student_id" jdbcType="VARCHAR" property="studentId" />
