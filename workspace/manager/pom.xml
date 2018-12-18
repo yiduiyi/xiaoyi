@@ -9,7 +9,7 @@
 	<name>manager Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
-	<!-- 定义maven变量 -->
+	<!-- 定义maven变量 --> 
 	<properties>
 		<!-- spring -->
 		<spring.version>4.2.0.RELEASE</spring.version>
