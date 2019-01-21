@@ -94,6 +94,7 @@ public class VideoCourseServiceImpl implements IVideoCourseService{
 							if (videoCourseTypeValue.getValue() == videoCourseType) {
 								data.put("videoCourseType", videoCourseType);
 								data.put("videoCourseTypeName", videoCourseTypeValue.toString());
+								data.put("videoCourseId", videoCourse.getVideoCourseId());
 								break;
 							}
 						}

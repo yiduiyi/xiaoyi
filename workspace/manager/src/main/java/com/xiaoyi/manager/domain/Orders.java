@@ -20,7 +20,20 @@ public class Orders extends OrdersKey {
 	private Float actualPay;
     private Short orderStatus;
     
-    public Float getSingleLessonPrice() {
+    /**
+     * ++++++++++++++++++++   added by 2018-12-04  ================
+     */
+    private String orderComesFrom;
+    
+    public String getOrderComesFrom() {
+		return orderComesFrom;
+	}
+
+	public void setOrderComesFrom(String orderComesFrom) {
+		this.orderComesFrom = orderComesFrom;
+	}
+
+	public Float getSingleLessonPrice() {
 		return singleLessonPrice;
 	}
 

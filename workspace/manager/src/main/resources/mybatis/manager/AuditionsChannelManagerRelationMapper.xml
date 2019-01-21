@@ -1,71 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xiaoyi.manager.dao.IAuditionsChannelManagerRelationDao">
-  <resultMap id="BaseResultMap" type="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
-    <id column="audition_id" jdbcType="VARCHAR" property="auditionId" />
-    <id column="channel_manager_id" jdbcType="VARCHAR" property="channelManagerId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    audition_id, channel_manager_id, create_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelationKey" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from auditions_channel_manager_r
-    where audition_id = #{auditionId,jdbcType=VARCHAR}
-      and channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelationKey">
-    delete from auditions_channel_manager_r
-    where audition_id = #{auditionId,jdbcType=VARCHAR}
-      and channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
-    insert into auditions_channel_manager_r (audition_id, channel_manager_id, create_time
-      )
-    values (#{auditionId,jdbcType=VARCHAR}, #{channelManagerId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
-    insert into auditions_channel_manager_r
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="auditionId != null">
-        audition_id,
-      </if>
-      <if test="channelManagerId != null">
-        channel_manager_id,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="auditionId != null">
-        #{auditionId,jdbcType=VARCHAR},
-      </if>
-      <if test="channelManagerId != null">
-        #{channelManagerId,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
-    update auditions_channel_manager_r
-    <set>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where audition_id = #{auditionId,jdbcType=VARCHAR}
-      and channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
-    update auditions_channel_manager_r
-    set create_time = #{createTime,jdbcType=TIMESTAMP}
-    where audition_id = #{auditionId,jdbcType=VARCHAR}
-      and channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
-  </update>
+	<resultMap id="BaseResultMap"
+		type="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
+		<id column="audition_id" jdbcType="VARCHAR" property="auditionId" />
+		<id column="channel_manager_id" jdbcType="VARCHAR" property="channelManagerId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		audition_id, channel_manager_id, create_time
+	</sql>
+	<select id="selectByPrimaryKey"
+		parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelationKey"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from auditions_channel_manager_r
+		where audition_id = #{auditionId,jdbcType=VARCHAR}
+		and channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey"
+		parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelationKey">
+		delete from auditions_channel_manager_r
+		where audition_id = #{auditionId,jdbcType=VARCHAR}
+		and channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert"
+		parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
+		insert into auditions_channel_manager_r (audition_id, channel_manager_id,
+		create_time
+		)
+		values (#{auditionId,jdbcType=VARCHAR},
+		#{channelManagerId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	<insert id="insertSelective"
+		parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
+		insert into auditions_channel_manager_r
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="auditionId != null">
+				audition_id,
+			</if>
+			<if test="channelManagerId != null">
+				channel_manager_id,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="auditionId != null">
+				#{auditionId,jdbcType=VARCHAR},
+			</if>
+			<if test="channelManagerId != null">
+				#{channelManagerId,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
+		update auditions_channel_manager_r
+		<set>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where audition_id = #{auditionId,jdbcType=VARCHAR}
+		and channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey"
+		parameterType="com.xiaoyi.manager.domain.AuditionsChannelManagerRelation">
+		update auditions_channel_manager_r
+		set create_time = #{createTime,jdbcType=TIMESTAMP}
+		where audition_id = #{auditionId,jdbcType=VARCHAR}
+		and channel_manager_id = #{channelManagerId,jdbcType=VARCHAR}
+	</update>
 </mapper>

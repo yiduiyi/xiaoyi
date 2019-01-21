@@ -15,11 +15,11 @@
   </delete>
   <insert id="insert" parameterType="com.xiaoyi.manager.domain.Orders" >
     insert into orders (lessonType, memberId, orderId, 
-      parentId, createTime, purchaseNum,orderType,hasBook,teachingWay
+      parentId, createTime, purchaseNum,orderType,hasBook,teachingWay,orderComesFrom
       )
     values (#{lessontype,jdbcType=INTEGER}, #{memberid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
       #{parentid,jdbcType=VARCHAR}, #{createtime,jdbcType=TIMESTAMP}, #{purchasenum}
-      , #{orderType}, #{hasBook}, #{teachingWay})
+      , #{orderType}, #{hasBook}, #{teachingWay},#{orderComesFrom})
   </insert>
   <insert id="insertSelective" parameterType="com.xiaoyi.manager.domain.Orders" >
     insert into orders

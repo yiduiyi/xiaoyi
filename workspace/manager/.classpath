@@ -30,7 +30,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="D:/Java/jar/dom4j-2.0.2.jar"/>
-	<classpathentry kind="lib" path="D:/Java/jar/jdom-1.0.jar"/>
+	<classpathentry kind="lib" path="H:/yduiy/jar/dom4j-2.0.2.jar"/>
+	<classpathentry kind="lib" path="H:/yduiy/jar/jdom-1.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
