@@ -18,7 +18,6 @@ workspace/manager/.classpath
 workspace/manager/src/main/resources/config/jdbc.properties
 workspace/manager/.classpath
 workspace/manager/src/main/resources/config/jdbc.properties
-<<<<<<< HEAD
 小易网络交易前后端接口文档.docx
 *.docx
 workspace/manager/.classpath
@@ -28,3 +27,5 @@ workspace/ziqimanager/target
 
 小易网络交易前后端接口文档.docx
 workspace/manager/.classpath
+
+workspace/ziqimanager/target
