@@ -26,6 +26,7 @@ public class LoginAction {
 	@Resource
 	private ILoginService loginService;
 	
+	
 	@RequestMapping(value="/login",method=RequestMethod.POST)
 	@ResponseBody
 	public  JSONObject login(HttpServletRequest request
